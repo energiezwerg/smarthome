@@ -49,8 +49,8 @@ import traceback
 #####################################################################
 logger = logging.getLogger('')
 BASE = '/'.join(os.path.realpath(__file__).split('/')[:-2])
-sys.path.append(BASE)
-sys.path.append(BASE + '/lib/3rd')
+sys.path.insert(0, BASE)
+sys.path.insert(1, BASE + '/lib/3rd')
 
 #####################################################################
 # Import 3rd Party Modules
@@ -230,6 +230,7 @@ class SmartHome():
 
         logger.info("Start SmartHome.py {0}".format(VERSION))
         logger.debug("Python {0}".format(sys.version.split()[0]))
+        self._starttime = datetime.datetime.now()
 
         #############################################################
         # Link Tools
@@ -239,15 +240,17 @@ class SmartHome():
         #############################################################
         # Link Sun and Moon
         #############################################################
-        if hasattr(self, '_lon') and hasattr(self, '_lat'):
+        self.sun = False
+        self.moon = False
+        if lib.orb.ephem is None:
+            logger.warning("Could not find/use ephem!")
+        elif not hasattr(self, '_lon') and hasattr(self, '_lat'):
+            logger.warning('No latitude/longitude specified => you could not use the sun and moon object.')
+        else:
             if not hasattr(self, '_elev'):
                 self._elev = None
             self.sun = lib.orb.Orb('sun', self._lon, self._lat, self._elev)
             self.moon = lib.orb.Orb('moon', self._lon, self._lat, self._elev)
-        else:
-            logger.warning('No latitude/longitude specified => you could not use the sun and moon object.')
-            self.sun = None
-            self.moon = None
 
     #################################################################
     # Process Methods
@@ -278,7 +281,7 @@ class SmartHome():
         # Init Items
         #############################################################
         logger.info("Init Items")
-        item_conf = {}
+        item_conf = None
         for item_file in sorted(os.listdir(self._env_dir)):
             if item_file.endswith('.conf'):
                 try:
@@ -308,6 +311,7 @@ class SmartHome():
             item._init_prerun()
         for item in self.return_items():
             item._init_run()
+        logger.info("Items: {}".format(len(self.__items)))
 
         #############################################################
         # Start Connections
@@ -480,6 +484,9 @@ class SmartHome():
 
     def utcinfo(self):
         return self._utctz
+
+    def runtime(self):
+        return datetime.datetime.now() - self._starttime
 
     #################################################################
     # Helper Methods

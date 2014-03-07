@@ -204,9 +204,9 @@ class Item():
                         low = high
                     self._threshold = True
                     self.__th_crossed = False
-                    self.__th_low = float(low)
-                    self.__th_high = float(high)
-                    logger.debug("Item {}: set threshold => low: {} high: {}}".format(self._path, self.__th_low, self.__th_high))
+                    self.__th_low = float(low.strip())
+                    self.__th_high = float(high.strip())
+                    logger.debug("Item {}: set threshold => low: {} high: {}".format(self._path, self.__th_low, self.__th_high))
                 else:
                     self.conf[attr] = value
         #############################################################
@@ -218,7 +218,7 @@ class Item():
                 try:
                     child = Item(smarthome, self, child_path, value)
                 except Exception as e:
-                    logger.error("Item {}: problem creating: {}".format(child_path, e))
+                    logger.exception("Item {}: problem creating: {}".format(child_path, e))
                 else:
                     vars(self)[attr] = child
                     smarthome.add_item(child_path, child)
@@ -320,7 +320,7 @@ class Item():
     def _init_run(self):
         if self._eval_trigger:
             if self._eval:
-                self._sh.trigger(name=self._path, obj=self.__run_eval, by='Init', value={'caller': 'Init'})
+                self._sh.trigger(name=self._path, obj=self.__run_eval, by='Init', value={'value': self._value, 'caller': 'Init'})
 
     def __run_eval(self, value=None, caller='Eval', source=None, dest=None):
         if self._eval:
@@ -362,7 +362,7 @@ class Item():
                 self._lock.notify_all()
                 self._change_logger("Item {} = {} via {} {} {}".format(self._path, value, caller, source, dest))
         self._lock.release()
-        if _changed or self._enforce_updates:
+        if _changed or self._enforce_updates or self._type == 'scene':
             self.__last_update = self._sh.now()
             for method in self.__methods_to_trigger:
                 try:
@@ -432,6 +432,9 @@ class Item():
     def prev_value(self):
         return self.__prev_value
 
+    def remove_timer(self):
+        self._sh.scheduler.remove(self.id() + '-Timer')
+
     def return_children(self):
         for child in self.__children:
             yield child
@@ -439,7 +442,7 @@ class Item():
     def return_parent(self):
         return self.__parent
 
-    def set(self, value, caller='Logic', source=None, dest=None):
+    def set(self, value, caller='Logic', source=None, dest=None, prev_change=None, last_change=None):
         try:
             value = self.cast(value)
         except:
@@ -450,8 +453,14 @@ class Item():
             return
         self._lock.acquire()
         self._value = value
-        self.__prev_change = self.__last_change
-        self.__last_change = self._sh.now()
+        if prev_change is None:
+            self.__prev_change = self.__last_change
+        else:
+            self.__prev_change = prev_change
+        if last_change is None:
+            self.__last_change = self._sh.now()
+        else:
+            self.__last_change = last_change
         self.__changed_by = "{0}:{1}".format(caller, None)
         self._lock.release()
         self._change_logger("Item {} = {} via {} {} {}".format(self._path, value, caller, source, dest))
@@ -479,10 +488,3 @@ class Item():
 
     def type(self):
         return self._type
-
-
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
-    i = Item('sh', 'parent', 'path1', {'type': 'str', 'child1': {'type': 'bool'}, 'value': 'tqwer'})
-    i = Item('sh', 'parent', 'path', {'type': 'str', 'value': 'tqwer'})
-    i('test2')
