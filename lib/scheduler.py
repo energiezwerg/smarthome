@@ -338,7 +338,8 @@ class Scheduler(threading.Thread):
             logic = obj  # noqa
             sh = self._sh  # noqa
             try:
-                exec(obj.bytecode)
+                if logic.enabled:
+                    exec(obj.bytecode)
             except SystemExit:
                 # ignore exit() call from logic.
                 pass
