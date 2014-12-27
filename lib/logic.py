@@ -51,7 +51,9 @@ class Logics():
             # plugin hook
             for plugin in self._sh._plugins:
                 if hasattr(plugin, 'parse_logic'):
-                    plugin.parse_logic(logic)
+                    update = plugin.parse_logic(logic)
+                    if update:
+                        logic.add_method_trigger(update)
             # item hook
             if hasattr(logic, 'watch_item'):
                 if isinstance(logic.watch_item, str):
@@ -95,6 +97,7 @@ class Logic():
             vars(self)[attribute] = attributes[attribute]
         self.generate_bytecode()
         self.prio = int(self.prio)
+        self.__methods_to_trigger = []
 
     def id(self):
         return self.name
@@ -121,3 +124,10 @@ class Logic():
                 logger.exception("Exception: {}".format(e))
         else:
             logger.warning("{}: No filename specified => ignoring.".format(self.name))
+
+    def add_method_trigger(self, method):
+        self.__methods_to_trigger.append(method)
+
+    def get_method_triggers(self):
+        return self.__methods_to_trigger
+
