@@ -339,6 +339,11 @@ class Scheduler(threading.Thread):
             sh = self._sh  # noqa
             try:
                 exec(obj.bytecode)
+                for method in logic.get_method_triggers():
+                    try:
+                        method(logic, by, source, dest)
+                    except Exception as e:
+                        logger.exception("Logic: Tigger {} for {} failed: {}".format(method, logic.name, e))
             except SystemExit:
                 # ignore exit() call from logic.
                 pass
@@ -346,8 +351,6 @@ class Scheduler(threading.Thread):
                 tb = sys.exc_info()[2]
                 tb = traceback.extract_tb(tb)[-1]
                 logger.exception("Logic: {0}, File: {1}, Line: {2}, Method: {3}, Exception: {4}".format(name, tb[0], tb[1], tb[2], e))
-            for method in logic.get_method_triggers():
-                method(logic, by, source, dest)
         elif obj.__class__.__name__ == 'Item':
             try:
                 if value is not None:
