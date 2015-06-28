@@ -416,7 +416,7 @@ class SmartHome():
         attr, __, val = attr.partition('[')
         val = val.rstrip(']')
         if attr != '' and val != '':
-            return [self.__item_dict[item] for item in self.__items if regex.match(item) and attr in self.__item_dict[item].conf and val == self.__item_dict[item].conf[attr]]
+            return [self.__item_dict[item] for item in self.__items if regex.match(item) and attr in self.__item_dict[item].conf and ((type(self.__item_dict[item].conf[attr]) in [list,dict] and val in self.__item_dict[item].conf[attr]) or (val == self.__item_dict[item].conf[attr]))]
         elif attr != '':
             return [self.__item_dict[item] for item in self.__items if regex.match(item) and attr in self.__item_dict[item].conf]
         else:
