@@ -2,8 +2,10 @@
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
 # Copyright 2011-2014 Marcus Popp                          marcus@popp.mx
+# Copyright 2016-     Christian Strassburg            c.strassburg@gmx.de
 #########################################################################
-#  This file is part of SmartHome.py.    http://mknx.github.io/smarthome/
+#  This file is part of SmartHome.py.
+#  https://github.com/smarthomeNG/smarthome
 #
 #  SmartHome.py is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -115,6 +117,7 @@ class SmartHome():
     _logic_dir = BASE + '/logics/'
     _cache_dir = BASE + '/var/cache/'
     _logfile = BASE + '/var/log/smarthome.log'
+    _pidfile = BASE + '/var/run/smarthome.pid'
     _log_buffer = 50
     __logs = {}
     __event_listeners = {}
@@ -152,7 +155,7 @@ class SmartHome():
         # Fork
         #############################################################
         if MODE == 'default':
-            lib.daemon.daemonize()
+            lib.daemon.daemonize(self._pidfile)
 
         #############################################################
         # Signal Handling
@@ -386,6 +389,7 @@ class SmartHome():
                 logger.info("Thread: {}, still alive".format(thread.name))
         else:
             logger.info("SmartHome.py stopped")
+        os.remove(self._pidfile)
         logging.shutdown()
         exit()
 
