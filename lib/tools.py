@@ -55,7 +55,7 @@ class Tools():
     def dt2ts(self, dt):
         return time.mktime(dt.timetuple())
 
-    def fetch_url(self, url, username=None, password=None, timeout=2):
+    def fetch_url(self, url, username=None, password=None, timeout=2, warn_no_connect=1):
         headers = {'Accept': 'text/plain'}
         plain = True
         if url.startswith('https'):
@@ -72,7 +72,8 @@ class Tools():
         try:
             conn.request("GET", purl, headers=headers)
         except Exception as e:
-            logger.warning("Problem fetching {0}: {1}".format(url, e))
+            if warn_no_connect == 1:
+                logger.warning("Problem fetching {0}: {1}".format(url, e))
             conn.close()
             return False
         resp = conn.getresponse()
