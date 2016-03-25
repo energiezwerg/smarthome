@@ -1,5 +1,5 @@
 
-See http://mknx.github.io/smarthome/ for more information and documentation.
+
 
 ## Directory and File Overview
 This should give you an overview of the most important files and directories.
