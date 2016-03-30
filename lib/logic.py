@@ -86,7 +86,7 @@ class Logic():
     def __init__(self, smarthome, name, attributes):
         self._sh = smarthome
         self.name = name
-        self.enabled = True
+        self.enabled = True if 'enabled' not in attributes else bool(attributes['enabled'])
         self.crontab = None
         self.cycle = None
         self.prio = 3
