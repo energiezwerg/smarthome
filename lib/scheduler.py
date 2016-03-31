@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2011-2013 Marcus Popp                          marcus@popp.mx
+# Copyright 2011-2014 Marcus Popp                          marcus@popp.mx
 #########################################################################
 #  This file is part of SmartHome.py.    http://mknx.github.io/smarthome/
 #
@@ -122,7 +122,9 @@ class Scheduler(threading.Thread):
                 else:  # put last entry back and break while loop
                     self._triggerq.insert((dt, prio), (name, obj, by, source, dest, value))
                     break
-            self._lock.acquire()
+            if not self._lock.acquire(timeout=1):
+                logger.critical("Scheduler: Deadlock!")
+                continue
             for name in self._scheduler:
                 task = self._scheduler[name]
                 if task['next'] is not None:
@@ -241,7 +243,19 @@ class Scheduler(threading.Thread):
                 if key in self._scheduler[name]:
                     if key == 'cron':
                         if isinstance(kwargs[key], str):
-                            kwargs[key] = kwargs[key].split('|')
+                            _cron = {}
+                            for entry in kwargs[key].split('|'):
+                                desc, __, _value = entry.partition('=')
+                                desc = desc.strip()
+                                if _value == '':
+                                    _value = None
+                                else:
+                                    _value = _value.strip()
+                                _cron[desc] = _value
+                            if _cron == {}:
+                                kwargs[key] = None
+                            else:
+                                kwargs[key] = _cron
                     elif key == 'active':
                         if kwargs['active'] and not self._scheduler[name]['active']:
                             logger.info("Activating logic: {0}".format(name))
@@ -454,6 +468,7 @@ class Scheduler(threading.Thread):
             logger.error('Wrong syntax: {0}. Should be [H:M<](sunrise|sunset)[+|-][offset][<H:M]'.format(crontab))
             return datetime.datetime.now(tzutc()) + dateutil.relativedelta.relativedelta(years=+10)
 
+        now = self._sh.now()
         if smin is not None:
             h, sep, m = smin.partition(':')
             try:
@@ -471,7 +486,7 @@ class Scheduler(threading.Thread):
                 logger.error('Wrong syntax: {0}. Should be [H:M<](sunrise|sunset)[+|-][offset][<H:M]'.format(crontab))
                 return datetime.datetime.now(tzutc()) + dateutil.relativedelta.relativedelta(years=+10)
             if dmax < next_time:
-                if dmax < self._sh.now():
+                if dmax < now:
                     dmax = dmax + datetime.timedelta(days=1)
                 next_time = dmax
         return next_time

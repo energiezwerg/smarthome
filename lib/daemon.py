@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 #########################################################################
-#  Copyright 2013 Marcus Popp                              marcus@popp.mx
+# Copyright 2011-2014 Marcus Popp                          marcus@popp.mx
+# Copyright 2016-     Christian Strassburg            c.strassburg@gmx.de
 #########################################################################
-#  This file is part of SmartHome.py.    http://mknx.github.io/smarthome/
+#  This file is part of SmartHome.py.
+#  https://github.com/smarthomeNG/smarthome
 #
 #  SmartHome.py is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -17,7 +19,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SmartHome.py. If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
-
 import logging
 import signal
 import time
@@ -26,7 +27,7 @@ import os
 logger = logging.getLogger('')
 
 
-def daemonize():
+def daemonize(pidfile):
     pid = os.fork()  # fork first child
     if pid == 0:
         os.setsid()
@@ -35,9 +36,11 @@ def daemonize():
             os.chdir('/')
         else:
             time.sleep(0.1)
+            open(pidfile, 'w+').write("%s\n" % pid)
             os._exit(0)  # exit parent
     else:
         time.sleep(0.1)
+        open(pidfile, 'w+').write("%s\n" % pid)
         os._exit(0)  # exit parent
     # close files
     for fd in range(0, 1024):
@@ -66,7 +69,7 @@ def get_pid(filename):
     return 0
 
 
-def kill(filename, wait=5):
+def kill(filename, wait=10):
     pid = get_pid(filename)
     delay = 0.25
     waited = 0
@@ -78,7 +81,7 @@ def kill(filename, wait=5):
             except OSError:
                 os._exit(0)
             waited += delay
-            time.sleep(0.25)
+            time.sleep(delay)
         try:
             print("Killing {}".format(os.path.basename(filename)))
             os.kill(pid, signal.SIGKILL)
