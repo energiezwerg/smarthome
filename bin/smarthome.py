@@ -389,7 +389,8 @@ class SmartHome():
                 logger.info("Thread: {}, still alive".format(thread.name))
         else:
             logger.info("SmartHome.py stopped")
-        os.remove(self._pidfile)
+        if MODE == 'default':
+            os.remove(self._pidfile)
         logging.shutdown()
         exit()
 
