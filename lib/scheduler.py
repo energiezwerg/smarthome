@@ -36,8 +36,7 @@ import dateutil.relativedelta
 from dateutil.relativedelta import MO, TU, WE, TH, FR, SA, SU
 from dateutil.tz import tzutc
 
-logger = logging.getLogger('')
-
+logger = logging.getLogger(__name__)
 
 class PriorityQueue:
 

@@ -26,6 +26,19 @@ import sys
 
 
 def daemonize(pidfile,stdin='/dev/null', stdout='/dev/null', stderr=None):
+    """
+    This method domonizes the sh.py process and redirects standard file descriptors.
+    
+    @type   pidfile: string 
+    @param  pidfile: Path to pidfile 
+    @type   stdin  : string
+    @param  stdin  : Path to new stdin, default value is "/dev/null"
+    @type   stdout :
+    @param  stdout : Path to new stdout, default value is "/dev/null"
+    @type   stderr :
+    @param  stderr : Path to new stderr, default value is None, but if stderr is None it is mapped to stdout
+   
+    """
     # use stdout file if stderr is none  
     if (not stderr):    
         stderr = stdout

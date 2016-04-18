@@ -25,7 +25,7 @@ import os
 import pickle
 import threading
 
-logger = logging.getLogger('')
+logger = logging.getLogger(__name__)
 
 
 #####################################################################

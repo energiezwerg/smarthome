@@ -24,7 +24,7 @@ import logging
 import datetime
 import math
 
-logger = logging.getLogger('')
+logger = logging.getLogger(__name__)
 
 try:
     import ephem
