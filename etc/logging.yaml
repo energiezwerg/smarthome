@@ -15,7 +15,7 @@ handlers:
     stream: ext://sys.stdout
   file:
     class: logging.handlers.TimedRotatingFileHandler
-    level: DEBUG
+    level: INFO
     formatter: detail
     when: midnight
     backupCount: 7
@@ -23,7 +23,7 @@ handlers:
 loggers:
   plugins.knx:
     handlers: [file, console]
-    level: DEBUG
+    level: INFO
 #  lib.scheduler:
 #    handlers: [file, console]
 #    level: DEBUG
