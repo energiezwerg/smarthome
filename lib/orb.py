@@ -82,8 +82,11 @@ class Orb():
         next_setting = next_setting + dateutil.relativedelta.relativedelta(minutes=moff)
         return next_setting.replace(tzinfo=tzutc())
 
-    def pos(self, offset=None, degree=False):  # offset in minutes
-        date = datetime.datetime.utcnow()
+    def pos(self, offset=None, degree=False, dt=None):  # offset in minutesA
+        if dt is None:
+            date = datetime.datetime.utcnow()
+        else: 
+            date = dt.replace(tzinfo=tzutc())
         if offset:
             date += dateutil.relativedelta.relativedelta(minutes=offset)
         self._obs.date = date
