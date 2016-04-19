@@ -25,7 +25,7 @@ import threading
 import select
 import time
 
-logger = logging.getLogger('')
+logger = logging.getLogger(__name__)
 
 
 class Base():

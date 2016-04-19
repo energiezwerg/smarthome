@@ -22,7 +22,7 @@
 import logging
 import collections
 
-logger = logging.getLogger('')
+logger = logging.getLogger(__name__)
 
 
 def strip_quotes(string):

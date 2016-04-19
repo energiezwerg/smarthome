@@ -24,7 +24,7 @@ import threading
 
 import lib.config
 
-logger = logging.getLogger('')
+logger = logging.getLogger(__name__)
 
 
 class Plugins():
