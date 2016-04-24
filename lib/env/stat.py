@@ -3,9 +3,7 @@ import shutil
 import ephem 
 
 if sh.env.system.libs.ephem_version is not None:
-    logger.info('Ephem Version: {0}'.format(ephem.__version__)) 
     sh.env.system.libs.ephem_version( ephem.__version__ )
-
 
 
 # lib/env/statistic.py
@@ -39,12 +37,13 @@ l1, l5, l15 = os.getloadavg()
 sh.env.system.load(round(l5, 2))
 
 # Diskusage
-pathname = os.path.dirname(sys.argv[0])        
-du = shutil.disk_usage( os.path.abspath(pathname))
-sh.env.system.diskfree( du.free ) 
-sh.env.system.disksize( du.total )
-sh.env.system.diskusage( du.used )
-sh.env.system.diskusagepercent( round(du.used / du.total * 100.0,2) )
+if sys.version_info > (3,3):
+    pathname = os.path.dirname(sys.argv[0])        
+    du = shutil.disk_usage( os.path.abspath(pathname))
+    sh.env.system.diskfree( du.free ) 
+    sh.env.system.disksize( du.total )
+    sh.env.system.diskusage( du.used )
+    sh.env.system.diskusagepercent( round(du.used / du.total * 100.0,2) )
 
 if sh.moon:
     sh.env.location.moonlight(sh.moon.light())
