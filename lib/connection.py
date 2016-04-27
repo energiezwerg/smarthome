@@ -289,6 +289,7 @@ class Stream(Base):
                 if sent < len(frame):
                     self.outbuffer.append(frame[sent:])
             if self._close_after_send:
+                logger.debug("close after send")
                 self.close()
         except IndexError:  # buffer empty
             return
