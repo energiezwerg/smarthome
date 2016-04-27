@@ -1,6 +1,5 @@
 
 # lib/env/location.py
-import math
 
 if sh.sun:
     sunrise = sh.sun.rise().astimezone(sh.tzinfo())
