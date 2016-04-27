@@ -19,7 +19,7 @@ if sh.sun:
     sh.env.location.sunset.elevation(elevation_set)
 
     # setting altitude/azimut
-    azimut, elevation = sh.sun.pos()
+    azimut, elevation = sh.sun.pos(degree=True)
     azimut = round(azimut,2)
     elevation = round(elevation,2)
     sh.env.location.sun_position.azimut(azimut)
