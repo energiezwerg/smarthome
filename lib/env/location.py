@@ -1,30 +1,31 @@
 
 # lib/env/location.py
+import math
 
 if sh.sun:
     sunrise = sh.sun.rise().astimezone(sh.tzinfo())
     sh.env.location.sunrise(sunrise)
     azimut_rise, elevation_rise = sh.sun.pos(dt=sunrise)
-    azimut_rise = round(azimut_rise,2)
-    elevation_rise = round(elevation_rise,2)
-    sh.env.location.sunrise.azimut(azimut_rise)
-    sh.env.location.sunrise.elevation(elevation_rise)
+    sh.env.location.sunrise.azimut.degrees(round(math.degrees(azimut_rise), 2))
+    sh.env.location.sunrise.elevation.degrees(round(math.degrees(elevation_rise), 2))
+    sh.env.location.sunrise.azimut.radians(round(azimut_rise,2))
+    sh.env.location.sunrise.elevation.radians(round(elevation_rise,2))
 
     sunset = sh.sun.set().astimezone(sh.tzinfo())
     sh.env.location.sunset(sunset)
     azimut_set, elevation_set = sh.sun.pos(dt=sunset)
-    azimut_set = round(azimut_set,2)
-    elevation_set = round(elevation_set,2)
-    sh.env.location.sunset.azimut(azimut_set)
-    sh.env.location.sunset.elevation(elevation_set)
+    sh.env.location.sunset.azimut.degrees(round(math.degrees(azimut_set), 2))
+    sh.env.location.sunset.elevation.degrees(round(math.degrees(elevation_set), 2))
+    sh.env.location.sunset.azimut.radians(round(azimut_set,2))
+    sh.env.location.sunset.elevation.radians(round(elevation_set,2))
+
 
     # setting altitude/azimut
     azimut, elevation = sh.sun.pos()
-    azimut = round(azimut,2)
-    elevation = round(elevation,2)
-    sh.env.location.sun_position.azimut(azimut)
-    sh.env.location.sun_position.elevation(elevation)
-    
+    sh.env.location.sun_position.azimut.degrees(round(math.degrees(azimut), 2))
+    sh.env.location.sun_position.elevation.degrees(round(math.degrees(elevation), 2))
+    sh.env.location.sun_position.azimut.radians(round(azimut,2))
+    sh.env.location.sun_position.elevation.radians(round(elevation,2))
 
     sh.env.location.moonrise(sh.moon.rise().astimezone(sh.tzinfo()))
     sh.env.location.moonset(sh.moon.set().astimezone(sh.tzinfo()))
