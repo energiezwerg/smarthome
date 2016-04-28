@@ -10,7 +10,7 @@
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
-#  SmartHome.py is distributed in the hope that it will be useful,
+#  SmartHomeNG.py is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
@@ -20,15 +20,14 @@
 #########################################################################
 
 import logging
-
+logger = logging.getLogger(__name__)
 class FooClass:
 
     def __init__(self, smarthome):
-        self.logger = logging.getLogger(__name__)
         self.sh = smarthome
 
     def run(self):
-        self.logger.debug("run method called")
+        logger.debug("run method called")
         self.alive = True
 
     def stop(self):
