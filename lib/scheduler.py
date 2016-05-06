@@ -236,6 +236,12 @@ class Scheduler(threading.Thread):
             self._next_time(name, offset)
         self._lock.release()
 
+    def get( self, name):
+        if name in self._scheduler:
+            return self._scheduler[name]
+        else:
+            return None
+
     def change(self, name, **kwargs):
         if name in self._scheduler:
             for key in kwargs:
