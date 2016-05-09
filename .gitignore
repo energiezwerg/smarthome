@@ -12,3 +12,4 @@
 .coverage
 .tox
 nosetests.xml
+*.egg-info
