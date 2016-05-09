@@ -5,7 +5,7 @@
 #########################################################################
 # Personal and non-commercial use only, redistribution is prohibited.
 #########################################################################
-
+import common
 import unittest
 from lib.utils import Utils
 #from wakeonlan import WakeOnLan
