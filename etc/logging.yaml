@@ -20,15 +20,12 @@ handlers:
     when: midnight
     backupCount: 7
     filename: ./var/log/smarthome.log
-loggers:
-  plugins.knx:
-    handlers: [file, console]
-    level: INFO
+#loggers:
+#  plugins.knx:
+#    level: INFO
 #  lib.scheduler:
-#    handlers: [file, console]
 #    level: DEBUG
 #  plugins.cli:
-#    handlers: [console]
 #    level: DEBUG
 root:
     level: INFO
