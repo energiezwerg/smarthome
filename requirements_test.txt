@@ -6,4 +6,3 @@ pytest-cov>=2.2.0
 pytest-timeout>=1.0.0
 betamax==0.5.1
 pydocstyle>=1.0.0
-virtualenv==13.1.2
