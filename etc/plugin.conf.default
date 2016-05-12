@@ -1,0 +1,79 @@
+#[cli]
+#    class_name = CLI
+#    class_path = plugins.cli
+#    ip = 0.0.0.0
+#    update = True 
+
+#[memlog]
+#    class_name = MemLog
+#    class_path = plugins.memlog
+#    name = alert
+
+#[knx]
+#    class_name = KNX
+#    class_path = plugins.knx
+#    host = 127.0.0.1 
+#    port = 6720
+#    send_time = 600 # update date/time every 600 seconds, default none
+#    time_ga = 6/0/0 # default none
+#    date_ga = 6/0/1 # default none
+#    busmonitor = True # log all knx messages, default false
+#    readonly = True # don't write to knx bus, default false
+#    instance = default
+
+#[ow]
+#    class_name = OneWire
+#    class_path = plugins.onewire
+#    host = 127.0.0.1
+#    port = 4304
+
+#[visu]
+#    class_name = WebSocket
+#    class_path = plugins.visu
+#    smartvisu_dir = /var/www/html/smartVISU
+# for Ubuntu 14.04 upwards the base for html has changed
+#    smartvisu_dir = /var/www/html/smartVISU
+
+#[sql]
+#    class_name = SQL
+#    class_path = plugins.sqlite
+
+#[squeezebox]
+#    class_name = Squeezebox
+#    class_path = plugins.squeezebox
+#    host = squeezeserver
+#    #    port = <port>
+
+#[uzsu]
+#    class_name = UZSU
+#    class_path = plugins.uzsu
+
+#[dlms]
+#    class_name = DLMS
+#    class_path = plugins.dlms
+#    serialport = /home/smarthome/stromzaehler
+
+#[simulation]
+#    class_name = Simulation
+#    class_path = plugins.simulation
+#    data_file = /usr/local/smarthome/var/db/simulation.txt
+
+#[nw]
+#    class_name = Network
+#    class_path = plugins.network
+#    ip = 0.0.0.0
+#    port = 2727
+#    http = 8765
+#    tcp_acl= 127.0.0.1 | 192.168.0.34
+#    udp = no
+#    udp_acl= *
+
+#[wol]
+#    class_name = WakeOnLan
+#    class_path = plugins.wol
+
+#[homematic]
+#    class_name = Homematic
+#    class_path = plugins.homematic
+#    host = 192.168.50.250
+#    port = 2001
