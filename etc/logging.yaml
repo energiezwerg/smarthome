@@ -11,12 +11,11 @@ formatters:
 handlers:
   console:
     class: logging.StreamHandler
-    formatter: simple
+    formatter: detail
     stream: ext://sys.stdout
   file:
     class: logging.handlers.TimedRotatingFileHandler
-    level: INFO
-    formatter: detail
+    formatter: simple
     when: midnight
     backupCount: 7
     filename: ./var/log/smarthome.log
