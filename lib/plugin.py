@@ -50,7 +50,7 @@ class Plugins():
             classname = _conf[plugin]['class_name']
             classpath = _conf[plugin]['class_path']
             try:
-                plugin_thread = Plugin(smarthome, plugin, classname, classpath, args)
+                plugin_thread = PluginWrapper(smarthome, plugin, classname, classpath, args)
                 self._threads.append(plugin_thread)
                 self._plugins.append(plugin_thread.plugin)
             except Exception as e:
@@ -74,7 +74,7 @@ class Plugins():
             plugin.stop()
 
 
-class Plugin(threading.Thread):
+class PluginWrapper(threading.Thread):
 
     def __init__(self, smarthome, name, classname, classpath, args):
         threading.Thread.__init__(self, name=name)
