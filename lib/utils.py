@@ -32,7 +32,7 @@ IP_REGEX = re.compile(r"""
 class Utils(object):
 
     @staticmethod
-    def isMAC(mac):
+    def is_mac(mac):
         """
         Validates a MAC address
 
@@ -62,7 +62,7 @@ class Utils(object):
         return True
 
     @staticmethod
-    def isIP(string):
+    def is_ip(string):
         """
         Checks if a string is a valid ip.
         :param string: String to check.
@@ -76,7 +76,7 @@ class Utils(object):
             return False
 
     @staticmethod
-    def toBool(value):
+    def to_bool(value):
         """
         Converts a value to boolean. 
         Raises exception if value is a string and can't be converted.
