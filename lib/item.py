@@ -403,11 +403,17 @@ class Item():
     def add_logic_trigger(self, logic):
         self.__logics_to_trigger.append(logic)
 
+    def remove_logic_trigger(self, logic):
+        self.__logics_to_trigger.remove(logic)
+
     def get_logic_triggers(self):
         return self.__logics_to_trigger
 
     def add_method_trigger(self, method):
         self.__methods_to_trigger.append(method)
+    
+    def remove_method_trigger(self, method):
+        self.__methods_to_trigger.remove(method)
 
     def get_method_triggers(self):
         return self.__methods_to_trigger
