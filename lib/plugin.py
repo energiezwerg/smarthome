@@ -3,7 +3,7 @@
 #########################################################################
 # Copyright 2011-2013 Marcus Popp                          marcus@popp.mx
 #########################################################################
-#  This file is part of SmartHome.py.
+#  This file is part of SmartHomeNG
 #
 #  SmartHome.py is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -72,6 +72,15 @@ class Plugins():
         for plugin in self._threads:
             logger.debug('Stopping {} Plugin'.format(plugin.name))
             plugin.stop()
+    
+    def get_plugin(self, name):
+        """
+           returns one plugin with given name 
+        """
+        for thread in self._threads:
+            if thread.name == name:
+               return thread
+        return None
 
 
 class PluginWrapper(threading.Thread):
@@ -87,3 +96,12 @@ class PluginWrapper(threading.Thread):
 
     def stop(self):
         self.plugin.stop()
+    
+    def get_name(self):
+        return self.name
+
+    def get_ident(self):
+        return self.ident
+    
+    def get_implementation(self):
+        return self.plugin
