@@ -262,6 +262,7 @@ class Item():
         if self._cache:
             if not os.path.isfile(self._cache):
                 _cache_write(self._cache, self._value)
+                logger.warning("Item {}: Created cache for item: {}".format(self._cache, self._cache))
         #############################################################
         # Crontab/Cycle
         #############################################################
