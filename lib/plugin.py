@@ -21,6 +21,7 @@
 
 import logging
 import threading
+import inspect
 
 import lib.config
 
@@ -39,14 +40,14 @@ class Plugins():
             return
 
         for plugin in _conf:
-            args = ''
+            args = {}
             logger.debug("Plugin: {0}".format(plugin))
             for arg in _conf[plugin]:
                 if arg != 'class_name' and arg != 'class_path':
                     value = _conf[plugin][arg]
                     if isinstance(value, str):
                         value = "'{0}'".format(value)
-                    args = args + ", {0}={1}".format(arg, value)
+                    args[arg] = value
             classname = _conf[plugin]['class_name']
             classpath = _conf[plugin]['class_path']
             try:
@@ -78,8 +79,16 @@ class Plugin(threading.Thread):
 
     def __init__(self, smarthome, name, classname, classpath, args):
         threading.Thread.__init__(self, name=name)
+
         exec("import {0}".format(classpath))
-        exec("self.plugin = {0}.{1}(smarthome{2})".format(classpath, classname, args))
+        exec("self.args = inspect.getargspec({0}.{1}.__init__)[0][1:]".format(classpath, classname))
+
+        arglist = [name for name in self.args if name in args]
+        argstring = ",".join(["{}={}".format(name, args[name]) for name in arglist])
+        logger.debug("Using arguments {}".format(arglist))
+
+        exec("self.plugin = {0}.{1}(smarthome{2}{3})".format(classpath, classname, "," if len(arglist) else "", argstring))
+
         setattr(smarthome, self.name, self.plugin)
 
     def run(self):
