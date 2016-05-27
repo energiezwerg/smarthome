@@ -2,21 +2,22 @@
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
 # Copyright 2011-2014 Marcus Popp                          marcus@popp.mx
+# Copyright 2016- Christian Straßburg
 #########################################################################
-#  This file is part of SmartHome.py.    http://mknx.github.io/smarthome/
+#  This file is part of SmartHomeNG
 #
-#  SmartHome.py is free software: you can redistribute it and/or modify
+#  SmartHomeNG is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
-#  SmartHome.py is distributed in the hope that it will be useful,
+#  SmartHomeNG is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with SmartHome.py.  If not, see <http://www.gnu.org/licenses/>.
+#  along with SmartHomeNG.  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
 import gc  # noqa
@@ -31,6 +32,7 @@ import os  # noqa
 import random
 import types  # noqa
 import subprocess  # noqa
+from lib.model.smartplugin import SmartPlugin
 
 import dateutil.relativedelta
 from dateutil.relativedelta import MO, TU, WE, TH, FR, SA, SU
@@ -231,6 +233,12 @@ class Scheduler(threading.Thread):
             cycle = {cycle: _value}
         if cycle is not None and offset is None:  # spread cycle jobs
                 offset = random.randint(10, 15)
+        # change name for multi instance plugins 
+        if obj.__class__.__name__ == 'method':
+            if isinstance(obj.__self__, SmartPlugin):
+                if obj.__self__.get_instance_name() != '':
+                    name = name +'_'+ obj.__self__.get_instance_name()
+                    logger.debug("Scheduler: Name changed by adding plugin instance name to: " + name)
         self._scheduler[name] = {'prio': prio, 'obj': obj, 'cron': cron, 'cycle': cycle, 'value': value, 'next': next, 'active': True}
         if next is None:
             self._next_time(name, offset)

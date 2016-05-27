@@ -35,7 +35,7 @@ def strip_quotes(string):
 
 
 def parse(filename, config=None):
-    valid_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
+    valid_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@*'
     valid_set = set(valid_chars)
     if config is None:
         config = collections.OrderedDict()
