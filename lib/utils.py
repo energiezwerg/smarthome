@@ -82,6 +82,8 @@ class Utils(object):
             return True
         except ValueError:
             return False
+        except TypeError:
+            return False
 
     @staticmethod
     def is_float(string):
@@ -89,6 +91,8 @@ class Utils(object):
             float(string)
             return True
         except ValueError:
+            return False
+        except TypeError:
             return False
 
     @staticmethod

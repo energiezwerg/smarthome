@@ -54,6 +54,35 @@ class LibUtilsTest(unittest.TestCase):
         self.assertFalse(Utils.is_ip("561.256.256.256"))
         self.assertFalse(Utils.is_ip("161.256.256"))
 
+    def test_is_int(self):
+        self.assertFalse(Utils.is_int(""))
+        self.assertFalse(Utils.is_int(None))
+        self.assertFalse(Utils.is_int(self))
+
+        self.assertFalse(Utils.is_int("1.2.3.4"))
+        self.assertFalse(Utils.is_int("xyzabcd"))
+        self.assertFalse(Utils.is_int("1.0"))
+        self.assertTrue(Utils.is_int("255"))
+        self.assertTrue(Utils.is_int("0"))
+        self.assertTrue(Utils.is_int("-1"))
+
+    def test_is_float(self):
+        self.assertFalse(Utils.is_float(""))
+        self.assertFalse(Utils.is_float(None))
+        self.assertFalse(Utils.is_float(self))
+
+        self.assertFalse(Utils.is_float("1.2.3.4"))
+        self.assertFalse(Utils.is_float("xyzabcd"))
+        self.assertTrue(Utils.is_float("255"))
+        self.assertTrue(Utils.is_float("0"))
+        self.assertTrue(Utils.is_float("-1"))
+        self.assertTrue(Utils.is_float("1.0"))
+        self.assertTrue(Utils.is_float("0.0"))
+        self.assertTrue(Utils.is_float("5.0"))
+        self.assertTrue(Utils.is_float("-5.0"))
+        self.assertTrue(Utils.is_float("2.01"))
+        self.assertTrue(Utils.is_float("-2.01"))
+
     def test_to_bool(self):
         with self.assertRaises(Exception):
             Utils.to_bool("161.256.256")
