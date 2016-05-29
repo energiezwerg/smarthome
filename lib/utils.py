@@ -76,6 +76,22 @@ class Utils(object):
             return False
 
     @staticmethod
+    def is_int(string):
+        try:
+            int(string)
+            return True
+        except ValueError:
+            return False
+
+    @staticmethod
+    def is_float(string):
+        try:
+            float(string)
+            return True
+        except ValueError:
+            return False
+
+    @staticmethod
     def to_bool(value):
         """
         Converts a value to boolean. 
