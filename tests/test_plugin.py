@@ -61,6 +61,16 @@ class TestConfig(unittest.TestCase):
         config_mock = {'key3@false', 'value3'}
         self.assertFalse(wolplug.plugin.has_iattr(config_mock, "key3"))
 
+        config_mock = {}
+        config_mock["key3@*"] = "value3"
+        self.assertEqual(wolplug.plugin.get_iattr_value(config_mock, "key3"), "value3")
+        config_mock = {}
+        config_mock["key3@bind"] = "value2"
+        self.assertEqual(wolplug.plugin.get_iattr_value(config_mock, "key3"), "value2")
+        config_mock = {}
+        config_mock["key3@bind2"] = "value4"
+        self.assertIsNone(wolplug.plugin.get_iattr_value(config_mock, "key3"))
+        
         if 0:
             print(sh._plugins)        
             for plug in sh.return_plugins():
@@ -85,12 +95,11 @@ class TestConfig(unittest.TestCase):
 #        for item in sh.return_items():
 #            item._init_run()
 #       
-        if 0: self.dump_items(sh)
+        if 1: self.dump_items(sh)
 
         it = sh.return_item("item3.item3b.item3b1.item3b1a")
         self.assertIsNotNone(it)
         self.assertEqual(len(it.get_method_triggers()),2)
-        
         it = sh.return_item("item3.item3b.item3b1")
         self.assertIsNotNone(it)
         self.assertEqual(len(it.get_method_triggers()),1)

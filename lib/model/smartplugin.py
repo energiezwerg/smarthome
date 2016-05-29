@@ -12,27 +12,57 @@ class SmartPlugin(SmartObject):
     __instance = '' 
     __sh = None
     def get_version(self):
+        """
+            return plugin version 
+            :rtype: str
+        """
         return self.PLUGIN_VERSION
     
     def set_instance_name(self, instance):
+        """
+            set instance name of the plugin
+        """
         self.__instance = instance
     
     def get_instance_name(self):
+        """
+            return instance name of the plugin
+            :rtype: str
+        """
         return self.__instance
   
     def __get_iattr(self, attr):
         """
             returns item attribute for plugin instance
+            
             :rtype: str
         """
         if self.__instance == '':
             return attr
         else:
-           return attr+"@"+self.__instance
+           return "%s@%s"%(attr, self.__instance)
+
     def has_iattr(self, conf, attr):
+        """
+            checks item conf for an attribute
+            :rtype: Boolean 
+        """
         if self.__get_iattr(attr) in conf or attr+"@*" in conf:
             return True
         return False
+    
+    def get_iattr_value(self, conf, attr):
+        """
+            returns value for an attribute from item config
+        """
+        __value = None
+        __attr = self.__get_iattr(attr)
+        if __attr in conf:
+            __value = conf[__attr] 
+        elif "%s@*"%attr in conf:
+            __value = conf["%s@*"%attr]
+        return __value
+
     
     def __new__(cls, *args, **kargs):
         if not hasattr(cls,'PLUGIN_VERSION'):
