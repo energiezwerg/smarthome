@@ -47,7 +47,7 @@ class SmartPlugin(SmartObject):
             checks item conf for an attribute
             :rtype: Boolean 
         """
-        if self.__get_iattr(attr) in conf or attr+"@*" in conf:
+        if self.__get_iattr(attr) in conf or "%s@*"%attr in conf:
             return True
         return False
     
