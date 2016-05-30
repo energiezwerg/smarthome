@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2016 Christian Strassburg  c.strassburg@gmx.de
+# Copyright 2016 Christian Strassburg and René Frieß                        
+# rene.friess@gmail.com, c.strassburg(a)gmx.de
+# 
 #########################################################################
 # Personal and non-commercial use only, redistribution is prohibited.
 #########################################################################
 from lib.model.smartobject import SmartObject
 from lib.utils import Utils
+import logging
 
-class SmartPlugin(SmartObject):
+class SmartPlugin(SmartObject, Utils):
     __instance = '' 
     __sh = None
+    logger = logging.getLogger(__name__)
     def get_version(self):
         """
             return plugin version 
@@ -22,7 +26,10 @@ class SmartPlugin(SmartObject):
         """
             set instance name of the plugin
         """
-        self.__instance = instance
+        if self.ALLOW_MULTIINSTANCE:
+            self.__instance = instance
+        else: 
+            self.logger.warning("Plugin does not allow more then one instance") 
     
     def get_instance_name(self):
         """

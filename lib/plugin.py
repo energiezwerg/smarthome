@@ -97,13 +97,15 @@ class PluginWrapper(threading.Thread):
     def __init__(self, smarthome, name, classname, classpath, args, instance):
         threading.Thread.__init__(self, name=name)
         exec("import {0}".format(classpath))
-        exec("self.plugin = {0}.{1}(smarthome{2})".format(classpath, classname, args))
+        #exec("self.plugin = {0}.{1}(smarthome{2})".format(classpath, classname, args))
+        exec("self.plugin = {0}.{1}.__new__({0}.{1})".format(classpath, classname))
         setattr(smarthome, self.name, self.plugin)
         if isinstance(self.get_implementation(), SmartPlugin):
             if instance != '':
                 logger.debug("set plugin {0} instance to {1}".format(name, instance ))
                 self.get_implementation().set_instance_name(instance)
             self.get_implementation().set_sh(smarthome)
+        self.plugin.__init__(smarthome, args)
 
     def run(self):
         """

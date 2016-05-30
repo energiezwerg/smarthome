@@ -51,6 +51,8 @@ class TestConfig(unittest.TestCase):
         self.assertFalse(wolplug.plugin.has_iattr(config_mock, "key3"))
 
         wolplug= plugins.get_plugin("wol_ww")
+        #wolplug.plugin.ALLOW_MULTIINSTANCE= False
+        #wolplug.plugin.set_instance_name("")
         self.assertTrue(isinstance(wolplug.plugin,SmartPlugin))
         self.assertEqual(wolplug.plugin.get_instance_name(),"bind")
 
@@ -95,7 +97,7 @@ class TestConfig(unittest.TestCase):
 #        for item in sh.return_items():
 #            item._init_run()
 #       
-        if 1: self.dump_items(sh)
+        if 0: self.dump_items(sh)
 
         it = sh.return_item("item3.item3b.item3b1.item3b1a")
         self.assertIsNotNone(it)
@@ -107,6 +109,8 @@ class TestConfig(unittest.TestCase):
         self.assertIsNotNone(it)
         self.assertEqual(len(it.get_method_triggers()),0)
         sh.scheduler.add(wolplug.name, wolplug.plugin.update_item, prio=5, cycle=300, offset=2)
+        wolplug.plugin.testprint()
+        wolplug.plugin.wake_on_lan("11:22:33:44:55:66")
 
     def _update_dummy(self):
         print("update dummy")
