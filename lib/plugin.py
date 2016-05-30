@@ -105,7 +105,7 @@ class PluginWrapper(threading.Thread):
                 logger.debug("set plugin {0} instance to {1}".format(name, instance ))
                 self.get_implementation().set_instance_name(instance)
             self.get_implementation().set_sh(smarthome)
-        self.plugin.__init__(smarthome, args)
+        exec("self.plugin.__init__(smarthome{0})".format(args))
 
     def run(self):
         """
