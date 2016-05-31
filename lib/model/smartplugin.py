@@ -37,6 +37,12 @@ class SmartPlugin(SmartObject, Utils):
             :rtype: str
         """
         return self.__instance
+
+    def is_multi_instance_capable(self):
+        if self.ALLOW_MULTIINSTANCE:
+            return True
+        else:
+            return False
   
     def __get_iattr(self, attr):
         """
