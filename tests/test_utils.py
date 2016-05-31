@@ -96,6 +96,7 @@ class LibUtilsTest(unittest.TestCase):
         self.assertFalse(Utils.to_bool(""))
         self.assertFalse(Utils.to_bool("n"))
         self.assertFalse(Utils.to_bool("false"))
+        self.assertFalse(Utils.to_bool("False"))
         self.assertFalse(Utils.to_bool("f"))
         self.assertFalse(Utils.to_bool(0))
 
@@ -105,6 +106,7 @@ class LibUtilsTest(unittest.TestCase):
         self.assertTrue(Utils.to_bool("1"))
         self.assertTrue(Utils.to_bool("y"))
         self.assertTrue(Utils.to_bool("true"))
+        self.assertTrue(Utils.to_bool("True"))
         self.assertTrue(Utils.to_bool("t"))
         self.assertTrue(Utils.to_bool(1))
 
