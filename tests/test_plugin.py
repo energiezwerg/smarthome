@@ -50,10 +50,11 @@ class TestConfig(unittest.TestCase):
         config_mock = {'key3@false*', 'value3'}
         self.assertFalse(wolplug.plugin.has_iattr(config_mock, "key3"))
 
-        wolplug= plugins.get_plugin("wol_ww")
+        wolplug = plugins.get_plugin("wol_ww")
         #wolplug.plugin.ALLOW_MULTIINSTANCE= False
         #wolplug.plugin.set_instance_name("")
-        self.assertTrue(isinstance(wolplug.plugin,SmartPlugin))
+        self.assertTrue(isinstance(wolplug.plugin, SmartPlugin))
+        self.assertTrue(wolplug.plugin.is_multi_instance_capable())
         self.assertEqual(wolplug.plugin.get_instance_name(),"bind")
 
         config_mock = {'key3@bind', 'value3'}

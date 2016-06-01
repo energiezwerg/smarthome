@@ -39,6 +39,10 @@ class SmartPlugin(SmartObject, Utils):
         return self.__instance
 
     def is_multi_instance_capable(self):
+        """
+            return information if plugin is capable of multi instance handling
+            :rtype: bool
+        """
         if self.ALLOW_MULTIINSTANCE:
             return True
         else:
