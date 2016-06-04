@@ -53,6 +53,7 @@ class LibUtilsTest(unittest.TestCase):
         self.assertFalse(Utils.is_ip("2561.256.256.256"))
         self.assertFalse(Utils.is_ip("561.256.256.256"))
         self.assertFalse(Utils.is_ip("161.256.256"))
+        self.assertTrue(Utils.is_ip("10.0.0.173"))
 
     def test_is_int(self):
         self.assertFalse(Utils.is_int(""))
