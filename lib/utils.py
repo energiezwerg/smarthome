@@ -13,14 +13,14 @@ IP_REGEX = re.compile(r"""
           # Dotted variants:
           (?:
             # Decimal 1-255 (no leading 0's)
-            [3-9]\d?|2(?:5[0-5]|[0-4]?\d)?|1\d{0,2}
+            [3-9]\d?|2(?:5[0-5]|[0-4]?\d)?|1\d{0,2}|0
           |
             0x0*[0-9a-f]{1,2}  # Hexadecimal 0x0 - 0xFF (possible leading 0's)
           )
           (?:                  # Repeat 0-3 times, separated by a dot
             \.
             (?:
-              [3-9]\d?|2(?:5[0-5]|[0-4]?\d)?|1\d{0,2}
+              [3-9]\d?|2(?:5[0-5]|[0-4]?\d)?|1\d{0,2}|0
             |
               0x0*[0-9a-f]{1,2}
             )
