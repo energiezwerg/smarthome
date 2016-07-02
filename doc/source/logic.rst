@@ -5,7 +5,7 @@ Logics
 Introduction
 ============
 
-Logic items within SmartHome.py are simple python scripts. SmartHome.py
+Logic items within SmartHomeNG are simple python scripts. SmartHomeNG
 expects the logic scripts in /usr/local/smarthome/logics/.
 
 Basic Structure
@@ -14,7 +14,7 @@ Basic Structure
 The most important object is 'sh'. This is the smarthome object. It
 contains every detail about the smarthome. With this object it is
 possible to access all items, plugins and basic functions of
-SmartHome.py. To get the value of an item call the name of it:
+SmartHomeNG. To get the value of an item call the name of it:
 sh.area.item(). To set a new value just specify it as argument:
 sh.area.item(new\_value).
 
@@ -50,8 +50,8 @@ logic
 
 This object provides access to the current logic object. It is possible
 to change logic attributes (crontab, cycle, ...) during runtime. They
-will be lost after restarting SmartHome.py. ``while logic.alive:``
-creates an endless loop. This way SmartHome.py could stop the loop at
+will be lost after restarting SmartHomeNG. ``while logic.alive:``
+creates an endless loop. This way SmartHomeNG could stop the loop at
 shutdown. Next section (trigger) describes the special function
 ``logic.trigger()``. Predefined attributs of the logic object:
 
@@ -90,7 +90,7 @@ localtime.
 
    <pre># a simple loop over the log messages
    for entry in sh.log:
-       print(entry) # remark: if SmartHome.py is run in daemon mode output by 'print' is not visible.
+       print(entry) # remark: if SmartHomeNG is run in daemon mode output by 'print' is not visible.
    </pre>
 
 sh.now and sh.utcnow

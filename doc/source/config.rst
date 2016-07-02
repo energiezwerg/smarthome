@@ -3,7 +3,7 @@
 Configuration
 =============
 
-The configuration of SmartHome.py is split up in four areas:
+The configuration of SmartHomeNG is split up in four areas:
 
 -  Basic Configuration: etc/smarthome.conf
 -  Logic Configuration: etc/logic.conf
@@ -43,7 +43,7 @@ etc/logic.conf [mandatory]
 It is possible to use a blank file (touch logic.conf) for the first
 steps.
 
-Logic items within SmartHome.py are simple python scripts, which are
+Logic items within SmartHomeNG are simple python scripts, which are
 placed in /usr/local/smarthome/logics/. See the `logic
 introduction </smarthome/logic>`_ for howto write logics.
 
@@ -99,7 +99,7 @@ crontab
 
 Like Unix crontab with the following options:
 
-crontab = init Run the logic during the start of SmartHome.py.
+crontab = init Run the logic during the start of SmartHomeNG.
 
 crontab = minute hour day wday
 
@@ -180,7 +180,7 @@ etc/plugin.conf (mandatory)
 It is possible to use a blank file (touch plugin.conf) for the first
 steps.
 
-Plugins extend the core functionality of SmartHome.py. You could access
+Plugins extend the core functionality of SmartHomeNG. You could access
 these plugins from every logic script. For example there is a plugin for
 the prowl notification service to send small push messages to your
 iPhone/iPad. Plugins are placed in /usr/local/smarthome/plugins/.
@@ -212,7 +212,7 @@ items/\*.conf (optional)
 ------------------------
 
 Items could be specified in one or several conf files placed in the
-``items`` directory of SmartHome.py Valid characters for the item name
+``items`` directory of SmartHomeNG Valid characters for the item name
 are: a-z, A-Z and '\_'!
 
 A simple item configuration:
