@@ -29,7 +29,7 @@ templates_path = ['_templates']
 source_suffix = '.rst'
 
 # The encoding of source files.
-#source_encoding = 'utf-8-sig'
+source_encoding = 'utf-8-sig'
 
 # The master toctree document.
 master_doc = 'index'
@@ -108,8 +108,9 @@ html_theme_options = {
     'navbar_links': [
         ("Install", "install"),
         ("Config", "config"),
-        ("Logics", "logic"),
-        ("Plugins", "plugin"),
+        ("Items", "items"),
+        ("Logics", "logics"),
+        ("Plugins", "plugins"),
         ("Bugs", "https://github.com/smarthomeNG/smarthome/issues?state=open", True),
         ("Wiki", "https://github.com/smarthomeNG/smarthome/wiki", True),
         ("Download", "https://github.com/smarthomeNG/smarthome/releases", True),
