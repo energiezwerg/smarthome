@@ -78,7 +78,7 @@ import lib.orb
 # Globals
 #####################################################################
 MODE = 'default'
-VERSION = '1.1.'
+VERSION = '1.2.'
 TZ = gettz('UTC')
 try:
     os.chdir(BASE)
