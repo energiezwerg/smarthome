@@ -20,11 +20,15 @@
 #########################################################################
 
 import logging
-logger = logging.getLogger(__name__)
-class FooClass:
+from lib.model.smartplugin import SmartPlugin
 
-    def __init__(self, smarthome):
-        self.sh = smarthome
+class FooClass(SmartPlugin):
+    PLUGIN_VERSION = "1.x.y"
+    ALLOW_MULTIINSTANCE = False
+
+    def __init__(self, sh, *args, **kwargs):
+        self._sh = sh
+        self.logger = logging.getLogger(__name__)
 
     def run(self):
         logger.debug("run method called")
@@ -32,8 +36,22 @@ class FooClass:
 
     def stop(self):
         self.alive = False
-        self.close()
+
+    def parse_item(self, item):
+        if self.has_iattr(item.conf, 'foo_itemtag'):
+            pass
+            return self.update_item
+
+    def parse_logic(self, logic):
+        pass
+
+    def update_item(self, item, caller=None, source=None, dest=None):
+        if item():
+            if self.has_iattr(item.conf, 'foo_itemtag'):
+                pass
+
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.DEBUG, format='%(relativeCreated)6d %(threadName)s %(message)s')
     FooClass(None).run()
+
