@@ -25,7 +25,7 @@ import os
 import pickle
 import threading
 
-logger = logging.getLogger('')
+logger = logging.getLogger(__name__)
 
 
 #####################################################################
@@ -262,6 +262,7 @@ class Item():
         if self._cache:
             if not os.path.isfile(self._cache):
                 _cache_write(self._cache, self._value)
+                logger.warning("Item {}: Created cache for item: {}".format(self._cache, self._cache))
         #############################################################
         # Crontab/Cycle
         #############################################################
@@ -403,8 +404,20 @@ class Item():
     def add_logic_trigger(self, logic):
         self.__logics_to_trigger.append(logic)
 
+    def remove_logic_trigger(self, logic):
+        self.__logics_to_trigger.remove(logic)
+
+    def get_logic_triggers(self):
+        return self.__logics_to_trigger
+
     def add_method_trigger(self, method):
         self.__methods_to_trigger.append(method)
+    
+    def remove_method_trigger(self, method):
+        self.__methods_to_trigger.remove(method)
+
+    def get_method_triggers(self):
+        return self.__methods_to_trigger
 
     def age(self):
         delta = self._sh.now() - self.__last_change
