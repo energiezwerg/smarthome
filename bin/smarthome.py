@@ -192,7 +192,7 @@ class SmartHome():
                 self.logger.warning("Problem parsing timezone: {}. Using UTC.".format(self._tz))
             del(self._tz, tzinfo)
 
-        self.logger.info("Start SmartHome.py {0}".format(VERSION))
+        self.logger.warning("--------------------   Init smarthomeNG {0}   --------------------".format(VERSION))
         self.logger.debug("Python {0}".format(sys.version.split()[0]))
         self._starttime = datetime.datetime.now()
 
@@ -511,9 +511,12 @@ class SmartHome():
         objects = {}
         for module in list(sys.modules.values()):
             for sym in dir(module):
-                obj = getattr(module, sym)
-                if isinstance(obj, type):
-                    objects[obj] = sys.getrefcount(obj)
+                try:
+                    obj = getattr(module, sym)
+                    if isinstance(obj, type):
+                        objects[obj] = sys.getrefcount(obj)
+                except:
+                    pass
         return objects
 
 
