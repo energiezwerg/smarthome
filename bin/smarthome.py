@@ -192,7 +192,7 @@ class SmartHome():
                 self.logger.warning("Problem parsing timezone: {}. Using UTC.".format(self._tz))
             del(self._tz, tzinfo)
 
-        self.logger.info("Start SmartHome.py {0}".format(VERSION))
+        self.logger.warning("--------------------   Init smarthomeNG {0}   --------------------".format(VERSION))
         self.logger.debug("Python {0}".format(sys.version.split()[0]))
         self._starttime = datetime.datetime.now()
 
@@ -226,7 +226,6 @@ class SmartHome():
         elif MODE == 'quiet':
             logging.getLogger().setLevel(logging.WARNING)        
 #       log_file.doRollover()
-        self.logger.warning("--------------------   Init SmartHomeNG {0}   --------------------".format(VERSION))
 
     def initMemLog(self):
         self.log = lib.log.Log(self, 'env.core.log', ['time', 'thread', 'level', 'message'], maxlen=self._log_buffer)
