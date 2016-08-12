@@ -20,6 +20,8 @@
 #########################################################################
 # Anpassungen 2016 Michael Würtenberger
 # Error Item für Verbindungsfehler bei fetch_url
+# Anpassungen 2016 Th. Ernst
+# Neue Methode create_hash
 
 import base64
 import datetime
@@ -103,3 +105,9 @@ class Tools():
 
     def runtime(self):
         return datetime.datetime.now() - self._start
+
+    def create_hash(self, plaintext):
+        import hashlib
+        hashfunc = hashlib.sha512()
+        hashfunc.update(plaintext.encode())
+        return hashfunc.digest().hex()
