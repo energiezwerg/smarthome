@@ -1,28 +1,3 @@
-+-------------------+
-| title: Overview   |
-+-------------------+
-| layout: default   |
-+-------------------+
-| summary:          |
-+-------------------+
-| uid: index        |
-+-------------------+
-
-SmartHome.py is a modular framework to automate your (smart) home.
-
-See the `install <install>`_ and `config <config>`_ section to start
-your SmartHome.
-
-You would like to support SmartHome.py?
-
-.. raw:: html
-
-   <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-
-.. raw:: html
-
-   </form>
-
 2013-06-13: New Release `0.9 <https://github.com/mknx/smarthome/tags>`_
 -----------------------------------------------------------------------
 
@@ -88,7 +63,7 @@ Bug Fixes
 -------------------------------------------------------------------
 
 `Martin <http://knx-user-forum.de/members/sipple.html>`_ has created an
-`overview </smarthome/img/big_picture.pdf>`_ how SmartHome.py interacts
+`overview </_static/img/big_picture.pdf>`_ how SmartHome.py interacts
 with KNX, 1-Wire and the smartVISU.
 
 2013-02-02: `Release of an Raspberry Pi image with SmartHome.py and smartVISU <https://github.com/mknx/smarthome/wiki/SmartHome.pi>`_
