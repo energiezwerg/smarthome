@@ -7,6 +7,7 @@
 #########################################################################
 
 import re
+import hashlib
 IP_REGEX = re.compile(r"""
         ^
         (?:
@@ -118,4 +119,13 @@ class Utils(object):
             raise Exception('Invalid value for boolean conversion: ' + value)
         return bool(value)
 
-
+    @staticmethod
+    def create_hash(plaintext):
+        """
+        Create hash (currently sha512) for given plaintext value
+        :param plaintext: plaintext
+        :return: hash of plaintext, lowercase letters
+        """
+        hashfunc = hashlib.sha512()
+        hashfunc.update(plaintext.encode())
+        return  "".join(format(b,"02x") for b in hashfunc.digest())

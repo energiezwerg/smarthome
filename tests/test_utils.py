@@ -111,5 +111,13 @@ class LibUtilsTest(unittest.TestCase):
         self.assertTrue(Utils.to_bool("t"))
         self.assertTrue(Utils.to_bool(1))
 
+    def test_create_hash(self):
+        with self.assertRaises(Exception):
+            Utils.create_hash(None)
+        self.assertEqual(Utils.create_hash(''), 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e')
+        self.assertEqual(Utils.create_hash('42'), '39ca7ce9ecc69f696bf7d20bb23dd1521b641f806cc7a6b724aaa6cdbffb3a023ff98ae73225156b2c6c9ceddbfc16f5453e8fa49fc10e5d96a3885546a46ef4')
+        self.assertEqual(Utils.create_hash('very_secure_password'), '1245a9633edf47b7091f37c4d294b5be5a9936c81c5359b16d1c4833729965663f1943ef240959c53803fedef7ac19bd59c66ad7e7092d7dbf155ce45884607d')
+        self.assertEqual(Utils.create_hash('1245a9633edf47b7091f37c4d294b5be5a9936c81c5359b16d1c4833729965663f1943ef240959c53803fedef7ac19bd59c66ad7e7092d7dbf155ce45884607d'), '00faf4a142f087e55edf6e91ea333d9a4bcd9b2d6bba8fab42869c6e00e28a3acba6d5fe3495f037221d633e01b3c7baa6e915028407548f77b5b9710899bfbe')
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
