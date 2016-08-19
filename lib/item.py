@@ -369,7 +369,7 @@ class Item():
                 rootpath += '.' + relpath
             else:
                 rootpath = relpath
-        logger.warning("{}.get_absolutepath('{}'): Result = '{}' (for attribute '{}')".format(self._path, relativepath, rootpath, attribute))
+        logger.info("{}.get_absolutepath('{}'): Result = '{}' (for attribute '{}')".format(self._path, relativepath, rootpath, attribute))
         return rootpath
     
 
