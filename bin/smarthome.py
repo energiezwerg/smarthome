@@ -63,6 +63,7 @@ from dateutil.tz import gettz
 # Import SmartHome.py Modules
 #####################################################################
 import lib.config
+import lib.config_yaml
 import lib.connection
 import lib.daemon
 import lib.item
@@ -78,7 +79,7 @@ import lib.orb
 # Globals
 #####################################################################
 MODE = 'default'
-VERSION = '1.1.'
+VERSION = '1.2.'
 TZ = gettz('UTC')
 try:
     os.chdir(BASE)
@@ -276,6 +277,12 @@ class SmartHome():
             if item_file.endswith('.conf'):
                 try:
                     item_conf = lib.config.parse(self._items_dir + item_file, item_conf)
+                except Exception as e:
+                    self.logger.exception("Problem reading {0}: {1}".format(item_file, e))
+                    continue
+            if item_file.endswith('.yaml'):
+                try:
+                    item_conf = lib.config_yaml.parse(self._items_dir + item_file, item_conf)
                 except Exception as e:
                     self.logger.exception("Problem reading {0}: {1}".format(item_file, e))
                     continue
