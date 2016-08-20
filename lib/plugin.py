@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2011-2013  Marcus Popp                         marcus@popp.mx
+# Copyright 2011-2013   Marcus Popp                        marcus@popp.mx
 # Copyright 2016-       Christian Strassburg 
 # Copyright 2016-       Martin Sinn                         m.sinn@gmx.de
 #########################################################################
@@ -23,6 +23,7 @@
 
 import logging
 import threading
+import os.path		# until Backend is modified
 
 import lib.config
 from lib.model.smartplugin import SmartPlugin
@@ -38,13 +39,15 @@ class Plugins():
     
     def __init__(self, smarthome, configfile):
 
-        smarthome._plugin_conf = configfile+'.yaml'
-        _conf = lib.config.parse(configfile+'.yaml')
-        if _conf == {}:
+        # until Backend plugin is modified
+        if os.path.isfile(configfile+'.yaml'):
+            smarthome._plugin_conf = configfile+'.yaml'
+        else:
             smarthome._plugin_conf = configfile+'.conf'
-            _conf = lib.config.parse(configfile+'.conf')
+
+
+        _conf = lib.config.parse_basename(configfile, configtype='plugin')
         if _conf == {}:
-            logger.critical("No configuration file '{}.*' found with plugin configuration".format(configfile))
             return
             
         for plugin in _conf:
