@@ -74,9 +74,9 @@ def yaml_save(filename, data):
         dict_type = 'OrderedDict'
     logger.info("Saving '{}' to '{}'".format(dict_type, filename))
     if ordered:
-        sdata = _ordered_dump(data, Dumper=yaml.SafeDumper, indent=4, width=256, allow_unicode=True, default_flow_style=False)
+        sdata = _ordered_dump(data, Dumper=yaml.SafeDumper, indent=4, width=768, allow_unicode=True, default_flow_style=False)
     else:
-        sdata = yaml.dump(data, Dumper=yaml.SafeDumper, indent=4, width=256, allow_unicode=True, default_flow_style=False)
+        sdata = yaml.dump(data, Dumper=yaml.SafeDumper, indent=4, width=768, allow_unicode=True, default_flow_style=False)
     sdata = _format_yaml_dump( sdata )
     with open(filename, 'w') as outfile:
         outfile.write( sdata )

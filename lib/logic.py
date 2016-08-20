@@ -61,15 +61,16 @@ class Logics():
                         item.add_logic_trigger(logic)
 
     def _read_logics(self, filename, directory):
-        logger.debug("Reading Logics from {}".format(filename))
-        try:
-            config = lib.config.parse(filename)
+        logger.debug("Reading Logics from {}.*".format(filename))
+        config = lib.config.parse(filename+'.yaml')
+        if config == {}:
+            config = lib.config.parse(filename+'.conf')
+        if config == {}:
+            logger.critical("No configuration file '{}.*' found with logics configuration".format(filename))
+        else:
             for name in config:
                 if 'filename' in config[name]:
                     config[name]['filename'] = directory + config[name]['filename']
-        except Exception as e:
-            logger.critical(e)
-            config = {}
         return config
 
     def __iter__(self):

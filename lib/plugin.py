@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2011-2013 Marcus Popp                          marcus@popp.mx
-# Copyright 2016-  Christian Strassburg 
+# Copyright 2011-2013  Marcus Popp                         marcus@popp.mx
+# Copyright 2016-       Christian Strassburg 
+# Copyright 2016-       Martin Sinn                         m.sinn@gmx.de
 #########################################################################
 #  This file is part of SmartHomeNG
 #
@@ -34,14 +35,18 @@ class Plugins():
     """
     _plugins = []
     _threads = []
-
+    
     def __init__(self, smarthome, configfile):
-        try:
-            _conf = lib.config.parse(configfile)
-        except IOError as e:
-            logger.critical(e)
-            return
 
+        smarthome._plugin_conf = configfile+'.yaml'
+        _conf = lib.config.parse(configfile+'.yaml')
+        if _conf == {}:
+            smarthome._plugin_conf = configfile+'.conf'
+            _conf = lib.config.parse(configfile+'.conf')
+        if _conf == {}:
+            logger.critical("No configuration file '{}.*' found with plugin configuration".format(configfile))
+            return
+            
         for plugin in _conf:
             args = ''
             logger.debug("Plugin: {0}".format(plugin))
