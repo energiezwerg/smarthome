@@ -52,7 +52,6 @@ import traceback
 #####################################################################
 BASE = '/'.join(os.path.realpath(__file__).split('/')[:-2])
 sys.path.insert(0, BASE)
-sys.path.insert(1, BASE + '/lib/3rd')
 
 #####################################################################
 # Import 3rd Party Modules
@@ -78,7 +77,7 @@ import lib.orb
 # Globals
 #####################################################################
 MODE = 'default'
-VERSION = '1.1.'
+VERSION = '1.3.'
 TZ = gettz('UTC')
 try:
     os.chdir(BASE)
@@ -388,7 +387,11 @@ class SmartHome():
         regex, __, attr = regex.partition(':')
         regex = regex.replace('.', '\.').replace('*', '.*') + '$'
         regex = re.compile(regex)
-        if attr != '':
+        attr, __, val = attr.partition('[')
+        val = val.rstrip(']')
+        if attr != '' and val != '':
+            return [self.__item_dict[item] for item in self.__items if regex.match(item) and attr in self.__item_dict[item].conf and ((type(self.__item_dict[item].conf[attr]) in [list,dict] and val in self.__item_dict[item].conf[attr]) or (val == self.__item_dict[item].conf[attr]))]
+        elif attr != '':
             return [self.__item_dict[item] for item in self.__items if regex.match(item) and attr in self.__item_dict[item].conf]
         else:
             return [self.__item_dict[item] for item in self.__items if regex.match(item)]
