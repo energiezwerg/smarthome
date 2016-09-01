@@ -357,7 +357,7 @@ class Scheduler(threading.Thread):
                     try:
                         method(logic, by, source, dest)
                     except Exception as e:
-                        logger.exception("Logic: Tigger {} for {} failed: {}".format(method, logic.name, e))
+                        logger.exception("Logic: Trigger {} for {} failed: {}".format(method, logic.name, e))
             except SystemExit:
                 # ignore exit() call from logic.
                 pass
