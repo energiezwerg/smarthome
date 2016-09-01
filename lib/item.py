@@ -470,6 +470,7 @@ class Item():
                 self._change_logger("Item {} = {} via {} {} {}".format(self._path, value, caller, source, dest))
         self._lock.release()
         if _changed or self._enforce_updates or self._type == 'scene':
+            self.__prev_update = self.__last_update #Multiclick
             self.__last_update = self._sh.now()
             for method in self.__methods_to_trigger:
                 try:
@@ -540,6 +541,11 @@ class Item():
 
     def last_update(self):
         return self.__last_update
+
+    #Multiclick
+    def prev_update_age(self):
+        delta = self.__last_update - self.__prev_update
+        return delta.total_seconds()
 
     def prev_age(self):
         delta = self.__last_change - self.__prev_change
