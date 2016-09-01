@@ -353,6 +353,11 @@ class Scheduler(threading.Thread):
             try:
                 if logic.enabled:
                     exec(obj.bytecode)
+                for method in logic.get_method_triggers():
+                    try:
+                        method(logic, by, source, dest)
+                    except Exception as e:
+                        logger.exception("Logic: Tigger {} for {} failed: {}".format(method, logic.name, e))
             except SystemExit:
                 # ignore exit() call from logic.
                 pass
