@@ -86,6 +86,7 @@ class Logic():
     def __init__(self, smarthome, name, attributes):
         self._sh = smarthome
         self.name = name
+        self.enabled = True if 'enabled' not in attributes else bool(attributes['enabled'])
         self.crontab = None
         self.cycle = None
         self.prio = 3
@@ -103,10 +104,18 @@ class Logic():
         return self.name
 
     def __call__(self, caller='Logic', source=None, value=None, dest=None, dt=None):
-        self._sh.scheduler.trigger(self.name, self, prio=self.prio, by=caller, source=source, dest=dest, value=value, dt=dt)
+        if self.enabled:
+            self._sh.scheduler.trigger(self.name, self, prio=self.prio, by=caller, source=source, dest=dest, value=value, dt=dt)
+
+    def enable(self):
+        self.enabled =True
+
+    def disable(self):
+        self.enabled = False
 
     def trigger(self, by='Logic', source=None, value=None, dest=None, dt=None):
-        self._sh.scheduler.trigger(self.name, self, prio=self.prio, by=by, source=source, dest=dest, value=value, dt=dt)
+        if self.enabled:
+            self._sh.scheduler.trigger(self.name, self, prio=self.prio, by=by, source=source, dest=dest, value=value, dt=dt)
 
     def generate_bytecode(self):
         if hasattr(self, 'filename'):
