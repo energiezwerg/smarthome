@@ -72,6 +72,20 @@ class TestConfig(unittest.TestCase):
         self.assertEqual(conf['section']['key_multiline_space'], 'line1 line2')
         self.assertEqual(conf['section']['key_multiline_quotes'], 'line1line2')
     
+    def test_read_structure(self):
+        conf = self.config('structure')
+        self.assertTrue('child1' in conf['parent1'])
+        self.assertTrue('child2' in conf['parent1'])
+        self.assertTrue('child1' in conf['parent2'])
+        self.assertTrue('child2' in conf['parent2'])
+
+    def test_read_structure(self):
+        conf = self.config('structure')
+        self.assertTrue('child1' in conf['parent1'])
+        self.assertTrue('child2' in conf['parent1'])
+        self.assertTrue('child1' in conf['parent2'])
+        self.assertTrue('child2' in conf['parent2'])
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
 
