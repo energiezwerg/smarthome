@@ -8,6 +8,14 @@ class TestConfig(unittest.TestCase):
     def config(self, name):
         return lib.config.parse('resources/config_' + name + '.conf')
 
+    def test_read_ignores_empty_name(self):
+        conf = self.config('empty')
+        self.assertEquals(0, len(conf['empty']))
+
+    def test_read_ignores_starting_digits(self):
+        conf = self.config('digits')
+        self.assertEquals(0, len(conf['digits']))
+
     def test_read_sections(self):
         conf = self.config('sections')
         self.assertIsInstance(conf, dict)
