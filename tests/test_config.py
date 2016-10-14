@@ -16,6 +16,10 @@ class TestConfig(unittest.TestCase):
         conf = self.config('digits')
         self.assertEquals(0, len(conf['digits']))
 
+    def test_read_ignores_set(self):
+        conf = self.config('reserved')
+        self.assertEquals(0, len(conf['reserved']))
+
     def test_read_sections(self):
         conf = self.config('sections')
         self.assertIsInstance(conf, dict)
