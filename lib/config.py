@@ -27,7 +27,10 @@ import lib.shyaml as shyaml
 
 logger = logging.getLogger(__name__)
 
-
+valid_item_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
+valid_attr_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@*'
+digits = '0123456789'
+reserved = ['set', 'get']
 
 def parse_basename(basename, configtype=''):
     '''
@@ -196,9 +199,6 @@ def parse_conf(filename, config=None):
     :param config: Optional OrderedDict tree, into which the configuration should be merged
     :return: The resulting merged OrderedDict tree
     """
-    valid_item_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
-    valid_attr_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@*'
-    digits = '0123456789'
     valid_set = set(valid_attr_chars)
     if config is None:
         config = collections.OrderedDict()
@@ -244,7 +244,7 @@ def parse_conf(filename, config=None):
                 elif name[0] in digits:
                     logger.error("Problem parsing '{}': item starts with digit '{}' in line {}: {}".format(filename, name[0], linenu, line))
                     return config
-                elif name in ['set', 'get']:
+                elif name in reserved:
                     logger.error("Problem parsing '{}': item using reserved word set/get in line {}: {}".format(filename, linenu, line))
                     return config
                     
