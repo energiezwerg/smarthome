@@ -11,6 +11,18 @@ class TestConfig(unittest.TestCase):
     def config(self, name):
         return lib.config.parse('resources/config_' + name + '.conf')
 
+    def test_confread_ignores_empty_name(self):
+        conf = self.config('empty')
+        self.assertEquals(0, len(conf['empty']))
+
+    def test_confread_ignores_starting_digits(self):
+        conf = self.config('digits')
+        self.assertEquals(0, len(conf['digits']))
+
+    def test_confread_ignores_set(self):
+        conf = self.config('reserved')
+        self.assertEquals(0, len(conf['reserved']))
+
     def test_confread_sections(self):
         conf = self.config('sections')
         self.assertIsInstance(conf, dict)
@@ -67,6 +79,20 @@ class TestConfig(unittest.TestCase):
         self.assertEqual(conf['section']['key_multiline_space'], 'line1 line2')
         self.assertEqual(conf['section']['key_multiline_quotes'], 'line1line2')
     
+    def test_read_structure(self):
+        conf = self.config('structure')
+        self.assertTrue('child1' in conf['parent1'])
+        self.assertTrue('child2' in conf['parent1'])
+        self.assertTrue('child1' in conf['parent2'])
+        self.assertTrue('child2' in conf['parent2'])
+
+    def test_read_structure(self):
+        conf = self.config('structure')
+        self.assertTrue('child1' in conf['parent1'])
+        self.assertTrue('child2' in conf['parent1'])
+        self.assertTrue('child1' in conf['parent2'])
+        self.assertTrue('child2' in conf['parent2'])
+
 
     # Tests for .yaml files ----------------------------------------------------
     
@@ -130,6 +156,6 @@ class TestConfig(unittest.TestCase):
 #        self.assertEqual(conf['section']['key_multiline_space'], 'line1 line2')
         self.assertEqual(conf['section']['key_multiline_quotes'], 'line1line2')
 
-    
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
