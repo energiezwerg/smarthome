@@ -90,21 +90,58 @@ def parse(filename, config=None):
 
 # --------------------------------------------------------------------------------------
 
-
-def remove_comments(ydata, level=0):
+def remove_keys(ydata, func, level=0):
     '''
-    Removes comments from a dict or OrderedDict structure
+    Removes given keys from a dict or OrderedDict structure
 
     :param ydata: configuration (sub)tree to work on
+    :param func: the function to call to check for removal
     :param level: optional subtree level (used for recursion)
     '''
     level_keys = list(ydata.keys())
     for key in level_keys:
         if type(ydata[key]).__name__ in ['dict','OrderedDict']:
-            remove_comments(ydata[key], level+1)
+            remove_keys(ydata[key], func, level+1)
         else:
-            if key.startswith('comment'):
+            if func(str(key)):
                 ydata.pop(key)
+
+
+def remove_comments(ydata):
+    '''
+    Removes comments from a dict or OrderedDict structure
+
+    :param ydata: configuration (sub)tree to work on
+    '''
+    remove_keys(ydata, lambda k: k.startswith('comment'))
+
+
+def remove_digits(ydata):
+    '''
+    Removes digit keys from a dict or OrderedDict structure
+
+    :param ydata: configuration (sub)tree to work on
+    '''
+    remove_keys(ydata, lambda k: k[0] in digits)
+
+
+def remove_reserved(ydata):
+    '''
+    Removes reserved keywords from a dict or OrderedDict structure
+
+    :param ydata: configuration (sub)tree to work on
+    '''
+    remove_keys(ydata, lambda k: k in reserved)
+
+
+def remove_invalid(ydata):
+    '''
+    Removes invalid chars in item from a dict or OrderedDict structure
+
+    :param ydata: configuration (sub)tree to work on
+    '''
+    valid_chars = valid_item_chars + valid_attr_chars
+    remove_keys(ydata, lambda k: True if True in [True for i in range(len(k)) if k[i] not in valid_chars] else False)
 
 
 def merge(source, destination):
@@ -151,6 +188,9 @@ def parse_yaml(filename, config=None):
 
     items = shyaml.yaml_load(filename, ordered=True)
     remove_comments(items)
+    remove_digits(items)
+    remove_reserved(items)
+    remove_invalid(items)
     
     config = merge(items, config)
     return config
