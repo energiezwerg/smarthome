@@ -10,7 +10,7 @@ class TestConfig(unittest.TestCase):
 
 	def setUp(self):
 		self.sh = MockSmartHome()
-		self.plugins = self.sh.with_plugins_from(common.BASE + "/tests/resources/plugin.conf")
+		self.plugins = self.sh.with_plugins_from(common.BASE + "/tests/resources/plugin")
 		self.item_conf = self.sh.with_items_from(common.BASE + "/tests/resources/plugin_items.conf")
 
 	def test_plugin_is_registered(self):
