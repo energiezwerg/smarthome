@@ -28,10 +28,8 @@ logger = logging.getLogger(__name__)
 class SmartObject():
 
     def __init__(self, **kwargs):
-       pass
+        pass
     def __new__(cls, *args, **kargs):
-        if not hasattr(cls,'PLUGIN_VERSION'):
-            raise NotImplementedError("'Plugin' subclasses should have a 'PLUGIN_VERSION' attribute")
         return object.__new__(cls)
 
 
