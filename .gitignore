@@ -2,9 +2,9 @@
 *.jar
 *.tgz
 *.zip
-/visu
-/doc/build
-/doc/sphinx_bootstrap_theme
+
+# Logs
+*.log
 
 # Unittest and coverage reports
 .cache
@@ -16,6 +16,8 @@ nosetests.xml
 # OSX specific files
 .DS_Store
 .DS_Store?
+.AppleDouble
+.LSOverride
 ._*
 .Spotlight-V100
 .Trashes
