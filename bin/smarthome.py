@@ -81,12 +81,13 @@ VERSION = '1.3.'
 TZ = gettz('UTC')
 try:
     os.chdir(BASE)
-    commit = subprocess.check_output(['git', 'describe', '--always'], stderr=subprocess.STDOUT).decode().strip('\n').split('-')[1]
+    commit = subprocess.check_output(['git', 'describe', '--always'], stderr=subprocess.STDOUT).decode().strip('\n')
     VERSION += commit
     branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], stderr=subprocess.STDOUT).decode().strip('\n')
     if branch != 'master':
         VERSION += ".dev"
 except Exception as e:
+    print(e)
     VERSION += '0.man'
 
 
