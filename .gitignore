@@ -26,3 +26,5 @@ Thumbs.db
 
 # Pycharm settings
 /.idea
+/custom_plugins
+
