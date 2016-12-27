@@ -115,8 +115,8 @@ class Utils(object):
         Converts a value to boolean. 
         Raises exception if value is a string and can't be converted.
         Case is ignored. These string values are allowed
-           True: 'True', "1", "true", "yes", "y", "t"
-           False: "", "0", "faLse", "no", "n", "f"
+           True: 'True', "1", "true", "yes", "y", "t", "on"
+           False: "", "0", "faLse", "no", "n", "f", "off"
         Non-string values are passed to bool constructor.
         :param value : value to convert
         :type value: str, object, int, ...
@@ -125,9 +125,9 @@ class Utils(object):
 
         """
         if type(value) == type(''):
-            if value.lower() in ("yes", "y", "true",  "t", "1"):
+            if value.lower() in ("yes", "y", "true",  "t", "1","on"):
                 return True
-            if value.lower() in ("no",  "n", "false", "f", "0", ""):
+            if value.lower() in ("no",  "n", "false", "f", "0", "off", ""):
                 return False
             raise Exception('Invalid value for boolean conversion: ' + value)
         return bool(value)

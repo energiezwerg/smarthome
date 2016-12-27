@@ -71,6 +71,7 @@ import lib.plugin
 import lib.scene
 import lib.scheduler
 import lib.tools
+import lib.utils
 import lib.orb
 
 #####################################################################
@@ -521,15 +522,13 @@ class SmartHome():
         c = gc.collect()
         self.logger.debug("Garbage collector: collected {0} objects.".format(c))
 
+    # obsolete by utils.
     def string2bool(self, string):
-        if isinstance(string, bool):
-            return string
-        if string.lower() in ['0', 'false', 'n', 'no', 'off']:
-            return False
-        if string.lower() in ['1', 'true', 'y', 'yes', 'on']:
-            return True
-        else:
+        try:
+            return lib.utils.to_bool()
+        except:
             return None
+
 
     def object_refcount(self):
         objects = self._object_refcount()
