@@ -28,6 +28,8 @@ import os.path		# until Backend is modified
 
 import lib.config
 from lib.model.smartplugin import SmartPlugin
+from lib.constants import (KEY_CLASS_NAME, KEY_CLASS_PATH, KEY_INSTANCE,YAML_FILE,CONF_FILE)
+
 logger = logging.getLogger(__name__)
 
 
@@ -41,10 +43,10 @@ class Plugins():
     def __init__(self, smarthome, configfile):
 
         # until Backend plugin is modified
-        if os.path.isfile(configfile+'.yaml'):
-            smarthome._plugin_conf = configfile+'.yaml'
+        if os.path.isfile(configfile+ YAML_FILE):
+            smarthome._plugin_conf = configfile + YAML_FILE
         else:
-            smarthome._plugin_conf = configfile+'.conf'
+            smarthome._plugin_conf = configfile + CONF_FILE
 
 
         _conf = lib.config.parse_basename(configfile, configtype='plugin')
@@ -55,17 +57,17 @@ class Plugins():
             args = {}
             logger.debug("Plugin: {0}".format(plugin))
             for arg in _conf[plugin]:
-                if arg != 'class_name' and arg != 'class_path' and arg != 'instance':
+                if arg != KEY_CLASS_NAME and arg != KEY_CLASS_PATH and arg != KEY_INSTANCE:
                     value = _conf[plugin][arg]
                     if isinstance(value, str):
                         value = "'{0}'".format(value)
                     args[arg] = value
-            classname = _conf[plugin]['class_name']
-            classpath = _conf[plugin]['class_path']
+            classname = _conf[plugin][KEY_CLASS_NAME]
+            classpath = _conf[plugin][KEY_CLASS_PATH]
             
             instance = ''
-            if 'instance' in _conf[plugin]:
-                instance = _conf[plugin]['instance'].strip()
+            if KEY_INSTANCE in _conf[plugin]:
+                instance = _conf[plugin][KEY_INSTANCE].strip()
                 if instance == 'default': 
                     instance = ''
 

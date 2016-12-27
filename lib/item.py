@@ -27,6 +27,12 @@ import pickle
 import threading
 import math
 
+from lib.constants import (ITEM_DEFAULTS, FOO, KEY_ENFORCE_UPDATES, KEY_CACHE, KEY_CYCLE, KEY_CRONTAB, KEY_EVAL,
+                           KEY_EVAL_TRIGGER, KEY_NAME,KEY_TYPE, KEY_VALUE, PLUGIN_PARSE_ITEM,
+                           KEY_AUTOTIMER,KEY_THRESHOLD)
+
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -58,7 +64,8 @@ def _cast_dict(value):
 def _cast_foo(value):
     return value
 
-
+# TODO: Candidate for Utils.to_bool()
+# write testcase and replace
 def _cast_bool(value):
     if type(value) in [bool, int, float]:
         if value in [False, 0]:
@@ -184,33 +191,33 @@ class Item():
         #############################################################
         for attr, value in config.items():
             if not isinstance(value, dict):
-                if attr in ['cycle', 'name', 'type', 'value']:
+                if attr in [KEY_CYCLE, KEY_NAME, KEY_TYPE, KEY_VALUE]:
                     setattr(self, '_' + attr, value)
-                elif attr in ['eval']:
-                    value = self.get_stringwithabsolutepathes(value, 'sh.', '(', 'eval')
+                elif attr in [KEY_EVAL]:
+                    value = self.get_stringwithabsolutepathes(value, 'sh.', '(', KEY_EVAL)
                     setattr(self, '_' + attr, value)
-                elif attr in ['cache', 'enforce_updates']:  # cast to bool
+                elif attr in [KEY_CACHE, KEY_ENFORCE_UPDATES]:  # cast to bool
                     try:
                         setattr(self, '_' + attr, _cast_bool(value))
                     except:
                         logger.warning("Item '{0}': problem parsing '{1}'.".format(self._path, attr))
                         continue
-                elif attr in ['crontab']:  # cast to list
+                elif attr in [KEY_CRONTAB]:  # cast to list
                     if isinstance(value, str):
                         value = [value, ]
                     setattr(self, '_' + attr, value)
-                elif attr in ['eval_trigger']:  # cast to list
+                elif attr in [KEY_EVAL_TRIGGER]:  # cast to list
                     if isinstance(value, str):
                         value = [value, ]
                     expandedvalue = []
                     for path in value:
-                        expandedvalue.append(self.get_absolutepath(path, 'eval_trigger'))
+                        expandedvalue.append(self.get_absolutepath(path, KEY_EVAL_TRIGGER))
                     setattr(self, '_' + attr, expandedvalue)
-                elif attr == 'autotimer':
+                elif attr == KEY_AUTOTIMER:
                     time, __, value = value.partition('=')
                     if value is not None:
                         self._autotimer = time, value
-                elif attr == 'threshold':
+                elif attr == KEY_THRESHOLD:
                     low, __, high = value.rpartition(':')
                     if not low:
                         low = high
@@ -249,20 +256,20 @@ class Item():
         #############################################################
         # Type
         #############################################################
-        __defaults = {'num': 0, 'str': '', 'bool': False, 'list': [], 'dict': {}, 'foo': None, 'scene': 0}
+        #__defaults = {'num': 0, 'str': '', 'bool': False, 'list': [], 'dict': {}, 'foo': None, 'scene': 0}
         if self._type is None:
 #            logger.debug("Item {}: no type specified.".format(self._path))
 #            return
-            self._type = 'foo'	# MSinn
-        if self._type not in __defaults:
-            logger.error("Item {}: type '{}' unknown. Please use one of: {}.".format(self._path, self._type, ', '.join(list(__defaults.keys()))))
+            self._type = FOO  # MSinn
+        if self._type not in ITEM_DEFAULTS:
+            logger.error("Item {}: type '{}' unknown. Please use one of: {}.".format(self._path, self._type, ', '.join(list(ITEM_DEFAULTS.keys()))))
             raise AttributeError
         self.cast = globals()['_cast_' + self._type]
         #############################################################
         # Value
         #############################################################
         if self._value is None:
-            self._value = __defaults[self._type]
+            self._value = ITEM_DEFAULTS[self._type]
         try:
             self._value = self.cast(self._value)
         except:
@@ -285,7 +292,7 @@ class Item():
         # Plugins
         #############################################################
         for plugin in self._sh.return_plugins():
-            if hasattr(plugin, 'parse_item'):
+            if hasattr(plugin, PLUGIN_PARSE_ITEM):
                 update = plugin.parse_item(self)
                 if update:
                     self.add_method_trigger(update)

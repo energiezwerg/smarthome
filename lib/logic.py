@@ -24,6 +24,7 @@ import logging
 import os
 
 import lib.config
+from lib.constants import PLUGIN_PARSE_LOGIC
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +52,7 @@ class Logics():
                 continue
             # plugin hook
             for plugin in self._sh._plugins:
-                if hasattr(plugin, 'parse_logic'):
+                if hasattr(plugin, PLUGIN_PARSE_LOGIC):
                     update = plugin.parse_logic(logic)
                     if update:
                         logic.add_method_trigger(update)

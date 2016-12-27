@@ -24,7 +24,7 @@ import logging
 import collections
 import os
 import lib.shyaml as shyaml
-
+from lib.constants import (YAML_FILE, CONF_FILE)
 logger = logging.getLogger(__name__)
 
 valid_item_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
@@ -43,9 +43,9 @@ def parse_basename(basename, configtype=''):
     :param configtype: Optional string with config type (only used for log output)
     :return: The resulting merged OrderedDict tree
     '''
-    config = parse(basename+'.yaml')
+    config = parse(basename+YAML_FILE)
     if config == {}:
-        config = parse(basename+'.conf')
+        config = parse(basename+CONF_FILE)
     if config == {}:
         logger.critical("No file '{}.*' found with {} configuration".format(basename, configtype))
     return config
@@ -63,7 +63,7 @@ def parse_itemsdir(itemsdir, item_conf):
     :return: The resulting merged OrderedDict tree
     '''
     for item_file in sorted(os.listdir(itemsdir)):
-        if item_file.endswith('.conf') or item_file.endswith('.yaml'):
+        if item_file.endswith(CONF_FILE) or item_file.endswith(YAML_FILE):
             try:
                 item_conf = parse(itemsdir + item_file, item_conf)
             except Exception as e:
@@ -81,9 +81,9 @@ def parse(filename, config=None):
     :param config: Optional OrderedDict tree, into which the configuration should be merged
     :return: The resulting merged OrderedDict tree
     '''
-    if filename.endswith('.yaml') and os.path.isfile(filename):
+    if filename.endswith(YAML_FILE) and os.path.isfile(filename):
          return parse_yaml(filename, config)
-    elif filename.endswith('.conf') and os.path.isfile(filename):
+    elif filename.endswith(CONF_FILE) and os.path.isfile(filename):
         return parse_conf(filename, config)
     return {}
 
