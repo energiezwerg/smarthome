@@ -41,7 +41,7 @@ class SmartPlugin(SmartObject, Utils):
         if self.ALLOW_MULTIINSTANCE:
             self.__instance = instance
         else: 
-            self.logger.warning("Plugin does not allow more then one instance") 
+            self.logger.warning("Plugin does not allow more than one instance")
     
     def get_instance_name(self):
         """
