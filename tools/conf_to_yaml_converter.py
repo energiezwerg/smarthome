@@ -406,8 +406,11 @@ def convert_directory(dir):
 
 if __name__ == '__main__':
 
-    directory = os.path.abspath('../items2')
-    etc_dir = os.path.abspath('../etc2')
+    # change the working diractory to the directory from which the converter is loaded (../tools)
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    
+    directory = os.path.abspath('../items')
+    etc_dir = os.path.abspath('../etc')
     
     print('converting .conf-files from the following directories:')
     print('- item-directory  : ' + directory)
