@@ -46,7 +46,7 @@ from collections import OrderedDict
 
 yaml_version = '1.1'
 indent_spaces = 4
-store_raw_output = False			# Only for testing, otherwise False
+store_raw_output = True			# Only for testing, otherwise False
 
 
 
@@ -106,7 +106,7 @@ def parse_for_convert(filename, config=None):
                         comment = '>**<'
                     line = line.partition('#')[0].strip()
                     # inline comment
-                    if (line != '') and (comment != ''):
+                    if (line != '') and (comment != '') and line.find('[') == -1:
                         attr, __, value = line.partition('=')
                         comment = attr.strip() + ': ' + comment
                         line = line + '    ## ' + comment
@@ -141,6 +141,13 @@ def parse_for_convert(filename, config=None):
                 continue
             if line[0] == '[':  # item
                 lastline_was_comment = False
+                #
+                comment_in_line = line.find('#')
+                comment = line.partition('#')[2].strip()
+                if comment_in_line > -1 and comment == '':
+                    comment = '>**<'
+                line = line.partition('#')[0].strip()
+                #
                 brackets = 0
                 level = 0
                 closing = False
@@ -155,12 +162,17 @@ def parse_for_convert(filename, config=None):
                         closing = True
                         if line[index] not in valid_chars + "'":
                             print()
-                            print("ERROR: Problem (1) parsing '{}' invalid character in line {}: {}. Valid characters are: {}".format(filename, linenu, line, valid_chars))
+                            print("ERROR: Problem (1) parsing '{}' invalid character in \nline {}: {}. \nValid chars: {}".format(os.path.basename(filename), linenu, line, valid_chars))
                             return config
                 if brackets != 0:
                     print()
                     print("ERROR: Problem parsing '{}' unbalanced brackets in line {}: {}".format(filename, linenu, line))
                     return config
+                #
+                if comment_in_line > -1:
+                    print()
+                    print("ERROR: Problem parsing '{}' \nunhandled comment {} in \nline {}: {}. \nValid chars: {}".format(os.path.basename(filename), comment, linenu, line, valid_chars))
+                #
                 name = line.strip("[]")
                 name = strip_quotes(name)
                 if level == 1:
