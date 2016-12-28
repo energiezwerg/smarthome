@@ -525,8 +525,8 @@ class SmartHome():
     # obsolete by utils.
     def string2bool(self, string):
         try:
-            return lib.Utils.to_bool(string)
-        except:
+            return lib.utils.Utils.to_bool(string)
+        except Exception as e:
             return None
 
 
