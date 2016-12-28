@@ -299,6 +299,9 @@ class Stream(Base):
             logger.exception("{}: {}".format(self._name, e))
             self.close()
         finally:
+            if self._close_after_send:
+                logger.debug("close after send")
+                self.close()
             self.__olock.release()
 
     def balance(self, bopen, bclose):
