@@ -24,8 +24,6 @@ minimalmodbus>=0.7
 pyserial>=3.0.1
 
 # SmartHomeNG Core
-python-dateutil==2.5.3
-
 # backend
 # dwd
 python-dateutil>=2.5.3

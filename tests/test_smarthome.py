@@ -40,8 +40,8 @@ class SmarthomeTest(unittest.TestCase):
         self.assertFalse(bin.smarthome.SmartHome.string2bool(self, "f"))
         self.assertFalse(bin.smarthome.SmartHome.string2bool(self, 0))
 
-        # self.assertTrue(bin.smarthome.SmartHome.string2bool(self,1.2))
-        # self.assertTrue(bin.smarthome.SmartHome.string2bool(self,True))
+        self.assertTrue(bin.smarthome.SmartHome.string2bool(self,1.2))
+        self.assertTrue(bin.smarthome.SmartHome.string2bool(self,True))
         self.assertTrue(bin.smarthome.SmartHome.string2bool(self,"yes"))
         self.assertTrue(bin.smarthome.SmartHome.string2bool(self,"1"))
         self.assertTrue(bin.smarthome.SmartHome.string2bool(self,"y"))
