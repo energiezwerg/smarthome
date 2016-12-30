@@ -50,7 +50,7 @@ import traceback
 #####################################################################
 # Base
 #####################################################################
-BASE = '/'.join(os.path.realpath(__file__).split('/')[:-2])
+BASE = os.path.sep.join(os.path.realpath(__file__).split(os.path.sep)[:-2])
 sys.path.insert(0, BASE)
 
 #####################################################################
@@ -109,16 +109,17 @@ class LogHandler(logging.StreamHandler):
 class SmartHome():
 
     base_dir = BASE
-    _plugin_conf_basename = BASE + '/etc/plugin'
+    _plugin_conf_basename = os.path.join(BASE + '/etc/plugin'.replace('/', os.path.sep))
     _plugin_conf = ''	# is filled by plugin.py while reading the configuration file, needed by Backend plugin
-    _env_dir = BASE + '/lib/env/'
-    _env_logic_conf_basename = _env_dir + 'logic'
-    _items_dir = BASE + '/items/'
-    _logic_conf_basename = BASE + '/etc/logic'
-    _logic_dir = BASE + '/logics/'
-    _cache_dir = BASE + '/var/cache/'
-    _log_config = BASE + '/etc/logging.yaml'
-    _pidfile = BASE + '/var/run/smarthome.pid'
+    _env_dir = os.path.join(BASE + '/lib/env/'.replace('/', os.path.sep))
+    _env_logic_conf_basename = os.path.join( (_env_dir + 'logic').replace('/', os.path.sep))
+    _items_dir = os.path.join(BASE + '/items/'.replace('/', os.path.sep))
+    _logic_conf_basename = os.path.join(BASE + '/etc/logic'.replace('/', os.path.sep))
+    _logic_dir = os.path.join(BASE + '/logics/'.replace('/', os.path.sep))
+    _cache_dir = os.path.join(BASE + '/var/cache/'.replace('/', os.path.sep))
+    _log_config = os.path.join(BASE + '/etc/logging.yaml'.replace('/', os.path.sep))
+    _pidfile = os.path.join(BASE + '/var/run/smarthome.pid'.replace('/', os.path.sep))
+
     _log_buffer = 50
     __logs = {}
     __event_listeners = {}
@@ -131,7 +132,7 @@ class SmartHome():
     _dbapis = {}
     logger = logging.getLogger(__name__)
 
-    def __init__(self, smarthome_conf_basename=BASE + '/etc/smarthome'):
+    def __init__(self, smarthome_conf_basename = os.path.join(BASE + '/etc/smarthome'.replace('/', os.path.sep))):
         # set default timezone to UTC
         global TZ
         self.tz = 'UTC'
