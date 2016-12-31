@@ -4,7 +4,7 @@ import common
 import lib.config
 
 
-class ConfigBaseTests(unittest.TestCase):
+class ConfigBaseTests:
     fmt = None
 
     @classmethod
@@ -93,7 +93,7 @@ class ConfigBaseTests(unittest.TestCase):
         self.assertTrue('child2' in conf['parent2'])
 
 
-class TestConfigConf( ConfigBaseTests):
+class TestConfigConf( unittest.TestCase,ConfigBaseTests):
 
     fmt = 'conf'
 
@@ -108,7 +108,7 @@ class TestConfigConf( ConfigBaseTests):
         self.assertEqual(conf['section']['key_multiline_quotes'], 'line1line2')
     
 
-class TestConfigYaml(ConfigBaseTests):
+class TestConfigYaml(unittest.TestCase,ConfigBaseTests):
 
     fmt = 'yaml'
 
