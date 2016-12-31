@@ -1,12 +1,17 @@
 
-from unittest import TestCase
-
+import unittest
+import common
 import lib.config
 
 
-class ConfigBaseTests:
-
+class ConfigBaseTests(unittest.TestCase):
     fmt = None
+
+    @classmethod
+    def setUpClass(cls):
+        if cls is ConfigBaseTests:
+            raise unittest.SkipTest("Skip BaseTest tests, it's a base class")
+        super(ConfigBaseTests, cls).setUpClass()
 
     def config(self, name):
         return lib.config.parse('resources/config_{}.{}'.format(name, self.fmt))
@@ -88,13 +93,13 @@ class ConfigBaseTests:
         self.assertTrue('child2' in conf['parent2'])
 
 
-class TestConfigConf(TestCase, ConfigBaseTests): 
+class TestConfigConf( ConfigBaseTests):
 
     fmt = 'conf'
 
     def test_confread_ignores_empty_name(self):
         conf = self.config('empty')
-        self.assertEquals(0, len(conf['empty']))
+        self.assertEqual(0, len(conf['empty']))
 
     def test_confread_multiline(self):
         conf = self.config('keyvalues')
@@ -103,7 +108,7 @@ class TestConfigConf(TestCase, ConfigBaseTests):
         self.assertEqual(conf['section']['key_multiline_quotes'], 'line1line2')
     
 
-class TestConfigYaml(TestCase, ConfigBaseTests):
+class TestConfigYaml(ConfigBaseTests):
 
     fmt = 'yaml'
 
