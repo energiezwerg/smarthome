@@ -12,7 +12,8 @@ cherrypy>=8.1.2
 ephem>=3.7
 
 # backend
-jinja2>=2.8
+jinja2>=2.8;python_version>'3.2'
+jinja2==2.6;python_version=='3.2'
 
 # xiaomi
 miflora >=  0.1.13
