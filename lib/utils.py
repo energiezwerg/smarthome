@@ -91,6 +91,13 @@ class Utils(object):
 
     @staticmethod
     def is_int(string):
+        """
+        Checks if a string is a integer.
+        :param string: String to check.
+        :type string: str
+        :return: True if a cast to int works, false otherwise.
+        :rtype: bool
+        """
         try:
             int(string)
             return True
@@ -101,6 +108,13 @@ class Utils(object):
 
     @staticmethod
     def is_float(string):
+        """
+        Checks if a string is a float.
+        :param string: String to check.
+        :type string: str
+        :return: True if a cast to float works, false otherwise.
+        :rtype: bool
+        """
         try:
             float(string)
             return True
