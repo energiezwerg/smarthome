@@ -10,7 +10,7 @@ class TestConfig(unittest.TestCase):
     def props(self,cls):   
         return [i for i in cls.__dict__.keys() if i[:1] != '_']
     def test_plugins(self):
-        plugins = lib.plugin.Plugins(MockSmartHome(), "resources/plugin")
+        plugins = lib.plugin.Plugins(MockSmartHome(), common.BASE + "/tests/resources/plugin")
         self.assertIsNone(plugins.get_plugin("wol1") )
         self.assertIsNotNone(plugins._plugins )
         if 0:
@@ -38,7 +38,7 @@ class TestConfig(unittest.TestCase):
     def test_plugininstance(self):
         sh=MockSmartHome()
         # load pluginsA
-        plugins = lib.plugin.Plugins(sh, "resources/plugin")
+        plugins = lib.plugin.Plugins(sh, common.BASE + "/tests/resources/plugin")
         sh._plugins=plugins
         wolplug= plugins.get_plugin("wol")
         self.assertEqual(wolplug.plugin.get_instance_name(),"")
@@ -80,7 +80,7 @@ class TestConfig(unittest.TestCase):
                 print(plug)
         #load items
         item_conf = None
-        item_conf = lib.config.parse("resources/plugin_items.conf", item_conf)
+        item_conf = lib.config.parse(common.BASE + "/tests/resources/plugin_items.conf", item_conf)
 #        print(item_conf.items())
         for attr, value in item_conf.items():
             if isinstance(value, dict):
@@ -123,9 +123,9 @@ class TestConfig(unittest.TestCase):
 
     def _test_configsave(self):
         import configparser
-        plugins = lib.plugin.Plugins(MockSmartHome(), "resources/plugin")
+        plugins = lib.plugin.Plugins(MockSmartHome(), common.BASE + "/tests/resources/plugin")
         item_conf = None
-        item_conf = lib.config.parse("resources/plugin_items.conf", item_conf)
+        item_conf = lib.config.parse(common.BASE + "/tests/resources/plugin_items.conf", item_conf)
         print(item_conf)
         for attr, value in item_conf.items():
             if isinstance(value, dict):
@@ -139,7 +139,7 @@ class TestConfig(unittest.TestCase):
                     sh.add_item(child_path, child)
                     sh.children.append(child)
         config = configparser.RawConfigParser( )
-        #config.read('resources/plugin_items.conf')
+        #config.read(common.BASE + '/tests/resources/plugin_items.conf')
         config.read_dict(item_conf)
         print(config)
         with open('example.cfg', 'w') as configfile:

@@ -15,7 +15,7 @@ class TestConfig(unittest.TestCase):
         
         #load items
         item_conf = None
-        item_conf = lib.config.parse("resources/item_items.conf", item_conf)
+        item_conf = lib.config.parse(common.BASE + "/tests/resources/item_items.conf", item_conf)
 #        print(item_conf.items())
         for attr, value in item_conf.items():
             if isinstance(value, dict):
