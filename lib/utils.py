@@ -21,6 +21,7 @@
 
 import re
 import hashlib
+
 IP_REGEX = re.compile(r"""
         ^
         (?:
@@ -42,6 +43,8 @@ IP_REGEX = re.compile(r"""
         )
         $
     """, re.VERBOSE | re.IGNORECASE)
+
+TIMEFRAME_REGEX = re.compile(r'^(\d+)([ihdwmy]?)$', re.VERBOSE | re.IGNORECASE)
 
 class Utils(object):
 
@@ -88,6 +91,55 @@ class Utils(object):
             return bool(IP_REGEX.search(string))
         except TypeError:
             return False
+
+    @staticmethod
+    def is_timeframe(string):
+        """
+        Checks if a string is a timeframe. A timeframe consists of a
+        number and an optional unit identifier (e.g. 2h, 30m, ...).
+        Unit identifiers are: i for minutes, h for hours, d for days,
+        w for weeks, m for months, y for years. If omitted milliseconds
+        are assumed.
+        :param string: String to check.
+        :type string: str
+        :return: True if a timeframe can be recognized, false otherwise.
+        :rtype: bool
+        """
+        try:
+            return bool(TIMEFRAME_REGEX.search(string))
+        except TypeError:
+            return False
+
+    @staticmethod
+    def to_timeframe(string):
+        """
+        Converts a timeframe value to milliseconds. See is_timeframe() method.
+        The special value 'now' is supported for the current time.
+        :param value : value to convert
+        :type value: str, int, ...
+        :return: True if cant be converted and is true, False otherwise.
+        :rtype: bool
+
+        """
+        minute = 60 * 1000
+        hour = 60 * minute
+        day = 24 * hour
+        week = 7 * day
+        month = 30 * day
+        year = 365 * day
+        frames = {'i': minute, 'h': hour, 'd': day, 'w': week, 'm': month, 'y': year}
+
+        if string == 'now':
+            string = '0'
+
+        if not Utils.is_timeframe(string):
+            raise Exception('Invalid value for boolean conversion: ' + value)
+
+        value, unit = TIMEFRAME_REGEX.match(string).groups()
+        if unit in frames:
+            return int(float(value) * frames[unit])
+        else:
+            return int(value)
 
     @staticmethod
     def is_int(string):

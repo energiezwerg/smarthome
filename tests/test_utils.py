@@ -59,6 +59,34 @@ class LibUtilsTest(unittest.TestCase):
         self.assertFalse(Utils.is_ip("161.256.256"))
         self.assertTrue(Utils.is_ip("10.0.0.173"))
 
+    def test_is_timeframe(self):
+        self.assertFalse(Utils.is_timeframe(""))
+        self.assertFalse(Utils.is_timeframe("abc"))
+        self.assertTrue(Utils.is_timeframe("1"))
+        self.assertTrue(Utils.is_timeframe("1i"))
+        self.assertTrue(Utils.is_timeframe("1h"))
+        self.assertTrue(Utils.is_timeframe("1d"))
+        self.assertTrue(Utils.is_timeframe("1m"))
+        self.assertTrue(Utils.is_timeframe("1y"))
+
+    def test_to_timeframe(self):
+        with self.assertRaises(Exception):
+            Utils.to_timeframe("")
+        with self.assertRaises(Exception):
+            Utils.to_timeframe("abc")
+        with self.assertRaises(Exception):
+            Utils.to_timeframe("1im")
+        with self.assertRaises(Exception):
+            Utils.to_timeframe("1abc")
+
+        self.assertEqual(1, Utils.to_timeframe("1"))
+        self.assertEqual(60000, Utils.to_timeframe("1i"))
+        self.assertEqual(3600000, Utils.to_timeframe("1h"))
+        self.assertEqual(86400000, Utils.to_timeframe("1d"))
+        self.assertEqual(604800000, Utils.to_timeframe("1w"))
+        self.assertEqual(2592000000, Utils.to_timeframe("1m"))
+        self.assertEqual(31536000000, Utils.to_timeframe("1y"))
+
     def test_is_int(self):
         self.assertFalse(Utils.is_int(""))
         self.assertFalse(Utils.is_int(None))
