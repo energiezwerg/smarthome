@@ -14,7 +14,7 @@ class ConfigBaseTests:
         super(ConfigBaseTests, cls).setUpClass()
 
     def config(self, name):
-        return lib.config.parse('resources/config_{}.{}'.format(name, self.fmt))
+        return lib.config.parse(common.BASE + '/tests/resources/config_{}.{}'.format(name, self.fmt))
 
     def test_read_ignores_starting_digits(self):
         conf = self.config('digits')
