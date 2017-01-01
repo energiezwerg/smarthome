@@ -109,16 +109,22 @@ class LogHandler(logging.StreamHandler):
 class SmartHome():
 
     base_dir = BASE
-    _plugin_conf_basename = os.path.join(BASE + '/etc/plugin'.replace('/', os.path.sep))
+    _etc_dir = os.path.join(base_dir, 'etc')
+    _var_dir = os.path.join(base_dir, 'var')
+    _lib_dir = os.path.join(base_dir,'lib')
+    _env_dir = os.path.join(_lib_dir, 'env' + os.path.sep)
+
+    _plugin_conf_basename = os.path.join(_etc_dir,'plugin')
+
     _plugin_conf = ''	# is filled by plugin.py while reading the configuration file, needed by Backend plugin
-    _env_dir = os.path.join(BASE + '/lib/env/'.replace('/', os.path.sep))
-    _env_logic_conf_basename = os.path.join( (_env_dir + 'logic').replace('/', os.path.sep))
-    _items_dir = os.path.join(BASE + '/items/'.replace('/', os.path.sep))
-    _logic_conf_basename = os.path.join(BASE + '/etc/logic'.replace('/', os.path.sep))
-    _logic_dir = os.path.join(BASE + '/logics/'.replace('/', os.path.sep))
-    _cache_dir = os.path.join(BASE + '/var/cache/'.replace('/', os.path.sep))
-    _log_config = os.path.join(BASE + '/etc/logging.yaml'.replace('/', os.path.sep))
-    _pidfile = os.path.join(BASE + '/var/run/smarthome.pid'.replace('/', os.path.sep))
+
+    _env_logic_conf_basename = os.path.join( _env_dir ,'logic')
+    _items_dir = os.path.join(base_dir , 'items'+os.path.sep)
+    _logic_conf_basename = os.path.join(_etc_dir,'logic')
+    _logic_dir = os.path.join(base_dir , 'logics'+os.path.sep)
+    _cache_dir = os.path.join(_var_dir ,'cache'+os.path.sep)
+    _log_config = os.path.join(_etc_dir,'logging.yaml')
+    _pidfile = os.path.join(_var_dir,'run','smarthome.pid')
 
     _log_buffer = 50
     __logs = {}
@@ -132,7 +138,7 @@ class SmartHome():
     _dbapis = {}
     logger = logging.getLogger(__name__)
 
-    def __init__(self, smarthome_conf_basename = os.path.join(BASE + '/etc/smarthome'.replace('/', os.path.sep))):
+    def __init__(self, smarthome_conf_basename = os.path.join(_etc_dir,'smarthome')):
         # set default timezone to UTC
         global TZ
         self.tz = 'UTC'
