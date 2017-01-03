@@ -1,7 +1,7 @@
 sudo: false
 language: python
 python:
-    - "3.2"
+#    - "3.2"
     - "3.3"
     - "3.4"
     - "3.5"
@@ -15,12 +15,3 @@ install:
 
 script:
     - tox
-
-# List all environments configured in tox.ini to test them all using
-# Travis CI!
-#env:
-#    - TOX_ENV=py32
-#    - TOX_ENV=py33
-#    - TOX_ENV=py34
-#    - TOX_ENV=py35
-#    - TOX_ENV=py36
