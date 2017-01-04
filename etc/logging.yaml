@@ -12,7 +12,7 @@ formatters:
     datefmt: '%Y-%m-%d %H:%M:%S'
 filters:
   loggerfilter:
-    '()': lib.logging.Filter
+    '()': lib.logutils.Filter
     name: 'knx_busmonitor'
 handlers:
   console:
