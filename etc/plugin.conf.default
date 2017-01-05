@@ -3,7 +3,7 @@
 #    class_path = plugins.backend
 #    user = admin
 #    password = very_secure_password
-#
+
 #[cli]
 #    class_name = CLI
 #    class_path = plugins.cli
