@@ -2,6 +2,7 @@
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 
 import tarfile
+import zipfile
 import os
 import argparse
 class BackupAndRestore:
@@ -49,10 +50,29 @@ class BackupAndRestore:
         return tarinfo
 
     def restore(self, afile, outdir, selector=None):
-
-        tar = tarfile.open(afile, "r:gz")
-        tar.extractall(path=outdir)
-        tar.close() 
+        readmode = None
+        extractor = None
+        afilelow = afile.lower()
+        if (afilelow.endswith("tar.gz") or afilelow.endswith("tgz")):
+            extractor = tarfile.open
+            readmode = "r:gz"
+        elif (afilelow.endswith("tar")):
+            extractor = tarfile.open
+            readmode = "r:"
+        elif (afilelow.endswith("zip")):
+            extractor = zipfile.ZipFile
+            readmode = "r"
+        elif (afilelow.endswith("bz2") or afilelow.endswith("tbz")):
+            extractor = tarfile.open
+            readmode = "r:bz2"
+        if extractor != None:
+            tar = extractor(afile, readmode)
+            try:
+                tar.extractall(path=outdir)
+            finally: 
+                tar.close() 
+        else:
+            raise ValueError("Unsupported file type: " + afile)
 
 if __name__ == '__main__':
     bar = BackupAndRestore()
@@ -60,7 +80,7 @@ if __name__ == '__main__':
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-b', '--backup', action='store_true', help='create a config backup')
     group.add_argument('-r', '--restore',  action='store', help='restore a backup',metavar='dir')
-    parser.add_argument('--backupfile', action='store', help='name for outputfile (default: backup.tar.gz)',metavar='dir', default='backup.tar.gz')
+    parser.add_argument('--backupfile', action='store', help='name for outputfile (default: backup.tar.gz)',metavar='file', default='backup.tar.gz')
     parser.add_argument('--include', nargs='+', action='store', help='include directory to backup',metavar='dir')
     parser.add_argument('--exclude', nargs='+', action='store', help='exclude directory from backup (only for etc,items,scenes)',metavar='dir')
     parser.add_argument('-v','--verbose', action='store_true', help='generate more output', default=False)
