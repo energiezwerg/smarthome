@@ -190,8 +190,10 @@ class Scheduler(threading.Thread):
         stack = inspect.stack()
         obj = stack[1][0].f_locals["self"]
         if isinstance(obj, SmartPlugin):
-            if obj.get_instance_name() != '':
-                name = name + '_' + obj.get_instance_name()
+            iname = obj.get_instance_name()
+            if iname != '':
+                if not str(name).endswith('_'+iname):
+                    name = name + '_' + obj.get_instance_name()
         logger.debug("remove scheduler entry with name:{0}".format(name))
         if name in self._scheduler:
             del(self._scheduler[name])
