@@ -75,7 +75,7 @@ class SmarthomeTest(unittest.TestCase):
         _log_config = os.path.join(base_dir + '/etc/logging.yaml'.replace('/', os.path.sep))
         self.assertEqual(sh._log_config, _log_config)
         _pidfile = os.path.join(base_dir + '/var/run/smarthome.pid'.replace('/', os.path.sep))
-        self.assertEqual(sh._pidfile,_pidfile)
+        self.assertEqual(sh.PIDFILE,_pidfile)
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
