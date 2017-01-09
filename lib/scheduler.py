@@ -267,6 +267,13 @@ class Scheduler(threading.Thread):
             return None
 
     def change(self, name, **kwargs):
+        stack = inspect.stack()
+        obj = stack[1][0].f_locals["self"]
+        if isinstance(obj, SmartPlugin):
+            iname = obj.get_instance_name()
+            if iname != '':
+                if not str(name).endswith('_' + iname):
+                    name = name + '_' + obj.get_instance_name()
         if name in self._scheduler:
             for key in kwargs:
                 if key in self._scheduler[name]:
