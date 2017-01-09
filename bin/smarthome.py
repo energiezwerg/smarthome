@@ -47,6 +47,7 @@ import subprocess
 import threading
 import time
 import traceback
+import psutil
 #####################################################################
 # Base
 #####################################################################
@@ -630,7 +631,6 @@ if __name__ == '__main__':
         print("Run 'smarthome.py -s' to stop it.")
         exit()
     if MODE == 'debug':
-        import psutil
         lib.daemon.write_pidfile(psutil.Process().pid, PIDFILE)
     # Starting SmartHomeNG
     sh = SmartHome()
