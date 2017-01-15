@@ -7,6 +7,7 @@ import lib.item
 
 from plugins.backend import Backend as Root
 from tests.backend.cptestcase import BaseCherryPyTestCase
+from tests.mock.core import MockSmartHome
 
 
 def setUpModule():
@@ -79,77 +80,16 @@ class TestCherryPyApp(BaseCherryPyTestCase):
     #
 
 
-class MockSmartHome():
-
-    # class MockScheduler():
-    #     def add(self, name, obj, prio=3, cron=None, cycle=None, value=None, offset=None, next=None):
-    #         print(name)
-    #         if isinstance(obj.__self__, SmartPlugin):
-    #             name = name +'_'+ obj.__self__.get_instance_name()
-    #         print(name)
-    #         print( obj)
-    #         print(obj.__self__.get_instance_name())
-    # __logs = {}
-    __item_dict = {}
-    __items = []
-    __children = []
-    _plugins = []
-    # scheduler = MockScheduler()
-    base_dir = common.BASE
-    _logic_dir = base_dir + "/tests/resources/"
-
-
-    def __init__(self):
-
-        #############################################################
-        # Init Items
-        #############################################################
-        item_conf = None
-        item_conf = lib.config.parse("resources/blockly_items.conf", item_conf)
-
-        for attr, value in item_conf.items():
-            if isinstance(value, dict):
-                child_path = attr
-                child = lib.item.Item(self, self, child_path, value)
-                vars(self)[attr] = child
-                self.add_item(child_path, child)
-                self.__children.append(child)
-        # del(item_conf)  # clean up
-        # for item in self.return_items():
-        #     item._init_prerun()
-        # for item in self.return_items():
-        #     item._init_run()
-        # self.item_count = len(self.__items)
-        # self.logger.info("Items: {}".format(self.item_count))
-
-
-    # def add_log(self, name, log):
-    #     self.__logs[name] = log
-    def now(self):
-        import datetime
-        return datetime.datetime.now()
-    def add_item(self, path, item):
-        #print("added {} at {}".format(item, path))
-        print(path)
-        if path not in self.__items:
-            self.__items.append(path)
-        self.__item_dict[path] = item
-
-    def return_item(self, string):
-        if string in self.__items:
-            return self.__item_dict[string]
-
-    def return_items(self):
-        for item in self.__items:
-            yield self.__item_dict[item]
-    def return_plugins(self):
-        for plugin in self._plugins:
-            yield plugin
-
-
 class MockBackendServer():
     _sh = MockSmartHome()
 
+    def __init__(self):
+        self._sh.with_items_from(common.BASE + "/tests/resources/blockly_items.conf")
+
+        # HACK: Make tests work! Backend accesses private field _logic_dir
+        # directly instead of using a method (the field was remove in the
+        # meantime). Setting this just to make it work again.
+        self._sh._logic_dir = common.BASE + "/tests/resources/"
 
 
 if __name__ == '__main__':

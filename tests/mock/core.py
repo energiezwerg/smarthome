@@ -8,6 +8,8 @@ import lib.connection
 
 from lib.model.smartplugin import SmartPlugin
 
+from tests.common import BASE
+
 class MockScheduler():
 
     def add(self, name, obj, prio=3, cron=None, cycle=None, value=None, offset=None, next=None):
@@ -20,6 +22,8 @@ class MockScheduler():
 
 
 class MockSmartHome():
+
+    base_dir = BASE
 
     def __init__(self):
         self.__logs = {}
