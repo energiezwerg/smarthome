@@ -183,6 +183,9 @@ class SmartHome():
                     vars(self)['_' + attr] = config[attr]
             del(config)  # clean up
 
+        if hasattr(self, '_module_pathes'):
+            sys.path.extend(self._module_pathes if type(self._module_pathes) is list else [self._module_pathes])
+
         #############################################################
         # Database APIs
         #############################################################
