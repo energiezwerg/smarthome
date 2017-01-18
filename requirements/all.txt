@@ -12,14 +12,16 @@ cherrypy>=8.1.2
 ephem>=3.7
 
 # backend
-jinja2>=2.8;python_version>'3.2'
-jinja2==2.6;python_version=='3.2'
+jinja2>=2.8
 
 # xiaomi
 miflora >=  0.1.13
 
 # systemair
 minimalmodbus>=0.7
+
+# SmartHomeNG Core
+psutil
 
 # systemair
 pyserial>=3.0.1
@@ -40,8 +42,17 @@ pyyaml==3.11
 # odlinfo
 # pushbullet
 # tankerkoenig
-requests>=2.9.1;python_version>'3.2'
 requests==2.5.1;python_version=='3.2'
+
+# intercom_2n
+requests>=2.9.1
+
+# avm
+# enigma2
+# odlinfo
+# pushbullet
+# tankerkoenig
+requests>=2.9.1;python_version>'3.2'
 
 # dashbutton
 scapy-python3 >= 0.18
