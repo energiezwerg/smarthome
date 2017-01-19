@@ -99,7 +99,15 @@ class SmartPlugin(SmartObject, Utils):
         """
         __attr = self.__get_iattr_conf(conf, attr)
         return None if __attr is None else conf[__attr]
-    
+
+    def set_attr_value(self, conf, attr, value):
+        """
+            set value for an attribute in item.config
+        """
+        __attr = self.__get_iattr_conf(conf, attr)
+        if __attr is not None:
+            conf[self.__get_iattr(attr)] = value
+
     def __new__(cls, *args, **kargs):
         if not hasattr(cls,'PLUGIN_VERSION'):
             raise NotImplementedError("'Plugin' subclasses should have a 'PLUGIN_VERSION' attribute")
