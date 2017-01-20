@@ -6,3 +6,4 @@ elev: 35
 
 tz: 'Europe/Berlin'
 
+#assign_compatibility: latest

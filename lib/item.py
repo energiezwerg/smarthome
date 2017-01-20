@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2016      Christian Straßburg             c.strassburg@gmx.de
-# Copyright 2012-2013 Marcus Popp                          marcus@popp.mx
+# Copyright 2016-       Christian Straßburg           c.strassburg@gmx.de
+# Copyright 2016-2017   Martin Sinn                         m.sinn@gmx.de
+# Copyright 2012-2013   Marcus Popp                        marcus@popp.mx
 #########################################################################
 #  This file is part of SmartHomeNG.
 #
@@ -20,6 +21,7 @@
 #  along with SmartHomeNG. If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
+
 import datetime
 import logging
 import os
@@ -30,11 +32,16 @@ import json
 
 from lib.constants import (ITEM_DEFAULTS, FOO, KEY_ENFORCE_UPDATES, KEY_CACHE, KEY_CYCLE, KEY_CRONTAB, KEY_EVAL,
                            KEY_EVAL_TRIGGER, KEY_NAME,KEY_TYPE, KEY_VALUE, PLUGIN_PARSE_ITEM,
-                           KEY_AUTOTIMER,KEY_THRESHOLD)
+                           KEY_AUTOTIMER,KEY_THRESHOLD,
+                           KEY_ATTRIB_COMPAT, ATTRIB_COMPAT_V12, ATTRIB_COMPAT_LATEST)
 
+
+ATTRIB_COMPAT_DEFAULT_FALLBACK = ATTRIB_COMPAT_V12
+ATTRIB_COMPAT_DEFAULT = ''
 
 
 logger = logging.getLogger(__name__)
+
 
 
 #####################################################################
@@ -65,8 +72,10 @@ def _cast_dict(value):
 def _cast_foo(value):
     return value
 
+
 # TODO: Candidate for Utils.to_bool()
 # write testcase and replace
+# -> should it be possible to cast 0 -> False and non-0 to True?
 def _cast_bool(value):
     if type(value) in [bool, int, float]:
         if value in [False, 0]:
@@ -76,7 +85,7 @@ def _cast_bool(value):
         else:
             raise ValueError
     elif type(value) in [str, str]:
-        if value.lower() in ['0', 'false', 'no', 'off']:
+        if value.lower() in ['0', 'false', 'no', 'off', '']:
             return False
         elif value.lower() in ['1', 'true', 'yes', 'on']:
             return True
@@ -91,6 +100,14 @@ def _cast_scene(value):
 
 
 def _cast_num(value):
+    """
+    cast a passed value to int or float
+
+    :param value: numeric value to be casted, passed as str, float or int
+    :return: numeric value, passed as int or float
+    """
+    if value == '':
+        return 0
     if isinstance(value, float):
         return value
     try:
@@ -104,6 +121,57 @@ def _cast_num(value):
     raise ValueError
 
 
+#####################################################################
+# Methods for handling of duration_value strings
+#####################################################################
+
+def _split_duration_value_string(value): 
+    """
+    splits a duration value string into its thre components
+    
+    components are:
+    - time
+    - value
+    - compat
+
+    :param value: raw attribute string containing duration, value (and compatibility)
+    :return: three strings, representing time, value and compatibility attribute
+    """
+    time, __, value = value.partition('=')
+    value, __, compat = value.partition('=')
+    time = time.strip()
+    value = value.strip()
+    # remove quotes, if present
+    if value != '' and ((value[0] == "'" and value[-1] == "'") or (value[0] == '"' and value[-1] == '"')):
+        value = value[1:-1]
+    compat = compat.strip().lower()
+    if compat == '':
+        compat = ATTRIB_COMPAT_DEFAULT
+    return (time, value, compat)
+
+
+def _join_duration_value_string(time, value, compat=''): 
+    """
+    joins a duration value string from its thre components
+    
+    components are:
+    - time
+    - value
+    - compat
+
+    :param time: time (duration) parrt for the duration_value_string
+    :param value: value (duration) parrt for the duration_value_string
+    """
+    result = str(time)
+    if value != '' or compat != '':
+        result = result + ' ='
+        if value != '':
+            result = result + ' ' + value
+        if compat != '':
+           result = result + ' = ' + compat
+    return result
+    
+    
 #####################################################################
 # Cache Methods
 #####################################################################
@@ -188,6 +256,20 @@ class Item():
         else:
             self._change_logger = logger.debug
         #############################################################
+        # Initialize attribute assignment compatibility
+        #############################################################
+        global ATTRIB_COMPAT_DEFAULT
+        if ATTRIB_COMPAT_DEFAULT == '':
+            if hasattr(smarthome, '_'+KEY_ATTRIB_COMPAT):
+                config_attrib = getattr(smarthome,'_'+KEY_ATTRIB_COMPAT)
+                if str(config_attrib) in [ATTRIB_COMPAT_V12, ATTRIB_COMPAT_LATEST]:
+                    logger.info("Global configuration: '{}' = '{}'.".format(KEY_ATTRIB_COMPAT, str(config_attrib)))
+                    ATTRIB_COMPAT_DEFAULT = config_attrib
+                else:
+                    logger.warning("Global configuration: '{}' has invalid value '{}'.".format(KEY_ATTRIB_COMPAT, str(config_attrib)))
+            if ATTRIB_COMPAT_DEFAULT == '':
+                ATTRIB_COMPAT_DEFAULT = ATTRIB_COMPAT_DEFAULT_FALLBACK
+        #############################################################
         # Item Attributes
         #############################################################
         for attr, value in config.items():
@@ -215,9 +297,17 @@ class Item():
                         expandedvalue.append(self.get_absolutepath(path, KEY_EVAL_TRIGGER))
                     setattr(self, '_' + attr, expandedvalue)
                 elif attr == KEY_AUTOTIMER:
-                    time, __, value = value.partition('=')
-                    if value is not None:
-                        self._autotimer = time, value
+                    time, value, compat = _split_duration_value_string(value)
+                    timeitem = None
+                    valueitem = None
+                    if time.lower().startswith('sh.') and time.endswith('()'):
+                        timeitem = self.get_absolutepath(time[3:-2], KEY_AUTOTIMER)
+                        time = 0
+                    if value.lower().startswith('sh.') and value.endswith('()'):
+                        valueitem = self.get_absolutepath(value[3:-2], KEY_AUTOTIMER)
+                        value = ''
+                    value = self._castvalue_to_itemtype(value, compat)
+                    self._autotimer = [ (self._cast_duration(time), value), compat, timeitem, valueitem]
                 elif attr == KEY_THRESHOLD:
                     low, __, high = value.rpartition(':')
                     if not low:
@@ -288,7 +378,10 @@ class Item():
         # Crontab/Cycle
         #############################################################
         if self._crontab is not None or self._cycle is not None:
-            self._sh.scheduler.add(self._path, self, cron=self._crontab, cycle=self._cycle)
+            cycle = self._cycle
+            if cycle is not None:
+                cycle = self._build_cycledict(cycle)
+            self._sh.scheduler.add(self._path, self, cron=self._crontab, cycle=cycle)
         #############################################################
         # Plugins
         #############################################################
@@ -298,6 +391,88 @@ class Item():
                 if update:
                     self.add_method_trigger(update)
 
+
+    def _castvalue_to_itemtype(self, value, compat):
+        """
+        casts the value to the type of the item, if backward compatibility 
+        to version 1.2 (ATTRIB_COMPAT_V12) is not enabled
+        
+        If backward compatibility is enabled, the value is returned unchanged
+        
+        :param value: value to be casted
+        :param compat: compatibility attribute
+        :return: return casted valu3
+        """
+        # casting of value, if compat = latest
+        if compat == ATTRIB_COMPAT_LATEST:
+            if self._type != None:
+                mycast = globals()['_cast_' + self._type]
+                try:
+                    value = mycast(value)
+                except:
+                    logger.warning("Item {}: Unable to cast '{}' to {}".format(self._path, str(value), self._type))
+                    if isinstance(value, list):
+                        value = []
+                    elif isinstance(value, dict):
+                        value = {}
+                    else:
+                        value = mycast('')
+            else:
+                logger.warning("Item {}: Unable to cast '{}' to {}".format(self._path, str(value), self._type))
+        return value
+        
+
+    def _cast_duration(self, time): 
+        """
+        casts a time valuestring (e.g. '5m') to an duration integer
+        used for autotimer, timer, cycle
+    
+        supported formats for time parameter:
+        - seconds as integer (45)
+        - seconds as a string ('45')
+        - seconds as a string, traild by 's' ('45s')
+        - minutes as a string, traild by 'm' ('5m'), is converted to seconds (300)
+        
+        :param time: string containing the duration
+        :param itempath: item path as aditional information for logging
+        :return: number of seconds as an integer
+        """
+        if isinstance(time, str):
+            try:
+                time = time.strip()
+                if time.endswith('m'):
+                    time = int(time.strip('m')) * 60
+                elif time.endswith('s'):
+                    time = int(time.strip('s'))
+                else:
+                    time = int(time)
+            except Exception as e:
+                logger.warning("Item {}: _cast_duration ({}) problem: {}".format(self._path, time, e))
+                time = False
+        elif isinstance(time, int):
+            time = int(time)
+        else:
+            logger.warning("Item {}: _cast_duration ({}) problem: unable to convert to int".format(self._path, time))
+            time = False
+        return(time)
+    
+
+    def _build_cycledict(self, value):
+        """
+        builds a dict for a cycle parameter from a duration_value_string
+        
+        This dict is to be passed to the scheduler to circumvemt the parameter
+        parsing within the scheduler, which can't to casting
+
+        :param value: raw attribute string containing duration, value (and compatibility)
+        :return: cycle-dict for a call to scheduler.add 
+        """
+        time, value, compat = _split_duration_value_string(value)
+        time = self._cast_duration(time)
+        value = self._castvalue_to_itemtype(value, compat)
+        cycle = {time: value}
+        return cycle
+    
 
     def expand_relativepathes(self, attr, begintag, endtag):
         """
@@ -380,6 +555,9 @@ class Item():
             else:
                 rootpath = relpath
         logger.info("{}.get_absolutepath('{}'): Result = '{}' (for attribute '{}')".format(self._path, relativepath, rootpath, attribute))
+        if rootpath[-5:] == '.self':
+            rootpath = rootpath.replace('.self', '')
+        rootpath = rootpath.replace('.self.', '.')
         return rootpath
     
 
@@ -505,8 +683,24 @@ class Item():
             except Exception as e:
                 logger.warning("Item: {}: could update cache {}".format(self._path, e))
         if self._autotimer and caller != 'Autotimer' and not self._fading:
-            _time, _value = self._autotimer
-            self.timer(_time, _value, True)
+
+            _time, _value = self._autotimer[0]
+            compat = self._autotimer[1]
+            if self._autotimer[2]:
+                try:
+                    _time = eval('self._sh.'+self._autotimer[2]+'()')
+                except:
+                    logger.warning("Item '{}': Attribute 'autotimer': Item '{}' does not exist".format(self._path, self._autotimer[2]))
+            if self._autotimer[3]:
+                try:
+                    _value = self._castvalue_to_itemtype(eval('self._sh.'+self._autotimer[3]+'()'), compat)
+                except:
+                    logger.warning("Item '{}': Attribute 'autotimer': Item '{}' does not exist".format(self._path, self._autotimer[3]))
+            self._autotimer[0] = (_time, _value)     # for display of active/last timer configuration in backend
+
+            next = self._sh.now() + datetime.timedelta(seconds=_time)
+            self._sh.scheduler.add(self.id() + '-Timer', self.__call__, value={'value': _value, 'caller': 'Autotimer'}, next=next)
+
 
     def add_logic_trigger(self, logic):
         self.__logics_to_trigger.append(logic)
@@ -530,9 +724,9 @@ class Item():
         delta = self._sh.now() - self.__last_change
         return delta.total_seconds()
 
-    def autotimer(self, time=None, value=None):
+    def autotimer(self, time=None, value=None, compat=ATTRIB_COMPAT_V12):
         if time is not None and value is not None:
-            self._autotimer = time, value
+            self._autotimer = [(time, value), compat, None, None]
         else:
             self._autotimer = False
 
@@ -600,26 +794,16 @@ class Item():
         self._lock.release()
         self._change_logger("Item {} = {} via {} {} {}".format(self._path, value, caller, source, dest))
 
-    def timer(self, time, value, auto=False):
-        try:
-            if isinstance(time, str):
-                time = time.strip()
-                if time.endswith('m'):
-                    time = int(time.strip('m')) * 60
-                else:
-                    time = int(time)
-            if isinstance(value, str):
-                value = value.strip()
-            if auto:
-                caller = 'Autotimer'
-                self._autotimer = time, value
-            else:
-                caller = 'Timer'
-            next = self._sh.now() + datetime.timedelta(seconds=time)
-        except Exception as e:
-            logger.warning("Item {}: timer ({}, {}) problem: {}".format(self._path, time, value, e))
+    def timer(self, time, value, auto=False, compat=ATTRIB_COMPAT_DEFAULT):
+        time = self._cast_duration(time)
+        value = self._castvalue_to_itemtype(value, compat)
+        if auto:
+            caller = 'Autotimer'
+            self._autotimer = [(time, value), compat, None, None]
         else:
-            self._sh.scheduler.add(self.id() + '-Timer', self.__call__, value={'value': value, 'caller': caller}, next=next)
+            caller = 'Timer'
+        next = self._sh.now() + datetime.timedelta(seconds=time)
+        self._sh.scheduler.add(self.id() + '-Timer', self.__call__, value={'value': value, 'caller': caller}, next=next)
 
     def type(self):
         return self._type

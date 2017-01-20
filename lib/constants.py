@@ -46,7 +46,11 @@ KEY_CLASS_NAME = 'class_name'
 PLUGIN_PARSE_ITEM = 'parse_item'
 PLUGIN_PARSE_LOGIC = 'parse_logic'
 
-# File extensions
+#file extensions
 CONF_FILE = '.conf'
 YAML_FILE = '.yaml'
 
+#attributes for 'autotimer' parameter
+KEY_ATTRIB_COMPAT     = 'assign_compatibility'	# name of key in smarthome.yaml
+ATTRIB_COMPAT_V12     = 'compat_1.2'
+ATTRIB_COMPAT_LATEST  = 'latest'

@@ -1,4 +1,5 @@
-
+%YAML 1.1
+---
 item_tree:
 
     grandparent:
@@ -7,10 +8,10 @@ item_tree:
 
             my_item:
                 type: bool
-                sv_widget: '{{ basic.switch(''id_schreibtischleuchte'', ''.onoff'') }}'
-                sv_widget2: '{{ basic.switch(''id_schreibtischleuchte'', ''item_tree.grandparent.parent.my_item.onoff'') }}'
+                sv_widget: "{{ basic.switch('id_schreibtischleuchte', '.onoff') }}"
+                sv_widget2: "{{ basic.switch('id_schreibtischleuchte', 'item_tree.grandparent.parent.my_item.onoff') }}"
 
                 child:
-                    sv_widget: '{{ basic.switch(''id_schreibtischleuchte'', ''item_tree.grandparent.parent.my_item.child.onoff'') }}'
+                    sv_widget: "{{ basic.switch('id_schreibtischleuchte', 'item_tree.grandparent.parent.my_item.child.onoff') }}"
                     grandchild: {}
             sister: {}
