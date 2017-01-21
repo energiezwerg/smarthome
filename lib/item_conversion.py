@@ -123,7 +123,7 @@ def parse_for_convert(filename=None, conf_code=None, config=None):
                     # inline comment
                     if (line != '') and (comment != '') and line.find('[') == -1:
                         attr, __, value = line.partition('=')
-                        if "'" in line:
+                        if ("'" in line) or ("|" in line):
                             comment = attr.strip() + ': ' + comment
                         else:
                             line = line + '    ## ' + comment
@@ -316,9 +316,9 @@ def convert_yaml(data):
     dict_type = 'dict'
     if ordered:
         dict_type = 'OrderedDict'
-        sdata = _ordered_dump(data, Dumper=yaml.SafeDumper, indent=indent_spaces, width=12288, allow_unicode=True, default_flow_style=False)
+        sdata = _ordered_dump(data, Dumper=yaml.SafeDumper, indent=indent_spaces, block_seq_indent=2, width=12288, allow_unicode=True, default_flow_style=False)
     else:
-        sdata = yaml.dump(data, Dumper=yaml.SafeDumper, indent=indent_spaces, width=12288, allow_unicode=True, default_flow_style=False)
+        sdata = yaml.dump(data, Dumper=yaml.SafeDumper, indent=indent_spaces, block_seq_indent=2, width=12288, allow_unicode=True, default_flow_style=False)
     sdata = _format_yaml_dump(sdata)
 
     return sdata
