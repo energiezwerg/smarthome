@@ -626,7 +626,7 @@ class Item():
                 logger.warning("Item {}: problem evaluating {}: {}".format(self._path, self._eval, e))
             else:
                 if value is None:
-                    logger.info("Item {}: evaluating {} returns None".format(self._path, self._eval))
+                    logger.debug("Item {}: evaluating {} returns None".format(self._path, self._eval))
                 else:
                     self.__update(value, caller, source, dest)
 
