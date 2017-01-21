@@ -39,7 +39,6 @@ import locale
 import logging
 import logging.handlers
 import logging.config
-import yaml
 import os
 import re
 import signal
@@ -74,6 +73,7 @@ import lib.scheduler
 import lib.tools
 import lib.utils
 import lib.orb
+import lib.shyaml
 
 #####################################################################
 # Globals
@@ -243,7 +243,7 @@ class SmartHome():
 
     def initLogging(self):
         fo = open(self._log_config, 'r') 
-        doc = yaml.load(fo)
+        doc = lib.shyaml.yaml_load(self._log_config, False)
         logging.config.dictConfig(doc)
         fo.close()
         if MODE == 'interactive':  # remove default stream handler
@@ -293,21 +293,8 @@ class SmartHome():
         #############################################################
         self.logger.info("Init Items")
         item_conf = None
-#        for item_file in sorted(os.listdir(self._env_dir)):
-#            if item_file.endswith('.conf') or item_file.endswith('.yaml'):
-#                try:
-#                    item_conf = lib.config.parse(self._env_dir + item_file, item_conf)
-#                except Exception as e:
-#                    self.logger.exception("Problem reading {0}: {1}".format(item_file, e))
         item_conf = lib.config.parse_itemsdir(self._env_dir, item_conf)
         item_conf = lib.config.parse_itemsdir(self._items_dir, item_conf)
-#        for item_file in sorted(os.listdir(self._items_dir)):
-#            if item_file.endswith('.conf') or item_file.endswith('.yaml'):
-#                try:
-#                    item_conf = lib.config.parse(self._items_dir + item_file, item_conf)
-#                except Exception as e:
-#                    self.logger.exception("Problem reading {0}: {1}".format(item_file, e))
-#                    continue
         for attr, value in item_conf.items():
             if isinstance(value, dict):
                 child_path = attr
