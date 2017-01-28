@@ -40,6 +40,7 @@ import logging
 import logging.handlers
 import logging.config
 import os
+import shutil
 import re
 import signal
 import subprocess
@@ -242,6 +243,8 @@ class SmartHome():
             self.moon = lib.orb.Orb('moon', self._lon, self._lat, self._elev)
 
     def initLogging(self):
+        if not (os.path.isfile(self._log_config)):
+            shutil.copy2(self._log_config+'.default', self._log_config)
         fo = open(self._log_config, 'r') 
         doc = lib.shyaml.yaml_load(self._log_config, False)
         logging.config.dictConfig(doc)
