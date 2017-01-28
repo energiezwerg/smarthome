@@ -124,11 +124,12 @@ class SmartHome():
     _plugin_conf = ''	# is filled by plugin.py while reading the configuration file, needed by Backend plugin
 
     _env_logic_conf_basename = os.path.join( _env_dir ,'logic')
-    _items_dir = os.path.join(base_dir , 'items'+os.path.sep)
-    _logic_conf_basename = os.path.join(_etc_dir,'logic')
-    _logic_dir = os.path.join(base_dir , 'logics'+os.path.sep)
-    _cache_dir = os.path.join(_var_dir ,'cache'+os.path.sep)
+    _items_dir = os.path.join(base_dir, 'items'+os.path.sep)
+    _logic_conf_basename = os.path.join(_etc_dir, 'logic')
+    _logic_dir = os.path.join(base_dir, 'logics'+os.path.sep)
+    _cache_dir = os.path.join(_var_dir,'cache'+os.path.sep)
     _log_config = os.path.join(_etc_dir,'logging'+YAML_FILE)
+    _smarthome_conf_basename = None
 
     _log_buffer = 50
     __logs = {}
@@ -142,8 +143,9 @@ class SmartHome():
     _dbapis = {}
     logger = logging.getLogger(__name__)
 
-    def __init__(self, smarthome_conf_basename = os.path.join(_etc_dir,'smarthome')):
+    def __init__(self, smarthome_conf_basename=os.path.join(_etc_dir,'smarthome')):
         # set default timezone to UTC
+        self._smarthome_conf_basename = smarthome_conf_basename
         global TZ
         self.tz = 'UTC'
         os.environ['TZ'] = self.tz
@@ -158,15 +160,16 @@ class SmartHome():
         if MODE == 'default':
             lib.daemon.daemonize(PIDFILE)
 
-        #############################################################
-        # Signal Handling
+        # Add Signal Handling
         signal.signal(signal.SIGHUP, self.reload_logics)
         signal.signal(signal.SIGINT, self.stop)
         signal.signal(signal.SIGTERM, self.stop)
 
+        # check config files
+        self.checkConfigFiles()
         # setup logging
         self.initLogging()
-   
+
         #############################################################
         # Check Time
         while datetime.date.today().isoformat() < '2014-03-16':  # XXX update date
@@ -180,9 +183,6 @@ class SmartHome():
 
         #############################################################
         # Reading smarthome.yaml
-        if not (os.path.isfile(smarthome_conf_basename+YAML_FILE)) and not (os.path.isfile(smarthome_conf_basename+CONF_FILE)):
-            if os.path.isfile(smarthome_conf_basename+YAML_FILE+DEFAULT_FILE):
-                shutil.copy2(smarthome_conf_basename+YAML_FILE+DEFAULT_FILE, smarthome_conf_basename+YAML_FILE)
 
         config = lib.config.parse_basename(smarthome_conf_basename, configtype='SmartHomeNG')
         if config != {}:
@@ -249,20 +249,31 @@ class SmartHome():
             self.sun = lib.orb.Orb('sun', self._lon, self._lat, self._elev)
             self.moon = lib.orb.Orb('moon', self._lon, self._lat, self._elev)
 
-    def initLogging(self):
+    def checkConfigFiles(self):
+        # logging
         if not (os.path.isfile(self._log_config)):
-            if os.path.isfile(self._log_config+DEFAULT_FILE):
-                shutil.copy2(self._log_config+DEFAULT_FILE, self._log_config)
-        fo = open(self._log_config, 'r') 
+            if os.path.isfile(self._log_config + DEFAULT_FILE):
+                shutil.copy2(self._log_config + DEFAULT_FILE, self._log_config)
+        # smarthome.yaml
+        if not (os.path.isfile(self._smarthome_conf_basename + YAML_FILE)) and not (
+                os.path.isfile(self._smarthome_conf_basename + CONF_FILE)):
+            if os.path.isfile(self._smarthome_conf_basename + YAML_FILE + DEFAULT_FILE):
+                shutil.copy2(self._smarthome_conf_basename + YAML_FILE + DEFAULT_FILE,
+                             self._smarthome_conf_basename + YAML_FILE)
+
+
+
+    def initLogging(self):
+        fo = open(self._log_config, 'r')
         doc = lib.shyaml.yaml_load(self._log_config, False)
         logging.config.dictConfig(doc)
         fo.close()
         if MODE == 'interactive':  # remove default stream handler
             logging.getLogger().disabled = True
         elif MODE == 'debug':
-            logging.getLogger().setLevel(logging.DEBUG)        
+            logging.getLogger().setLevel(logging.DEBUG)
         elif MODE == 'quiet':
-            logging.getLogger().setLevel(logging.WARNING)        
+            logging.getLogger().setLevel(logging.WARNING)
 #       log_file.doRollover()
 
     def initMemLog(self):
