@@ -3,6 +3,7 @@
 #########################################################################
 # Copyright 2011-2014 Marcus Popp                          marcus@popp.mx
 # Copyright 2016-     Christian Strassburg            c.strassburg@gmx.de
+# Copyright 2016-     Martin Sinn                           m.sinn@gmx.de
 #########################################################################
 #  This file is part of SmartHomeNG.
 #  https://github.com/smarthomeNG/smarthome
@@ -40,6 +41,7 @@ import logging
 import logging.handlers
 import logging.config
 import os
+import shutil
 import re
 import signal
 import subprocess
@@ -74,6 +76,8 @@ import lib.tools
 import lib.utils
 import lib.orb
 import lib.shyaml
+
+from lib.constants import (YAML_FILE, CONF_FILE, DEFAULT_FILE)
 
 #####################################################################
 # Globals
@@ -124,7 +128,7 @@ class SmartHome():
     _logic_conf_basename = os.path.join(_etc_dir,'logic')
     _logic_dir = os.path.join(base_dir , 'logics'+os.path.sep)
     _cache_dir = os.path.join(_var_dir ,'cache'+os.path.sep)
-    _log_config = os.path.join(_etc_dir,'logging.yaml')
+    _log_config = os.path.join(_etc_dir,'logging'+YAML_FILE)
 
     _log_buffer = 50
     __logs = {}
@@ -175,7 +179,11 @@ class SmartHome():
         sys.excepthook = self._excepthook
 
         #############################################################
-        # Reading smarthome.conf
+        # Reading smarthome.yaml
+        if not (os.path.isfile(smarthome_conf_basename+YAML_FILE)) and not (os.path.isfile(smarthome_conf_basename+CONF_FILE)):
+            if os.path.isfile(smarthome_conf_basename+YAML_FILE+DEFAULT_FILE):
+                shutil.copy2(smarthome_conf_basename+YAML_FILE+DEFAULT_FILE, smarthome_conf_basename+YAML_FILE)
+
         config = lib.config.parse_basename(smarthome_conf_basename, configtype='SmartHomeNG')
         if config != {}:
             for attr in config:
@@ -242,6 +250,9 @@ class SmartHome():
             self.moon = lib.orb.Orb('moon', self._lon, self._lat, self._elev)
 
     def initLogging(self):
+        if not (os.path.isfile(self._log_config)):
+            if os.path.isfile(self._log_config+DEFAULT_FILE):
+                shutil.copy2(self._log_config+DEFAULT_FILE, self._log_config)
         fo = open(self._log_config, 'r') 
         doc = lib.shyaml.yaml_load(self._log_config, False)
         logging.config.dictConfig(doc)

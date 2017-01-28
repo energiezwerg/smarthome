@@ -53,6 +53,8 @@ PLUGIN_PARSE_LOGIC = 'parse_logic'
 #file extensions
 CONF_FILE = '.conf'
 YAML_FILE = '.yaml'
+DEFAULT_FILE = '.default'
+
 
 #attributes for 'autotimer' parameter
 KEY_ATTRIB_COMPAT     = 'assign_compatibility'	# name of key in smarthome.yaml
