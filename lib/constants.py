@@ -42,6 +42,10 @@ KEY_INSTANCE = 'instance'
 KEY_CLASS_PATH = 'class_path'
 KEY_CLASS_NAME = 'class_name'
 
+CACHE_PICKLE = 'pickle'
+CACHE_JSON = 'json'
+CACHE_FORMAT=CACHE_JSON
+
 #plugin methods
 PLUGIN_PARSE_ITEM = 'parse_item'
 PLUGIN_PARSE_LOGIC = 'parse_logic'

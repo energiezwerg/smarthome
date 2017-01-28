@@ -23,16 +23,17 @@
 
 
 import datetime
+import dateutil.parser
 import logging
 import os
 import pickle
 import threading
 import math
 import json
-
+import lib.utils
 from lib.constants import (ITEM_DEFAULTS, FOO, KEY_ENFORCE_UPDATES, KEY_CACHE, KEY_CYCLE, KEY_CRONTAB, KEY_EVAL,
                            KEY_EVAL_TRIGGER, KEY_NAME,KEY_TYPE, KEY_VALUE, PLUGIN_PARSE_ITEM,
-                           KEY_AUTOTIMER,KEY_THRESHOLD,
+                           KEY_AUTOTIMER,KEY_THRESHOLD, CACHE_FORMAT, CACHE_JSON, CACHE_PICKLE,
                            KEY_ATTRIB_COMPAT, ATTRIB_COMPAT_V12, ATTRIB_COMPAT_LATEST)
 
 
@@ -175,19 +176,51 @@ def _join_duration_value_string(time, value, compat=''):
 #####################################################################
 # Cache Methods
 #####################################################################
-def _cache_read(filename, tz):
+
+def json_serialize(obj):
+    """helper method to convert values to json serializable formats"""
+    import datetime
+    if isinstance(obj, datetime.datetime):
+        return obj.isoformat()
+    if isinstance(obj, datetime.date):
+        return obj.isoformat()
+    raise TypeError("Type not serializable")
+
+def json_obj_hook(json_dict):
+    """helper method for json deserialization"""
+    import dateutil
+    for (key, value) in json_dict.items():
+        try:
+            json_dict[key] = dateutil.parser.parse(value)
+        except Exception as e :
+            pass
+    return json_dict
+
+
+def _cache_read(filename, tz, cformat=CACHE_FORMAT):
     ts = os.path.getmtime(filename)
     dt = datetime.datetime.fromtimestamp(ts, tz)
     value = None
-    with open(filename, 'rb') as f:
-        value = pickle.load(f)
+
+    if cformat == CACHE_PICKLE:
+        with open(filename, 'rb') as f:
+            value = pickle.load(f)
+
+    elif cformat == CACHE_JSON:
+        with open(filename, 'r') as f:
+            value = json.load(f, object_hook=json_obj_hook)
+
     return (dt, value)
 
-
-def _cache_write(filename, value):
+def _cache_write(filename, value, cformat=CACHE_FORMAT):
     try:
-        with open(filename, 'wb') as f:
-            pickle.dump(value, f)
+        if cformat == CACHE_PICKLE:
+            with open(filename, 'wb') as f:
+                pickle.dump(value,f)
+
+        elif cformat == CACHE_JSON:
+            with open(filename, 'w') as f:
+                json.dump(value,f, default=json_serialize)
     except IOError:
         logger.warning("Could not write to {}".format(filename))
 
@@ -251,6 +284,18 @@ class Item():
         self._threshold = False
         self._type = None
         self._value = None
+        # history
+        # TODO: create history Arrays for some values (value, last_change, last_update  (usage: multiklick,...)
+        # self.__history = [None, None, None, None, None]
+        #
+        # def getValue(num):
+        #    return (str(self.__history[(num - 1)]))
+        #
+        # def addValue(avalue):
+        #    self.__history.append(avalue)
+        #    if len(self.__history) > 5:
+        #        self.__history.pop(0)
+        #
         if hasattr(smarthome, '_item_change_log'):
             self._change_logger = logger.info
         else:

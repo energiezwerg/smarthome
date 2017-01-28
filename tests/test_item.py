@@ -239,6 +239,55 @@ class TestConfig(unittest.TestCase):
 
     def testItemCasts(self):
         pass
+    def testCacheWriteReadJson(self):
+        import datetime
+        from lib.constants import CACHE_JSON
+
+        self.cache_write_load_value(v = True, f=CACHE_JSON)
+        self.cache_write_load_value(v=None, f=CACHE_JSON)
+        self.cache_write_load_value(v=1, f=CACHE_JSON)
+        self.cache_write_load_value(v=123123123, f=CACHE_JSON)
+        self.cache_write_load_value(v="foo", f=CACHE_JSON)
+        self.cache_write_load_value(v={'active': True, 'list': [{'active': True, 'rrule': 'FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR,SA,SU', 'time': 'sunset+30m', 'value': 1}, {'active': True, 'rrule': 'FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR,SA,SU', 'time': 'sunrise-30m', 'value': 0}]}, f=CACHE_JSON)
+        self.cache_write_load_value(v={'active': True}, f=CACHE_JSON)
+        self.cache_write_load_value(v=[1,2,3,4,5], f=CACHE_JSON)
+        self.cache_write_load_value(v=["a","2","3"], f=CACHE_JSON)
+        self.cache_write_load_value(v=["a","2","3",2,3,4,5], f=CACHE_JSON)
+        # @TODO: not working : self.cache_write_load_value(v=datetime.datetime.now(), f=CACHE_JSON)
+    def testCacheWriteReadPickle(self):
+        import datetime
+        from lib.constants import CACHE_PICKLE
+
+        self.cache_write_load_value(v = True, f=CACHE_PICKLE)
+        self.cache_write_load_value(v=None, f=CACHE_PICKLE)
+        self.cache_write_load_value(v=1, f=CACHE_PICKLE)
+        self.cache_write_load_value(v=123123123, f=CACHE_PICKLE)
+        self.cache_write_load_value(v="foo", f=CACHE_PICKLE)
+        self.cache_write_load_value(v={'active': True, 'list': [{'active': True, 'rrule': 'FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR,SA,SU', 'time': 'sunset+30m', 'value': 1}, {'active': True, 'rrule': 'FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR,SA,SU', 'time': 'sunrise-30m', 'value': 0}]}, f=CACHE_PICKLE)
+        self.cache_write_load_value(v={'active': True}, f=CACHE_PICKLE)
+        self.cache_write_load_value(v=[1,2,3,4,5], f=CACHE_PICKLE)
+        self.cache_write_load_value(v=["a","2","3"], f=CACHE_PICKLE)
+        self.cache_write_load_value(v=["a","2","3",2,3,4,5], f=CACHE_PICKLE)
+        self.cache_write_load_value(v=datetime.datetime.now(), f=CACHE_PICKLE)
+
+
+
+
+
+    def cache_write_load_value(self, v,f):
+        from dateutil.tz import gettz
+
+        TZ = gettz('UTC')
+        fn = 'test.cache'
+
+        lib.item._cache_write(value=v, filename=fn, cformat=f)
+
+        date = cachedvalue = None
+        date, cachedvalue = lib.item._cache_read(filename=fn, tz=TZ, cformat=f)
+        #print(type(cachedvalue))
+        self.assertEqual(v, cachedvalue)
+
+
     def testItemJsonDump(self):
         sh = MockSmartHome()
 
