@@ -308,6 +308,10 @@ class SmartHome():
         # Init Plugins
         #############################################################
         self.logger.info("Init Plugins")
+
+        if not (os.path.isfile(self._plugin_conf_basename+YAML_FILE)) and not (os.path.isfile(self._plugin_conf_basename+CONF_FILE)):
+            if os.path.isfile(self._plugin_conf_basename+YAML_FILE+DEFAULT_FILE):
+                shutil.copy2(self._plugin_conf_basename+YAML_FILE+DEFAULT_FILE, self._plugin_conf_basename+YAML_FILE)
         self._plugins = lib.plugin.Plugins(self, configfile=self._plugin_conf_basename)
 
         #############################################################
