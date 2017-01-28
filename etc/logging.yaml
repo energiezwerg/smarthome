@@ -25,12 +25,14 @@ handlers:
     filters: [loggerfilter]
     when: midnight
     backupCount: 7
+    encoding: utf8
     filename: ./var/log/smarthome.log
   busmonitor_file:
     class: logging.handlers.TimedRotatingFileHandler
     formatter: busmonitor_format
     when: midnight
     backupCount: 7
+    encoding: utf8
     filename: ./var/log/knx_busmonitor.log
 loggers:
     knx_busmonitor:
