@@ -132,7 +132,7 @@ class TestItem(unittest.TestCase):
         if item_conf == {}:
             print()
             print("config file '"+conf_filename+"' not found")
-#        print(item_conf.items())
+        print(item_conf)
         for attr, value in item_conf.items():
             if isinstance(value, dict):
                 child_path = attr
@@ -328,12 +328,45 @@ class TestItem(unittest.TestCase):
         self.assertFalse(lib.item._cast_bool('false'))
         self.assertFalse(lib.item._cast_bool('0'))
 
+    def test_fadejob(self):
+        #(item, dest, step, delta):
+        sh = MockSmartHome()
+        conf = {'test_item01': {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}}
+        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01' )
+        item(10)
+        item._fading = True
+        lib.item._fadejob(item, 0, 5, 1)
+        self.assertEqual(10, item._value)
+        item._fading = False
+        lib.item._fadejob(item,0, 5, 0.1)
+        self.assertEqual(0,item._value)
+
+        lib.item._fadejob(item, 10, 5, 0.1)
+        self.assertEqual(10, item._value)
+
+        lib.item._fadejob(item, 100, 200, 1)
+        self.assertEqual(100, item._value)
+
+    def test_set(self):
+        sh = MockSmartHome()
+        conf = {'test_item01': {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}}
+        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+        item.set(12)
+
+        print(item.cast)
+        self.assertEqual(12, item._value)
+
+        item.set(13)
+        self.assertEqual(13, item._value)
+
+
     def test_split_duration_value_string(self):
         lib.item._split_duration_value_string("")
 
     def test_join_duration_value_string(self):
-        print(lib.item._join_duration_value_string(12,123))
+        #print(lib.item._join_duration_value_string(12,123))
         #(time, value, compat=''):
+        pass
     def testCacheWriteReadJson(self):
         import datetime
         from lib.constants import CACHE_JSON
