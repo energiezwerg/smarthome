@@ -107,6 +107,8 @@ def _cast_num(value):
     :param value: numeric value to be casted, passed as str, float or int
     :return: numeric value, passed as int or float
     """
+    if isinstance(value, str):
+        value = value.strip()
     if value == '':
         return 0
     if isinstance(value, float):

@@ -13,7 +13,7 @@ ITEM_FILE_TYPE = CONF_FILE
 #ITEM_FILE_TYPE = YAML_FILE
 
 
-class TestConfig(unittest.TestCase):
+class TestItem(unittest.TestCase):
     def props(self,cls):   
         return [i for i in cls.__dict__.keys() if i[:1] != '_']
 
@@ -236,9 +236,104 @@ class TestConfig(unittest.TestCase):
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[3], 'item_tree.timertests.test_item52.wert')
 
+    def test_cast_str(self):
+        with self.assertRaises(ValueError):
+            self.assertTrue(lib.item._cast_str(1))
+        with self.assertRaises(ValueError):
+            self.assertTrue(lib.item._cast_str(["ee","ww"]))
 
-    def testItemCasts(self):
-        pass
+        str = 'qwe'
+        self.assertEqual(str, lib.item._cast_str(str))
+
+    def test_cast_list(self):
+        with self.assertRaises(ValueError):
+            self.assertTrue(lib.item._cast_list(1))
+        self.assertIsNotNone(lib.item._cast_list([1,2]))
+        with self.assertRaises(ValueError):
+            self.assertIsNotNone(lib.item._cast_list({1, 2}))
+
+    def test_cast_dict(self):
+        with self.assertRaises(ValueError):
+            self.assertTrue(lib.item._cast_dict(1))
+        self.assertIsNotNone(lib.item._cast_dict({1:1, 2:2}))
+        self.assertIsNotNone(lib.item._cast_dict({'1':1 , '2': 2}))
+
+        with self.assertRaises(ValueError):
+            self.assertIsNotNone(lib.item._cast_dict({1, 2}))
+
+    def test_cast_scene(self):
+        self.assertEqual(1, lib.item._cast_scene('1'))
+        self.assertNotEqual(1, lib.item._cast_scene('2'))
+        self.assertEqual(255, lib.item._cast_scene(0xff))
+
+        with self.assertRaises(ValueError):
+            self.assertEqual(255, lib.item._cast_scene(""))
+
+        with self.assertRaises(ValueError):
+            self.assertEqual(1, lib.item._cast_scene('l'))
+
+    def test_cast_num(self):
+        self.assertEqual(0, lib.item._cast_num(''))
+        self.assertEqual(0, lib.item._cast_num(' '))
+        self.assertEqual(1, lib.item._cast_num(' 1 '))
+        self.assertEqual(1, lib.item._cast_num('1'))
+        self.assertEqual(1.2, lib.item._cast_num('1.2'))
+        self.assertEqual(1.2, lib.item._cast_num(1.2))
+        self.assertEqual(1, lib.item._cast_num(int(1.2)))
+        self.assertEqual(1.2, lib.item._cast_num(float(1.2)))
+        with self.assertRaises(ValueError):
+            self.assertEqual(10, lib.item._cast_num(' 0x0a'))
+
+    def test_cast_bool(self):
+        """
+        ['0', 'false', 'no', 'off', '']:
+            return False
+        elif value.lower() in ['1', 'true', 'yes', 'on']:
+        :return:
+        """
+        # true string values
+        self.assertTrue(lib.item._cast_bool('yes'))
+        self.assertTrue(lib.item._cast_bool('true'))
+        self.assertTrue(lib.item._cast_bool('1'))
+        self.assertTrue(lib.item._cast_bool('on'))
+        # true numeric values
+        self.assertTrue(lib.item._cast_bool(1))
+        self.assertTrue(lib.item._cast_bool(int(1)))
+        self.assertTrue(lib.item._cast_bool(float(1)))
+        self.assertTrue(lib.item._cast_bool(bool(1)))
+
+        # exceptions
+        with self.assertRaises(ValueError):
+            self.assertTrue(lib.item._cast_bool(float(99)))
+        with self.assertRaises(ValueError):
+            self.assertTrue(lib.item._cast_bool(2))
+        with self.assertRaises(ValueError):
+            self.assertTrue(lib.item._cast_bool(-2))
+
+        with self.assertRaises(TypeError):
+            self.assertTrue(lib.item._cast_bool([]))
+
+        with self.assertRaises(TypeError):
+            self.assertTrue(lib.item._cast_bool(None))
+
+        #false numeric values
+        self.assertFalse(lib.item._cast_bool(0))
+        self.assertFalse(lib.item._cast_bool(int(0)))
+        self.assertFalse(lib.item._cast_bool(float(0)))
+        self.assertFalse(lib.item._cast_bool(bool(0)))
+        # false string values
+        self.assertFalse(lib.item._cast_bool(""))
+        self.assertFalse(lib.item._cast_bool('no'))
+        self.assertFalse(lib.item._cast_bool('off'))
+        self.assertFalse(lib.item._cast_bool('false'))
+        self.assertFalse(lib.item._cast_bool('0'))
+
+    def test_split_duration_value_string(self):
+        lib.item._split_duration_value_string("")
+
+    def test_join_duration_value_string(self):
+        print(lib.item._join_duration_value_string(12,123))
+        #(time, value, compat=''):
     def testCacheWriteReadJson(self):
         import datetime
         from lib.constants import CACHE_JSON
