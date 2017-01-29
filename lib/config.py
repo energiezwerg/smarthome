@@ -98,13 +98,17 @@ def remove_keys(ydata, func, level=0):
     :param func: the function to call to check for removal
     :param level: optional subtree level (used for recursion)
     '''
-    level_keys = list(ydata.keys())
-    for key in level_keys:
-        if type(ydata[key]).__name__ in ['dict','OrderedDict']:
-            remove_keys(ydata[key], func, level+1)
-        else:
-            if func(str(key)):
-                ydata.pop(key)
+    try:
+        level_keys = list(ydata.keys())
+        for key in level_keys:
+            if type(ydata[key]).__name__ in ['dict','OrderedDict']:
+                remove_keys(ydata[key], func, level+1)
+            else:
+                if func(str(key)):
+                    ydata.pop(key)
+    except:
+        logger.error("Problem removing key from '{}', probably invalid YAML file".format(str(ydata)))
+
 
 
 def remove_comments(ydata):
@@ -160,17 +164,20 @@ def merge(source, destination):
     :param destination: OrderedDict tree, into which the other OrderedDict tree is merged
     :return: The resulting merged OrderedDict tree
     '''
-    for key, value in source.items():
-        if isinstance(value, collections.OrderedDict):
-            # get node or create one
-            node = destination.setdefault(key, collections.OrderedDict())
-            merge(value, node)
-        else:
-            if type(value).__name__ == 'list':
-                destination[key] = value
+    try:
+        for key, value in source.items():
+            if isinstance(value, collections.OrderedDict):
+                # get node or create one
+                node = destination.setdefault(key, collections.OrderedDict())
+                merge(value, node)
             else:
-                # convert to string and remove newlines from multiline attributes
-                destination[key] = str(value).replace('\n','')
+                if type(value).__name__ == 'list':
+                    destination[key] = value
+                else:
+                    # convert to string and remove newlines from multiline attributes
+                    destination[key] = str(value).replace('\n','')
+    except:
+        logger.error("Problem merging subtrees, probably invalid YAML file")
 
     return destination
     

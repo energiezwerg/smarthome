@@ -55,7 +55,14 @@ def yaml_load(filename, ordered=False):
         else:
             y = yaml.load(sdata, yaml.SafeLoader)
     except Exception as e:
-        logger.error("YAML-file load error:  \n'%s'" % (e))
+        estr = str(e)
+        if "found character '\\t'" in estr:
+            estr = estr[estr.find('line'):]
+            estr = 'TABs are not allowed in YAML files, use spaces for indentation instead!\nError in ' + estr
+        if ("while scanning a simple key" in estr) and ("could not found expected ':'" in estr):
+            estr = estr[estr.find('column'):estr.find('could not')]
+            estr = 'The colon (:) following a key has to be followed by a space. The space is missing!\nError in ' + estr
+        logger.error("YAML-file load error in {}:  \n{}".format(filename, estr))
 
     return y
 
