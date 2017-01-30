@@ -34,7 +34,8 @@ class TestItem(unittest.TestCase):
         if item_conf == {}:
             print()
             print("config file '"+conf_filename+"' not found")
-#        print(item_conf.items())
+        print(item_conf)
+        print(item_conf.items())
         for attr, value in item_conf.items():
             if isinstance(value, dict):
                 child_path = attr
@@ -331,7 +332,7 @@ class TestItem(unittest.TestCase):
     def test_fadejob(self):
         #(item, dest, step, delta):
         sh = MockSmartHome()
-        conf = {'test_item01': {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}}
+        conf = {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}
         item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01' )
         item(10)
         item._fading = True
@@ -349,15 +350,119 @@ class TestItem(unittest.TestCase):
 
     def test_set(self):
         sh = MockSmartHome()
-        conf = {'test_item01': {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}}
+        conf = {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}
         item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
         item.set(12)
-
-        print(item.cast)
+#        print(item.type())
+#        print(item.cast)
         self.assertEqual(12, item._value)
 
-        item.set(13)
+        item.set('13')
         self.assertEqual(13, item._value)
+        self.assertIsNone(item.set('qwe'))
+        self.assertEqual(13, item._value)
+        item.set('14')
+
+    def test_cast_duration(self):
+        sh = MockSmartHome()
+        conf = {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}
+        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+        self.assertEqual(300, item._cast_duration('5m'))
+        self.assertEqual(23, item._cast_duration('23s'))
+        self.assertEqual(42, item._cast_duration(42))
+        self.assertEqual(42, item._cast_duration('42'))
+        self.assertFalse(item._cast_duration('aa'))
+        self.assertFalse(item._cast_duration(None))
+
+    def test_call(self):
+        sh = MockSmartHome()
+        conf = {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}
+        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+        item(12)
+        self.assertEqual(12, item._value)
+        self.assertEqual(12, item())
+        conf = {'type': 'num', 'eval': '2'}
+        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+        item(12)
+        self.assertEqual(0, item())
+        item.set(12)
+        self.assertEqual(12, item())
+
+    def test_run_eval(self):
+        sh = MockSmartHome()
+        conf = {'type': 'num', 'eval': '2'}
+        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+        item._Item__run_eval()
+        self.assertEqual(2,item())
+        item._eval = 'bla'
+        item._Item__run_eval()
+        item._eval = 'sh.return_none()'
+        item._Item__run_eval()
+    def test_jsonvars(self):
+        sh = MockSmartHome()
+        conf = {'type': 'num', 'eval': '2'}
+        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+        item.set('42')
+
+        self.assertDictEqual(item.jsonvars(),{'attributes': {}, 'value': 42, 'type': 'num', 'children': [], 'id': 'test_item01', 'name': 'test_item01'})
+      #  __run_eval(self, value=None, caller='Eval', source=None, dest=None):
+    def test_to_json(self):
+        import json
+        sh = MockSmartHome()
+        conf = {'type': 'num', 'eval': '2'}
+        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+        item.set('42')
+        expected = json.dumps({'attributes': {}, 'value': 42, 'type': 'num', 'children': [], 'id': 'test_item01', 'name': 'test_item01'}, sort_keys=True, indent=2)
+        self.assertEqual(item.to_json(), expected)
+
+    def test_type(self):
+        sh = MockSmartHome()
+        conf = {'type': 'num', 'eval': '2'}
+        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+        self.assertEqual(item.type(), 'num')
+        item._type= 'foo'
+        self.assertNotEqual(item.type(), 'num')
+        self.assertEqual(item.type(), 'foo')
+
+    def test_prev_value(self):
+        sh = MockSmartHome()
+        conf = {'type': 'num'}
+        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+
+        self.assertEqual(0,item.prev_value())
+
+        item(12)
+        self.assertEqual(0, item.prev_value())
+
+        item(23)
+        self.assertEqual(12, item.prev_value())
+
+        item(42)
+        self.assertEqual(23, item.prev_value())
+
+    def test_last_prev_change(self):
+        import datetime
+        import time
+        sh = MockSmartHome()
+        conf = {'type': 'num'}
+        item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
+        sec1 = datetime.datetime.now().time().second
+        self.assertEqual(sec1,item.last_change().time().second)
+        time.sleep(2)
+        item(12)
+        self.assertEqual(datetime.datetime.now().time().second,item.last_change().time().second)
+        self.assertEqual(sec1, item.prev_change().time().second)
+        self.assertEqual(datetime.datetime.now().time().second, item.last_change().time().second)
+        sec2 = datetime.datetime.now().time().second
+        time.sleep(2)
+
+        item(12)
+        self.assertEqual(sec2, item.last_change().time().second)
+        self.assertEqual(sec1, item.prev_change().time().second)
+
+        sec3 = datetime.datetime.now().time().second
+        item(23)
+        self.assertEqual(sec3, item.last_change().time().second)
 
 
     def test_split_duration_value_string(self):
@@ -453,13 +558,16 @@ class MockSmartHome():
                 name = name +'_'+ obj.__self__.get_instance_name()
             print(name)
             print( obj) 
-            print(obj.__self__.get_instance_name())
+#            print(obj.__self__.get_instance_name())
     __logs = {}
     __item_dict = {}
     __items = []
     children = []
     _plugins = []
     scheduler = MockScheduler()
+    def trigger(self, name, obj=None, by='Logic', source=None, value=None, dest=None, prio=3, dt=None):
+        print (obj)
+
     def add_log(self, name, log):
         self.__logs[name] = log
     def now(self):
@@ -477,7 +585,9 @@ class MockSmartHome():
             yield self.__item_dict[item]
     def return_plugins(self):
         for plugin in self._plugins:
-            yield plugin   
+            yield plugin
+    def return_none(self):
+        return None
 if __name__ == '__main__':
     unittest.main(verbosity=2)
 
