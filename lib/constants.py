@@ -44,7 +44,7 @@ KEY_CLASS_NAME = 'class_name'
 
 CACHE_PICKLE = 'pickle'
 CACHE_JSON = 'json'
-CACHE_FORMAT=CACHE_JSON
+CACHE_FORMAT=CACHE_PICKLE
 
 #plugin methods
 PLUGIN_PARSE_ITEM = 'parse_item'
