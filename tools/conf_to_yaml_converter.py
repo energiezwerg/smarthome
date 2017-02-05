@@ -28,6 +28,7 @@ print(os.path.basename(__file__) + ' - tool to convert shng .conf files to yaml'
 print('')
 
 import sys
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, '../lib')
 import item_conversion
 
@@ -61,7 +62,7 @@ def convert_directory(dir):
 if __name__ == '__main__':
 
     # change the working diractory to the directory from which the converter is loaded (../tools)
-    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+    os.chdir(os.path.dirname(os.path.abspath(os.path.basename(__file__))))
     
     directory = os.path.abspath('../items')
     etc_dir = os.path.abspath('../etc')
