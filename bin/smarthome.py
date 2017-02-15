@@ -83,7 +83,7 @@ from lib.constants import (YAML_FILE, CONF_FILE, DEFAULT_FILE)
 # Globals
 #####################################################################
 MODE = 'default'
-VERSION = '1.3.'
+VERSION = '1.4.'
 TZ = gettz('UTC')
 try:
     os.chdir(BASE)
