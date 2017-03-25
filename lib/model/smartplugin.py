@@ -123,3 +123,14 @@ class SmartPlugin(SmartObject, Utils):
         """
         return "Plugin: '{0}.{1}', Version: '{2}', Instance: '{3}'".format(self.__module__, self.__class__.__name__,  self.get_version(),self.get_instance_name())
 
+    def parse_logic(self, logic):
+        pass
+
+    def parse_item(self, item):
+        pass
+
+    def run(self):
+        raise NotImplementedError("'Plugin' subclasses should have a 'run()' method")
+
+    def stop(self):
+        raise NotImplementedError("'Plugin' subclasses should have a 'stop()' method")
