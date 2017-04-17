@@ -131,6 +131,7 @@ class LibUtilsTest(unittest.TestCase):
         self.assertFalse(Utils.to_bool("false"))
         self.assertFalse(Utils.to_bool("False"))
         self.assertFalse(Utils.to_bool("f"))
+        self.assertFalse(Utils.to_bool("off"))
         self.assertFalse(Utils.to_bool(0))
 
         self.assertTrue(Utils.to_bool(1.2))
@@ -141,7 +142,9 @@ class LibUtilsTest(unittest.TestCase):
         self.assertTrue(Utils.to_bool("true"))
         self.assertTrue(Utils.to_bool("True"))
         self.assertTrue(Utils.to_bool("t"))
+        self.assertTrue(Utils.to_bool("on"))
         self.assertTrue(Utils.to_bool(1))
+        self.assertTrue(Utils.to_bool(2))
 
     def test_create_hash(self):
         with self.assertRaises(Exception):

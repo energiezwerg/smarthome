@@ -192,6 +192,7 @@ class Utils(object):
         :rtype: bool
 
         """
+        # -> should it be possible to cast strings: 0 -> False and non-0 -> True (analog to integer values)?
         if type(value) == type(''):
             if value.lower() in ("yes", "y", "true",  "t", "1","on"):
                 return True

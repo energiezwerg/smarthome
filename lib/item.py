@@ -76,7 +76,9 @@ def _cast_foo(value):
 
 # TODO: Candidate for Utils.to_bool()
 # write testcase and replace
-# -> should it be possible to cast 0 -> False and non-0 to True?
+# -> should castng be restricted like this or handled exactly like Utils.to_bool()?
+#    Example: _cast_bool(2) is False, Utils.to_bool(2) is True
+
 def _cast_bool(value):
     if type(value) in [bool, int, float]:
         if value in [False, 0]:
