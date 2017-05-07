@@ -22,6 +22,7 @@
 
 import logging
 import collections
+import keyword
 import os
 import lib.shyaml as shyaml
 from lib.constants import (YAML_FILE, CONF_FILE)
@@ -138,6 +139,15 @@ def remove_reserved(ydata):
     remove_keys(ydata, lambda k: k in reserved)
 
 
+def remove_keyword(ydata):
+    '''
+    Removes reserved Python keywords from a dict or OrderedDict structure
+
+    :param ydata: configuration (sub)tree to work on
+    '''
+    remove_keys(ydata, lambda k: keyword.iskeyword(k))
+
+
 def remove_invalid(ydata):
     '''
     Removes invalid chars in item from a dict or OrderedDict structure
@@ -197,6 +207,7 @@ def parse_yaml(filename, config=None):
     remove_comments(items)
     remove_digits(items)
     remove_reserved(items)
+    remove_keyword(items)
     remove_invalid(items)
     
     config = merge(items, config)
@@ -293,6 +304,9 @@ def parse_conf(filename, config=None):
                     return config
                 elif name in reserved:
                     logger.error("Problem parsing '{}': item using reserved word set/get in line {}: {}".format(filename, linenu, line))
+                    return config
+                elif keyword.iskeyword(name):
+                    logger.error("Problem parsing '{}': item using reserved Python keyword {} in line {}: {}".format(filename, name, linenu, line))
                     return config
                     
                 if level == 1:
