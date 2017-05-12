@@ -24,6 +24,10 @@ class ConfigBaseTests:
         conf = self.config('reserved')
         self.assertEquals(0, len(conf['reserved']))
 
+    def test_read_ignores_keyword(self):
+        conf = self.config('keyword')
+        self.assertEquals(0, len(conf['keyword']))
+
     def test_read_ignores_invalidchars(self):
         conf = self.config('invalidchars')
         self.assertEquals(0, len(conf['invalidchars']))
