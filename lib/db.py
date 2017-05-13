@@ -310,7 +310,7 @@ class Database():
             if c is not None:
                 c.close()
 
-    def verify(self, retry=5):
+    def verify(self, retry=5, delay=5):
         """Verifies the connection status and reconnets if required
 
         The connected status of the connection will be checked by executing
@@ -320,6 +320,9 @@ class Database():
         In case the reconnect fails you can specify how many times a
         reconnect will be executed until it will give up. This can be
         specified by the 'retry' parameter.
+
+        To specify the delay between retries use the `delay` parameter,
+        which defaults to 5 seconds.
         """
         while retry > 0:
             locked = False
@@ -341,6 +344,9 @@ class Database():
                     self.release()
                 self.close()
                 retry = retry - 1
+
+            if retry > 0:
+                time.sleep(delay)
 
         return retry
 
