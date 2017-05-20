@@ -1,5 +1,6 @@
 
 import datetime
+import dateutil.tz
 
 import lib.item
 import lib.plugin
@@ -32,6 +33,7 @@ class MockSmartHome():
         self.children = []
         self._plugins = []
         self._dbapi = {}
+        self._tzinfo = dateutil.tz.tzutc()
         self.scheduler = MockScheduler()
         self.connections = lib.connection.Connections()
 
@@ -67,6 +69,9 @@ class MockSmartHome():
 
     def now(self):
         return datetime.datetime.now()
+
+    def tzinfo(self):
+        return self._tzinfo
 
     def add_item(self, path, item):
         if path not in self.__items:
