@@ -102,11 +102,15 @@ class TestDbTests(unittest.TestCase, TestDbBase):
           2 : ['ROLLOUT 2', 'ROLLBACK 2']
         })
 
-        # Statement 0: SELECT version
+        # Statement 0: SELECT version - ignore
+        # Statement 1: Rollout statment 1 - check:
         self.assertEquals("ROLLOUT 1", db._conn.cursor_return.execute_kwargs[1][0])
-        # Statement 2: INSERT version
+        # Statement 2: INSERT version - ignore
+        # Statement 3: Rollout statment 2 - check:
         self.assertEquals("ROLLOUT 2", db._conn.cursor_return.execute_kwargs[3][0])
-        # Statement 4: INSERT version
+        # Statement 4: INSERT version - check
+        self.assertEquals("INSERT INTO test_version", db._conn.cursor_return.execute_kwargs[4][0][0:24])
+        self.assertEquals(2, db._conn.cursor_return.execute_kwargs[4][1][0])
 
     def test_execute_internal_cursor(self):
         db = self.db()

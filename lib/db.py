@@ -230,10 +230,11 @@ class Database():
         version_table = re.sub('[^a-z0-9_]', '', self._name.lower()) + "_version";
         try:
             version, = self.fetchone("SELECT MAX(version) FROM " + version_table + ";", cur=cur)
+            if version == None:
+               version = 0
         except Exception as e:
+            logger.info("Missing table " + version_table + " error can be ignored, will be created now!");
             self.execute("CREATE TABLE " + version_table + "(version NUMERIC, updated BIGINT, rollout TEXT, rollback TEXT)", cur=cur)
-            version, = self.fetchone("SELECT MAX(version) FROM " + version_table + ";", cur=cur)
-        if version == None:
             version = 0
         logger.info("Database [{}]: Version {} found".format(self._name, version))
         for v in sorted(queries.keys()):
