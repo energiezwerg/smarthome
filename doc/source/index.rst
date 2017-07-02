@@ -1,4 +1,4 @@
-:tocdepth: 1
+:tocdepth: 3
 
 ###########
 SmartHomeNG
@@ -9,14 +9,14 @@ SmartHomeNG is a modular framework for home automation that runs on on a linux b
 Contents:
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    install
    config
    items
    logics
    logging
-   plugins
+   allplugins
    release
 
 Indices and tables

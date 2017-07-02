@@ -125,7 +125,7 @@ Like in the first example script for the fourth logic the attribute ``usage_warn
 
 
 Basic Structure of a logic script
-=================================
+---------------------------------
 
 The most important object is the smarthome object ``sh``. 
 Using this object all items, plugins and basic functions of SmartHomeNG can be accessed.
@@ -152,12 +152,12 @@ Items need to be accessed with parentheses, otherwise an exception will be raise
 
 
 Available Objects/Methods
-=========================
+-------------------------
 
 Beside the 'sh' object other important predefined objects are available.
 
 logic
------
+~~~~~
 
 This object provides access to the current logic object. It is possible
 to change logic attributes (crontab, cycle, ...) during runtime. They
@@ -178,7 +178,7 @@ Equal to ``sh.trigger()``, but it triggers only the current logic. This
 function is useful to run the logic (again) at a specified time.
 
 trigger
--------
+~~~~~~~
 
 ``trigger`` is a runtime environment for the logic, which provides some
 information about the event that triggered the logic.
@@ -263,7 +263,7 @@ Returns all item objects.
       logger.info(item.id())
 
 sh.match_items(regex)
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
 
 Returns all items matching a regular expression path and optional attribute.
 
@@ -356,7 +356,7 @@ Converts the relative humidity to the absolute humidity.
 
 
 Loaded modules
-==============
+--------------
 
 In the logic environment are several python modules already loaded:
 

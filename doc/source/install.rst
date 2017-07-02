@@ -1,8 +1,10 @@
+############
 Installation
-============
+############
 
+*****************************
 Operating System Requirements
------------------------------
+*****************************
 
 -  OS: Any Linux or Unix System should be fine. SmartHomeNG is tested on Debian Jessie (amd64).
    So the specific installation commands may differ from this guide.
@@ -10,9 +12,9 @@ Operating System Requirements
    ``# apt-get install openntpd``
 -  Shell Access to install requirements and smarthome.py
 
-
+************
 Installation
-------------
+************
 
 The steps described here will work for a fresh install of Debian Jessie. You might need other packages if you
 are using another Linux flavour like Ubuntu.
@@ -51,13 +53,31 @@ Get the latest master from Github:
 Everything is extracted to ``/usr/local/smarthome/``. It is possible to use another path.
 If you want to use the latest development version just enter the base directory and checkout ``develop`` from git.
 
+Required Python modules
+=======================
 
-Virtualenv
-~~~~~~~~~~
+For many plugins there are some further Python modules needed. There are two ways of providing access 
+for the application to these modules:
 
-To avoid issues with the Distribution Python Package Versions we recommend the use of a
-python virtual environment. With Python >3.5 this is provided with the pyvenv tool, before
-virtualenv will do this job.
+Systemwide Installation
+-----------------------
+
+It is  possible to install SmartHomeNG requirements system wide. If no other software is running or if the system
+is installed in a virtual machine then the needed modules can be installed for the whole system.
+
+.. code-block:: bash
+
+   cd /usr/local/smarthome
+   sudo pip3 install -r requirements/base.txt
+
+Installing Python Modules system wide requires no further actions for starting and running SmartHomeNG.
+
+Virtualenv / Pyenv
+------------------
+
+If other software is running on the same system then a better choice might be to isolate the needed Python 
+modules for SmartHomeNG using a virtual environment.
+With Python >3.5 this is provided with the pyvenv tool, before virtualenv will do this job.
 
 .. code-block:: bash
 
@@ -85,21 +105,8 @@ Every time you want to use smarthome.py with an virtualenv, you must activate it
    cd /usr/local/smarthome                    # Change this if needed
    . ~/shpy-virtualenv/bin/activate           # Activate the Virtual Environment for this shell
 
-System Installation
-~~~~~~~~~~~~~~~~~~~
-
-It is also possible to install smarthome.py requirements system wide. We are not responsible for
-side affects, and always recommend a virtualenv!
-
-.. code-block:: bash
-
-   cd /usr/local/smarthome
-   sudo pip install -r requirements/base.txt
-
-Installing Python Modules system wide requires no further actions for starting and running smarthome.py.
-
 Folder Structure
-----------------
+================
 
 Structure of the smarthome.py directory, e.g. /usr/local/smarthome/:
 
@@ -122,31 +129,37 @@ Structure of the smarthome.py directory, e.g. /usr/local/smarthome/:
    var/rrd/       contains the Round Robin Databases
 
 Configuration
--------------
+================
 
 `There is a dedicated page for the configuration. <config.html>`_
 
 Plugins
--------
+================
 
-Every `plugin <plugin.html>`_ has it's own installation section.
+Every `plugin <allplugins.html>`_ has it's own installation section.
 
-
+*******************
 Running SmartHomeNG
---------------------
+*******************
 
 Arguments for running SmartHomeNG
 
 .. code-block:: bash
 
-   $ bin/smarthome.py -h
-   --help show this help message and exit 
-   -v, --verbose verbose (debug output) logging to the logfile
-   -d, --debug stay in the foreground with verbose output
-   -i, --interactive open an interactive shell with tab completion and with verbose logging to the logfile
-   -l, --logics reload all logics
-   -s, --stop stop SmartHomeNG
-   -q, --quiet reduce logging to the logfile
-   -V, --version show SmartHomeNG version
-   --start start SmartHomeNG and detach from console (default)
+   usage: smarthome.py [-h] [-v | -d | -i | -l | -s | -q | -V | --start]
+   
+   optional arguments:
+     -h, --help         show this help message and exit
+     -v, --verbose      DEPRECATED use logging.config (verbose (debug output)
+                        logging to the logfile)
+     -d, --debug        stay in the foreground with verbose output
+     -i, --interactive  open an interactive shell with tab completion and with
+                        verbose logging to the logfile
+     -l, --logics       reload all logics
+     -s, --stop         stop SmartHomeNG
+     -q, --quiet        DEPRECATED use logging config (reduce logging to the
+                        logfile)
+     -V, --version      show SmartHomeNG version
+     --start            start SmartHomeNG and detach from console (default)
 
+If you start without any option, then SmartHomeNG will return the PID if already running.

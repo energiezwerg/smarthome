@@ -42,8 +42,10 @@ clean:
 	-rm -rf $(BUILDDIR)/*
 
 html:
+	@echo starting at:
+	pwd
 	@echo "creating a link to the plugin directory"
-	ln ../plugins plugins -s
+	ln ../../plugins plugins -s
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
 	@echo "removing link to the plugin directory"
