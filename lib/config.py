@@ -204,13 +204,14 @@ def parse_yaml(filename, config=None):
         config = collections.OrderedDict()
 
     items = shyaml.yaml_load(filename, ordered=True)
-    remove_comments(items)
-    remove_digits(items)
-    remove_reserved(items)
-    remove_keyword(items)
-    remove_invalid(items)
-    
-    config = merge(items, config)
+    if items is not None:
+        remove_comments(items)
+        remove_digits(items)
+        remove_reserved(items)
+        remove_keyword(items)
+        remove_invalid(items)
+        
+        config = merge(items, config)
     return config
     
 
