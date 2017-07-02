@@ -27,7 +27,7 @@ Additional information / documentation can be found in the [SmartHomeNG Wiki](ht
 ### etc/smarthome.conf (deprecated) / etc/smarthome.yaml
 Upon installation you will need to create this file and specify your location.
 <pre>
-# smarthome.conf (deprecated) / smarthome.yaml
+# smarthome.conf (deprecated)
 # look e.g. at http://www.mapcoordinates.net/de
 lat = 52.52
 lon = 13.40
