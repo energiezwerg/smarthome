@@ -43,13 +43,11 @@ clean:
 
 html:
 	@echo starting at:
-	pwd
-	@echo "creating a link to the plugin directory"
-	ln ../../plugins plugins -s
+	@pwd
+	@test ! -L "source/plugins" && echo "creating a link to the plugin directory" && ln ../../plugins source/plugins -s || echo "link already exists"
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo
-	@echo "removing link to the plugin directory"
-	unlink plugins
+	@test -L "source/plugins" && echo "removing link to the plugin directory" && unlink source/plugins
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 
