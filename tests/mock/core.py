@@ -32,7 +32,6 @@ class MockSmartHome():
         self.__items = []
         self.children = []
         self._plugins = []
-        self._dbapi = {}
         self._tzinfo = dateutil.tz.tzutc()
         self.scheduler = MockScheduler()
         self.connections = lib.connection.Connections()
@@ -42,9 +41,6 @@ class MockSmartHome():
         lib.plugin.Plugins._threads = []
         self._plugins = lib.plugin.Plugins(self, conf)
         return self._plugins
-
-    def with_dbapi(self, name, package):
-        self._dbapi[name] = __import__(package)
 
     def with_items_from(self, conf):
         item_conf = lib.config.parse(conf, None)
@@ -60,9 +56,6 @@ class MockSmartHome():
                     self.add_item(child_path, child)
                     self.children.append(child)
         return item_conf
-
-    def dbapi(self, name):
-        return self._dbapi[name]
 
     def add_log(self, name, log):
         self.__logs[name] = log

@@ -131,8 +131,8 @@ class Database():
         if the database structure is up to date) and logging.
 
         Use the 'dbapi' parameter to specify the DB-API2 module of the
-        database type to use (e.g. import the sqlite3 module and pass it as
-        parameter).
+        database type to use (e.g. import the sqlite3 module and pass it 
+        directly as parameter or as name 'sqlite3').
 
         How the database is accessed is specified by the 'connect' parameter
         which supports key/value pairs separated by '|'. These named
@@ -147,6 +147,12 @@ class Database():
         self._format_input = formatting
         self._connected = False
         self._conn = None
+
+        if type(dbapi) is str:
+            try:
+                self._dbapi = __import__(dbapi)
+            except ImportError as e:
+                self.logger.error("DB-API import failed for \"{}\": {}".format(dbapi, e))
 
         if self._format_input not in self._styles:
             raise Exception("Database [{}]: SQL format style {} not supported (only {})".format(self._name, self._format_input, self._styles))
