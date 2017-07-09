@@ -130,8 +130,9 @@ class Database():
         It is also used internally to create versions table (to keep track
         if the database structure is up to date) and logging.
 
-        Use the 'dbapi' parameter to specify the name of the database type
-        to use (registered in the common configuration, e.g. 'sqlite').
+        Use the 'dbapi' parameter to specify the DB-API2 module of the
+        database type to use (e.g. import the sqlite3 module and pass it as
+        parameter).
 
         How the database is accessed is specified by the 'connect' parameter
         which supports key/value pairs separated by '|'. These named
