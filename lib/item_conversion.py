@@ -27,8 +27,6 @@ import os
 RUAMEL_YAML_INSTALLED = False
 try:
     import ruamel.yaml as yaml
-    print('using python module ruamel.yaml version: ' + yaml.__version__)
-    print('')
     RUAMEL_YAML_INSTALLED = True
 except:
     print('ERROR: module ruamel.yaml not found')
