@@ -22,6 +22,19 @@
 import os
 import fnmatch
 
+
+"""
+This script assembles a complete list of requirements for 
+the SmartHomeNG core and all plugins.
+The list is not tested for correctness nor checked for contrary 
+requirements. 
+The procedure is as following:
+1) walks the plugins subdirectory and collect all files with requirements
+2) read the requirements for the core 
+3) read all files with requirements and add them with source of requirement to a dict
+4) write it all to a file all.txt in requirements directory
+"""
+
 files = []
 requirements = {}
 SEP='/'
@@ -54,13 +67,15 @@ for fname in files:
 for key in requirements:
     requirements[key] = sorted(requirements[key], key=lambda name: (len(name.split('.')), name))
 with open(workdir + SEP + 'requirements' + SEP+'all.txt', 'w') as outfile:
-    outfile.write("# !!!       SmartHomeNG      !!!\n")
-    outfile.write("# !!!  DON'T EDIT THIS FILE  !!!\n")
-    outfile.write("# !!! THIS FILE IS GENERATED !!!\n")
+    outfile.write("# !!!           SmartHomeNG          !!!\n")
+    outfile.write("# !!!      DON'T EDIT THIS FILE      !!!\n")
+    outfile.write("# !!!     THIS FILE IS GENERATED     !!!\n")
+    outfile.write("# !!! BY tools/build_requirements.py !!!\n")
 
     for pkg, requirement in sorted(requirements.items(), key=lambda item: item[0]):
         for req in sorted(requirement,
                           key=lambda name: (len(name.split('.')), name)):
            outfile.write('\n# {}'.format(req))
         outfile.write('\n{}\n'.format(pkg))
+        
 print("File 'requirements"+SEP+"all.txt' created.")
