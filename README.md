@@ -26,28 +26,30 @@ Additional information / documentation can be found in the [SmartHomeNG Wiki](ht
 
 ### etc/smarthome.conf (deprecated) / etc/smarthome.yaml
 Upon installation you will need to create this file and specify your location.
-<pre>
+
+```
 # smarthome.conf (deprecated)
 # look e.g. at http://www.mapcoordinates.net/de
 lat = 52.52
 lon = 13.40
 elev = 36
 tz = 'Europe/Berlin'
-</pre>
+``
 
-<pre>
+```yaml
 # smarthome.yaml
 # look e.g. at http://www.mapcoordinates.net/de
 lat: '52.52'
 lon: '13.40'
 elev: 36
 tz: Europe/Berlin
-</pre>
+```
 
 ### etc/plugin.conf (deprecated) / etc/plugin.yaml
 Upon installation you will need to create this file and configure the plugins and their attributes. 
 An example is shown below
-<pre>
+
+```
 [knx]
    class_name = KNX
    class_path = plugins.knx
@@ -74,9 +76,9 @@ An example is shown below
 [sql]
     class_name = SQL
     class_path = plugins.sqlite
-</pre>
+```
 
-<pre>
+```yaml
 knx:
     class_name: KNX
     class_path: plugins.knx
@@ -108,41 +110,51 @@ cli:
 sql:
     class_name: SQL
     class_path: plugins.sqlite
-</pre>
+```
 
 ### etc/logic.conf (deprecated) / etc/logic.yaml
 In the logic.conf you specify your logics and when they will be run. An example is shown below
-<pre>
+
+```
 # etc/logic.conf (deprecated)
 [AtSunset]
     filename = sunset.py
     crontab = sunset
-</pre>
+```
+
+```yaml
+# etc/logic.yaml
+AtSunset:
+    filename: sunset.py
+    crontab: sunset
+```
 
 ### items/
 This directory contains one or more item configuration files. The filename does not matter, except it has to end with '.conf'.
-<pre>
+
+```
 # items/global.conf (deprecated)
 [global]
     [[sun]]
         type = bool
         attribute = foo
-</pre>
+```
 
-<pre>
-# etc/logic.yaml
-AtSunset:
-    filename: sunset.py
-    crontab: sunset
-</pre>
+```yaml
+# items/global.yaml
+global:
+    sun:
+        type: bool
+        attribute: foo
+```
 
 ### logics/
 This directory contains your logic files. Simple or sophisitcated python scripts. You could address your smarthome item by `sh.item.path`.
 If you want to read an item call `sh.item.path()` or to set an item `sh.item.path(Value)`.
 
-<pre>
+```
 # logics/sunset.py
 if sh.global.sun():  # if sh.global.sun() == True:
     sh.gloabl.sun(False)  # set it to False
-</pre>
+```
 
