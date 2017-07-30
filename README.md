@@ -34,7 +34,7 @@ lat = 52.52
 lon = 13.40
 elev = 36
 tz = 'Europe/Berlin'
-``
+```
 
 ```yaml
 # smarthome.yaml
@@ -154,7 +154,7 @@ If you want to read an item call `sh.item.path()` or to set an item `sh.item.pat
 
 ```
 # logics/sunset.py
-if sh.global.sun():  # if sh.global.sun() == True:
+if sh.global.sun():       # if sh.global.sun() == True:
     sh.gloabl.sun(False)  # set it to False
 ```
 
