@@ -31,6 +31,16 @@ if sys.hexversion < 0x03020000:
     exit()
 
 #####################################################################
+# prevent user root
+#####################################################################
+import os
+if not os.name == 'nt':
+    # only check if we are not at windows systems
+    if os.getegid() == 0:
+        print("SmartHomeNG should not run as root")
+        exit()
+
+#####################################################################
 # Import Python Core Modules
 #####################################################################
 import argparse
@@ -40,7 +50,6 @@ import locale
 import logging
 import logging.handlers
 import logging.config
-import os
 import shutil
 import re
 import signal
