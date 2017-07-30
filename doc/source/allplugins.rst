@@ -70,6 +70,8 @@ Interface Plugins
    plugins/avdevice/README.md
    plugins/avm/README.md
    plugins/buderus/README.md
+   plugins/buderus/URLs.md
+   plugins/buderus/TODO.md
    plugins/comfoair/README.md
    plugins/dlms/README.md
    plugins/drexelundweiss/README.md
@@ -89,6 +91,7 @@ Interface Plugins
    plugins/luxtronic2/README.md
    plugins/netio230b/README.md
    plugins/nuki/README.md
+   plugins/nut/README.md
    plugins/plex/README.md
    plugins/pluggit/README.md
    plugins/roomba/README.md
@@ -128,9 +131,11 @@ Web / Cloud Plugins
    :titlesonly:
 
    plugins/alexa/README.md
+   plugins/alexa/nginx.md
    plugins/boxcar/README.md
    plugins/dwd/README.md
    plugins/ical/README.md
+   plugins/join/README.md
    plugins/mail/README.md
    plugins/nma/README.md
    plugins/odlinfo/README.md
@@ -148,5 +153,4 @@ Web / Cloud Plugins
 
 Non classified Plugins
 ----------------------------
-   plugins/modbus/README.md
    plugins/nut/README.md

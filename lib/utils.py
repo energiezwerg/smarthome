@@ -181,16 +181,16 @@ class Utils(object):
         Converts a value to boolean.
         Raises exception if value is a string and can't be converted and if no default value is given
         Case is ignored. These string values are allowed
-           True: 'True', "1", "true", "yes", "y", "t", "on"
-           False: "", "0", "faLse", "no", "n", "f", "off"
+        * True: 'True', "1", "true", "yes", "y", "t", "on"
+        * False: "", "0", "faLse", "no", "n", "f", "off"
         Non-string values are passed to bool constructor.
+        
         :param value : value to convert
         :param default: optional, value to return if value can not be parsed,
         if default is not set this method throws an exception
         :type value: str, object, int, ...
         :return: True if cant be converted and is true, False otherwise.
         :rtype: bool
-
         """
         # -> should it be possible to cast strings: 0 -> False and non-0 -> True (analog to integer values)?
         if type(value) == type(''):

@@ -29,7 +29,8 @@ import xml.etree.ElementTree as ET
 # folgende Option auf 1 setzen
 IGNORE_TOP_LEVEL = 1
 
-NS_URL = '{http://knx.org/xml/project/10}'
+#NS_URL = '{http://knx.org/xml/project/10}'  # ETS3
+NS_URL = '{http://knx.org/xml/project/11}'  # ETS4
 FIND_BUILDINGS = NS_URL + 'Buildings'
 FIND_BUILDINGPART = NS_URL + 'BuildingPart'
 FIND_DEVICEREF = NS_URL + 'DeviceInstanceRef'
@@ -43,153 +44,170 @@ FIND_DPT = NS_URL + 'DatapointType'
 FIND_DPST = NS_URL + 'DatapointSubtype'
 
 def processBuildingPart(root, part, depth, f, dpts):
-	print(u"processing {0} {1} ({2})".format(part.tag, part.attrib['Name'], part.attrib['Type']))
+    print("processing {0} {1} ({2})".format(part.tag, part.attrib['Name'], part.attrib['Type']))
 
-	if part.attrib['Type'] != "DistributionBoard":
-		write_item(part.attrib['Name'], depth, f)
-		
-		for devref in part.findall(FIND_DEVICEREF):
-			processDevice(root, devref.attrib['RefId'], depth + 1, f, dpts)
+    if part.attrib['Type'] != "DistributionBoard":
+        write_item(part.attrib['Name'], depth, f)
+        
+        for devref in part.findall(FIND_DEVICEREF):
+            processDevice(root, devref.attrib['RefId'], depth + 1, f, dpts)
 
-	for subpart in part.findall(FIND_BUILDINGPART):
-		processBuildingPart(root, subpart, depth + 1, f, dpts)
-		
-	f.write('\n')
+    for subpart in part.findall(FIND_BUILDINGPART):
+        processBuildingPart(root, subpart, depth + 1, f, dpts)
+        
+    f.write('\n')
 
 def processDevice(root, ref, depth, f, dpts):
-	print(u"process device {0}".format(ref))
-	device = root.findall('.//' + FIND_DEVICE + "[@Id='" + ref + "']")[0]
-	if 'Description' in device.attrib.keys():
-		print(u"".format(device.attrib['Description']))
+    print("process device {0}".format(ref))
+    device = root.findall('.//' + FIND_DEVICE + "[@Id='" + ref + "']")[0]
+    if 'Description' in device.attrib.keys():
+        print("".format(device.attrib['Description']))
 
-	for comobj in device.findall('.//' + FIND_COMREF):
-		if 'DatapointType' not in comobj.attrib.keys():
-			continue
+    for comobj in device.findall('.//' + FIND_COMREF):
+        if 'DatapointType' not in comobj.attrib.keys():
+            continue
 
-		if comobj.attrib['DatapointType'] not in dpts:
-			dpt = 1
-		else:
-			dpt = dpts[comobj.attrib['DatapointType']].dpt.number
+        if comobj.attrib['DatapointType'] in dpts:
+            print(comobj.attrib['DatapointType'])
+            if comobj.attrib['DatapointType'] == 'DPT-14':
+                print("Got it!" + str(dpts[comobj.attrib['DatapointType']]))
+            dpt = dpts[comobj.attrib['DatapointType']].dpt.number
+        else:
+            print("Warning: {0} has no Datapoint Subtype dpts: ".format(comobj.attrib['DatapointType']))
+            dpt = 1
 
-		for connector in comobj.findall('.//' + FIND_CONNECTOR):
+        for connector in comobj.findall('.//' + FIND_CONNECTOR):
 
-			for send in connector.findall('.//' + FIND_SEND):
-				if 'GroupAddressRefId' in send.keys():
-					ga_ref = send.attrib['GroupAddressRefId']
-					print(u"process ga {0}".format(ga_ref))
-					ga = root.findall('.//' + FIND_GA + "[@Id='" + ga_ref + "']")[0]
-					ga_str = ga2str(int(ga.attrib['Address']))
-					print(u"Send GA: {0} ({1})".format(ga_str, ga.attrib['Name']))
+            for send in connector.findall('.//' + FIND_SEND):
+                if 'GroupAddressRefId' in send.keys():
+                    ga_ref = send.attrib['GroupAddressRefId']
+                    print("process ga {0}".format(ga_ref))
+                    ga = root.findall('.//' + FIND_GA + "[@Id='" + ga_ref + "']")[0]
+                    ga_str = ga2str(int(ga.attrib['Address']))
+                    print("Send GA: {0} ({1})".format(ga_str, ga.attrib['Name']))
 
-					if len(ga_str) > 0:
-						write_item(ga.attrib['Name'], depth, f)
-						write_dpt(dpt, depth + 1, f)
-						write_param("knx_send=" + ga_str, depth + 1, f)
-						write_param("knx_listen=" + ga_str, depth + 1, f)
+                    if len(ga_str) > 0:
+                        write_item(ga.attrib['Name'], depth, f)
+                        write_dpt(dpt, depth + 1, f)
+                        write_param("knx_send=" + ga_str, depth + 1, f)
+                        write_param("knx_listen=" + ga_str, depth + 1, f)
 
-			for receive in connector.findall('.//' + FIND_RECEIVE):
-				if 'GroupAddressRefId' in receive.keys():
-					ga_ref = receive.attrib['GroupAddressRefId']
-					print(u"process ga {0}".format(ga_ref))
-					ga = root.findall('.//' + FIND_GA + "[@Id='" + ga_ref + "']")[0]
-					ga_str = ga2str(int(ga.attrib['Address']))
-					print(u"Receive GA: {0} ({1})".format(ga_str, ga.attrib['Name']))
+            for receive in connector.findall('.//' + FIND_RECEIVE):
+                if 'GroupAddressRefId' in receive.keys():
+                    ga_ref = receive.attrib['GroupAddressRefId']
+                    print("process ga {0}".format(ga_ref))
+                    ga = root.findall('.//' + FIND_GA + "[@Id='" + ga_ref + "']")[0]
+                    ga_str = ga2str(int(ga.attrib['Address']))
+                    print("Receive GA: {0} ({1})".format(ga_str, ga.attrib['Name']))
 
-					if len(ga_str) > 0:
-						write_item(ga.attrib['Name'], depth, f)
-						write_dpt(dpt, depth + 1, f)
-						write_param("knx_read=" + ga_str, depth + 1, f)
-						write_param("knx_listen=" + ga_str, depth + 1, f)
+                    if len(ga_str) > 0:
+                        write_item(ga.attrib['Name'], depth, f)
+                        write_dpt(dpt, depth + 1, f)
+                        write_param("knx_read=" + ga_str, depth + 1, f)
+                        write_param("knx_listen=" + ga_str, depth + 1, f)
 
 def write_dpt(dpt, depth, f):
-	if dpt == 1:
-		write_param("type=bool", depth, f)
-		write_param("visu=toggle", depth, f)
-	elif dpt == 2 or dpt == 3 or dpt == 10 or dpt == 11:
-		write_param("type=foo", depth, f)
-	elif dpt == 4 or dpt == 24:
-		write_param("type=str", depth, f)
-		write_param("visu=div", depth, f)
-	else:
-		write_param("type=num", depth, f)
-		write_param("visu=slider", depth, f)
-		write_param("knx_dpt=5001", depth, f)
-		return
+    if dpt == 1:
+        write_param("type=bool", depth, f)
+        write_param("visu=toggle", depth, f)
+    elif dpt == 2 or dpt == 3 or dpt == 10 or dpt == 11:
+        write_param("type=foo", depth, f)
+    elif dpt == 4 or dpt == 24:
+        write_param("type=str", depth, f)
+        write_param("visu=div", depth, f)
+    else:
+        write_param("type=num", depth, f)
+        write_param("visu=slider", depth, f)
+        write_param("knx_dpt=5001", depth, f)
+        return
 
-	write_param("knx_dpt=" + str(dpt), depth, f)
+    write_param("knx_dpt=" + str(dpt), depth, f)
 
 def write_param(string, depth, f):
-	for i in range(depth):
-		f.write('    ')
+    for i in range(depth):
+        f.write('    ')
 
-	f.write(string + '\n')
+    f.write(string + '\n')
 
 def write_item(string, depth, f):
-	for i in range(depth):
-		f.write('    ')
+    s = str(string)
+    for i in range(depth):
+        f.write('    ')
 
-	for i in range(depth + 1):
-		f.write('[')
+    for i in range(depth + 1):
+        f.write('[')
 
-	f.write("'" + string.encode('UTF-8').lower() + "'")
+    f.write("'" + s.lower() + "'")
 
-	for i in range(depth + 1):
-		f.write(']')
+    for i in range(depth + 1):
+        f.write(']')
 
-	f.write('\n')
+    f.write('\n')
 
 def ga2str(ga):
-	return "%d/%d/%d" % ((ga >> 11) & 0xf, (ga >> 8) & 0x7, ga & 0xff)
+    return "%d/%d/%d" % ((ga >> 11) & 0xf, (ga >> 8) & 0x7, ga & 0xff)
 
 def pa2str(pa):
-	return "%d.%d.%d" % (pa >> 12, (pa >> 8) & 0xf, pa & 0xff)
+    return "%d.%d.%d" % (pa >> 12, (pa >> 8) & 0xf, pa & 0xff)
 
 ##############################################################
 #		Main
 ##############################################################
 
-KNXMASTERFILE = sys.argv[1]
-PROJECTFILE = sys.argv[2]
-OUTFILE = sys.argv[3]
+if __name__ == '__main__':
 
-print "Master: " + KNXMASTERFILE
-print "Project: " + PROJECTFILE
-print "Outfile: " + OUTFILE
+    KNXMASTERFILE = sys.argv[1]
+    PROJECTFILE = sys.argv[2]
+    OUTFILE = sys.argv[3]
 
-if (os.path.exists(OUTFILE)):
-	os.remove(OUTFILE)
+    print("Master: " + KNXMASTERFILE)
+    print("Project: " + PROJECTFILE)
+    print("Outfile: " + OUTFILE)
 
-master = ET.parse(KNXMASTERFILE)
-root = master.getroot()
-dpts = {}
+    if (os.path.exists(OUTFILE)):
+        os.remove(OUTFILE)
 
-DPT = namedtuple('DPT', ['id', 'number', 'name', 'text', 'size', 'dpsts'])
-DPST = namedtuple('DPST', ['id', 'number', 'name', 'text', 'dpt'])
+    print("Examine knx masterfile to get datapoint types and subtypes")
+    master = ET.parse(KNXMASTERFILE)
+    root = master.getroot()
+    dpts = {}                           # data points
 
-for dpt in root.findall('.//' + FIND_DPT):
-	item = DPT(id = dpt.attrib['Id'], number = int(dpt.attrib['Number']), name = dpt.attrib['Name'], text = dpt.attrib['Text'], size = int(dpt.attrib['SizeInBit']), dpsts = {})
-
-	for dpst in dpt.findall('.//' + FIND_DPST):
-		sub = DPST(id = dpst.attrib['Id'], number = int(dpst.attrib['Number']), name = dpst.attrib['Name'], text = dpst.attrib['Text'], dpt = item)
-		item.dpsts[sub.id] = sub
-		dpts[sub.id] = sub
-
-	dpts[item.id] = item
+    DPT = namedtuple('DPT', ['id', 'number', 'name', 'text', 'size', 'dpsts'])
+    DPST = namedtuple('DPST', ['id', 'number', 'name', 'text', 'dpt'])
 
 
-project = ET.parse(PROJECTFILE)
-root = project.getroot()
-buildings = root.find('.//' + FIND_BUILDINGS)
+    print("Searching for Datapoints")
+    for dpt in root.findall('.//' + FIND_DPT):
+        item = DPT(id = dpt.attrib['Id'], number = int(dpt.attrib['Number']), name = dpt.attrib['Name'], text = dpt.attrib['Text'], size = int(dpt.attrib['SizeInBit']), dpsts = {})
 
-if buildings is None:
-	print "Buildings not found"
-else:
-	with open(OUTFILE, 'w') as f:
-		if IGNORE_TOP_LEVEL:
-			for part in buildings[0]:
-				processBuildingPart(root, part, 0, f, dpts)
-		else:
-			for part in buildings:
-				processBuildingPart(root, part, 0, f, dpts)
+        # find all children of datapoint type
+        for dpst in dpt.findall('.//' + FIND_DPST):
+            sub = DPST(id = dpst.attrib['Id'], number = int(dpst.attrib['Number']), name = dpst.attrib['Name'], text = dpst.attrib['Text'], dpt = item)
+            item.dpsts[sub.id] = sub
+            dpts[sub.id] = sub
+
+        dpts[item.id] = item
+
+    if len(dpts) > 0:
+        print("Found {} datapoint subtype definitions".format(len(dpts)))
+    else:
+        print("No datapoint subtypes found")
+
+    print("Examine projectfile")
+        
+    project = ET.parse(PROJECTFILE)
+    root = project.getroot()
+    buildings = root.find('.//' + FIND_BUILDINGS)
+
+    if buildings is None:
+        print("Buildings not found")
+    else:
+        with open(OUTFILE, 'w') as f:
+            if IGNORE_TOP_LEVEL:
+                for part in buildings[0]:
+                    processBuildingPart(root, part, 0, f, dpts)
+            else:
+                for part in buildings:
+                    processBuildingPart(root, part, 0, f, dpts)
 
 

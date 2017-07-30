@@ -26,7 +26,7 @@ import re
 from collections import namedtuple
 import xml.etree.ElementTree as ET
 
-NS_URL = '{http://knx.org/xml/project/11}'
+NS_URL = '{http://knx.org/xml/project/11}'  # ETS4
 FIND_GA = NS_URL + 'GroupAddress'
 
 def write_dpt(dpt, depth, f):
@@ -109,53 +109,54 @@ class AutoVivification(dict):
             return value
 
 ##############################################################
-#		Main
+# Main
 ##############################################################
 
-PROJECTFILE = sys.argv[1]
+if __name__ == '__main__':
+    PROJECTFILE = sys.argv[1]
 
-print "Project: " + PROJECTFILE
+    print("Project: " + PROJECTFILE)
+    project = ET.parse(PROJECTFILE)
+    root = project.getroot()
+    a = AutoVivification()
 
-project = ET.parse(PROJECTFILE)
-root = project.getroot()
-a = AutoVivification()
+    for ga in root.findall('.//' + FIND_GA):
+        if 'Description' in ga.attrib.keys() and 'Name' in ga.attrib.keys():
+            desc = ga.attrib['Description']
+            name = ga.attrib['Name']
 
-for ga in root.findall('.//' + FIND_GA):
-    if 'Description' in ga.attrib.keys() and 'Name' in ga.attrib.keys():
-        desc = ga.attrib['Description']
-        name = ga.attrib['Name']
+            match = re.match(r".*\s*sh\((?P<sh_str>[^)]*)\).*", desc)
+            if match:
+                parts = name.split(' ')
+                item = a
+                for part in parts:
+                    item = item[part]
+                
+                parts = match.group('sh_str').split('|',1)
+                ga_str = ga2str(int(ga.attrib['Address']))
+                ga_attributes = parts[0].split(',')
 
-        match = re.match(r".*\s*sh\((?P<sh_str>[^)]*)\).*", desc)
-        if match:
-            parts = name.split(' ')
-            item = a
-            for part in parts:
-                item = item[part]
-            
-            parts = match.group('sh_str').split('|',1)
-            ga_str = ga2str(int(ga.attrib['Address']))
-            ga_attributes = parts[0].split(',')
-
-            for ga_attribute in ga_attributes:
-                if not ga_attribute in item['sh_attributes'].keys():
-                    item['sh_attributes'][ga_attribute] = []
-                item['sh_attributes'][ga_attribute].append(ga_str)
-            
-            if len(parts) > 1:
-                for part in parts[1].split('|'):
-                    p = part.split('=')
-                    if len(p) == 2:
-                        if not p[0] in item['sh_attributes'].keys():
-                            item['sh_attributes'][p[0]] = []
-                        item['sh_attributes'][p[0]].append(p[1].strip())                            
-
-for k in a.keys():
-    OUTFILE = u"{0}.conf".format(k)
-    print u"Create File: {0}".format(OUTFILE)
+                for ga_attribute in ga_attributes:
+                    if not ga_attribute in item['sh_attributes'].keys():
+                        item['sh_attributes'][ga_attribute] = []
+                    item['sh_attributes'][ga_attribute].append(ga_str)
+                
+                if len(parts) > 1:
+                    for part in parts[1].split('|'):
+                        p = part.split('=')
+                        if len(p) == 2:
+                            if not p[0] in item['sh_attributes'].keys():
+                                item['sh_attributes'][p[0]] = []
+                            item['sh_attributes'][p[0]].append(p[1].strip())
     
-    if (os.path.exists(OUTFILE)):
-	    os.remove(OUTFILE)
 
-    with open(OUTFILE, 'w') as f:
-        write_item(k, 0, f)
-        write_dict(a[k], 1, f)
+    for k in a.keys():
+        OUTFILE = u"{0}.conf".format(k)
+        print("Create File: {0}".format(OUTFILE))
+        
+        if (os.path.exists(OUTFILE)):
+            os.remove(OUTFILE)
+
+        with open(OUTFILE, 'w') as f:
+            write_item(k, 0, f)
+            write_dict(a[k], 1, f)

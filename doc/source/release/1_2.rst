@@ -2,8 +2,6 @@
 Release 1.2 - May 16th, 2016
 ============================
 
-We still have to document the many changes within this upcoming release 1.2. 
-
 New CORE features
 -----------------
 
@@ -50,20 +48,3 @@ New Plugins
 Removed Plugins
 ---------------
 * Whatsapp
-
-Open Issues - Todo
-==================
-
-* Feiertage Plugin
-* Datenbank-Abstraktions Plugin
-* Python Mindestlevel (geht das Backend-Plugin auf Py3.4 jetzt?)
-* Bug in is_ip (Utils)
-* systemd Abhängigkeiten im Backend Plugin
-* Prüfen ob ``object_refcount`` rausfliegt (six.py Problem bei der maintenance Routine)
-* REST API
-
-# Todo für Doku
-* Pluginentwicklung mit SmartPlugin
-* Nutzung der Multiinstanzfähigkeit (Plugin- / Itemanpassungen)
-* Wie konfiguriere ich Logging?
-

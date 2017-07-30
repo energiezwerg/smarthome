@@ -1,0 +1,30 @@
+/* the standard rtd themes is first included and then this one here */
+
+.wy-nav-content {
+max-width: 1200px !important;
+}
+
+pre, code, .rst-content tt, .rst-content code, kbd, samp {
+    font-size: 16px !important;
+}
+
+code, .rst-content tt, .rst-content code {
+    font-size: 16px !important;
+}
+
+.sidebar.deprecated {
+    background-color: #fee;
+}
+
+.sidebar.deprecated > p.sidebar-title:after{
+    content: " (deprecated)";
+}
+
+
+.section, h1, h2, h3 {
+    clear: both;
+}
+
+p {
+    font-size: 12pt;
+}

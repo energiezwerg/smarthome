@@ -231,25 +231,28 @@ def parse_conf(filename, config=None):
     """
     Load and parse a configuration file which is in the old .conf format of smarthome.py
     and merge it to the configuration tree
-    
+
     The config file should stick to the following setup:
-    [firstlevel]
-        attribute1 = xyz
-        attribute2 = foo
-        attribute3 = bar
-        [[secondlevel]]
-            attribute1 = abc
-            attribute2 = bar
-            attribute3 = foo
-            [[[thirdlevel]]]
-                attribute1 = def
-                attribute2 = barfoo
-                attribute3 = foobar
-        [[anothersecondlevel]]
-            attribute1 = andsoon
-            
+
+    .. code-block:: ini
+
+       [firstlevel]
+           attribute1 = xyz
+           attribute2 = foo
+           attribute3 = bar
+           [[secondlevel]]
+               attribute1 = abc
+               attribute2 = bar
+               attribute3 = foo
+               [[[thirdlevel]]]
+                   attribute1 = def
+                   attribute2 = barfoo
+                   attribute3 = foobar
+           [[anothersecondlevel]]
+               attribute1 = and so on
+
     where firstlevel, secondlevel, thirdlevel and anothersecondlevel are defined as items and attribute are their respective attribute - value pairs
-    
+
     Valid characters for the items are a-z and A-Z plus any digit and underscore as second or further characters.
     Valid characters for the attributes are the same as for an item plus @ and *
 
@@ -257,6 +260,7 @@ def parse_conf(filename, config=None):
     :param config: Optional OrderedDict tree, into which the configuration should be merged
     :return: The resulting merged OrderedDict tree
     """
+    
     valid_set = set(valid_attr_chars)
     if config is None:
         config = collections.OrderedDict()
