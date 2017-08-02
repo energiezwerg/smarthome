@@ -5,40 +5,62 @@ A good basis for your own plugin is found in ``dev/sample_plugin/__init__.py``
 
 ## Plugin description
 
-### The plugin configuration file
-The file plugin.conf is normally located in the subdirectory ``etc`` of SmartHomeNG base directory. It tells SmartHomeNG which plugins to load and where to find them. The following box is a typical entry for your new plugin in that file (old configuration file format.
+### Overview
 
-```
-    # etc/plugin.conf
-    [myplugin]
-        class_name = Myplugin
-        class_path = plugins.myplugin
-        Parameter1 = 42
-```
+The plugin is placed in it's own folder within the plugins folder. The name of the folder ist the name of the plugin and has to be **all lowercase**.
+
+At the moment, the Plugin is made up of a minium of two files, which are located within that folder.
+
+Those files are:
+
+- `__init__.py`
+- `README.md`
+
+The file `__init__.py` contains the Python code of the plugin. The code should be at least Python 3.4 comatible.
+
+The file `README.md` contains the basic documentation (in english language) of the plugin.
+
+To get thee plugin loaded, it has to be configured in the configuration file etc/plugin.yaml (or etc/plugin.conf for older installations).
+
+### The plugin configuration file
+The file plugin.yaml (or plugin.conf) is located in the subdirectory ``etc`` of SmartHomeNG base directory. It tells SmartHomeNG which plugins to load and where to find them. The following box is a typical entry for your new plugin in that file (old configuration file format.
+
+Let's assume you are writing a new plugin named **myplugin**.
 
 In the new configuration file format (yaml) the entry looks like this:
 
 ```yaml
     # etc/plugin.yaml
-    myplugin:
+    myplugin_instance:
         class_name: Myplugin
         class_path: plugins.myplugin
         Parameter1: 42
 ```
 
+In the old configuration file format (conf) the entry looks like this:
+
+```
+    # etc/plugin.conf
+    [myplugin_instance]
+        class_name = Myplugin
+        class_path = plugins.myplugin
+        Parameter1 = 42
+```
+
+
 Let's look at the parameters:
 
-`[myplugin]`
+`myplugin_instance:` or `[myplugin_instance]`
 
-This is the name you give to the plugin. You can choose whatever you like. This is the name of the plugin instance when running SmartHomeNG. If you are running multiple instances of the plugin: This name you distinguish the instances.
+This is the name you give to actual loaded instace of the plugin. You can choose whatever you like. This is the name of the plugin instance when running SmartHomeNG. If you are running multiple instances of the plugin: This name you distinguishes the instances.
 
-`class_name`
+`class_name:` or `class_name`
 
-The Parameter class_name is of course the class name you give to the new python class in the plugin. It has to match the class name in your python code as described in the following section.
+The Parameter class_name is of course the class name you give to the new python class in the plugin. It has to match the class name in your python code as described in the following section. It is case-sensitive.
 
-`class_path`
+`class_path:` or `class_path`
 
-The class_path parameter tells SmartHomeNG where to find the python code of the plugin. The example in the box means that your code is in the file ``plugins/myplugin/__init__.py`` where ``plugins`` is a subdirectory of SmartHomeNG base directory and ``myplugin`` is the directory where all files of the plugin reside. It is also the name of the plugin. The name of the directory has to be lower case.
+The class_path parameter tells SmartHomeNG where to find the python code of the plugin. The example in the box means that your code is in the file ``plugins/myplugin/__init__.py`` where ``plugins`` is a subdirectory of SmartHomeNG base folder and ``myplugin`` is the folder where all files of the plugin reside. It is also the name of the plugin. The name of the folder has to be lower case.
 
 `Parameter1`
 
@@ -66,30 +88,86 @@ class Myplugin(SmartPlugin):
 ALLOW_MULTIINSTANCE = False
 PLUGIN_VERSION = "a.b.c"
 
-def __init__(self, smarthome, Parameter1= False):
-    logger.info('Init MyPlugin')
-self._sh=smarthome
-    # …
+    def __init__(self, sh, *args, **kwargs):
+        """
+        Initalizes the plugin. The parameters describe for this method are pulled from the entry in plugin.conf.
 
-def run(self):
-    self.alive = True
+        :param sh:  The instance of the smarthome object, save it for later references
+        """
+        # attention:
+        # if your plugin runs standalone, sh will likely be None so do not rely on it later or check it within your code
+        
+        self._sh = sh
+        self.logger = logging.getLogger(__name__) 	# get a unique logger for the plugin and provide it internally
 
-def stop(self):
-    self.alive = False
+        # todo:
+        # put any initialization for your plugin here
 
-def parse_item(self, item):
-    if 'my_parameter' in item.conf:
-        value = item.conf['my_parameter']
-        return self.update_item
-    else:
-        return None
 
-def parse_logic(self, logic):
-    if 'xxx' in logic.conf:
-        return self.run_logic
+    def run(self):
+        """
+        Run method for the plugin
+        """        
+        self.logger.debug("run method called")
+        self.alive = True
 
-def update_item(self, item, caller=None, source=None, dest=None):
-    # …
+
+    def stop(self):
+        """
+        Stop method for the plugin
+        """
+        self.logger.debug("stop method called")
+        self.alive = False
+
+
+    def parse_item(self, item):
+        """
+        Default plugin parse_item method. Is called when the plugin is initialized.
+        The plugin can, corresponding to its attribute keywords, decide what to do with
+        the item in future, like adding it to an internal array for future reference
+
+        :param item:    The item to process.
+        :return:        If the plugin needs to be informed of an items change you should return a call back function
+                        like the function update_item down below. An example when this is needed is the knx plugin
+                        where parse_item returns the update_item function when the attribute knx_send is found.
+                        This means that when the items value is about to be updated, the call back function is called
+                        with the item, caller, source and dest as arguments and in case of the knx plugin the value
+                        can be sent to the knx with a knx write function within the knx plugin.
+
+        """
+        if self.has_iattr(item.conf, 'foo_itemtag'):
+            self.logger.debug("parse item: {0}".format(item))
+
+        # todo
+        # if interesting item for sending values:
+        #   return update_item
+
+
+    def parse_logic(self, logic):
+        """
+        Default plugin parse_logic method
+        """
+        if 'xxx' in logic.conf:
+            # self.function(logic['name'])
+            pass
+
+
+    def update_item(self, item, caller=None, source=None, dest=None):
+        """
+        Write items values
+
+        :param item: item to be updated towards the plugin
+        :param caller: if given it represents the callers name
+        :param source: if given it represents the source
+        :param dest: if given it represents the dest
+        """
+        # todo 
+        # change 'foo_itemtag' into your attribute name
+        if item():
+            if self.has_iattr(item.conf, 'foo_itemtag'):
+                self.logger("update_item ws called with item '{}' from caller '{}', source '{}' and dest '{}'".format(item, caller, source, dest))
+                pass
+
 
 def run_logic(self, logic, caller=None, source=None, dest=None):
     # …
