@@ -152,7 +152,8 @@ class Database():
             try:
                 self._dbapi = __import__(dbapi)
             except ImportError as e:
-                self.logger.error("DB-API import failed for \"{}\": {}".format(dbapi, e))
+                logger.error("DB-API import failed for \"{}\": {} - module installed?".format(dbapi, e))
+                raise
 
         if self._format_input not in self._styles:
             raise Exception("Database [{}]: SQL format style {} not supported (only {})".format(self._name, self._format_input, self._styles))
