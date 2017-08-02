@@ -1,174 +1,135 @@
+############
 Installation
-============
+############
 
-Operating System Requirements
------------------------------
+The steps described here will work for a fresh installation of Debian Linux (8.x aka Jessie).
+Other packages might be needed another Linux flavour like Ubuntu, Archlinux, etc. is installed.
 
--  OS: Any Linux or Unix System should be fine. SmartHomeNG is tested
-   on Debian Jessie (amd64) and several flavors of Ubuntu.
-   So the specific installation commands may differ from this guide.
--  NTP: A running NTP daemon is recommended:
-   ``# apt-get install openntpd``
--  Shell Access to install requirements and smarthome.py
-
-Smarthome.py is tested on Ubuntu 16.04, Debian Wheezy and Arch Linux.
-
-Python 3.2 or higher is mandatory. Python 2.x is not supported
-``$ sudo apt-get install python3 python3-dev python3-setuptools``
-
-Ubuntu 16.04
-~~~~~~~~~~~~
+First, please update the system to the latest fixes. Then install the following packages from the distribution:
 
 .. code-block:: bash
 
-   $ sudo apt install build-essential git python3 python3-venv python3-dev python3-setuptools
+   sudo apt-get -y install dialog python3 python3-dev python3-setuptools unzip build-essential
+   sudo apt-get install python3-pip
 
-Debian Wheezy
-~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-
-Installation
-------------
-
-For security reasons it is recommended to create an dedicated user account for smarthome.py. On
-most Linux Distributions this can be done via:
+For security reasons it is **strongly recommended** to create a **dedicated user account** for SmartHomeNG. 
+On most Linux Distributions this can be done via:
 
 .. code-block:: bash
 
    $ sudo adduser smarthome
+   
+In the following it is expected that SmartHomeNG **is not installed and run as user root** but instead uses
+the dedicated user _smarthome_
 
-Stable Release
-~~~~~~~~~~~~~~
 
-At
-`https://github.com/smarthomeng/smarthome/releases <https://github.com/smarthomeng/smarthome/releases>`_
-you find the latest release.
+Download SmartHomeNG from Github
+================================
 
-.. code-block:: bash
-
-   $ cd /usr/local
-   $ sudo tar --owner=smarthome xvzf path-to-tgz/smarthome-X.X.tgz
-
-Everything is extracted to /usr/local/smarthome/. It is possible to use
-another path.
-
-Development
-~~~~~~~~~~~
-
-To install the recent development version of SmartHomeNG for user **smarthome**:
+Everything is extracted to ``/usr/local/smarthome/``. It is possible however to use another path.
+``sudo`` is needed to access ``usr/local/`` as well as setting the ownership to user **smarthome**
 
 .. code-block:: bash
 
-   $ sudo mkdir -p /usr/local/smarthome
-   $ sudo chown -R smarthome /usr/local/smarthome/
-   $ cd /usr/local
-   $ git clone https://github.com/smarthomeNG/smarthome.git -b develop
-   </code>
-   </pre>
+   cd /usr/local
+   sudo git clone --recursive git://github.com/smarthomeNG/smarthome.git
+   sudo chown -R smarthome:smarthome /usr/local/smarthome
+   cd /usr/local/smarthome/etc
+   touch logic.yaml
 
-To get the latest updates:
-
-.. code-block:: bash
-
-   $ cd /usr/local/smarthome
-   $ git pull
-
-Virtualenv
-~~~~~~~~~~
-
-To avoid issues with the Distribution Python Package Versions we recommend the use of a
-python virtual environment. With Python >3.5 this is provieded with the pyvenv tool, before
-virtualenv will do this job.
+If the latest development version is about to installed, just enter the base directory and checkout branch ``develop`` from git.
 
 .. code-block:: bash
 
-   cd /usr/local/smarthome              # Change this if needed
-   pyvenv ~/shpy-virtualenv             # Or "virtualenv" of Python <= 3.4, like on Debian Wheezy
-   . ~/shpy-virtualenv/bin/activate     # Activates the Virtual Environment for this shell
-   pip install --upgrade pip            # Update the Python Package Installer inside the virtualenv
-   pip install -r requirements/base.txt # Install base requirements for smarthome.py
+   cd /usr/local/smarthome/etc
+   git checkout develop
+   
 
-Some smarthome.py require some more Python Modules, you can simply install these, e.g.:
+Required Python modules
+=======================
+
+For many plugins there are some further Python modules needed. There are two ways of providing access 
+for the application to these modules. The first method is to install any module systemwide. 
+You will need to run pip with ``sudo`` prefix then. 
+
+If you decide to run more than SmartHomeNG on your system
+you might encounter situations were SmartHomeNG needs a module with a special version but another program
+needs another version of this module. You might not be able to solve this conflict. 
+One idea is to use a virtual environment for python for a specific program. 
+
+Both methods are described below:
+
+Systemwide installation
+-----------------------
+
+It is a good idea to first upgrade the Python package manager pip:
+
+.. code-block:: bash
+
+   sudo python3 -m pip install --upgrade pip
+
+Then enter the SmartHomeNG home directory and start pip with
+
+.. code-block:: bash
+
+   cd /usr/local/smarthome                      # change if necessary
+   sudo pip3 install -r requirements/base.txt
+
+Now the dependencies for the core should be met. Some plugins however require further Python modules. 
+Since every plugin supplies a requirement file, the missing modules can be installed with
+
+.. code-block:: bash
+
+   cd /usr/local/smarthome                         # Change this if needed
+   sudo pip install -r plugins/pluginname/requirements.txt # Install requirements of pluginname.
+
+It is also possible to install all requirements by **all** plugins at once:
+   
+.. code-block:: bash
+
+   cd /usr/local/smarthome                      # change if necessary
+   sudo pip3 install -r requirements/all.txt
+
+Keep in mind that some Python modules require additional apt packages for a working installation. Just
+take a look at plugins/pluginname/README.md.
+
+
+Virtualenv / Pyenv
+------------------
+
+If other software is running on the same system then a better choice might be to isolate the needed Python 
+modules for SmartHomeNG using a virtual environment.
+With Python >= 3.5 this is provided with the pyvenv tool, before virtualenv will do this job.
+First the home directory of SmartHomeNG is entered and then 
+a subdirectory ``shpy-virtualenv`` will be created within the home directory of user **smarthome**.
+Next the Python package manager is updated to the most recent version and finally the modules are 
+installed according to requirements in base.txt
+
+.. code-block:: bash
+
+   cd /usr/local/smarthome                   # Change this if needed
+   ~/shpy-virtualenv                         # Or "pyenv" of Python >= 3.5
+   ~/shpy-virtualenv/bin/activate            # Activates the virtual environment for this shell
+   pip install --upgrade pip                 # Update the Python Package Installer inside the virtualenv
+   pip install -r requirements/base.txt      # Install base requirements for smarthome.py
+
+Now the dependencies for the core should be met. Some plugins however require further Python modules. 
+Since every plugin supplies a requirement file, the missing modules can be installed with
+
+.. code-block:: bash
+
+   cd /usr/local/smarthome                            # Change this if needed
+   . ~/shpy-virtualenv/bin/activate                   # Activate the virtual environment for this shell
+   pip install -r plugins/pluginname/requirements.txt # Install requirements of pluginname.
+
+Keep in mind that some Python modules require additional apt packages for a working installation. Just
+take a look at plugins/pluginname/README.md.
+
+Every time you want to use SmartHomeNG with an virtualenv, you must activate it in the current shell:
 
 .. code-block:: bash
 
    cd /usr/local/smarthome                    # Change this if needed
    . ~/shpy-virtualenv/bin/activate           # Activate the Virtual Environment for this shell
-   pip install -r requirements/pluginname.txt # Install Requirements of pluginname.
 
-Keep in Mind that some Python Module require additional apt packages for a working installation. Just
-take a look at plugins/pluginname/README.rst.
-
-Every time you want to use smarthome.py with an virtualenv, you must activate it in your current shell:
-
-.. code-block:: bash
-
-   cd /usr/local/smarthome                    # Change this if needed
-   . ~/shpy-virtualenv/bin/activate           # Activate the Virtual Environment for this shell
-
-System Installation
-~~~~~~~~~~~~~~~~~~~
-
-It is also possible to install smarthome.py requirements system wide. We are not responsible for
-side affects, and always recommend a virtualenv!
-
-.. code-block:: bash
-
-   cd /usr/local/smarthome
-   sudo pip install -r requirements/base.txt
-
-Installing Python Modules system wide requires no further actions for starting and running smarthome.py.
-
-Folder Structure
-----------------
-
-Structure of the smarthome.py directory, e.g. /usr/local/smarthome/:
-
--  bin/: contains smarthome.py
--  dev/ development files
--  etc/: should contain the basic configuration files (smarthome.conf,
-   plugin.conf, logic.conf)
--  examples/: contains some example files for the configaration and the
-   visu plugin
--  items/: should contain one or more item configuration files.
--  lib/: contains the core libraries of SmartHomeNG
--  logics/: should contain the logic scripts
--  plugins/: contains the available plugins
--  scenes/: scene files
--  tools/: contains little programms helping to maintain SmartHomeNG
--  var/cache/: contains cached item values
--  var/db/: contains the SQLite3 Database
--  var/log/: contains the logfiles
--  var/rrd/: contains the Round Robin Databases
-
-Configuration
--------------
-
-`There is a dedicated page for the configuration. <config.html>`_
-
-Plugins
--------
-
-Every `plugin <plugin.html>`_ has it's own installation section.
-
-
-Running SmartHomeNG
---------------------
-
-Arguments for running SmartHomeNG
-
-.. code-block:: none
-
-   $ bin/smarthome.py -h
-   --help show this help message and exit 
-   -v, --verbose verbose (debug output) logging to the logfile
-   -d, --debug stay in the foreground with verbose output
-   -i, --interactive open an interactive shell with tab completion and with verbose logging to the logfile
-   -l, --logics reload all logics
-   -s, --stop stop SmartHomeNG
-   -q, --quiet reduce logging to the logfile
-   -V, --version show SmartHomeNG version
-   --start start SmartHomeNG and detach from console (default)
-
+Virtualenv can be deactivated by entering ``deactivate`` in the current shell.
