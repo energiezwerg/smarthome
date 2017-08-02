@@ -28,3 +28,37 @@ code, .rst-content tt, .rst-content code {
 p {
     font-size: 12pt;
 }
+
+.wy-side-nav-search {
+    display: block;
+    width: 300px;
+    padding: .809em;
+    margin-bottom: .809em;
+    z-index: 200;
+    background-color: #2269aa;
+    text-align: center;
+    padding: .809em;
+    display: block;
+    color: #fcfcfc;
+    margin-bottom: .809em
+}
+.wy-nav-side {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    padding-bottom: 2em;
+    width: 300px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    min-height: 100%;
+    background: #2269aa;
+    z-index: 200
+}
+.wy-nav-content-wrap {
+    margin-left: 300px;
+    background: #FAFAFA;
+    min-height: 100%
+}
+/* background: #2980B9; RTD Blau */
+/* background: #CEE3F6; */
