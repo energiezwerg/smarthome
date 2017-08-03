@@ -47,6 +47,9 @@ source_encoding = 'utf-8-sig'
 # The master toctree document.
 master_doc = 'index'
 
+# To get rid of the ¶ sign on descriptions over a box
+html_add_permalinks = ""
+
 # General information about the project.
 project = u'SmartHomeNG'
 #copyright = u'2011-2013, Marcus Popp; since 2016 SmartHomeNG Team'
