@@ -7,7 +7,6 @@ Web / Cloud Plugins
    :titlesonly:
 
    plugins/alexa/README.md
-   plugins/alexa/nginx.md
    plugins/boxcar/README.md
    plugins/dwd/README.md
    plugins/ical/README.md
