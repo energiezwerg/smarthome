@@ -6,8 +6,8 @@ Introduction
 ------------
 
 Logics itself are just scripts written in Python and they reside in subdirectory ``logics/``.
-All logics are configured within ``etc/logic.conf``. The configuration
-file tells SmartHomeNG when to execute a certain logic script.
+All logics are configured within ``etc/logic.conf`` (deprecated) or starting with SmartHomeNG 1.3
+``etc/logic.yaml``. The configuration file tells SmartHomeNG when to execute a certain logic script.
 
 The following sample configuration file defines four logic scripts for use by SmartHomeNG.
 The first logic script resides in ``logics/InitSmartHomeNG.py``. The attribute ``crontab = init`` tells SmartHomeNG
@@ -18,7 +18,7 @@ script every 60 minutes. The third logic script resides in ``logics/gate.py`` an
 to guess where the forth script resides in and when it is called by SmartHomeNG.
 
 .. code-block:: text
-   :caption:  /usr/local/smarthome/etc/logic.conf
+   :caption:  /usr/local/smarthome/etc/logic.conf (deprecated)
 
    [InitSmarthomeNG]
         filename = InitSmartHomeNG.py
@@ -37,7 +37,31 @@ to guess where the forth script resides in and when it is called by SmartHomeNG.
         crontab = init | 0,5,10,15,20,25,30,35,40,45,50,55 * * * # run at start and every 5 minutes
         usage_warning = 500
 
-Within the ``etc/logic.conf`` the following attributes control the execution of a logic:
+.. code-block:: text
+   :caption:  /usr/local/smarthome/etc/logic.yaml
+   
+   InitSmarthomeNG:
+       filename: InitSmartHomeNG.py
+       crontab: init
+
+   Hourly:
+       filename: time.py
+       cycle: 60
+
+   Gate:
+       filename: gate.py
+       watch_item: gate.alarm    # monitor for changes
+
+   disks:
+       filename: disks.py
+       # 'crontab: run at start and every 5 minutes'
+       crontab:
+         - init
+         - 0,5,10,15,20,25,30,35,40,45,50,55 * * *
+       usage_warning: 500
+
+
+Within the ``etc/logic.conf``(deprecated) / ``etc/logic.conf`` the following attributes control the execution of a logic:
 
 watch_item
 ~~~~~~~~~~
@@ -46,14 +70,21 @@ The list of items will be monitored for changes.
 
 .. code-block:: text
 
+   #conf
    watch_item = house.alarm | garage.alarm
+   #yaml
+   watch_item:
+  - house.alarm
+  - garage.alarm
+
 
 Any change of the item **house.alarm** and **garage.alarm** triggers the execution of the given logic.
 It is possible to use an asterisk * for any path part (like a regular expression):
 
 .. code-block:: text
 
-   watch_item = *.door
+   watch_item = *.door  #conf
+   watch_item: '*.door' #yaml
 
 this will trigger **garage.door** and also **house.door** but *not* **house.hallway.door**
 
@@ -64,13 +95,15 @@ This will trigger the given logic in a recurring way
 
 .. code-block:: text
 
-   cycle = 60
+   cycle = 60 #conf
+   cycle: 60  #yaml
 
 Optional use a parameter
 
 .. code-block:: text
 
-   cycle = 60 = 100
+   cycle = 60 = 100 #conf
+   cycle: 60 = 100  #yaml
 
 This triggers the logic every 60 minutes and passes the values 100 to the logic.
 The object trigger['value'] can be queried and will here result in '100'
@@ -80,9 +113,9 @@ crontab
 
 Like Unix crontab with the following options:
 
-``crontab = init`` Run the logic during the start of SmartHomeNG.
+``crontab = init`` (conf) / ``crontab: init`` (yaml) Run the logic during the start of SmartHomeNG.
 
-``crontab = minute hour day wday``
+``crontab = minute hour day wday`` (conf) / ``crontab: minute hour day wday`` (yaml)
 
 -  minute: single value from 0 to 59, or comma separated list, or * (every minute)
 -  hour: single value from 0 to 23, or comma separated list, or * (every hour)
@@ -90,13 +123,15 @@ Like Unix crontab with the following options:
    Please note: dont use days greater than 28 in the moment.
 -  wday: weekday, single value from 0 to 6 (0 = Monday), or comma separated list, or * (every day)
 
-``crontab = sunrise`` Runs the logic at every sunrise. Use ``sunset`` to run
+``crontab = sunrise`` (conf) / ``crontab: sunrise (yaml) Runs the logic at every sunrise. Use ``sunset`` to run
 at sunset. For sunset / sunrise you could provide:
 
 -  an horizon offset in degrees e.g. crontab = sunset-6 You have to
    specify your latitude/longitude in smarthome.conf.
 -  an offset in minutes specified by a 'm' e.g. crontab = sunset-10m
 -  a boundary for the execution
+
+CONF (deprecated):
 
 .. code-block:: text
 
@@ -105,11 +140,33 @@ at sunset. For sunset / sunrise you could provide:
     crontab = 17:00<sunset<20:00  # sunset, beetween 17:00 and 20:00
     crontab = 15 * * * = 50       # Calls the logic with trigger['value'] # == 50
 
+YAML:
+
+.. code-block:: text
+
+    crontab: 17:00<sunset        # sunset, but not bevor 17:00 (locale time)
+    crontab: sunset<20:00        # sunset, but not after 20:00 (locale time)
+    crontab: 17:00<sunset<20:00  # sunset, beetween 17:00 and 20:00
+    crontab: 15 * * * = 50       # Calls the logic with trigger['value'] # == 50
+	
+
+
 Combine several options with ``|``:
+
+CONF (deprecated):
 
 .. code-block:: text
 
    crontab = init = 'start' | sunrise-2 | 0 5 * *
+
+YAML:
+
+.. code-block:: text
+
+   crontab:
+     - init = 'start'
+     - sunrise-2
+     - 0 5 * *
 
 prio
 ~~~~
