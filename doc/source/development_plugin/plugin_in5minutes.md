@@ -22,6 +22,52 @@ The file `README.md` contains the basic documentation (in english language) of t
 
 To get thee plugin loaded, it has to be configured in the configuration file etc/plugin.yaml (or etc/plugin.conf for older installations).
 
+### The README.md file
+
+The README.md file should have the following structure.
+
+Make sure, that the first heading with the pluginname is the only first level heading (with one #) in the file.
+
+```
+# <pluginname>
+
+## Description
+
+    Describe what the plugin does (what is it good for?)
+    
+## Support
+
+    If a supportforum or thread exist, describe it and add a link to it in this section
+
+## Version / Change History
+
+    If you want, enter the change history here
+
+## Requirements
+
+    What other software or what hardware ist needed to use the plugin
+    
+## Configuration
+
+### plugin.conf (deprecated) / plugin.yaml
+
+#### Parameters
+
+#### Example plugin configuration
+
+### items.conf (deprecated) / items.yaml
+
+#### Attributes
+
+#### Example item configuration
+
+### logic.conf (deprecated) / logic.yaml
+
+## Functions
+
+```
+
+
 ### The plugin configuration file
 The file plugin.yaml (or plugin.conf) is located in the subdirectory ``etc`` of SmartHomeNG base directory. It tells SmartHomeNG which plugins to load and where to find them. The following box is a typical entry for your new plugin in that file (old configuration file format.
 
