@@ -165,13 +165,14 @@ Value:                  in case an ItemPath was specified the item will be set t
    
 .. code-block:: text
    :caption: items/example.yaml
+
    example:
        type: scene
 
    otheritem:
        type: num
 
-   .. code-block:: text
+.. code-block:: text
    :caption: scenes/example.conf
 
    0 otheritem 2
