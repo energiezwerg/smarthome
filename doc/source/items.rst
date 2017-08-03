@@ -60,6 +60,7 @@ It is advised to use nested items to build a tree representing your environment:
 
 .. code-block:: text
    :caption: /usr/local/smarthome/items/living.yaml
+
     living:
 
        light:
