@@ -4,12 +4,12 @@ Items
 Overview
 --------
 
-Items can be defined with a ``.conf`` file. Starting with SmartHomeNG 1.3 items may also be defined
+Items can be defined with a ``.conf`` (deprecated) file. Starting with SmartHomeNG 1.3 items may also be defined
 within one or more ``.yaml``-files. If there are filenames with the same base name then the ``.yaml`` file
-will be read instead of the ``.conf`` file.
+will be read instead of the ``.conf`` (deprecated) file.
 
-The following still describes the old-fashioned way with a ``.conf`` file. Indentation may be used
-for legibility purposes but is neither necessary nor mandatory.
+The following still describes the old-fashioned way with a ``.conf`` file, but also the new way with a ``.yaml`` 
+file. Indentation may be used for legibility purposes but is neither necessary nor mandatory.
 
 For any item name only the characters ``A-Z`` and ``a-z`` should be used.
 An underscore ``_`` or a digit ``0-9`` may be used within the item name but not as a first character.
@@ -21,16 +21,24 @@ The level of an item is shown by the number of square parentheses used. The more
 the lower in the hierarchy.
 
 .. code-block:: text
-   :caption: myitem.conf
+   :caption: myitem.conf (deprecated)
 
    [grandfather]
       [[daddy]]
          [[[kid]]]
 
+.. code-block:: text
+   :caption: myitem.yaml
+
+   grandfather:
+
+       daddy:
+           kid:
+
 It is advised to use nested items to build a tree representing your environment:
 
 .. code-block:: text
-   :caption: /usr/local/smarthome/items/living.conf
+   :caption: /usr/local/smarthome/items/living.conf (deprecated)
 
    [living]
        [[light]]
@@ -50,6 +58,31 @@ It is advised to use nested items to build a tree representing your environment:
        [[presence]]
            type = bool
 
+.. code-block:: text
+   :caption: /usr/local/smarthome/items/living.yaml
+    living:
+
+       light:
+           type: bool
+           name: Livingroom main light
+
+       tv:
+           type: bool
+
+           current:
+               type: num
+
+   kitchen:
+
+       light:
+           type: bool
+           name: kitchen table light
+
+       temp:
+           type: num
+
+       presence:
+           type: bool
 
 
 Item Attributes
@@ -123,14 +156,22 @@ Value:                  in case an ItemPath was specified the item will be set t
 ======================= ================================================================================================
 
 .. code-block:: text
-   :caption: items/example.conf
+   :caption: items/example.conf (deprecated)
 
    [example]
        type = scene
    [otheritem]
        type = num
-
+   
 .. code-block:: text
+   :caption: items/example.yaml
+   example:
+       type: scene
+
+   otheritem:
+       type: num
+
+   .. code-block:: text
    :caption: scenes/example.conf
 
    0 otheritem 2
@@ -146,16 +187,23 @@ This attribute is useful for small evaluations and corrections. The
 input value is accessible with ``value``.
 
 .. code-block:: text
-   :caption: items/level.conf
+   :caption: items/level.conf (deprecated)
 
    [level]
        type = num
        eval = value * 2 - 1  # if you call sh.level(3) sh.level will be evaluated and set to 5
 
+.. code-block:: text
+   :caption: items/level.yaml
+
+   level:
+       type: num
+       eval: value * 2 - 1    # if you call sh.level(3) sh.level will be evaluated and set to 5
+
 Trigger the evaluation of an item with ``eval_trigger``:
 
 .. code-block:: text
-   :caption: items/room.conf
+   :caption: items/room.conf (deprecated)
 
    [room]
        [[temp]]
@@ -167,6 +215,26 @@ Trigger the evaluation of an item with ``eval_trigger``:
            eval = sh.tools.dewpoint(sh.room.temp(), sh.room.hum())
            eval_trigger = room.temp | room.hum  # every change of temp or hum would trigger the evaluation of dew.
 
+.. code-block:: text
+   :caption: items/room.yaml
+
+   room:
+
+       temp:
+           type: num
+
+       hum:
+           type: num
+
+       dew:
+           type: num
+           eval: sh.tools.dewpoint(sh.room.temp(), sh.room.hum())
+
+           # 'eval_trigger: every change of temp or hum would trigger the evaluation of dew.'
+           eval_trigger:
+             - room.temp
+             - room.hum
+
 Eval keywords to use with the ``eval_trigger``:
 
 ======= =============================================================================
@@ -177,7 +245,7 @@ Eval keywords to use with the ``eval_trigger``:
 ======= =============================================================================
 
 .. code-block:: text
-   :caption:  items/rooms.conf
+   :caption:  items/rooms.conf (deprecated)
 
    [living]
        [[temp]]
@@ -200,6 +268,43 @@ Eval keywords to use with the ``eval_trigger``:
            name = movement in on the rooms
            eval = or
            eval_trigger = living.presence | kitchen.presence
+
+.. code-block:: text
+   :caption:  items/rooms.yaml
+
+   living:
+
+       temp:
+           type: num
+
+       presence:
+           type: bool
+
+   kitchen:
+
+       temp:
+           type: num
+
+       presence:
+           type: bool
+
+   rooms:
+
+       temp:
+           type: num
+           name: average temperature
+           eval: avg
+           eval_trigger:
+             - living.temp
+             - kitchen.temp
+
+       presence:
+           type: bool
+           name: movement in on the rooms
+           eval: or
+           eval_trigger:
+             - living.presence
+             - kitchen.presence
 
 Item functions
 ~~~~~~~~~~~~~~
