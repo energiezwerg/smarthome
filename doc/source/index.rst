@@ -1,16 +1,38 @@
-======================
- SmartHomeNG
-======================
+:tocdepth: 3
 
-SmartHomeNG is a modular framework for home automation based on a linux and some hardware like Raspberry.PI, a NUC, Beaglebone, etc.
+###########
+SmartHomeNG
+###########
 
-See the `install <install.html>`_ and `config <config.html>`_ section to dive into your smarthome experience.
+SmartHomeNG is a software that serves a a basis for home automation.
+It interconnects multiple devices using plugins to access their specific interfaces. 
 
-.. include:: release/1_2.rst
+This documentation reflects the current Release |release|
 
-.. include:: release/1_1.rst
+What can be done?
+The door bell switch triggers a sensor that signals is changed state to SmartHomeNG. In turn the TV set is muted and lights are switched on in the hallway. 
+Or being absent an email ist sent to the home owner to announce a visitor and a picture or the door camera is attached to it.
 
-.. include:: release/1_0.rst
+The main documentation here within the code and all READMEs are kept in English. The Wiki (https://github.com/smarthomeNG/smarthome/wiki) however mainly contains German documents.
 
-.. include:: release/old.rst
+If you are a user with a special problem where you will need a document of this wiki in English
+please contact the support forum at KNX-User-Forum (https://knx-user-forum.de/forum/supportforen/smarthome-py) or the chat on gitter.im. Feel free to contribute in any way you want and can.
+
+
+.. toctree::
+   :maxdepth: 2
+   :titlesonly:
+   :hidden:
+
+   requirements.rst
+   install
+   config
+   items
+   logics
+   logging
+   allplugins
+   tools
+   development_plugins
+   development_core
+   release
 

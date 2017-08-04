@@ -21,6 +21,8 @@
 #########################################################################
 
 import re
+import hashlib
+
 IP_REGEX = re.compile(r"""
         ^
         (?:
@@ -42,6 +44,8 @@ IP_REGEX = re.compile(r"""
         )
         $
     """, re.VERBOSE | re.IGNORECASE)
+
+TIMEFRAME_REGEX = re.compile(r'^(\d+)([ihdwmy]?)$', re.VERBOSE | re.IGNORECASE)
 
 class Utils(object):
 
@@ -90,7 +94,63 @@ class Utils(object):
             return False
 
     @staticmethod
+    def is_timeframe(string):
+        """
+        Checks if a string is a timeframe. A timeframe consists of a
+        number and an optional unit identifier (e.g. 2h, 30m, ...).
+        Unit identifiers are: i for minutes, h for hours, d for days,
+        w for weeks, m for months, y for years. If omitted milliseconds
+        are assumed.
+        :param string: String to check.
+        :type string: str
+        :return: True if a timeframe can be recognized, false otherwise.
+        :rtype: bool
+        """
+        try:
+            return bool(TIMEFRAME_REGEX.search(string))
+        except TypeError:
+            return False
+
+    @staticmethod
+    def to_timeframe(string):
+        """
+        Converts a timeframe value to milliseconds. See is_timeframe() method.
+        The special value 'now' is supported for the current time.
+        :param value : value to convert
+        :type value: str, int, ...
+        :return: True if cant be converted and is true, False otherwise.
+        :rtype: bool
+
+        """
+        minute = 60 * 1000
+        hour = 60 * minute
+        day = 24 * hour
+        week = 7 * day
+        month = 30 * day
+        year = 365 * day
+        frames = {'i': minute, 'h': hour, 'd': day, 'w': week, 'm': month, 'y': year}
+
+        if string == 'now':
+            string = '0'
+
+        if not Utils.is_timeframe(string):
+            raise Exception('Invalid value for boolean conversion: ' + string)
+
+        value, unit = TIMEFRAME_REGEX.match(string).groups()
+        if unit in frames:
+            return int(float(value) * frames[unit])
+        else:
+            return int(value)
+
+    @staticmethod
     def is_int(string):
+        """
+        Checks if a string is a integer.
+        :param string: String to check.
+        :type string: str
+        :return: True if a cast to int works, false otherwise.
+        :rtype: bool
+        """
         try:
             int(string)
             return True
@@ -101,6 +161,13 @@ class Utils(object):
 
     @staticmethod
     def is_float(string):
+        """
+        Checks if a string is a float.
+        :param string: String to check.
+        :type string: str
+        :return: True if a cast to float works, false otherwise.
+        :rtype: bool
+        """
         try:
             float(string)
             return True
@@ -110,26 +177,77 @@ class Utils(object):
             return False
 
     @staticmethod
-    def to_bool(value):
+    def to_bool(value, default='exception'):
         """
-        Converts a value to boolean. 
-        Raises exception if value is a string and can't be converted.
+        Converts a value to boolean.
+        Raises exception if value is a string and can't be converted and if no default value is given
         Case is ignored. These string values are allowed
-           True: 'True', "1", "true", "yes", "y", "t"
-           False: "", "0", "faLse", "no", "n", "f"
+        * True: 'True', "1", "true", "yes", "y", "t", "on"
+        * False: "", "0", "faLse", "no", "n", "f", "off"
         Non-string values are passed to bool constructor.
+        
         :param value : value to convert
+        :param default: optional, value to return if value can not be parsed,
+        if default is not set this method throws an exception
         :type value: str, object, int, ...
         :return: True if cant be converted and is true, False otherwise.
         :rtype: bool
-
         """
+        # -> should it be possible to cast strings: 0 -> False and non-0 -> True (analog to integer values)?
         if type(value) == type(''):
-            if value.lower() in ("yes", "y", "true",  "t", "1"):
+            if value.lower() in ("yes", "y", "true",  "t", "1","on"):
                 return True
-            if value.lower() in ("no",  "n", "false", "f", "0", ""):
+            if value.lower() in ("no",  "n", "false", "f", "0", "off", ""):
                 return False
-            raise Exception('Invalid value for boolean conversion: ' + value)
+            if default=='exception':
+                raise Exception('Invalid value for boolean conversion: ' + value)
+            else:
+                return default
         return bool(value)
 
+    @staticmethod
+    def create_hash(plaintext):
+        """
+        Create hash (currently sha512) for given plaintext value
+        :param plaintext: plaintext
+        :return: hash of plaintext, lowercase letters
+        """
+        hashfunc = hashlib.sha512()
+        hashfunc.update(plaintext.encode())
+        return "".join(format(b, "02x") for b in hashfunc.digest())
 
+    @staticmethod
+    def is_hash(value):
+        """
+        Check if value is a valid hash (currently sha512) value
+        :param value: value to check
+        :return: bool True = given value can be a sha512 hash, False = given value can not be a sha512 hash
+        """
+
+        # a valid sha512 hash is a 128 charcter long string value
+        if value is None or not isinstance(value, str) or len(value) != 128:
+            return False
+
+        # and its a hexedecimal value
+        try:
+            int(value, 16)
+            return True
+        except ValueError:
+            return False
+
+    @staticmethod
+    def check_hashed_password(pwd_to_check, hashed_pwd):
+        """
+        Check if given plaintext password matches the hashed password
+        An empty password is always rejected
+        :param pwd_to_check: plaintext password to check
+        :param hashed_pwd: hashed password
+        :return: bool True: password matches, False: password does not match
+        """
+        if pwd_to_check is None or pwd_to_check == '':
+            # No password given -> return "not matching"
+            return False
+
+        # todo: check pwd_to_check for minimum length?
+
+        return Utils.create_hash(pwd_to_check) == hashed_pwd.lower()
