@@ -32,6 +32,8 @@ import os  # noqa
 import random
 import types  # noqa
 import subprocess  # noqa
+import inspect
+
 from lib.model.smartplugin import SmartPlugin
 
 import dateutil.relativedelta
@@ -151,6 +153,7 @@ class Scheduler(threading.Thread):
         self.alive = False
 
     def trigger(self, name, obj=None, by='Logic', source=None, value=None, dest=None, prio=3, dt=None):
+        name = self.check_caller(name)
         if obj is None:
             if name in self._scheduler:
                 obj = self._scheduler[name]['obj']
@@ -178,10 +181,29 @@ class Scheduler(threading.Thread):
             self._triggerq.insert((dt, prio), (name, obj, by, source, dest, value))
 
     def remove(self, name):
+        """
+        remove a scheduler entry with given name. If a call is made from a SmartPlugin with a instance configuration
+        the instance name is added to the name
+        
+        :param name: scheduler entry name to remove
+        :return:
+        """
         self._lock.acquire()
+        name = self.check_caller(name)
+        logger.debug("remove scheduler entry with name:{0}".format(name))
         if name in self._scheduler:
             del(self._scheduler[name])
         self._lock.release()
+
+    def check_caller(self, name):
+        stack = inspect.stack()
+        obj = stack[2][0].f_locals["self"]
+        if isinstance(obj, SmartPlugin):
+            iname = obj.get_instance_name()
+            if iname != '':
+                if not str(name).endswith('_' + iname):
+                    name = name + '_' + obj.get_instance_name()
+        return name
 
     def return_next(self, name):
         if name in self._scheduler:
@@ -244,13 +266,18 @@ class Scheduler(threading.Thread):
             self._next_time(name, offset)
         self._lock.release()
 
-    def get( self, name):
+    def get(self, name):
+        """
+        takes a given name for a scheduler and returns either the matching scheduler or None
+        """
+        name = self.check_caller(name)
         if name in self._scheduler:
             return self._scheduler[name]
         else:
             return None
 
     def change(self, name, **kwargs):
+        name = self.check_caller(name)
         if name in self._scheduler:
             for key in kwargs:
                 if key in self._scheduler[name]:
@@ -351,7 +378,13 @@ class Scheduler(threading.Thread):
             logic = obj  # noqa
             sh = self._sh  # noqa
             try:
-                exec(obj.bytecode)
+                if logic.enabled:
+                    exec(obj.bytecode)
+                for method in logic.get_method_triggers():
+                    try:
+                        method(logic, by, source, dest)
+                    except Exception as e:
+                        logger.exception("Logic: Trigger {} for {} failed: {}".format(method, logic.name, e))
             except SystemExit:
                 # ignore exit() call from logic.
                 pass
@@ -385,8 +418,8 @@ class Scheduler(threading.Thread):
             if not next_event:
                 next_event = self._parse_month(crontab, next_month=True)  # next month
             return next_event
-        except:
-            logger.error("Error parsing crontab: {}".format(crontab))
+        except Exception as e:
+            logger.error('Error parsing crontab "{}": {}'.format(crontab, e))
             return datetime.datetime.now(tzutc()) + dateutil.relativedelta.relativedelta(years=+10)
 
     def _parse_month(self, crontab, next_month=False):
@@ -410,7 +443,7 @@ class Scheduler(threading.Thread):
             day_range = day_range + self._range(day, 0o1, mdays)
         else:
             day_range = self._range(day, 0o1, mdays)
-        # combine the differnt ranges
+        # combine the different ranges
         event_range = sorted([str(day) + '-' + str(hour) + '-' + str(minute) for minute in minute_range for hour in hour_range for day in day_range])
         if next_month:  # next month
             next_event = event_range[0]
@@ -507,16 +540,35 @@ class Scheduler(threading.Thread):
     def _range(self, entry, low, high):
         result = []
         item_range = []
-        if entry == '*':
-            item_range = list(range(low, high + 1))
-        else:
+
+        # Check for multiple items and process each item recursively
+        if ',' in entry:
             for item in entry.split(','):
-                item = int(item)
+                result.extend(self._range(item, low, high))
+
+        # Check for intervals, e.g. "*/2", "9-17/2"
+        elif '/' in entry:
+             spec_range, interval = entry.split('/')
+             logger.error('Cron spec interval {} {}'.format(entry, interval))
+             result = self._range(spec_range, low, high)[::int(interval)]
+
+        # Check for numeric ranges, e.g. "9-17"
+        elif '-' in entry:
+             spec_low, spec_high = entry.split('-')
+             result = self._range('*', int(spec_low), int(spec_high))
+
+        # Process single item
+        else:
+            if entry == '*':
+                item_range = list(range(low, high + 1))
+            else:
+                item = int(entry)
                 if item > high:  # entry above range
                     item = high  # truncate value to highest possible
                 item_range.append(item)
-        for entry in item_range:
-            result.append('{:02d}'.format(entry))
+            for entry in item_range:
+                result.append('{:02d}'.format(entry))
+
         return result
 
     def _day_range(self, days):

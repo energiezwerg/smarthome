@@ -41,7 +41,7 @@ class SmartPlugin(SmartObject, Utils):
         if self.ALLOW_MULTIINSTANCE:
             self.__instance = instance
         else: 
-            self.logger.warning("Plugin does not allow more then one instance") 
+            self.logger.warning("Plugin does not allow more than one instance")
     
     def get_instance_name(self):
         """
@@ -71,28 +71,43 @@ class SmartPlugin(SmartObject, Utils):
         else:
            return "%s@%s"%(attr, self.__instance)
 
+    def __get_iattr_conf(self, conf, attr):
+        """
+            returns item attribute name including instance if required and found
+            in conf
+
+            :rtype: str
+        """
+        __attr = self.__get_iattr(attr)
+        if __attr in conf:
+            return __attr
+        elif "%s@*"%attr in conf:
+            return "%s@*"%attr
+        return None
+
     def has_iattr(self, conf, attr):
         """
             checks item conf for an attribute
             :rtype: Boolean 
         """
-        if self.__get_iattr(attr) in conf or "%s@*"%attr in conf:
-            return True
-        return False
+        __attr = self.__get_iattr_conf(conf, attr)
+        return __attr is not None
     
     def get_iattr_value(self, conf, attr):
         """
             returns value for an attribute from item config
         """
-        __value = None
-        __attr = self.__get_iattr(attr)
-        if __attr in conf:
-            __value = conf[__attr] 
-        elif "%s@*"%attr in conf:
-            __value = conf["%s@*"%attr]
-        return __value
+        __attr = self.__get_iattr_conf(conf, attr)
+        return None if __attr is None else conf[__attr]
 
-    
+    def set_attr_value(self, conf, attr, value):
+        """
+            set value for an attribute in item.config
+        """
+        __attr = self.__get_iattr_conf(conf, attr)
+        if __attr is not None:
+            conf[self.__get_iattr(attr)] = value
+
     def __new__(cls, *args, **kargs):
         if not hasattr(cls,'PLUGIN_VERSION'):
             raise NotImplementedError("'Plugin' subclasses should have a 'PLUGIN_VERSION' attribute")
@@ -108,3 +123,14 @@ class SmartPlugin(SmartObject, Utils):
         """
         return "Plugin: '{0}.{1}', Version: '{2}', Instance: '{3}'".format(self.__module__, self.__class__.__name__,  self.get_version(),self.get_instance_name())
 
+    def parse_logic(self, logic):
+        pass
+
+    def parse_item(self, item):
+        pass
+
+    def run(self):
+        raise NotImplementedError("'Plugin' subclasses should have a 'run()' method")
+
+    def stop(self):
+        raise NotImplementedError("'Plugin' subclasses should have a 'stop()' method")

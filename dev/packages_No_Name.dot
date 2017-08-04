@@ -1,0 +1,17 @@
+digraph "packages_No_Name" {
+charset="utf-8"
+rankdir=BT
+"0" [label="__init__", shape="box"];
+"1" [label="urllib", shape="box"];
+"2" [label="urllib.error", shape="box"];
+"3" [label="urllib.parse", shape="box"];
+"4" [label="urllib.request", shape="box"];
+"5" [label="urllib.response", shape="box"];
+"6" [label="urllib.robotparser", shape="box"];
+"2" -> "5" [arrowhead="open", arrowtail="none"];
+"4" -> "2" [arrowhead="open", arrowtail="none"];
+"4" -> "3" [arrowhead="open", arrowtail="none"];
+"4" -> "5" [arrowhead="open", arrowtail="none"];
+"6" -> "3" [arrowhead="open", arrowtail="none"];
+"6" -> "4" [arrowhead="open", arrowtail="none"];
+}

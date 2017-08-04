@@ -42,7 +42,12 @@ clean:
 	-rm -rf $(BUILDDIR)/*
 
 html:
+	@echo starting at:
+	@pwd
+	@test ! -L "source/plugins" && echo "creating a link to the plugin directory" && ln ../../plugins source/plugins -s || echo "link already exists"
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
+	@echo
+	@test -L "source/plugins" && echo "removing link to the plugin directory" && unlink source/plugins
 	@echo
 	@echo "Build finished. The HTML pages are in $(BUILDDIR)/html."
 

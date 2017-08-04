@@ -1,31 +1,48 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2012-2013 Marcus Popp                          marcus@popp.mx
+# Copyright 2016-       Christian Straßburg           c.strassburg@gmx.de
+# Copyright 2016-2017   Martin Sinn                         m.sinn@gmx.de
+# Copyright 2012-2013   Marcus Popp                        marcus@popp.mx
 #########################################################################
-#  This file is part of SmartHome.py.
+#  This file is part of SmartHomeNG.
 #
-#  SmartHome.py is free software: you can redistribute it and/or modify
+#  SmartHomeNG is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
 #
-#  SmartHome.py is distributed in the hope that it will be useful,
+#  SmartHomeNG is distributed in the hope that it will be useful,
 #  but WITHOUT ANY WARRANTY; without even the implied warranty of
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 #
 #  You should have received a copy of the GNU General Public License
-#  along with SmartHome.py. If not, see <http://www.gnu.org/licenses/>.
+#  along with SmartHomeNG. If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
+
 import datetime
+import dateutil.parser
 import logging
 import os
 import pickle
 import threading
+import math
+import json
+import lib.utils
+from lib.constants import (ITEM_DEFAULTS, FOO, KEY_ENFORCE_UPDATES, KEY_CACHE, KEY_CYCLE, KEY_CRONTAB, KEY_EVAL,
+                           KEY_EVAL_TRIGGER, KEY_NAME,KEY_TYPE, KEY_VALUE, PLUGIN_PARSE_ITEM,
+                           KEY_AUTOTIMER,KEY_THRESHOLD, CACHE_FORMAT, CACHE_JSON, CACHE_PICKLE,
+                           KEY_ATTRIB_COMPAT, ATTRIB_COMPAT_V12, ATTRIB_COMPAT_LATEST)
+
+
+ATTRIB_COMPAT_DEFAULT_FALLBACK = ATTRIB_COMPAT_V12
+ATTRIB_COMPAT_DEFAULT = ''
+
 
 logger = logging.getLogger(__name__)
+
 
 
 #####################################################################
@@ -57,6 +74,11 @@ def _cast_foo(value):
     return value
 
 
+# TODO: Candidate for Utils.to_bool()
+# write testcase and replace
+# -> should castng be restricted like this or handled exactly like Utils.to_bool()?
+#    Example: _cast_bool(2) is False, Utils.to_bool(2) is True
+
 def _cast_bool(value):
     if type(value) in [bool, int, float]:
         if value in [False, 0]:
@@ -66,7 +88,7 @@ def _cast_bool(value):
         else:
             raise ValueError
     elif type(value) in [str, str]:
-        if value.lower() in ['0', 'false', 'no', 'off']:
+        if value.lower() in ['0', 'false', 'no', 'off', '']:
             return False
         elif value.lower() in ['1', 'true', 'yes', 'on']:
             return True
@@ -81,6 +103,16 @@ def _cast_scene(value):
 
 
 def _cast_num(value):
+    """
+    cast a passed value to int or float
+
+    :param value: numeric value to be casted, passed as str, float or int
+    :return: numeric value, passed as int or float
+    """
+    if isinstance(value, str):
+        value = value.strip()
+    if value == '':
+        return 0
     if isinstance(value, float):
         return value
     try:
@@ -95,21 +127,104 @@ def _cast_num(value):
 
 
 #####################################################################
+# Methods for handling of duration_value strings
+#####################################################################
+
+def _split_duration_value_string(value): 
+    """
+    splits a duration value string into its thre components
+    
+    components are:
+    - time
+    - value
+    - compat
+
+    :param value: raw attribute string containing duration, value (and compatibility)
+    :return: three strings, representing time, value and compatibility attribute
+    """
+    time, __, value = value.partition('=')
+    value, __, compat = value.partition('=')
+    time = time.strip()
+    value = value.strip()
+    # remove quotes, if present
+    if value != '' and ((value[0] == "'" and value[-1] == "'") or (value[0] == '"' and value[-1] == '"')):
+        value = value[1:-1]
+    compat = compat.strip().lower()
+    if compat == '':
+        compat = ATTRIB_COMPAT_DEFAULT
+    return (time, value, compat)
+
+
+def _join_duration_value_string(time, value, compat=''): 
+    """
+    joins a duration value string from its thre components
+    
+    components are:
+    - time
+    - value
+    - compat
+
+    :param time: time (duration) parrt for the duration_value_string
+    :param value: value (duration) parrt for the duration_value_string
+    """
+    result = str(time)
+    if value != '' or compat != '':
+        result = result + ' ='
+        if value != '':
+            result = result + ' ' + value
+        if compat != '':
+           result = result + ' = ' + compat
+    return result
+    
+    
+#####################################################################
 # Cache Methods
 #####################################################################
-def _cache_read(filename, tz):
+
+def json_serialize(obj):
+    """helper method to convert values to json serializable formats"""
+    import datetime
+    if isinstance(obj, datetime.datetime):
+        return obj.isoformat()
+    if isinstance(obj, datetime.date):
+        return obj.isoformat()
+    raise TypeError("Type not serializable")
+
+def json_obj_hook(json_dict):
+    """helper method for json deserialization"""
+    import dateutil
+    for (key, value) in json_dict.items():
+        try:
+            json_dict[key] = dateutil.parser.parse(value)
+        except Exception as e :
+            pass
+    return json_dict
+
+
+def _cache_read(filename, tz, cformat=CACHE_FORMAT):
     ts = os.path.getmtime(filename)
     dt = datetime.datetime.fromtimestamp(ts, tz)
     value = None
-    with open(filename, 'rb') as f:
-        value = pickle.load(f)
+
+    if cformat == CACHE_PICKLE:
+        with open(filename, 'rb') as f:
+            value = pickle.load(f)
+
+    elif cformat == CACHE_JSON:
+        with open(filename, 'r') as f:
+            value = json.load(f, object_hook=json_obj_hook)
+
     return (dt, value)
 
-
-def _cache_write(filename, value):
+def _cache_write(filename, value, cformat=CACHE_FORMAT):
     try:
-        with open(filename, 'wb') as f:
-            pickle.dump(value, f)
+        if cformat == CACHE_PICKLE:
+            with open(filename, 'wb') as f:
+                pickle.dump(value,f)
+
+        elif cformat == CACHE_JSON:
+            with open(filename, 'w') as f:
+                json.dump(value,f, default=json_serialize)
     except IOError:
         logger.warning("Could not write to {}".format(filename))
 
@@ -173,32 +288,76 @@ class Item():
         self._threshold = False
         self._type = None
         self._value = None
+        # history
+        # TODO: create history Arrays for some values (value, last_change, last_update  (usage: multiklick,...)
+        # self.__history = [None, None, None, None, None]
+        #
+        # def getValue(num):
+        #    return (str(self.__history[(num - 1)]))
+        #
+        # def addValue(avalue):
+        #    self.__history.append(avalue)
+        #    if len(self.__history) > 5:
+        #        self.__history.pop(0)
+        #
         if hasattr(smarthome, '_item_change_log'):
             self._change_logger = logger.info
         else:
             self._change_logger = logger.debug
         #############################################################
+        # Initialize attribute assignment compatibility
+        #############################################################
+        global ATTRIB_COMPAT_DEFAULT
+        if ATTRIB_COMPAT_DEFAULT == '':
+            if hasattr(smarthome, '_'+KEY_ATTRIB_COMPAT):
+                config_attrib = getattr(smarthome,'_'+KEY_ATTRIB_COMPAT)
+                if str(config_attrib) in [ATTRIB_COMPAT_V12, ATTRIB_COMPAT_LATEST]:
+                    logger.info("Global configuration: '{}' = '{}'.".format(KEY_ATTRIB_COMPAT, str(config_attrib)))
+                    ATTRIB_COMPAT_DEFAULT = config_attrib
+                else:
+                    logger.warning("Global configuration: '{}' has invalid value '{}'.".format(KEY_ATTRIB_COMPAT, str(config_attrib)))
+            if ATTRIB_COMPAT_DEFAULT == '':
+                ATTRIB_COMPAT_DEFAULT = ATTRIB_COMPAT_DEFAULT_FALLBACK
+        #############################################################
         # Item Attributes
         #############################################################
         for attr, value in config.items():
             if not isinstance(value, dict):
-                if attr in ['cycle', 'eval', 'name', 'type', 'value']:
+                if attr in [KEY_CYCLE, KEY_NAME, KEY_TYPE, KEY_VALUE]:
                     setattr(self, '_' + attr, value)
-                elif attr in ['cache', 'enforce_updates']:  # cast to bool
+                elif attr in [KEY_EVAL]:
+                    value = self.get_stringwithabsolutepathes(value, 'sh.', '(', KEY_EVAL)
+                    setattr(self, '_' + attr, value)
+                elif attr in [KEY_CACHE, KEY_ENFORCE_UPDATES]:  # cast to bool
                     try:
                         setattr(self, '_' + attr, _cast_bool(value))
                     except:
                         logger.warning("Item '{0}': problem parsing '{1}'.".format(self._path, attr))
                         continue
-                elif attr in ['crontab', 'eval_trigger']:  # cast to list
+                elif attr in [KEY_CRONTAB]:  # cast to list
                     if isinstance(value, str):
                         value = [value, ]
                     setattr(self, '_' + attr, value)
-                elif attr == 'autotimer':
-                    time, __, value = value.partition('=')
-                    if value is not None:
-                        self._autotimer = time, value
-                elif attr == 'threshold':
+                elif attr in [KEY_EVAL_TRIGGER]:  # cast to list
+                    if isinstance(value, str):
+                        value = [value, ]
+                    expandedvalue = []
+                    for path in value:
+                        expandedvalue.append(self.get_absolutepath(path, KEY_EVAL_TRIGGER))
+                    setattr(self, '_' + attr, expandedvalue)
+                elif attr == KEY_AUTOTIMER:
+                    time, value, compat = _split_duration_value_string(value)
+                    timeitem = None
+                    valueitem = None
+                    if time.lower().startswith('sh.') and time.endswith('()'):
+                        timeitem = self.get_absolutepath(time[3:-2], KEY_AUTOTIMER)
+                        time = 0
+                    if value.lower().startswith('sh.') and value.endswith('()'):
+                        valueitem = self.get_absolutepath(value[3:-2], KEY_AUTOTIMER)
+                        value = ''
+                    value = self._castvalue_to_itemtype(value, compat)
+                    self._autotimer = [ (self._cast_duration(time), value), compat, timeitem, valueitem]
+                elif attr == KEY_THRESHOLD:
                     low, __, high = value.rpartition(':')
                     if not low:
                         low = high
@@ -237,19 +396,20 @@ class Item():
         #############################################################
         # Type
         #############################################################
-        __defaults = {'num': 0, 'str': '', 'bool': False, 'list': [], 'dict': {}, 'foo': None, 'scene': 0}
+        #__defaults = {'num': 0, 'str': '', 'bool': False, 'list': [], 'dict': {}, 'foo': None, 'scene': 0}
         if self._type is None:
-            logger.debug("Item {}: no type specified.".format(self._path))
-            return
-        if self._type not in __defaults:
-            logger.error("Item {}: type '{}' unknown. Please use one of: {}.".format(self._path, self._type, ', '.join(list(__defaults.keys()))))
+#            logger.debug("Item {}: no type specified.".format(self._path))
+#            return
+            self._type = FOO  # MSinn
+        if self._type not in ITEM_DEFAULTS:
+            logger.error("Item {}: type '{}' unknown. Please use one of: {}.".format(self._path, self._type, ', '.join(list(ITEM_DEFAULTS.keys()))))
             raise AttributeError
         self.cast = globals()['_cast_' + self._type]
         #############################################################
         # Value
         #############################################################
         if self._value is None:
-            self._value = __defaults[self._type]
+            self._value = ITEM_DEFAULTS[self._type]
         try:
             self._value = self.cast(self._value)
         except:
@@ -267,15 +427,188 @@ class Item():
         # Crontab/Cycle
         #############################################################
         if self._crontab is not None or self._cycle is not None:
-            self._sh.scheduler.add(self._path, self, cron=self._crontab, cycle=self._cycle)
+            cycle = self._cycle
+            if cycle is not None:
+                cycle = self._build_cycledict(cycle)
+            self._sh.scheduler.add(self._path, self, cron=self._crontab, cycle=cycle)
         #############################################################
         # Plugins
         #############################################################
         for plugin in self._sh.return_plugins():
-            if hasattr(plugin, 'parse_item'):
+            if hasattr(plugin, PLUGIN_PARSE_ITEM):
                 update = plugin.parse_item(self)
                 if update:
                     self.add_method_trigger(update)
+
+
+    def _castvalue_to_itemtype(self, value, compat):
+        """
+        casts the value to the type of the item, if backward compatibility 
+        to version 1.2 (ATTRIB_COMPAT_V12) is not enabled
+        
+        If backward compatibility is enabled, the value is returned unchanged
+        
+        :param value: value to be casted
+        :param compat: compatibility attribute
+        :return: return casted valu3
+        """
+        # casting of value, if compat = latest
+        if compat == ATTRIB_COMPAT_LATEST:
+            if self._type != None:
+                mycast = globals()['_cast_' + self._type]
+                try:
+                    value = mycast(value)
+                except:
+                    logger.warning("Item {}: Unable to cast '{}' to {}".format(self._path, str(value), self._type))
+                    if isinstance(value, list):
+                        value = []
+                    elif isinstance(value, dict):
+                        value = {}
+                    else:
+                        value = mycast('')
+            else:
+                logger.warning("Item {}: Unable to cast '{}' to {}".format(self._path, str(value), self._type))
+        return value
+        
+
+    def _cast_duration(self, time): 
+        """
+        casts a time valuestring (e.g. '5m') to an duration integer
+        used for autotimer, timer, cycle
+    
+        supported formats for time parameter:
+        - seconds as integer (45)
+        - seconds as a string ('45')
+        - seconds as a string, traild by 's' ('45s')
+        - minutes as a string, traild by 'm' ('5m'), is converted to seconds (300)
+        
+        :param time: string containing the duration
+        :param itempath: item path as aditional information for logging
+        :return: number of seconds as an integer
+        """
+        if isinstance(time, str):
+            try:
+                time = time.strip()
+                if time.endswith('m'):
+                    time = int(time.strip('m')) * 60
+                elif time.endswith('s'):
+                    time = int(time.strip('s'))
+                else:
+                    time = int(time)
+            except Exception as e:
+                logger.warning("Item {}: _cast_duration ({}) problem: {}".format(self._path, time, e))
+                time = False
+        elif isinstance(time, int):
+            time = int(time)
+        else:
+            logger.warning("Item {}: _cast_duration ({}) problem: unable to convert to int".format(self._path, time))
+            time = False
+        return(time)
+    
+
+    def _build_cycledict(self, value):
+        """
+        builds a dict for a cycle parameter from a duration_value_string
+        
+        This dict is to be passed to the scheduler to circumvemt the parameter
+        parsing within the scheduler, which can't to casting
+
+        :param value: raw attribute string containing duration, value (and compatibility)
+        :return: cycle-dict for a call to scheduler.add 
+        """
+        time, value, compat = _split_duration_value_string(value)
+        time = self._cast_duration(time)
+        value = self._castvalue_to_itemtype(value, compat)
+        cycle = {time: value}
+        return cycle
+    
+
+    def expand_relativepathes(self, attr, begintag, endtag):
+        """
+        converts a configuration attribute containing relative item pathes
+        to absolute pathes
+        
+        The begintag and the endtag remain in the result string!
+
+        :param attr: Name of the attribute
+        :param begintag: string that signals the beginning of a relative path is following
+        :param endtag: string that signals the end of a relative path
+        """
+        if attr in self.conf:
+            if (begintag != '') and (endtag != ''):
+                self.conf[attr] = self.get_stringwithabsolutepathes(self.conf[attr], begintag, endtag, attr)
+            elif (begintag == '') and (endtag == ''):
+                self.conf[attr] = self.get_absolutepath(self.conf[attr], attr)
+        return
+        
+
+    def get_stringwithabsolutepathes(self, evalstr, begintag, endtag, attribute=''):
+        """
+        converts a string containing relative item pathes
+        to a string with absolute item pathes
+        
+        The begintag and the endtag remain in the result string!
+
+        :param evalstr: string with the statement that may contain relative item pathes
+        :param begintag: string that signals the beginning of a relative path is following
+        :param endtag: string that signals the end of a relative path
+        :param attribute: string with the name of the item's attribute, which contains the relative path
+        :return: string with the statement containing absolute item pathes
+        """
+        if evalstr.find(begintag+'.') == -1:
+            return evalstr
+
+#        logger.warning("{}.get_stringwithabsolutepathes('{}'): begintag = '{}', endtag = '{}'".format(self._path, evalstr, begintag, endtag))
+        pref = ''
+        rest = evalstr
+        while (rest.find(begintag+'.') != -1):
+            pref += rest[:rest.find(begintag+'.')+len(begintag)]
+            rest = rest[rest.find(begintag+'.')+len(begintag):]
+            rel = rest[:rest.find(endtag)]
+            rest = rest[rest.find(endtag):]
+            pref += self.get_absolutepath(rel, attribute)
+            
+        pref += rest
+#        logger.warning("{}.get_stringwithabsolutepathes(): result = '{}'".format(self._path, pref))
+        return pref
+
+
+    def get_absolutepath(self, relativepath, attribute=''):
+        """
+        Builds an absolute item path relative to the current item
+
+        :param relativepath: string with the relative item path
+        :param attribute: string with the name of the item's attribute, which contains the relative path
+        :return: string with the absolute item path
+        """
+        if (len(relativepath) == 0) or ((len(relativepath) > 0)  and (relativepath[0] != '.')):
+            return relativepath
+        relpath = relativepath.rstrip()
+        rootpath = self._path
+
+        while (len(relpath) > 0)  and (relpath[0] == '.'):
+            relpath = relpath[1:]
+            if (len(relpath) > 0)  and (relpath[0] == '.'):
+                if rootpath.rfind('.') == -1:
+                    if rootpath == '':
+                        relpath = ''
+                        logger.error("{}.get_absolutepath(): Relative path trying to access above root level on attribute '{}'".format(self._path, attribute))
+                    else:
+                        rootpath = ''
+                else:
+                    rootpath = rootpath[:rootpath.rfind('.')]
+
+        if relpath != '':
+            if rootpath != '':
+                rootpath += '.' + relpath
+            else:
+                rootpath = relpath
+        logger.info("{}.get_absolutepath('{}'): Result = '{}' (for attribute '{}')".format(self._path, relativepath, rootpath, attribute))
+        if rootpath[-5:] == '.self':
+            rootpath = rootpath.replace('.self', '')
+        rootpath = rootpath.replace('.self.', '.')
+        return rootpath
+    
 
     def __call__(self, value=None, caller='Logic', source=None, dest=None):
         if value is None or self._type is None:
@@ -342,7 +675,7 @@ class Item():
                 logger.warning("Item {}: problem evaluating {}: {}".format(self._path, self._eval, e))
             else:
                 if value is None:
-                    logger.info("Item {}: evaluating {} returns None".format(self._path, self._eval))
+                    logger.debug("Item {}: evaluating {} returns None".format(self._path, self._eval))
                 else:
                     self.__update(value, caller, source, dest)
 
@@ -374,6 +707,7 @@ class Item():
                 self._change_logger("Item {} = {} via {} {} {}".format(self._path, value, caller, source, dest))
         self._lock.release()
         if _changed or self._enforce_updates or self._type == 'scene':
+#            self.__prev_update = self.__last_update #Multiclick
             self.__last_update = self._sh.now()
             for method in self.__methods_to_trigger:
                 try:
@@ -398,8 +732,24 @@ class Item():
             except Exception as e:
                 logger.warning("Item: {}: could update cache {}".format(self._path, e))
         if self._autotimer and caller != 'Autotimer' and not self._fading:
-            _time, _value = self._autotimer
-            self.timer(_time, _value, True)
+
+            _time, _value = self._autotimer[0]
+            compat = self._autotimer[1]
+            if self._autotimer[2]:
+                try:
+                    _time = eval('self._sh.'+self._autotimer[2]+'()')
+                except:
+                    logger.warning("Item '{}': Attribute 'autotimer': Item '{}' does not exist".format(self._path, self._autotimer[2]))
+            if self._autotimer[3]:
+                try:
+                    _value = self._castvalue_to_itemtype(eval('self._sh.'+self._autotimer[3]+'()'), compat)
+                except:
+                    logger.warning("Item '{}': Attribute 'autotimer': Item '{}' does not exist".format(self._path, self._autotimer[3]))
+            self._autotimer[0] = (_time, _value)     # for display of active/last timer configuration in backend
+
+            next = self._sh.now() + datetime.timedelta(seconds=_time)
+            self._sh.scheduler.add(self.id() + '-Timer', self.__call__, value={'value': _value, 'caller': 'Autotimer'}, next=next)
+
 
     def add_logic_trigger(self, logic):
         self.__logics_to_trigger.append(logic)
@@ -412,7 +762,7 @@ class Item():
 
     def add_method_trigger(self, method):
         self.__methods_to_trigger.append(method)
-    
+
     def remove_method_trigger(self, method):
         self.__methods_to_trigger.remove(method)
 
@@ -423,9 +773,9 @@ class Item():
         delta = self._sh.now() - self.__last_change
         return delta.total_seconds()
 
-    def autotimer(self, time=None, value=None):
+    def autotimer(self, time=None, value=None, compat=ATTRIB_COMPAT_V12):
         if time is not None and value is not None:
-            self._autotimer = time, value
+            self._autotimer = [(time, value), compat, None, None]
         else:
             self._autotimer = False
 
@@ -444,6 +794,11 @@ class Item():
 
     def last_update(self):
         return self.__last_update
+
+    #Multiclick
+#    def prev_update_age(self):
+#        delta = self.__last_update - self.__prev_update
+#        return delta.total_seconds()
 
     def prev_age(self):
         delta = self.__last_change - self.__prev_change
@@ -488,26 +843,42 @@ class Item():
         self._lock.release()
         self._change_logger("Item {} = {} via {} {} {}".format(self._path, value, caller, source, dest))
 
-    def timer(self, time, value, auto=False):
-        try:
-            if isinstance(time, str):
-                time = time.strip()
-                if time.endswith('m'):
-                    time = int(time.strip('m')) * 60
-                else:
-                    time = int(time)
-            if isinstance(value, str):
-                value = value.strip()
-            if auto:
-                caller = 'Autotimer'
-                self._autotimer = time, value
-            else:
-                caller = 'Timer'
-            next = self._sh.now() + datetime.timedelta(seconds=time)
-        except Exception as e:
-            logger.warning("Item {}: timer ({}, {}) problem: {}".format(self._path, time, value, e))
+    def timer(self, time, value, auto=False, compat=ATTRIB_COMPAT_DEFAULT):
+        time = self._cast_duration(time)
+        value = self._castvalue_to_itemtype(value, compat)
+        if auto:
+            caller = 'Autotimer'
+            self._autotimer = [(time, value), compat, None, None]
         else:
-            self._sh.scheduler.add(self.id() + '-Timer', self.__call__, value={'value': value, 'caller': caller}, next=next)
+            caller = 'Timer'
+        next = self._sh.now() + datetime.timedelta(seconds=time)
+        self._sh.scheduler.add(self.id() + '-Timer', self.__call__, value={'value': value, 'caller': caller}, next=next)
 
     def type(self):
         return self._type
+
+    def get_children_path(self):
+        return [item._path
+                for item in self.__children]
+
+    def jsonvars(self):
+        """
+        Translation method from object members to json
+        :return: Key / Value pairs from object members
+        """
+        return { "id": self._path,
+                 "name": self._name,
+                 "value" : self._value,
+                 "type": self._type,
+                 "attributes": self.conf,
+                 "children": self.get_children_path() }
+# alternative method to get all class members
+#    @staticmethod
+#    def get_members(instance):
+#        return {k: v
+#                for k, v in vars(instance).items()
+#                if str(k) in ["_value", "conf"] }
+#                #if not str(k).startswith('_')}
+
+    def to_json(self):
+       return json.dumps(self.jsonvars(), sort_keys=True, indent=2)
