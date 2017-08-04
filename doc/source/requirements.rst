@@ -29,4 +29,4 @@ If using a hardware platform without buffered real time clock it is mandatory to
 Otherwise SmartHomeNG will not start due to missing time information.
 
 Some libraries within SmartHomeNG still use function depending on Unix flavour. 
-Thus SmartHomeNG does not run with Windows right now.
+Thus SmartHomeNG does not run on Windows and MacOS right now.
