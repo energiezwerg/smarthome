@@ -625,7 +625,7 @@ class SmartHome():
         :param name: Name of log
         :param log: Log object
         :type name: str
-        type log: object
+        :type log: object
         """
         
         self.__logs[name] = log
