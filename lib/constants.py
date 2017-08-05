@@ -19,6 +19,10 @@
 #  along with SmartHomeNG  If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
+"""
+This file describes a group of system wide constants for items, plugins and file extensions
+"""
+
 #item types
 ITEM_DEFAULTS= __defaults = {'num': 0, 'str': '', 'bool': False, 'list': [], 'dict': {}, 'foo': None, 'scene': 0}
 ITEM_TYPES=["num","str","bool", "list","dict","foo","scene"]

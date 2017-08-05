@@ -1,7 +1,12 @@
 Core
 ====
 
-Unfortunately there is nearly no documentation within the core yet. So the following is merely informational except to show the member functions.
+The core of SmartHomeNG is made of a main object which is defined in ``bin/smarthome.py`` 
+and a couple of libraries which are for exclusive use by the core and implement helping objects.
+They are located in ``lib``and are listed in the navigation directly under this page.
+
+The main object of SmartHomeNG is described below:
+
 
 .. automodule:: bin.smarthome
     :members:

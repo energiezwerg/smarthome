@@ -22,6 +22,12 @@
 #  along with SmartHomeNG. If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
+"""
+This file is a special version of the configuration loader. It has been modified to
+support the conversion from CONF to YAML format. This configuration loader is only called
+by the converter tools/conf_to_yaml_converter.py.
+"""
+
 import os
 
 RUAMEL_YAML_INSTALLED = False

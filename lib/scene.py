@@ -19,6 +19,10 @@
 #  along with SmartHomeNG. If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
+"""
+This file implements scenes in SmartHomeNG
+"""
+
 import logging
 import os.path
 import csv
@@ -27,6 +31,15 @@ logger = logging.getLogger(__name__)
 
 
 class Scenes():
+    """
+    This class loads all scene definitions from /scenes folder and adds the necessary triggers
+    for the scenes to function.
+
+    :Note: The scene definitions are stored in /scenes files with the extension .conf but don't follow the file format for conf-files of smarthome.py!
+
+    :param smarthome: Main SmartHomeNG object
+    :type smarthome: object
+    """
 
     def __init__(self, smarthome):
         self._scenes = {}
@@ -62,6 +75,7 @@ class Scenes():
                     logger.warning("Problem reading scene file {0}: {1}".format(scene_file, e))
                     continue
                 item.add_method_trigger(self._trigger)
+
 
     def _trigger(self, item, caller, source, dest):
         if not item.id() in self._scenes:

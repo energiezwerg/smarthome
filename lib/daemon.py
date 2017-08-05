@@ -18,6 +18,11 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SmartHomeNG.py. If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
+
+"""
+This file contains the functions needed to run SmartHomeNG as a deamon
+"""
+
 import os
 import sys
 import psutil
@@ -26,16 +31,16 @@ def daemonize(pidfile,stdin='/dev/null', stdout='/dev/null', stderr=None):
     """
     This method domonizes the sh.py process and redirects standard file descriptors.
     
-    @type   pidfile: string 
-    @param  pidfile: Path to pidfile 
-    @type   stdin  : string
-    @param  stdin  : Path to new stdin, default value is "/dev/null"
-    @type   stdout :
-    @param  stdout : Path to new stdout, default value is "/dev/null"
-    @type   stderr :
-    @param  stderr : Path to new stderr, default value is None, but if stderr is None it is mapped to stdout
-   
+    :param pidfile: Path to pidfile 
+    :param stdin: Path to new stdin, default value is "/dev/null"
+    :param stdout: Path to new stdout, default value is "/dev/null"
+    :param stderr: Path to new stderr, default value is None, but if stderr is None it is mapped to stdout
+    :type pidfile: string 
+    :type stdin: string
+    :type stdout: string
+    :type stderr: string
     """
+    
     # use stdout file if stderr is none  
     if (not stderr):    
         stderr = stdout
@@ -79,18 +84,44 @@ def daemonize(pidfile,stdin='/dev/null', stdout='/dev/null', stderr=None):
     os.dup2(se.fileno(), sys.stderr.fileno())
 
 
-def remove_pidfile(pidfile: str):
+def remove_pidfile(pidfile):
+    """
+    This method removes the pidfile.
+    
+    :param pidfile: Name of the pidfile to write to
+    :type pidfile: str
+    """
+
     if os.path.exists(pidfile):
         os.remove(pidfile)
 
 
-def write_pidfile(pid: int, pidfile: str):
+def write_pidfile(pid, pidfile):
+    """
+    This method writes the PID to the pidfile.
+    
+    :param pid: PID of SmartHomeNG
+    :param pidfile: Name of the pidfile to write to
+    :type pid: int
+    :type pidfile: str
+    """
+    
     fd = open(pidfile, 'w+')
     fd.write("%s" % pid)
     fd.close()
 
 
-def read_pidfile(pidfile: str) -> int:
+def read_pidfile(pidfile):
+    """
+    This method reads the pidfile and returns the PID.
+    
+    :param pidfile: Name of the pidfile to check
+    :type pidfile: str
+    
+    :return: PID of SmartHomeNG or 0 if it is not running
+    :rtype: int
+    """
+    
     if os.path.isfile(pidfile):
         fd = open(pidfile,'r')
         line = fd.readline()
@@ -98,11 +129,30 @@ def read_pidfile(pidfile: str) -> int:
     return 0
 
 
-def check_sh_is_running(pidfile: str) -> bool:
+def check_sh_is_running(pidfile):
+    """
+    This method deamonizes the sh.py process and redirects standard file descriptors.
+    
+    :param pidfile: Name of the pidfile to check
+    :type pidfile: str
+    
+    :return: True: if SmartHomeNG is running, False: if SmartHome is not running
+    :rtype: bool
+    """
+    
     return psutil.pid_exists(read_pidfile(pidfile))
 
 
-def kill(pidfile:str,waittime:int=10):
+def kill(pidfile, waittime=10):
+    """
+    This method kills the process identified by pidfile.
+    
+    :param pidfile: Name of the pidfile identifying the process to kill
+    :param waittime: Number of seconds to wait before killing the process
+    :type pidfile: str
+    :type waittime: int
+    """
+
     pid = read_pidfile(pidfile)
     if psutil.pid_exists(pid):
         p = psutil.Process(pid)
