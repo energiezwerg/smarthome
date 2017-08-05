@@ -38,7 +38,7 @@ if not os.name == 'nt':
     # only check if we are not at windows systems
     if os.getegid() == 0:
         print("SmartHomeNG should not run as root")
-        exit()
+        # exit()
 
 #####################################################################
 # Import Python Core Modules
