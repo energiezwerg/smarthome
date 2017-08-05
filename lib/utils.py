@@ -19,6 +19,13 @@
 #  along with SmartHomeNG  If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
+"""
+This library contails the Utile-class for SmartHomeNG.
+
+New helper-functions are going to be implemented in this library.
+
+"""
+
 import re
 import hashlib
 
@@ -54,9 +61,12 @@ class Utils(object):
         Validates a MAC address
 
         :param mac: MAC address
+        :type string: str
+        
         :return: True if value is a MAC
-
+        :rtype: bool
         """
+        
         mac = str(mac)
         if len(mac) == 12:
             for c in mac:
@@ -81,12 +91,17 @@ class Utils(object):
     @staticmethod
     def is_ip(string):
         """
-        Checks if a string is a valid ip.
-        :param string: String to check.
+        Checks if a string is a valid ip-address (v4)
+        
+        The ip-address has is checked to have the format with four decimal numbers divided by three dots (example: 10.0.0.250)
+        
+        :param string: String to check
         :type string: str
+        
         :return: True if an ip, false otherwise.
         :rtype: bool
         """
+        
         try:
             return bool(IP_REGEX.search(string))
         except TypeError:
@@ -100,27 +115,32 @@ class Utils(object):
         Unit identifiers are: i for minutes, h for hours, d for days,
         w for weeks, m for months, y for years. If omitted milliseconds
         are assumed.
+        
         :param string: String to check.
         :type string: str
+
         :return: True if a timeframe can be recognized, false otherwise.
         :rtype: bool
         """
+
         try:
             return bool(TIMEFRAME_REGEX.search(string))
         except TypeError:
             return False
 
     @staticmethod
-    def to_timeframe(string):
+    def to_timeframe(value):
         """
         Converts a timeframe value to milliseconds. See is_timeframe() method.
         The special value 'now' is supported for the current time.
+
         :param value : value to convert
         :type value: str, int, ...
+
         :return: True if cant be converted and is true, False otherwise.
         :rtype: bool
-
         """
+        
         minute = 60 * 1000
         hour = 60 * minute
         day = 24 * hour
