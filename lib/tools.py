@@ -24,7 +24,7 @@
 """
 This library contails the Tools-class from the original smarthome.py
 
-These functions should be concidered deprecated. New helper-functions are going to be implemented in the utils.lib.
+:Note: These functions **should be concidered deprecated**. New helper-functions are going to be implemented in the utils.lib.
 
 """
 

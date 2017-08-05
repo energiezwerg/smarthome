@@ -165,11 +165,14 @@ class Utils(object):
     def is_int(string):
         """
         Checks if a string is a integer.
+        
         :param string: String to check.
         :type string: str
+        
         :return: True if a cast to int works, false otherwise.
         :rtype: bool
         """
+        
         try:
             int(string)
             return True
@@ -182,11 +185,14 @@ class Utils(object):
     def is_float(string):
         """
         Checks if a string is a float.
+        
         :param string: String to check.
         :type string: str
+
         :return: True if a cast to float works, false otherwise.
         :rtype: bool
         """
+
         try:
             float(string)
             return True
@@ -199,16 +205,18 @@ class Utils(object):
     def to_bool(value, default='exception'):
         """
         Converts a value to boolean.
+        
         Raises exception if value is a string and can't be converted and if no default value is given
-        Case is ignored. These string values are allowed
-        * True: 'True', "1", "true", "yes", "y", "t", "on"
-        * False: "", "0", "faLse", "no", "n", "f", "off"
+        Case is ignored. These string values are allowed:
+        - True: 'True', "1", "true", "yes", "y", "t", "on"
+        - False: "", "0", "faLse", "no", "n", "f", "off"
         Non-string values are passed to bool constructor.
         
         :param value : value to convert
-        :param default: optional, value to return if value can not be parsed,
-        if default is not set this method throws an exception
+        :param default: optional, value to return if value can not be parsed, if default is not set this method throws an exception
         :type value: str, object, int, ...
+        :type value: str, object, int, ...
+        
         :return: True if cant be converted and is true, False otherwise.
         :rtype: bool
         """
@@ -228,9 +236,14 @@ class Utils(object):
     def create_hash(plaintext):
         """
         Create hash (currently sha512) for given plaintext value
+        
         :param plaintext: plaintext
+        :type plaintext: str
+        
         :return: hash of plaintext, lowercase letters
+        :rtype: str
         """
+
         hashfunc = hashlib.sha512()
         hashfunc.update(plaintext.encode())
         return "".join(format(b, "02x") for b in hashfunc.digest())
@@ -239,8 +252,12 @@ class Utils(object):
     def is_hash(value):
         """
         Check if value is a valid hash (currently sha512) value
+        
         :param value: value to check
-        :return: bool True = given value can be a sha512 hash, False = given value can not be a sha512 hash
+        :type value: str
+        
+        :return: True: given value can be a sha512 hash, False: given value can not be a sha512 hash
+        :rtype: bool
         """
 
         # a valid sha512 hash is a 128 charcter long string value
@@ -259,10 +276,16 @@ class Utils(object):
         """
         Check if given plaintext password matches the hashed password
         An empty password is always rejected
+        
         :param pwd_to_check: plaintext password to check
+        :type pwd_to_check: str
         :param hashed_pwd: hashed password
-        :return: bool True: password matches, False: password does not match
+        :type hashed_pwd: str
+
+        :return: True: password matches, False: password does not match
+        :rtype: bool
         """
+
         if pwd_to_check is None or pwd_to_check == '':
             # No password given -> return "not matching"
             return False

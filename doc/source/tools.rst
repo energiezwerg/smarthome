@@ -18,7 +18,8 @@ This gives an overview to the script collection in directory ``tools`` of SmartH
      - gives a list of installed modules with pip (needed by backend?)
 
 
-The following are marked as deprecated and if no working solution is found we will remove them.
+The following are marked as deprecated and if no working solution is found we will remove them. For the time being
+they have been moved to ``/deprecated/tools``
 
 .. list-table::
    :header-rows: 1
@@ -41,3 +42,13 @@ The following are marked as deprecated and if no working solution is found we wi
      - Takes a list with Sensors and gives back a dict with items
    * - visu.manifest.sh
      - Seems to be used for a former visu approach (will be deleted)
+
+
+.. toctree::
+   :maxdepth: 2
+   :titlesonly:
+
+   /tools/backup_restore
+   /tools/build_requirements 
+   /tools/conf_to_yaml_converter
+   /tools/print_lib_versions
