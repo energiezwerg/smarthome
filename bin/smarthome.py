@@ -78,6 +78,7 @@ import lib.daemon
 import lib.item
 import lib.log
 import lib.logic
+import lib.module
 import lib.plugin
 import lib.scene
 import lib.scheduler
@@ -137,8 +138,10 @@ class SmartHome():
     _lib_dir = os.path.join(_base_dir,'lib')
     _env_dir = os.path.join(_lib_dir, 'env' + os.path.sep)
 
-    _plugin_conf_basename = os.path.join(_etc_dir,'plugin')
+    _module_conf_basename = os.path.join(_etc_dir,'module')
+    _module_conf = ''	# is filled by module.py while reading the configuration file, needed by Backend plugin
 
+    _plugin_conf_basename = os.path.join(_etc_dir,'plugin')
     _plugin_conf = ''	# is filled by plugin.py while reading the configuration file, needed by Backend plugin
 
     _env_logic_conf_basename = os.path.join( _env_dir ,'logic')
@@ -153,6 +156,7 @@ class SmartHome():
     __logs = {}
     __event_listeners = {}
     __all_listeners = []
+    _modules = []
     _plugins = []
     __items = []
     __children = []
@@ -285,6 +289,12 @@ class SmartHome():
             if os.path.isfile(self._smarthome_conf_basename + YAML_FILE + DEFAULT_FILE):
                 shutil.copy2(self._smarthome_conf_basename + YAML_FILE + DEFAULT_FILE,
                              self._smarthome_conf_basename + YAML_FILE)
+        # modules
+        if not (os.path.isfile(self._module_conf_basename + YAML_FILE)) and not (
+                os.path.isfile(self._module_conf_basename + CONF_FILE)):
+            if os.path.isfile(self._module_conf_basename + YAML_FILE + DEFAULT_FILE):
+                shutil.copy2(self._module_conf_basename + YAML_FILE + DEFAULT_FILE,
+                             self._module_conf_basename + YAML_FILE)
         # plugins
         if not (os.path.isfile(self._plugin_conf_basename + YAML_FILE)) and not (
                 os.path.isfile(self._plugin_conf_basename + CONF_FILE)):
@@ -352,6 +362,13 @@ class SmartHome():
         self.connections = lib.connection.Connections()
 
         #############################################################
+        # Init Modules
+        #############################################################
+        self._logger.warning("Init Modules")
+        self._logger.warning("configfile="+self._module_conf_basename)
+        self._modules = lib.module.Modules(self, configfile=self._module_conf_basename)
+
+        #############################################################
         # Init Plugins
         #############################################################
         self._logger.info("Init Plugins")
@@ -399,6 +416,11 @@ class SmartHome():
         self.scheduler.add('Connections', self.connections.check, cycle=10, offset=0)
 
         #############################################################
+        # Start Modules
+        #############################################################
+        self._modules.start()
+
+        #############################################################
         # Start Plugins
         #############################################################
         self._plugins.start()
@@ -432,6 +454,10 @@ class SmartHome():
             pass
         try:
             self._plugins.stop()
+        except:
+            pass
+        try:
+            self._modules.stop()
         except:
             pass
         try:
@@ -565,6 +591,20 @@ class SmartHome():
         return children
 
     #################################################################
+    # Module Methods
+    #################################################################
+    def return_modules(self):
+        """
+        Returns a list with the names of all loaded modules
+
+        :return: list of module names
+        :rtype: list
+        """
+
+        for module in self._modules:
+            yield module
+
+    #################################################################
     # Plugin Methods
     #################################################################
     def return_plugins(self):
@@ -647,7 +687,7 @@ class SmartHome():
     def add_event_listener(self, events, method):
         """
         This Function adds listeners for a list of events. This function is called from
-        plugins innterfacing with visus (e.g. visu_websocket)
+        plugins interfacing with visus (e.g. visu_websocket)
         
         :param events: List of events to add listeners for
         :param method: Method used by the visu-interface
