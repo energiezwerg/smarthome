@@ -21,6 +21,18 @@
 #  along with SmartHomeNG. If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
+"""
+This library does the handling of the configuration files of SmartHomeNG in yaml format.
+All file i/o from and to these configuration files goes through the functions which
+are implemented in this library.
+
+
+:Warning: This library is part of the core of SmartHomeNG. It **should not be called directly** from plugins!
+
+:Note: This version does not yet implement the possibility to write back changes from the running configuration (it still relies on pyyaml)
+
+"""
+
 import logging
 import yaml
 from collections import OrderedDict
@@ -34,10 +46,15 @@ logger = logging.getLogger(__name__)
 
 def yaml_load(filename, ordered=False):
     """
-    Load contents of a yaml file into an dict/OrderedDict structure
-
+    Load contents of a configuration file into an dict/OrderedDict structure. The configuration file has to be a valid yaml file
+   
     :param filename: name of the yaml file to load
-    :return: Dict/OrderedDict structure or None, if an error occured
+    :type filename: str
+    :param ordered: load to an OrderedDict? Default=False
+    :type ordered: bool
+    
+    :return: configuration data loaded from the file (or None if an error occured)
+    :rtype: Dict | OrderedDict | None
     """
 
     dict_type = 'dict'
@@ -72,7 +89,12 @@ def yaml_save(filename, data):
     Save contents of an OrderedDict structure to a yaml file
 
     :param filename: name of the yaml file to save to
-    :param data: OrderedDict to save
+    :type filename: str
+    :param data: configuration data to to save
+    :type filename: str
+    :type data: OrderedDict
+    
+    :returns: Nothing
     """
 
     ordered = (type(data).__name__ == 'OrderedDict')

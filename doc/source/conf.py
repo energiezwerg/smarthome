@@ -60,7 +60,7 @@ copyright = u'2016-2017 SmartHomeNG Team, based on smarthome.py © 2011-2013 Mar
 # built documents.
 #
 # The short X.Y version.
-version = '1.3'
+version = '1.3x dev'
 # The full version, including alpha/beta/rc tags.
 release = '1.3'
 #release = sphinx_bootstrap_theme.__version__

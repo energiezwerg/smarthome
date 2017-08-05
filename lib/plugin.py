@@ -21,6 +21,13 @@
 #  along with SmartHomeNG  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
+"""
+This library implements loading and starting of plugins within SmartHomeNG.
+
+
+:Warning: This library is part of the core of SmartHomeNG. It **should not be called directly** from plugins!
+
+"""
 import logging
 import threading
 import inspect
@@ -35,8 +42,9 @@ logger = logging.getLogger(__name__)
 
 class Plugins():
     """
-    Plugin loader Class. Parses config file and creates a worker thread for each plugin
+    Plugin loader class. Parses config file and creates a worker thread for each plugin
     """
+    
     _plugins = []
     _threads = []
     
@@ -99,12 +107,18 @@ class Plugins():
             yield plugin
 
     def start(self):
+        """
+        Start all plugins
+        """
         logger.info('Start Plugins')
         for plugin in self._threads:
             logger.debug('Starting {} Plugin'.format(plugin.name))
             plugin.start()
 
     def stop(self):
+        """
+        Stop all plugins
+        """
         logger.info('Stop Plugins')
         for plugin in self._threads:
             logger.debug('Stopping {} Plugin'.format(plugin.name))
@@ -112,7 +126,11 @@ class Plugins():
     
     def get_plugin(self, name):
         """
-           returns one plugin with given name 
+        Returns (the thread of) one plugin with given name 
+
+        :param name: name of the plugin to get
+        :type name: str
+
         """
         for thread in self._threads:
             if thread.name == name:
@@ -121,6 +139,10 @@ class Plugins():
 
 
 class PluginWrapper(threading.Thread):
+    """
+    Plugin wrapper class. Wraps around the loaded plugin code and defines the interface to the plugin.
+    """
+
     def __init__(self, smarthome, name, classname, classpath, args, instance):
         threading.Thread.__init__(self, name=name)
 
@@ -145,33 +167,39 @@ class PluginWrapper(threading.Thread):
 
     def run(self):
         """
-            starts this plugin instance
+        Starts this plugin instance
         """
         self.plugin.run()
 
     def stop(self):
         """
-            stops this plugin instance
+        Stops this plugin instance
         """
         self.plugin.stop()
     
     def get_name(self):
         """
-            returns the name of current plugin instance
-            :rtype: str 
+        Get the name of the current plugin instance
+        
+        :return: name of the plugin instance
+        :rtype: str 
         """
         return self.name
 
     def get_ident(self):
         """
-            returns the thread ident of current plugin instance
-            :rtype: int
+        Get the thread identifier of the current plugin instance
+        
+        :return: thread identifier of current plugin instance
+        :rtype: int
         """
         return self.ident
     
     def get_implementation(self):
         """
-            returns the implementation of current plugin instance
-            :rtype: object of plugin
+        Get the implementation of the current plugin instance
+        
+        :return: implementation of current plugin instance
+        :rtype: object of plugin
         """
         return self.plugin
