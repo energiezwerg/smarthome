@@ -121,6 +121,10 @@ class LogHandler(logging.StreamHandler):
 
 
 class SmartHome():
+    """
+    SmartHome ist the main class of SmartHomeNG. All other objects can be addressed relative to
+    the main oject, which is an instance of this class. Mostly it is reffered to as ``sh``or ``_sh``.
+    """
 
     base_dir = BASE
     _etc_dir = os.path.join(base_dir, 'etc')
@@ -241,7 +245,20 @@ class SmartHome():
             self.sun = lib.orb.Orb('sun', self._lon, self._lat, self._elev)
             self.moon = lib.orb.Orb('moon', self._lon, self._lat, self._elev)
 
+
     def checkConfigFiles(self):
+        """
+        This function checks if the needed configuration files exist. It checks for CONF and YAML files. 
+        If they dont exist, it is checked if a default configuration exist. If so, the default configuration
+        is copied to corresponding configuration file.
+        
+        The check is done for the files that have to exist (with some content) or SmartHomeNG won't start:
+        - smarthome.yaml / smarthome.conf
+        - logging.yaml / logging.conf
+        - plugin.yaml / plugin.conf
+        
+        """
+        
         # logging
         if not (os.path.isfile(self._log_config)):
             if os.path.isfile(self._log_config + DEFAULT_FILE):
@@ -259,7 +276,12 @@ class SmartHome():
                 shutil.copy2(self._plugin_conf_basename + YAML_FILE + DEFAULT_FILE,
                              self._plugin_conf_basename + YAML_FILE)
 
+
     def initLogging(self):
+        """
+        This function initiates the logging for SmartHomeNG.
+        """
+        
         fo = open(self._log_config, 'r')
         doc = lib.shyaml.yaml_load(self._log_config, False)
         logging.config.dictConfig(doc)
@@ -272,7 +294,12 @@ class SmartHome():
             logging.getLogger().setLevel(logging.WARNING)
 #       log_file.doRollover()
 
+
     def initMemLog(self):
+        """
+        This function initializes all needed datastructures to use the (old) memlog plugin
+        """
+        
         self.log = lib.log.Log(self, 'env.core.log', ['time', 'thread', 'level', 'message'], maxlen=self._log_buffer)
         _logdate = "%Y-%m-%d %H:%M:%S"
         _logformat = "%(asctime)s %(levelname)-8s %(threadName)-12s %(message)s"
@@ -281,11 +308,19 @@ class SmartHome():
         log_mem.setLevel(logging.WARNING)
         log_mem.setFormatter(formatter)
         logging.getLogger('').addHandler(log_mem)
+
+
     #################################################################
     # Process Methods
     #################################################################
 
     def start(self):
+        """
+        This function starts the threads of the main smarthome object.
+        
+        The main thread that is beeing started is called ``Main``
+        """
+        
         threading.currentThread().name = 'Main'
 
         #############################################################
@@ -367,6 +402,10 @@ class SmartHome():
                 self.logger.exception("Connection polling failed: {}".format(e))
 
     def stop(self, signum=None, frame=None):
+        """
+        This function is used to stop SmartHomeNG and all it's threads
+        """
+        
         self.alive = False
         self.logger.info("Number of Threads: {0}".format(threading.activeCount()))
         for item in self.__items:
@@ -448,6 +487,13 @@ class SmartHome():
     # Plugin Methods
     #################################################################
     def return_plugins(self):
+        """
+        Returns a list with the names of all loaded plugins
+
+        :return: list of plugin names
+        :rtype: list
+        """
+
         for plugin in self._plugins:
             yield plugin
 
@@ -458,10 +504,29 @@ class SmartHome():
         for logic in self._logics:
             self._logics[logic].generate_bytecode()
 
+
     def return_logic(self, name):
+        """
+        Returns (the object of) one loaded logic with given name 
+
+        :param name: name of the logic to get
+        :type name: str
+
+        :return: object of the logic
+        :rtype: object
+        """
+        
         return self._logics[name]
 
+
     def return_logics(self):
+        """
+        Returns a list with the names of all loaded logics
+
+        :return: list of logic names
+        :rtype: list
+        """
+
         for logic in self._logics:
             yield logic
 
@@ -497,21 +562,61 @@ class SmartHome():
     # Time Methods
     #################################################################
     def now(self):
+        """
+        Returns the actual time in a timezone aware format
+        
+        :return: Actual time for the local timezone
+        :rtype: datetime
+        """
+        
         # tz aware 'localtime'
         return datetime.datetime.now(self._tzinfo)
 
+
     def tzinfo(self):
+        """
+        Returns the info about the actual local timezone
+        
+        :return: Timezone info
+        :rtyye: str
+        """
+
         return self._tzinfo
 
+
     def utcnow(self):
+        """
+        Returns the actual time in GMT
+        
+        :return: Actual time in GMT
+        :rtyye: datetime
+        """
+
         # tz aware utc time
         return datetime.datetime.now(self._utctz)
 
+
     def utcinfo(self):
+        """
+        Returns the info about the GMT timezone
+        
+        :return: Timezone info
+        :rtype: str
+        """
+
         return self._utctz
 
+
     def runtime(self):
+        """
+        Returns the uptime of SmartHomeNG
+        
+        :return: Uptime in days, hours, minutes and seconds
+        :rtype: str
+        """
+
         return datetime.datetime.now() - self._starttime
+
 
     #################################################################
     # Helper Methods
@@ -560,7 +665,7 @@ class SmartHome():
 # Private Methods
 #####################################################################
 
-def reload_logics():
+def _reload_logics():
     pid = lib.daemon.read_pidfile(PIDFILE)
     if pid:
         os.kill(pid, signal.SIGHUP)
@@ -610,7 +715,7 @@ if __name__ == '__main__':
         shell.interact()
         exit(0)
     elif args.logics:
-        reload_logics()
+        _reload_logics()
         exit(0)
     elif args.version:
         print("{0}".format(VERSION))

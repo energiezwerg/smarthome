@@ -14,8 +14,6 @@ This gives an overview to the script collection in directory ``tools`` of SmartH
      - Walking the core and plugins directories to collect all requirements.txt content into a base.txt and all.txt
    * - conf_to_yaml_converter.py
      - Convert the config files in old ``*.conf`` format into ``*.yaml`` equivalents
-   * - print_lib_versions.py
-     - gives a list of installed modules with pip (needed by backend?)
 
 
 The following are marked as deprecated and if no working solution is found we will remove them. For the time being
@@ -40,6 +38,8 @@ they have been moved to ``/deprecated/tools``
      - Monitors the uncached sensors of an installed owserver
    * - owsensors2items.py
      - Takes a list with Sensors and gives back a dict with items
+   * - print_lib_versions.py
+     - gives a list of installed modules with pip (This list can be looked at in the backend plugin)
    * - visu.manifest.sh
      - Seems to be used for a former visu approach (will be deleted)
 
@@ -51,4 +51,3 @@ they have been moved to ``/deprecated/tools``
    /tools/backup_restore
    /tools/build_requirements 
    /tools/conf_to_yaml_converter
-   /tools/print_lib_versions

@@ -130,8 +130,11 @@ class Plugins():
 
         :param name: name of the plugin to get
         :type name: str
-
+        
+        :return: Thread of the plugin
+        :rtype: thread
         """
+
         for thread in self._threads:
             if thread.name == name:
                return thread
