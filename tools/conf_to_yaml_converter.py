@@ -21,6 +21,18 @@
 #  along with SmartHomeNG. If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
+"""
+This script converts the configuration files of SmartHomeNG from the old CONF format to the newly supported YAML format.
+
+It asks if it should convert the items and/or the configuration of SmartHomnNG.
+
+The old files remain in their directories. The `item/*.conf` files have to be moved/deleted to prevent 
+the items from being read two times. The ``etc/*.conf`` files can remain in position (or can be moved/deleted
+as well). If a configuration exists in ``etc`` in both file formats, the YAML file will be used.
+
+"""
+
+
 import os
 
 print('')
@@ -37,7 +49,7 @@ import item_conversion
 #   Convert all .conf files in a directory
 #
 
-def convert_directory(dir):
+def _convert_directory(dir):
 
     for item_file in sorted(os.listdir(dir)):
         if item_file.endswith('.conf'):
@@ -81,12 +93,12 @@ if __name__ == '__main__':
     
     if ans_item == 'Y':
         print('Converting item files:')
-        convert_directory(directory)
+        _convert_directory(directory)
         print('')
 
     if ans_etc == 'Y':
         print('Convering configuration files:')
-        convert_directory(etc_dir)
+        _convert_directory(etc_dir)
         print('')
 
     if ans_item == 'Y' or ans_etc == 'Y':
