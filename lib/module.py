@@ -38,6 +38,7 @@ from lib.constants import (KEY_CLASS_NAME, KEY_CLASS_PATH, KEY_INSTANCE,YAML_FIL
 
 logger = logging.getLogger(__name__)
 
+module_debug = False         # set to True to debug modules
 
 class Modules():
     """
@@ -83,13 +84,18 @@ class Modules():
                 if m.__class__.__name__ == classname:
                     logger.warning("Multiple module instances of class '{}' detected".format(classname))
 
-            try:
+            if module_debug:
                 module_thread = ModuleWrapper(smarthome, module, classname, classpath, args, instance)
                 self._threads.append(module_thread)
                 self._modules.append(module_thread.module)
-            except Exception as e:
-                logger.error("Module '{}' configuration error: Module '{}' not found or class '{}' not found in module file".format(module, classpath, classname))
-#                logger.exception("Module {0} exception: {1}".format(module, e))
+            else:
+                try:
+                    module_thread = ModuleWrapper(smarthome, module, classname, classpath, args, instance)
+                    self._threads.append(module_thread)
+                    self._modules.append(module_thread.module)
+                except Exception as e:
+                    logger.error("Module '{}' configuration error: Module '{}' not found or class '{}' not found in module file".format(module, classpath, classname))
+#                    logger.exception("Module {0} exception: {1}".format(module, e))
         del(_conf)  # clean up
 
     def __iter__(self):
@@ -111,7 +117,7 @@ class Modules():
         """
         logger.warning('Stop Modules')
         for module in self._threads:
-            logger.debug('Stopping {} Module'.format(module.name))
+            logger.warning('Stopping {} Module'.format(module.name))   # ex debug
             module.stop()
     
     def get_module(self, name):
@@ -149,9 +155,10 @@ class ModuleWrapper(threading.Thread):
 
         arglist = [name for name in self.args if name in args]
         argstring = ",".join(["{}={}".format(name, args[name]) for name in arglist])
-        logger.debug("Using arguments {}".format(arglist))
+        logger.warning("Using arguments {}".format(arglist))    # ex debug
 
         exec("self.module.__init__(smarthome{0}{1})".format("," if len(arglist) else "", argstring))
+
 
     def run(self):
         """

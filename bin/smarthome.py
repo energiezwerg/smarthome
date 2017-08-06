@@ -156,6 +156,7 @@ class SmartHome():
     __logs = {}
     __event_listeners = {}
     __all_listeners = []
+    _use_modules = 'True'
     _modules = []
     _plugins = []
     __items = []
@@ -289,7 +290,7 @@ class SmartHome():
             if os.path.isfile(self._smarthome_conf_basename + YAML_FILE + DEFAULT_FILE):
                 shutil.copy2(self._smarthome_conf_basename + YAML_FILE + DEFAULT_FILE,
                              self._smarthome_conf_basename + YAML_FILE)
-        # modules
+        # loadable modules
         if not (os.path.isfile(self._module_conf_basename + YAML_FILE)) and not (
                 os.path.isfile(self._module_conf_basename + CONF_FILE)):
             if os.path.isfile(self._module_conf_basename + YAML_FILE + DEFAULT_FILE):
@@ -362,11 +363,13 @@ class SmartHome():
         self.connections = lib.connection.Connections()
 
         #############################################################
-        # Init Modules
+        # Init loadable Modules
         #############################################################
-        self._logger.warning("Init Modules")
-        self._logger.warning("configfile="+self._module_conf_basename)
-        self._modules = lib.module.Modules(self, configfile=self._module_conf_basename)
+        if not(lib.utils.Utils.to_bool(self._use_modules) == False):
+            self._logger.info("Init loadable Modules")
+            self._modules = lib.module.Modules(self, configfile=self._module_conf_basename)
+        else:
+            self._logger.info("Loadable Modules are disabled")
 
         #############################################################
         # Init Plugins
@@ -418,7 +421,8 @@ class SmartHome():
         #############################################################
         # Start Modules
         #############################################################
-        self._modules.start()
+        if not(lib.utils.Utils.to_bool(self._use_modules) == False):
+            self._modules.start()
 
         #############################################################
         # Start Plugins
@@ -456,10 +460,13 @@ class SmartHome():
             self._plugins.stop()
         except:
             pass
-        try:
-            self._modules.stop()
-        except:
-            pass
+            
+        if not(lib.utils.Utils.to_bool(self._use_modules) == False):
+            try:
+                self._modules.stop()
+            except:
+                pass
+                
         try:
             self.connections.close()
         except:
