@@ -27,10 +27,8 @@ minimalmodbus>=0.7
 # SmartHomeNG Core
 psutil
 
-# systemair
-pyserial>=3.0.1
-
 # dlms
+# systemair
 pyserial>=3.2.1
 
 # SmartHomeNG Core
