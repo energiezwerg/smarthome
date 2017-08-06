@@ -6,7 +6,8 @@ Requirements
 Hardware
 ********
 
-Any machine running with an x86 or x64 should be fine as well as those with an arm like Raspberry.
+Any machine running with a x86 or x64 CPU should be fine as well as those with
+an ARM CPU like Raspberry.
 Among the hardware commonly used there are found
 
 - Raspberry 1, Raspberry 2, Raspberry 3 (the latter one is **strongly recommended** due to better hardware)
@@ -15,7 +16,7 @@ Among the hardware commonly used there are found
 - ODroid
 - Banana Pi
 - Beagle Bone
-- Virtual machine hosted on e.g. as NAS at home
+- Virtual machine hosted on e.g. a NAS at home
 - Docker
 
 ****************
@@ -28,5 +29,5 @@ SmartHomeNG is at least tested on Raspbian and Debian Jessie (amd64)
 If using a hardware platform without buffered real time clock it is mandatory to have a NTP daemon running to get time via internet.
 Otherwise SmartHomeNG will not start due to missing time information.
 
-Some libraries within SmartHomeNG still use function depending on Unix flavour. 
+Some libraries within SmartHomeNG still use functions depending on Unix flavour.
 Thus SmartHomeNG does not run on Windows and MacOS right now.

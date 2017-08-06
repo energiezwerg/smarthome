@@ -17,17 +17,17 @@ On most Linux Distributions this can be done via:
 
 .. code-block:: bash
 
-   $ sudo adduser smarthome
+   sudo adduser smarthome
    
 In the following it is expected that SmartHomeNG **is not installed and run as user root** but instead uses
-the dedicated user _smarthome_
+the dedicated user *smarthome*
 
 
-Download SmartHomeNG from Github
+Download SmartHomeNG from GitHub
 ================================
 
 Everything is extracted to ``/usr/local/smarthome/``. It is possible however to use another path.
-``sudo`` is needed to access ``usr/local/`` as well as setting the ownership to user **smarthome**
+``sudo`` is needed to access ``/usr/local/`` as well as setting the ownership to user **smarthome**
 
 .. code-block:: bash
 
@@ -41,7 +41,7 @@ If the latest development version is about to installed, just enter the base dir
 
 .. code-block:: bash
 
-   cd /usr/local/smarthome/etc
+   cd /usr/local/smarthome
    git checkout develop
    
 
@@ -68,7 +68,7 @@ It is a good idea to first upgrade the Python package manager pip:
 
    sudo python3 -m pip install --upgrade pip
 
-Then enter the SmartHomeNG home directory and start pip with
+Then enter the SmartHomeNG directory and start pip with
 
 .. code-block:: bash
 
@@ -80,18 +80,18 @@ Since every plugin supplies a requirement file, the missing modules can be insta
 
 .. code-block:: bash
 
-   cd /usr/local/smarthome                         # Change this if needed
+   cd /usr/local/smarthome                      # change if necessary
    sudo pip install -r plugins/pluginname/requirements.txt # Install requirements of pluginname.
 
-It is also possible to install all requirements by **all** plugins at once:
+It is also possible to install all requirements of **all** plugins at once:
    
 .. code-block:: bash
 
    cd /usr/local/smarthome                      # change if necessary
    sudo pip3 install -r requirements/all.txt
 
-Keep in mind that some Python modules require additional apt packages for a working installation. Just
-take a look at plugins/pluginname/README.md.
+Keep in mind that some Python modules require additional system packages for a working installation. Just
+take a look at ``plugins/<pluginname>/README.md`` file.
 
 
 Virtualenv / Pyenv
@@ -113,7 +113,7 @@ installed according to requirements in base.txt
    pip install --upgrade pip                 # Update the Python Package Installer inside the virtualenv
    pip install -r requirements/base.txt      # Install base requirements for smarthome.py
 
-Now the dependencies for the core should be met. Some plugins however require further Python modules. 
+Now the dependencies for the core should be met. Some plugins however require further Python modules.
 Since every plugin supplies a requirement file, the missing modules can be installed with
 
 .. code-block:: bash
