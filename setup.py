@@ -16,7 +16,7 @@ REQUIRES = [
 
 setup(
     name='SmartHomeNG',
-    version="1.1",
+    version="1.3",
     license='GPL',
     url='https://github.com/smarthomeNG/smarthome',
     download_url=DOWNLOAD_URL,
