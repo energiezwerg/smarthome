@@ -149,17 +149,17 @@ class Utils(object):
         year = 365 * day
         frames = {'i': minute, 'h': hour, 'd': day, 'w': week, 'm': month, 'y': year}
 
-        if string == 'now':
-            string = '0'
+        if value == 'now':
+            value = '0'
 
-        if not Utils.is_timeframe(string):
-            raise Exception('Invalid value for boolean conversion: ' + string)
+        if not Utils.is_timeframe(value):
+            raise Exception('Invalid value for boolean conversion: ' + value)
 
-        value, unit = TIMEFRAME_REGEX.match(string).groups()
+        amount, unit = TIMEFRAME_REGEX.match(value).groups()
         if unit in frames:
-            return int(float(value) * frames[unit])
+            return int(float(amount) * frames[unit])
         else:
-            return int(value)
+            return int(amount)
 
     @staticmethod
     def is_int(string):

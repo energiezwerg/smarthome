@@ -6,8 +6,8 @@ Configuration
 Folder Structure
 ================
 
-After the base system is installed a closer look at the SmartHomeNG home directory 
-(e.g. /usr/local/smarthome/) is advised to learn something about its content:
+After the base system is installed a closer look at the SmartHomeNG directory 
+(e.g. ``/usr/local/smarthome/``) is advised to learn something about its content:
 
 .. code-block:: bash
    :emphasize-lines: 4,6,8
@@ -32,13 +32,13 @@ After the base system is installed a closer look at the SmartHomeNG home directo
    var/rrd/       may contain a Round Robin Databases if rrd plugin is used (deprecated)
    
    # files
-   CHANGELOG.MD   changes of this project. (deprecated, should be documented in doc)
+   CHANGELOG.md   changes of this project. (deprecated, should be documented in doc)
    LICENSE        GNU GENERAL PUBLIC LICENSE (Version 3, 29 June 2007)
    README.md      a general information
    setup.py       not functional right now
    tox.ini        used for software testing
 
-Important for configuration are the directories ``etc/``, ``items`` and ``logics``. 
+Important for configuration are the directories ``etc``, ``items`` and ``logics``.
 Those are the locations were configuration is stored and maintained.
 The following discusses how these directories are populated.
 
@@ -83,7 +83,7 @@ to ``smarthome.yaml`` and edit it to your needs. It should look like the followi
    lat: 51.1633         # latitude
    lon: 10.4476         # longitude
    elev: 500            # elevation
-   tz: Europe/Berlin    # 'tz: timezone, the example will be fine for most parts of central Europe'
+   tz: Europe/Berlin    # timezone, the example will be fine for most parts of central Europe
 
 The coordinates can be found out by using GPS of a mobile or via an adequate website (e.g. http://www.mapcoordinates.net/)
    
@@ -92,9 +92,9 @@ The coordinates can be found out by using GPS of a mobile or via an adequate web
 logic.yaml
 ----------
 
-Logics within SmartHomeNG are just python scripts like the core, too. These scripts will be
+Logics within SmartHomeNG are just Python scripts like the core, too. These scripts will be
 placed in `/usr/local/smarthome/logics/`. To let SmartHomeNG know about when to start a script and which script to use then
-it is needed to configure every logic in `logic.yaml`:
+it is needed to configure every logic script in `logic.yaml`:
 
 .. sidebar:: logic.conf
    :class: deprecated
@@ -112,8 +112,8 @@ it is needed to configure every logic in `logic.yaml`:
        filename: logic.py
        crontab: init
 
-With the examply above SmartHomeNG would look in ``/usr/local/smarthome/logics/`` for the file
-``logic.py``. The logic would be started - once - when the system starts.
+With the example above SmartHomeNG would look in ``/usr/local/smarthome/logics/`` for the file
+``logic.py``. The logic would be started - once - when SmartHomeNG starts.
 
 
 .. _`plugin.yaml`:
@@ -123,12 +123,12 @@ plugin.yaml
 
 Plugins extend the core functionality of SmartHomeNG. 
 The ``plugins`` directory contains a subdirectory for every available plugin.
-The file ``etc/plugin.yaml`` holds the configuration for every plugin to be used during runtime. 
+The file ``etc/plugin.yaml`` holds the configuration for every plugin to be used during runtime.
 
 For each plugin at least the plugin object name is needed and the
 attributes where to find the plugin and how to expect the classname to be.
 
-The example below configures a plugin for the knx bus to send  and receive telegrams from and to eibd or knxd.
+The example below configures a plugin for the KNX bus to send and receive telegrams from and to eibd or knxd (both a software gateway to the KNX hardware bus).
 In this case the object name is ``knx``, the place to look for the module is within subdirectory ``plugins/knx/`` and the class of the plugin is ``KNX``.
 The object name can be any valid Python name, the class name and class path need to match those of the plugin.
 
@@ -159,7 +159,7 @@ The object name can be any valid Python name, the class name and class path need
        # time_ga: 1/1/1 # default none
        # date_ga: 1/1/2 # default none
 
-There is a Readme for every plugin that gives the necessary conbfiguration information. 
+There is a `README.md` for every plugin that gives the necessary configuration information.
 To continue reading follow the :doc:`plugin <allplugins>` page.
 
 logging.yaml
@@ -167,7 +167,7 @@ logging.yaml
 
 The core and also every module is able to output logging information. 
 The logging can be configured to be rich in detail for debugging purposes or rather smart with warning or general info.
-There is a seperate document to explain how to configure logging. 
+There is a seperate document to explain how to configure :doc:`logging <logging>`.
 To get started, simply copy the given ``logging.yaml.default`` 
 to ``logging.yaml`` and edit it to your needs. It should look like the following:
 
@@ -179,13 +179,13 @@ See further details at :doc:`logging <logging>`.
 
 .. _`item configuration files`:
 
-items/\*.yaml
--------------
+Config files in items/\*.yaml
+-----------------------------
 
 The items represent the heart of the configuration. An item can be accessed from any logic, plugin or eval.
-Any number of item configuration files may be used and any number of items may be defined (depends on your memory)
+Any number of item configuration files may be used and any number of items may be defined (depends on your memory) in one of these files.
 
-To find out more details about items and as well scenes continue reading the :doc:`items <items>` page.
+To find out more details about items and scenes configuration continue reading the :doc:`items <items>` page.
 
 
 SmartHomeNG start options
@@ -212,6 +212,6 @@ SmartHomeNG can be executed with the following options:
 
 If you start SmartHomeNG without any option, then SmartHomeNG will return the PID if already running.
 
-Please be noted that due to the changed nature of logging the -v and -q options are deprecated and will be removed 
+Please be noted that due to the changed nature of logging the -v and -q options are deprecated and will be removed
 in a later release.
 

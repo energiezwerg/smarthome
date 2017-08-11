@@ -1,6 +1,7 @@
-# !!!       SmartHomeNG      !!!
-# !!!  DON'T EDIT THIS FILE  !!!
-# !!! THIS FILE IS GENERATED !!!
+# !!!           SmartHomeNG          !!!
+# !!!      DON'T EDIT THIS FILE      !!!
+# !!!     THIS FILE IS GENERATED     !!!
+# !!! BY tools/build_requirements.py !!!
 
 # mvg_live
 PyMVGLive>=1.1.4
@@ -26,8 +27,8 @@ minimalmodbus>=0.7
 # SmartHomeNG Core
 psutil
 
-# systemair (pyserial>=3.0.1)
 # dlms
+# systemair
 pyserial>=3.2.1
 
 # SmartHomeNG Core
@@ -43,6 +44,8 @@ pyyaml==3.11
 
 # avm
 # enigma2
+# intercom_2n
+# join
 # nuki
 # odlinfo
 # pushbullet
@@ -51,11 +54,10 @@ pyyaml==3.11
 # traffic
 requests==2.5.1;python_version=='3.2'
 
-# intercom_2n
-requests>=2.9.1
-
 # avm
 # enigma2
+# intercom_2n
+# join
 # nuki
 # odlinfo
 # pushbullet
