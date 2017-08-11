@@ -21,13 +21,6 @@
 #  along with SmartHomeNG  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-"""
-This library implements loading and starting of plugins within SmartHomeNG.
-
-
-:Warning: This library is part of the core of SmartHomeNG. It **should not be called directly** from plugins!
-
-"""
 import logging
 import threading
 import inspect
@@ -42,9 +35,14 @@ logger = logging.getLogger(__name__)
 
 class Plugins():
     """
-    Plugin loader class. Parses config file and creates a worker thread for each plugin
-    """
+    Plugin loader Class. Parses config file and creates a worker thread for each plugin
     
+    :param smarthome: Instance of the smarthome master-object
+    :param configfile: Basename of the plugin configuration file
+    :type samrthome: object
+    :type configfile: str
+
+    """
     _plugins = []
     _threads = []
     
@@ -99,8 +97,8 @@ class Plugins():
                 self._threads.append(plugin_thread)
                 self._plugins.append(plugin_thread.plugin)
             except Exception as e:
-                logger.error("Plugin '{}' configuration error: Plugin '{}' not found or class '{}' not found in plugin file".format(plugin, classpath, classname))
-#                logger.exception("Plugin {0} exception: {1}".format(plugin, e))
+                logger.error("Module '{}' configuration error: Plugin '{}' not found or class '{}' not found in module file".format(plugin, classpath, classname))
+#                logger.exception("Module {0} exception: {1}".format(module, e))
         del(_conf)  # clean up
 
     def __iter__(self):
@@ -108,18 +106,12 @@ class Plugins():
             yield plugin
 
     def start(self):
-        """
-        Start all plugins
-        """
         logger.info('Start Plugins')
         for plugin in self._threads:
             logger.debug('Starting {} Plugin'.format(plugin.name))
             plugin.start()
 
     def stop(self):
-        """
-        Stop all plugins
-        """
         logger.info('Stop Plugins')
         for plugin in self._threads:
             logger.debug('Stopping {} Plugin'.format(plugin.name))
@@ -127,15 +119,8 @@ class Plugins():
     
     def get_plugin(self, name):
         """
-        Returns (the thread of) one plugin with given name 
-
-        :param name: name of the plugin to get
-        :type name: str
-        
-        :return: Thread of the plugin
-        :rtype: thread
+           returns one plugin with given name 
         """
-
         for thread in self._threads:
             if thread.name == name:
                return thread
@@ -143,10 +128,6 @@ class Plugins():
 
 
 class PluginWrapper(threading.Thread):
-    """
-    Plugin wrapper class. Wraps around the loaded plugin code and defines the interface to the plugin.
-    """
-
     def __init__(self, smarthome, name, classname, classpath, args, instance):
         threading.Thread.__init__(self, name=name)
 
@@ -171,39 +152,33 @@ class PluginWrapper(threading.Thread):
 
     def run(self):
         """
-        Starts this plugin instance
+            starts this plugin instance
         """
         self.plugin.run()
 
     def stop(self):
         """
-        Stops this plugin instance
+            stops this plugin instance
         """
         self.plugin.stop()
     
     def get_name(self):
         """
-        Get the name of the current plugin instance
-        
-        :return: name of the plugin instance
-        :rtype: str 
+            returns the name of current plugin instance
+            :rtype: str 
         """
         return self.name
 
     def get_ident(self):
         """
-        Get the thread identifier of the current plugin instance
-        
-        :return: thread identifier of current plugin instance
-        :rtype: int
+            returns the thread ident of current plugin instance
+            :rtype: int
         """
         return self.ident
     
     def get_implementation(self):
         """
-        Get the implementation of the current plugin instance
-        
-        :return: implementation of current plugin instance
-        :rtype: object of plugin
+            returns the implementation of current plugin instance
+            :rtype: object of plugin
         """
         return self.plugin

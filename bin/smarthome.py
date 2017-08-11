@@ -158,6 +158,7 @@ class SmartHome():
     __all_listeners = []
     _use_modules = 'True'
     _modules = []
+    _moduledict = {}
     _plugins = []
     __items = []
     __children = []
@@ -608,8 +609,27 @@ class SmartHome():
         :rtype: list
         """
 
-        for module in self._modules:
-            yield module
+#        for module_key in self._modules.key:
+#            yield module_key
+        l = []
+        for module_key in self._moduledict.keys():
+            l.append(module_key)
+        return l
+
+
+    def get_module(self, name):
+        """
+        Returns the module object for the module named by the parameter
+        or None, if the named module is not loaded
+
+        :param name: Name of the module to return
+        :type name: str
+        
+        :return: list of module names
+        :rtype: object
+        """
+
+        return self._moduledict.get(name)
 
     #################################################################
     # Plugin Methods
