@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2011-2013   Marcus Popp                        marcus@popp.mx
 # Copyright 2016-       Martin Sinn                         m.sinn@gmx.de
 #########################################################################
 #  This file is part of SmartHomeNG
 #
-#  SmartHomeNG is free software: you can redistribute it and/or modify
+#  SmartHomeNG is free software: you can redistribute it and/or modifyNode.js Design Patterns - Second Edition
 #  it under the terms of the GNU General Public License as published by
 #  the Free Software Foundation, either version 3 of the License, or
 #  (at your option) any later version.
@@ -20,6 +19,13 @@
 #  along with SmartHomeNG  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
+#
+# Initialisierung:
+# - einlesen der yaml Datei wie auch für plugins (evtl. statt module.yaml eine section in smarthome.yaml
+# - Die Module haben eine Klasse mit Namen mod_xxx
+# - Die Module werden initialisiert, indem dem Smarthome Objekt eine Variable mod_xxx als Instanz des jeweiligen Objektes hinzugefügt wird
+
+
 """
 This library implements loading and starting of core modules of SmartHomeNG.
 
@@ -28,9 +34,8 @@ This library implements loading and starting of core modules of SmartHomeNG.
 
 """
 import logging
-import threading
+#import threading
 import inspect
-import os.path		# until Backend is modified
 
 import lib.config
 #from lib.model.smartplugin import SmartPlugin
@@ -38,32 +43,31 @@ from lib.constants import (KEY_CLASS_NAME, KEY_CLASS_PATH, KEY_INSTANCE,YAML_FIL
 
 logger = logging.getLogger(__name__)
 
-module_debug = False         # set to True to debug modules
 
 class Modules():
     """
     Module loader class. Parses config file and creates a worker thread for each module
-    """
+    
+    :param smarthome: Instance of the smarthome master-object
+    :param configfile: Basename of the module configuration file
+    :type samrthome: object
+    :type configfile: str
+        """
     
     _modules = []
-    _threads = []
+    _moduledict = {}
     
     def __init__(self, smarthome, configfile):
+        self._sh = smarthome
 
-        # until Backend plugin is modified
-        if os.path.isfile(configfile+ YAML_FILE):
-            smarthome._module_conf = configfile + YAML_FILE
-        else:
-            smarthome._module_conf = configfile + CONF_FILE
-
-
+        # read module configuration (from module.yaml)
         _conf = lib.config.parse_basename(configfile, configtype='module')
         if _conf == {}:
             return
             
         for module in _conf:
+            logger.debug("Modules, section: {}".format(module))
             args = {}
-            logger.warning("Module: {0}".format(module))   #ex debug
             for arg in _conf[module]:
                 if arg != KEY_CLASS_NAME and arg != KEY_CLASS_PATH and arg != KEY_INSTANCE:
                     value = _conf[module][arg]
@@ -72,129 +76,82 @@ class Modules():
                     args[arg] = value
             classname = _conf[module][KEY_CLASS_NAME]
             classpath = _conf[module][KEY_CLASS_PATH]
-            
-            instance = ''
-            if KEY_INSTANCE in _conf[module]:
-                instance = _conf[module][KEY_INSTANCE].strip()
-                if instance == 'default': 
-                    instance = ''
-
+                        
             # give a warning if a module uses the same class twice
+            double = False
             for m in self._modules:
                 if m.__class__.__name__ == classname:
-                    logger.warning("Multiple module instances of class '{}' detected".format(classname))
+                    double = True
+                    logger.warning("Modules, section '{}': Multiple module instances of class '{}' detected, additional instance not initialized".format(module, classname))
 
-            if module_debug:
-                module_thread = ModuleWrapper(smarthome, module, classname, classpath, args, instance)
-                self._threads.append(module_thread)
-                self._modules.append(module_thread.module)
-            else:
+            if not double:
                 try:
-                    module_thread = ModuleWrapper(smarthome, module, classname, classpath, args, instance)
-                    self._threads.append(module_thread)
-                    self._modules.append(module_thread.module)
+                    self._moduledict[classname] = self._LoadModule(module, classname, classpath, args)
+                    self._modules.append(self._moduledict[classname])
+#                    self._sh._moduledict[classname] = self._LoadModule(module, classname, classpath, args)
+#                    self._modules.append(self._sh._moduledict[classname])
+                    logger.info('Modules: Loaded module {} v{}: {}'.format( str(self._moduledict[classname].__class__.__name__), str(self._moduledict[classname].version), str(self._moduledict[classname].longname) ) )
                 except Exception as e:
-                    logger.error("Module '{}' configuration error: Module '{}' not found or class '{}' not found in module file".format(module, classpath, classname))
-#                    logger.exception("Module {0} exception: {1}".format(module, e))
-        del(_conf)  # clean up
+                    logger.error("Modules, section '{}' configuration error: Module '{}' not found or class '{}' not found in module file".format(module, classpath, classname))
 
-    def __iter__(self):
-        for module in self._modules:
-            yield module
+
+        self._sh._moduledict = self._moduledict
+        logger.warning('Loaded Modules: {}'.format( str( self._sh.return_modules() ) ) )
+
+        # clean up (module configuration from module.yaml)
+        del(_conf)  # clean up
+        
+        return
+
+
+    def _LoadModule(self, name, classname, classpath, args):
+        """
+        Module Loader. Loads one module defined by the parameters classname and classpath.
+        Parameters defined in the configuration file are passed to this function as 'args'
+        
+        :param name: Section name in module configuration file (etc/module.yaml)
+        :param classname: Name of the (main) class in the module
+        :param classpath: Path to the Python file containing the class
+        :param args: Parameter as specified in the configuration file (etc/module.yaml)
+        :type name: str
+        :type classname: str
+        :type classpath: str
+        :type args: dict
+        
+        :return: loaded module
+        :rtype: object
+        """
+
+        exec("import {0}".format(classpath))
+
+        #exec("self.module = {0}.{1}(smarthome{2})".format(classpath, classname, args))
+        exec("self.loadedmodule = {0}.{1}.__new__({0}.{1})".format(classpath, classname))
+#ms        setattr(self._sh, name, loadedmodule)
+        
+        logger.debug('_LoadModule: Section {}, Module {}, classpath {}'.format( name, classname, classpath ))
+        
+        exec("self.args = inspect.getargspec({0}.{1}.__init__)[0][1:]".format(classpath, classname))
+
+        arglist = [name for name in self.args if name in args]
+        argstring = ",".join(["{}={}".format(name, args[name]) for name in arglist])
+        logger.debug('_LoadModule: Using arguments {}'.format(arglist))    # ex debug
+        
+        exec("self.loadedmodule.__init__(self._sh{0}{1})".format("," if len(arglist) else "", argstring))
+
+        return self.loadedmodule
+
+        
 
     def start(self):
         """
         Start all modules
         """
         logger.warning('Start Modules')
-        for module in self._threads:
-            logger.warning('Starting {} Module'.format(module.name))   # ex debug
-            module.start()
 
     def stop(self):
         """
         Stop all modules
         """
         logger.warning('Stop Modules')
-        for module in self._threads:
-            logger.warning('Stopping {} Module'.format(module.name))   # ex debug
-            module.stop()
     
-    def get_module(self, name):
-        """
-        Returns (the thread of) one module with given name 
 
-        :param name: name of the module to get
-        :type name: str
-        
-        :return: Thread of the module
-        :rtype: thread
-        """
-
-        for thread in self._threads:
-            if thread.name == name:
-               return thread
-        return None
-
-
-class ModuleWrapper(threading.Thread):
-    """
-    Module wrapper class. Wraps around the loaded module code and defines the interface to the module.
-    """
-
-    def __init__(self, smarthome, name, classname, classpath, args, instance):
-        threading.Thread.__init__(self, name=name)
-
-        exec("import {0}".format(classpath))
-
-        #exec("self.module = {0}.{1}(smarthome{2})".format(classpath, classname, args))
-        exec("self.module = {0}.{1}.__new__({0}.{1})".format(classpath, classname))
-        setattr(smarthome, self.name, self.module)
-
-        exec("self.args = inspect.getargspec({0}.{1}.__init__)[0][1:]".format(classpath, classname))
-
-        arglist = [name for name in self.args if name in args]
-        argstring = ",".join(["{}={}".format(name, args[name]) for name in arglist])
-        logger.warning("Using arguments {}".format(arglist))    # ex debug
-
-        exec("self.module.__init__(smarthome{0}{1})".format("," if len(arglist) else "", argstring))
-
-
-    def run(self):
-        """
-        Starts this module instance
-        """
-        self.module.run()
-
-    def stop(self):
-        """
-        Stops this module instance
-        """
-        self.module.stop()
-    
-    def get_name(self):
-        """
-        Get the name of the current module instance
-        
-        :return: name of the module instance
-        :rtype: str 
-        """
-        return self.name
-
-    def get_ident(self):
-        """
-        Get the thread identifier of the current module instance
-        
-        :return: thread identifier of current module instance
-        :rtype: int
-        """
-        return self.ident
-    
-    def get_implementation(self):
-        """
-        Get the implementation of the current module instance
-        
-        :return: implementation of current module instance
-        :rtype: object of module
-        """
-        return self.module
