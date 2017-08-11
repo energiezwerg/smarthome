@@ -31,6 +31,9 @@ class MockSmartHome():
         self.__item_dict = {}
         self.__items = []
         self.children = []
+        self._use_modules = 'True'
+        self._modules = []
+        self._moduledict = {}
         self._plugins = []
         self._tzinfo = dateutil.tz.tzutc()
         self.scheduler = MockScheduler()
@@ -40,6 +43,11 @@ class MockSmartHome():
         lib.plugin.Plugins._plugins = []
         lib.plugin.Plugins._threads = []
         self._plugins = lib.plugin.Plugins(self, conf)
+        return self._plugins
+
+    def with_modules_from(self, conf):
+        lib.module.Modules._modules = []
+        self._modules = lib.module.Modules(self, conf)
         return self._plugins
 
     def with_items_from(self, conf):
@@ -82,6 +90,15 @@ class MockSmartHome():
     def return_plugins(self):
         for plugin in self._plugins:
             yield plugin
+
+    def return_modules(self):
+        l = []
+        for module_key in self._moduledict.keys():
+            l.append(module_key)
+        return l
+
+    def get_module(self, name):
+        return self._moduledict.get(name)
 
     def string2bool(self, string):
         if isinstance(string, bool):

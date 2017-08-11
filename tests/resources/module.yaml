@@ -1,0 +1,8 @@
+%YAML 1.1
+---
+# module.yaml
+http:
+    class_name: mod_http
+    class_path: modules.mod_http
+    port: '1234'
+
