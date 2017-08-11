@@ -7,6 +7,7 @@
 This file contains basic information about the basic directories of SmartHomeNG.
 
 Developer documentation (english) can be found on [www.smarthomeNG.de](https://www.smarthomeNG.de)
+
 Additional information / documentation can be found in the [SmartHomeNG Wiki](https://github.com/smarthomeNG/smarthome/wiki). The Wiki ist in german for the greatest part.
 
 | directory | description|
