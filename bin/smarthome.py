@@ -364,11 +364,12 @@ class SmartHome():
         self.connections = lib.connection.Connections()
 
         #############################################################
-        # Init loadable Modules
+        # Init and start loadable Modules
         #############################################################
         if not(lib.utils.Utils.to_bool(self._use_modules) == False):
             self._logger.info("Init loadable Modules")
             self._modules = lib.module.Modules(self, configfile=self._module_conf_basename)
+            self._modules.start()
         else:
             self._logger.info("Loadable Modules are disabled")
 
@@ -418,12 +419,6 @@ class SmartHome():
         # Start Connections
         #############################################################
         self.scheduler.add('Connections', self.connections.check, cycle=10, offset=0)
-
-        #############################################################
-        # Start Modules
-        #############################################################
-        if not(lib.utils.Utils.to_bool(self._use_modules) == False):
-            self._modules.start()
 
         #############################################################
         # Start Plugins

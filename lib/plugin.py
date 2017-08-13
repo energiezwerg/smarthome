@@ -29,6 +29,7 @@ import os.path		# until Backend is modified
 import lib.config
 from lib.model.smartplugin import SmartPlugin
 from lib.constants import (KEY_CLASS_NAME, KEY_CLASS_PATH, KEY_INSTANCE,YAML_FILE,CONF_FILE)
+from lib.utils import Utils
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +48,14 @@ class Plugins():
     _threads = []
     
     def __init__(self, smarthome, configfile):
+        self._sh = smarthome
+
+        try:
+            self._debug_plugins = Utils.to_bool(self._sh._debug_plugins)
+        except:
+            self._debug_plugins = False
+        if self._debug_plugins:
+            logger.warning('Plugins: Debugging of plugins is enabled. Exceptions are not caught outside of the plugin(s)' )
 
         # until Backend plugin is modified
         if os.path.isfile(configfile+ YAML_FILE):
@@ -92,13 +101,19 @@ class Plugins():
                 elif p.__class__.__name__ == classname:
                     logger.warning("Multiple classic plugin instances of class '{}' detected".format(classname))
 
-            try:
+            if self._debug_plugins == True:
                 plugin_thread = PluginWrapper(smarthome, plugin, classname, classpath, args, instance)
                 self._threads.append(plugin_thread)
                 self._plugins.append(plugin_thread.plugin)
-            except Exception as e:
-                logger.error("Module '{}' configuration error: Plugin '{}' not found or class '{}' not found in module file".format(plugin, classpath, classname))
-#                logger.exception("Module {0} exception: {1}".format(module, e))
+                logger.info('Plugins: Loaded plugin {}'.format( plugin ) )
+            else:
+                try:
+                    plugin_thread = PluginWrapper(smarthome, plugin, classname, classpath, args, instance)
+                    self._threads.append(plugin_thread)
+                    self._plugins.append(plugin_thread.plugin)
+                except Exception as e:
+                    logger.error("Module '{}' configuration error: Plugin '{}' not found or class '{}' not found in module file".format(plugin, classpath, classname))
+#                    logger.exception("Module {0} exception: {1}".format(module, e))
         del(_conf)  # clean up
 
     def __iter__(self):

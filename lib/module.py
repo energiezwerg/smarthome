@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2016-       Martin Sinn                         m.sinn@gmx.de
+# Copyright 2017-       Martin Sinn                         m.sinn@gmx.de
 #########################################################################
 #  This file is part of SmartHomeNG
 #
@@ -19,12 +19,6 @@
 #  along with SmartHomeNG  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
-#
-# Initialisierung:
-# - einlesen der yaml Datei wie auch für plugins (evtl. statt module.yaml eine section in smarthome.yaml
-# - Die Module haben eine Klasse mit Namen mod_xxx
-# - Die Module werden initialisiert, indem dem Smarthome Objekt eine Variable mod_xxx als Instanz des jeweiligen Objektes hinzugefügt wird
-
 
 """
 This library implements loading and starting of core modules of SmartHomeNG.
@@ -40,6 +34,7 @@ import inspect
 import lib.config
 #from lib.model.smartplugin import SmartPlugin
 from lib.constants import (KEY_CLASS_NAME, KEY_CLASS_PATH, KEY_INSTANCE,YAML_FILE,CONF_FILE)
+from lib.utils import Utils
 
 logger = logging.getLogger(__name__)
 
@@ -52,13 +47,20 @@ class Modules():
     :param configfile: Basename of the module configuration file
     :type samrthome: object
     :type configfile: str
-        """
+    """
     
     _modules = []
     _moduledict = {}
     
     def __init__(self, smarthome, configfile):
         self._sh = smarthome
+
+        try:
+            self._debug_modules = Utils.to_bool(self._sh._debug_modules)
+        except:
+            self._debug_modules = False
+        if self._debug_modules:
+            logger.warning('Modules: Debugging of modules is enabled. Exceptions are not caught outside of the module(s)' )
 
         # read module configuration (from module.yaml)
         _conf = lib.config.parse_basename(configfile, configtype='module')
@@ -85,14 +87,13 @@ class Modules():
                     logger.warning("Modules, section '{}': Multiple module instances of class '{}' detected, additional instance not initialized".format(module, classname))
 
             if not double:
-                try:
-                    self._moduledict[classname] = self._LoadModule(module, classname, classpath, args)
-                    self._modules.append(self._moduledict[classname])
-#                    self._sh._moduledict[classname] = self._LoadModule(module, classname, classpath, args)
-#                    self._modules.append(self._sh._moduledict[classname])
-                    logger.info('Modules: Loaded module {} v{}: {}'.format( str(self._moduledict[classname].__class__.__name__), str(self._moduledict[classname].version), str(self._moduledict[classname].longname) ) )
-                except Exception as e:
-                    logger.error("Modules, section '{}' configuration error: Module '{}' not found or class '{}' not found in module file".format(module, classpath, classname))
+                if self._debug_modules == True:
+                    self._LoadModule(module, classname, classpath, args)
+                else:
+                    try:
+                        self._LoadModule(module, classname, classpath, args)
+                    except Exception as e:
+                        logger.error("Modules, section '{}' configuration error: Module '{}' not found or class '{}' not found in module file".format(module, classpath, classname))
 
 
         self._sh._moduledict = self._moduledict
@@ -123,10 +124,7 @@ class Modules():
         """
 
         exec("import {0}".format(classpath))
-
-        #exec("self.module = {0}.{1}(smarthome{2})".format(classpath, classname, args))
         exec("self.loadedmodule = {0}.{1}.__new__({0}.{1})".format(classpath, classname))
-#ms        setattr(self._sh, name, loadedmodule)
         
         logger.debug('_LoadModule: Section {}, Module {}, classpath {}'.format( name, classname, classpath ))
         
@@ -138,20 +136,36 @@ class Modules():
         
         exec("self.loadedmodule.__init__(self._sh{0}{1})".format("," if len(arglist) else "", argstring))
 
-        return self.loadedmodule
+        self._moduledict[classname] = self.loadedmodule
+        self._modules.append(self._moduledict[classname])
+        logger.info('Modules: Loaded module {} v{}: {}'.format( str(self._moduledict[classname].__class__.__name__), str(self._moduledict[classname].version), str(self._moduledict[classname].longname) ) )
+        return
 
         
-
     def start(self):
         """
         Start all modules
+
+        Call start routine of module in case the module wants to start any threads
         """
-        logger.warning('Start Modules')
+        logger.warning('Start Modules')  # should be info
+
+        for module in self._sh.return_modules():
+            logger.debug('Starting {} Module'.format(module))
+            self.m = self._sh.get_module(module)
+            self.m.start()
+
 
     def stop(self):
         """
         Stop all modules
+        
+        Call stop routine of module to clean up in case the module has started any threads
         """
         logger.warning('Stop Modules')
     
+        for module in self._sh.return_modules():
+            logger.debug('Stopping {} Module'.format(module))
+            self.m = self._sh.get_module(module)
+            self.m.stop()
 

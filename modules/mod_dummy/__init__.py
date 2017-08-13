@@ -20,7 +20,43 @@
 #########################################################################
 
 
-class Dummy():
+import logging
 
-    def __init__(self, smarthome):
+class mod_dummy():
+
+    version = '1.4.0'
+    longname = 'Dummy module for SmartHomeNG'
+
+    def __init__(self, sh):
+        """
+        Initialization Routine for the module
+        """
+        self.shortname = self.__class__.__name__
+        self.logger = logging.getLogger(__name__)
+        self._sh = sh
+        self.logger.debug("{}: Initializing".format(self.shortname))
+
         pass
+        
+        
+    def start(self):
+        """
+        If the module needs to startup threads or uses python modules that create threads,
+        put thread creation code or the module startup code here.
+        
+        Otherwise don't enter code here
+        """
+#        self.logger.debug("{}: Starting up".format(self.shortname))
+        pass
+        
+
+    def stop(self):
+        """
+        If the module has started threads or uses python modules that created threads,
+        put cleanup code here.
+        
+        Otherwise don't enter code here
+        """
+#        self.logger.debug("{}: Shutting down".format(self.shortname))
+        pass
+    
