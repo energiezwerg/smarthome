@@ -148,7 +148,7 @@ class Modules():
 
         Call start routine of module in case the module wants to start any threads
         """
-        logger.warning('Start Modules')  # should be info
+        logger.info('Start Modules')
 
         for module in self._sh.return_modules():
             logger.debug('Starting {} Module'.format(module))

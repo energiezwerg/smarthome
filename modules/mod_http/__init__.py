@@ -36,7 +36,7 @@ class mod_http():
     applications = {}
     
     
-    def __init__(self, sh, port=None, ip='', threads=8):
+    def __init__(self, sh, port=None, ip='', threads=8, starturl=''):
         """
         Initialization Routine for the module
         """
@@ -70,10 +70,6 @@ class mod_http():
             self.threads = 8
             self.logger.error("mod_http: Invalid value '"+str(threads)+"' configured for attribute 'thread' in module.yaml, using '"+str(self.threads)+"' instead")
 
-#        self._user = user
-#        self._password = password
-#        self._hashed_password = hashed_password
-
         self._basic_auth = False
 
         current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -93,14 +89,19 @@ class mod_http():
         
         application_conf = {
             '/': {
-                'tools.staticfile.root': current_dir,
+#                'tools.staticfile.root': current_dir,
+                'tools.staticdir.root': current_dir,
                 'tools.staticdir.debug': True,
                 'tools.trailing_slash.on': False,
                 'log.screen': False,
             },
-            '/logo_big.png': {
-                'tools.staticfile.on': True,
-                'tools.staticfile.filename': 'static/logo_big.png',
+#            '/logo_big.png': {
+#                'tools.staticfile.on': True,
+#                'tools.staticfile.filename': 'static/logo_big.png',
+#            },
+            '/static': {
+                'tools.staticdir.on': True,
+                'tools.staticdir.dir': 'static',
             },
         }
         
@@ -108,7 +109,8 @@ class mod_http():
         cherrypy.config.update(global_conf)
 
         # mount the application on the '/' base path (Creating an app-instance on the way)
-        cherrypy.tree.mount(ModuleApp(self), '/', config = application_conf)
+        cherrypy.tree.mount(ModuleApp(self._sh, self, starturl), '/', config = application_conf)
+        cherrypy.tree.mount(PluginsApp(self), '/plugins', config = application_conf)
 
         # Start the CherryPy HTTP server engine
         cherrypy.engine.start()
@@ -117,49 +119,8 @@ class mod_http():
 
 # aus dem Backend: --------------------------------------------
 #
-#         config = {'global': {
-#             'engine.autoreload.on': False,
-#             'tools.staticdir.debug': True,
-#             'tools.trailing_slash.on': False,
-#             'log.screen': False
-#             },
-#             '/': {
-#                 'tools.auth_basic.on': self._basic_auth,
-#                 'tools.auth_basic.realm': 'earth',
-#                 'tools.auth_basic.checkpassword': self.validate_password,
-#                 'tools.staticdir.root': current_dir,
-#             },
-#             '/static': {
-#                 'tools.staticdir.on': True,
-#                 'tools.staticdir.dir': os.path.join(current_dir, 'static')
-#             }
-#         }
-#         
-# #         from cherrypy._cpserver import Server
-# #         self._server = Server()
-# #         self._server.socket_host = ip
-# #         self._server.socket_port = int(self.port)
-# #         self._server.thread_pool = self.threads
-# #         self._server.subscribe()
-# # 
-# #         self._cherrypy = cherrypy
-# #         self._cherrypy.config.update(config)
-# # #        self._cherrypy.tree.mount(Backend(self, self.updates_allowed, language, self.developer_mode, self.pypi_timeout), '/', config = config)
+#         self._server.thread_pool = self.threads
 # 
-# 
-#     def validate_password(self, realm, username, password):
-#         """
-#         validate_password
-#         """
-#         if username != self._user or password is None or password == "":
-#             return False
-# 
-#         if self._hashed_password is not None:
-#             return Utils.check_hashed_password(password, self._hashed_password)
-#         elif self._password is not None:
-#             return password == self._password
-# 
-#         return False
 
 
     def get_local_ip_address(self):
@@ -169,31 +130,34 @@ class mod_http():
         return s.getsockname()[0]
 
  
-    def RegisterApp(self, app, mount, conf, plugin, instance=''):
+    def RegisterApp(self, app, pluginname, conf, pluginclass, instance='', description=''):
         """
         Register an application for CherryPy
         
         :param app: Instance of the applicaion object
-        :param mount: Mount point for the application
+        :param plugoinname: Mount point for the application
         :param conf: Cherrypy application configuration dictionary
         :param plugin: Name of the plugin's class
         :param instance: Instance of the plugin (if multi-instance)
+        :param description: Description of the functionallity of the plugin / cherrypy app
         :type app: object
         :type mount: str
         :type conf: dict
         :type plugin: str
         :type istance: str
+        :type description: str
         
         """
-        mount = '/' + mount.lower()
-        self.logger.warning("Module mod_http: Registering application '{}' from plugin '{}' instance '{}'".format( mount, plugin, instance ) )
-        self.logger.warning("Module mod_http: -> dict conf = '{}'".format( conf ) )
+        pluginname = pluginname.lower()
+        mount = '/' + pluginname
         
-        self.applications[mount] = {'Plugin': plugin, 'Instance': instance, 'conf': conf}
-        self.logger.warning("Module mod_http: -> self.applications[{}] = '{}'".format( mount, str( self.applications[mount] ) ) )
+        if description == '':
+           description = pluginclass
+           
+        self.logger.info("Module mod_http: Registering application/plugin '{}' from pluginclass '{}' instance '{}'".format( pluginname, pluginclass, instance ) )
+        
+        self.applications[pluginname] = {'mount': mount, 'Plugin': pluginclass, 'Instance': instance, 'conf': conf, 'Description': description}
 
-#        cherrypy.tree.mount(ModuleApp(self), '/', config = application_conf)
-#        cherrypy.tree.mount(Backend(self, self.updates_allowed, language, self.developer_mode, self.pypi_timeout), '/backend', config = config)
         cherrypy.tree.mount(app, mount, config = conf)
 #        cherrypy.engine.start()
 
@@ -226,11 +190,43 @@ class mod_http():
 class ModuleApp:
 
 
+    def __init__(self, sh, mod, starturl):
+        self._sh = sh
+        self.mod = mod
+        self.starturl = starturl    
+    
+    #<meta http-equiv="refresh" content="5; URL=http://wiki.selfhtml.org/">
+
+    part1 = '<html><meta http-equiv="refresh" content="0; URL=/'
+
+    part2 = '"></html>'
+
+    @cherrypy.expose
+    def index(self):
+        result = self.part1
+        if self.starturl in self.mod.applications.keys():
+            result += self.starturl
+        else:
+            result += 'plugins'
+        result += self.part2
+        return result
+
+
+
+class PluginsApp:
+
+
     def __init__(self, mod):
         self.mod = mod
         
     part1 = """<html>
+<head>
+    <link rel="stylesheet" href="static/css/font-awesome.min.css" type="text/css"/>
+    <link rel="stylesheet" href="static/css/bootstrap.min.css" type="text/css"/>
+    <link rel="icon" href="static/img/favicon.ico" type="image/png">
+</head>
 
+<body>
 <div class="container">
 	<br>
 	<br>
@@ -241,7 +237,7 @@ class ModuleApp:
     <div class="row">
         <div align="center" class="col-md-7 col-md-offset-2 panel panel-default">
 			<h1 class="margin-base-vertical">
-			<img src="logo_big.png" width="150" height="75">
+			<img src="static/img/logo_big.png" width="150" height="75">
 	    	&nbsp; SmartHomeNG</h1>
 	    	
             <p align="center">
@@ -251,10 +247,12 @@ class ModuleApp:
 """
 
     part2 = """<br>
+        <br>
+        <br>
         </div><!-- //main content -->
     </div><!-- //row -->
 </div> <!-- //container -->
-
+</body>
 </html>"""
 
     @cherrypy.expose
@@ -262,9 +260,9 @@ class ModuleApp:
         result = self.part1
         result += '<br>Plugins:<br>'
         for app in self.mod.applications.keys():
-            href = app + ' - ' + str(self.mod.applications[app]['Plugin'])
+            href = app + ' - ' + str(self.mod.applications[app]['Description'])
             href = '<li class="nav-item"><a href="' + app + '">' + href + '</a></li>'
-            result += '<br>' + href +'<br>'
+            result += '<br>' + href
         result += self.part2
         return result
 
