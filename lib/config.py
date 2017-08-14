@@ -61,7 +61,8 @@ def parse_basename(basename, configtype=''):
     if config == {}:
         config = parse(basename+CONF_FILE)
     if config == {}:
-        logger.critical("No file '{}.*' found with {} configuration".format(basename, configtype))
+        if not (configtype == 'logics'):
+            logger.critical("No file '{}.*' found with {} configuration".format(basename, configtype))
     return config
         
 
@@ -442,4 +443,3 @@ def parse_conf(filename, config=None):
                 else:
                     item[attr] = strip_quotes(value)
         return config
-
