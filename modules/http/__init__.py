@@ -27,7 +27,7 @@ import cherrypy
 from lib.utils import Utils
 
 
-class mod_http():
+class http():
 
     version = '1.4.0'
     shortname = ''
@@ -53,22 +53,22 @@ class mod_http():
         else:
             self.port = 8383
             if port is not None:
-                self.logger.error("mod_http: Invalid value '"+str(port)+"' configured for attribute 'port' in module.yaml, using '"+str(self.port)+"' instead")
+                self.logger.error("Module http: Invalid value '"+str(port)+"' configured for attribute 'port' in module.yaml, using '"+str(self.port)+"' instead")
 
         if ip == '':
             ip = self.get_local_ip_address()
-            self.logger.debug("mod_http: Using local ip address '{0}'".format(ip))
+            self.logger.debug("Module http: Using local ip address '{0}'".format(ip))
         else:
             pass
         #    if not self.is_ip(ip):
-        #         self.logger.error("mod_http: Invalid value '"+str(ip)+"' configured for attribute ip in module.yaml, using '"+str('0.0.0.0')+"' instead")
+        #         self.logger.error("module http: Invalid value '"+str(ip)+"' configured for attribute ip in module.yaml, using '"+str('0.0.0.0')+"' instead")
         #         ip = '0.0.0.0'
 
         if Utils.is_int(threads):
             self.threads = int(threads)
         else:
             self.threads = 8
-            self.logger.error("mod_http: Invalid value '"+str(threads)+"' configured for attribute 'thread' in module.yaml, using '"+str(self.threads)+"' instead")
+            self.logger.error("Module http: Invalid value '"+str(threads)+"' configured for attribute 'thread' in module.yaml, using '"+str(self.threads)+"' instead")
 
         self._basic_auth = False
 
@@ -130,7 +130,7 @@ class mod_http():
         return s.getsockname()[0]
 
  
-    def RegisterApp(self, app, pluginname, conf, pluginclass, instance='', description=''):
+    def register_app(self, app, pluginname, conf, pluginclass, instance='', description=''):
         """
         Register an application for CherryPy
         
@@ -154,7 +154,7 @@ class mod_http():
         if description == '':
            description = pluginclass
            
-        self.logger.info("Module mod_http: Registering application/plugin '{}' from pluginclass '{}' instance '{}'".format( pluginname, pluginclass, instance ) )
+        self.logger.info("Module http: Registering application/plugin '{}' from pluginclass '{}' instance '{}'".format( pluginname, pluginclass, instance ) )
         
         self.applications[pluginname] = {'mount': mount, 'Plugin': pluginclass, 'Instance': instance, 'conf': conf, 'Description': description}
 

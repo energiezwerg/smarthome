@@ -22,7 +22,7 @@
 
 import logging
 
-class mod_dummy():
+class dummy():
 
     version = '1.4.0'
     longname = 'Dummy module for SmartHomeNG'
@@ -34,7 +34,7 @@ class mod_dummy():
         self.shortname = self.__class__.__name__
         self.logger = logging.getLogger(__name__)
         self._sh = sh
-        self.logger.debug("{}: Initializing".format(self.shortname))
+        self.logger.debug("Module '{}': Initializing".format(self.shortname))
 
         pass
         
@@ -46,7 +46,7 @@ class mod_dummy():
         
         Otherwise don't enter code here
         """
-#        self.logger.debug("{}: Starting up".format(self.shortname))
+#        self.logger.debug("Module '{}': Starting up".format(self.shortname))
         pass
         
 
@@ -57,6 +57,6 @@ class mod_dummy():
         
         Otherwise don't enter code here
         """
-#        self.logger.debug("{}: Shutting down".format(self.shortname))
+#        self.logger.debug("Module '{}': Shutting down".format(self.shortname))
         pass
     

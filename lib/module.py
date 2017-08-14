@@ -77,7 +77,10 @@ class Modules():
                         value = "'{0}'".format(value)
                     args[arg] = value
             classname = _conf[module][KEY_CLASS_NAME]
-            classpath = _conf[module][KEY_CLASS_PATH]
+            try:
+                classpath = _conf[module][KEY_CLASS_PATH]
+            except:
+                classpath = 'modules.' + classname
                         
             # give a warning if a module uses the same class twice
             double = False
@@ -93,8 +96,8 @@ class Modules():
                     try:
                         self._LoadModule(module, classname, classpath, args)
                     except Exception as e:
-                        logger.error("Modules, section '{}' configuration error: Module '{}' not found or class '{}' not found in module file".format(module, classpath, classname))
-
+#                        logger.error("Modules, section '{}' configuration error: Module '{}' not found or class '{}' not found in module file".format(module, classpath, classname))
+                        logger.exception("Module {0} exception: {1}".format(module, e))
 
         self._sh._moduledict = self._moduledict
         logger.warning('Loaded Modules: {}'.format( str( self._sh.return_modules() ) ) )

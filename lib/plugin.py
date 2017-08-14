@@ -112,8 +112,8 @@ class Plugins():
                     self._threads.append(plugin_thread)
                     self._plugins.append(plugin_thread.plugin)
                 except Exception as e:
-                    logger.error("Module '{}' configuration error: Plugin '{}' not found or class '{}' not found in module file".format(plugin, classpath, classname))
-#                    logger.exception("Module {0} exception: {1}".format(module, e))
+#                    logger.error("Plugin '{}' configuration error: Plugin '{}' not found or class '{}' not found in module file".format(plugin, classpath, classname))
+                    logger.exception("Plugin {0} exception: {1}".format(plugin, e))
         del(_conf)  # clean up
 
     def __iter__(self):

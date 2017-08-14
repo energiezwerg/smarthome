@@ -1,4 +1,4 @@
-# Module mod_http
+# Module http
 
 This module allows plugins to implement a web interface. The API is described below. The first plugin to utilize this API is teh backend plugin.
 
@@ -27,8 +27,8 @@ And please pay attention that the lib(s) are installed for Python3 and not an ol
 ```yaml
 # etc/module.yaml
 http:
-    class_name: mod_http
-    class_path: modules.mod_http
+    class_name: http
+    class_path: modules.http
 #    port: '1234'
 #    starturl: backend
 
@@ -50,24 +50,24 @@ if `starturl` is not specified or point to an url that does not exist, a redirec
 > Note: If you have redirected to a specific plugin, you can always get to the page with the list of all plugins that have registered a html interface, by entering the url `smarthomeNG.local:8383/plugins`.
 
 
-## API of mod_http
+## API of module http
 
-### Test if mod_http is loaded
+### Test if module http is loaded
 
-mod_http is a loadlable module. Therefore there is no guarantiee that it is present in every system. Before you can use this module, you have to make sure ist is loaded. You can do it by calling a method of the main smarthome object. Do it like this:
+`http` is a loadlable module. Therefore there is no guarantiee that it is present in every system. Before you can use this module, you have to make sure ist is loaded. You can do it by calling a method of the main smarthome object. Do it like this:
 
 ```
 self.classname = self.__class__.__name__
 
 try:
-    self.mod_http = self._sh.get_module('mod_http')
+    self.mod_http = self._sh.get_module('http')
 except:
     self.mod_http = None
     
 if self.mod_http == None:
     # Do what is necessary if you can't start a web interface
     # for your plugin. For example:
-    self.logger.error('{}: Module ''mod_http'' not loaded - Abort loading of plugin {0}'.format(self.classname))
+    self.logger.error('{}: Module ''http'' not loaded - Abort loading of plugin {0}'.format(self.classname))
     return
 ```
 
@@ -96,14 +96,14 @@ app_config = {
 
 > Note: The `tools.auth_basic`entries in this example are for implementing a basic logon security. If you don`t want/need login security, delete those enties.
 
-For registering a web application/interface you have to call the `RegisterApp` of **mod_http**:
+For registering a web application/interface you have to call the `register_app` of module `http`:
 
 ```
-RegisterApp(app_object, 
-            appname, 
-            app_config, 
-            pluginclass, instance,
-            description)
+register_app(app_object, 
+             appname, 
+             app_config, 
+             pluginclass, instance,
+             description)
 ```
 
 For example:
@@ -113,7 +113,7 @@ appname = 'backend'    # Name of the plugin
 pluginclass = self.__class__.__name__
 instance = self.get_instance_name()
 
-self.mod_http.RegisterApp(Backend(self, self.updates_allowed, language, self.developer_mode, self.pypi_timeout), 
+self.mod_http.register_app(Backend(self, self.updates_allowed, language, self.developer_mode, self.pypi_timeout), 
                           appname, 
                           app_config, 
                           pluginclass, instance,

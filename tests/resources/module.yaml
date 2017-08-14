@@ -2,7 +2,6 @@
 ---
 # module.yaml
 http:
-    class_name: mod_http
-    class_path: modules.mod_http
+    class_name: http
     port: '1234'
 

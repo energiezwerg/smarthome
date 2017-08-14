@@ -13,13 +13,13 @@ class TestConfig(unittest.TestCase):
         self.modules = self.sh.with_modules_from(common.BASE + "/tests/resources/module")
 
     def test_module_is_registered(self):
-        self.assertIsNotNone(self.sh.get_module("mod_http"))
+        self.assertIsNotNone(self.sh.get_module("http"))
 
     def test_plugin_not_registered(self):
-        self.assertIsNone(self.sh.get_module("mod_httpX"))
+        self.assertIsNone(self.sh.get_module("httpX"))
 
     def test_modules_loaded(self):
-        self.assertEqual(self.sh.return_modules(),['mod_http'])
+        self.assertEqual(self.sh.return_modules(),['http'])
 
  
 
