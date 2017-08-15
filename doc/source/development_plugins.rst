@@ -14,6 +14,23 @@ It is accessible via ``sh``-Object. The libraries provide extra functionality li
    libraries_plugins
    
 
+A plugin is a class based on the class SmartPlugin. The methods of SmartPlugin are documented here.
+
+.. toctree::
+   :maxdepth: 2
+   :titlesonly:
+
+   /lib/model/smartplugin
+
+
+.. toctree::
+   :maxdepth: 1
+   :titlesonly:
+   :hidden:
+   
+   libraries_plugins
+
+
 Some very specific info upon some plugins can be found here:
 
 .. toctree::
