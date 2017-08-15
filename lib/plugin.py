@@ -101,19 +101,18 @@ class Plugins():
                 elif p.__class__.__name__ == classname:
                     logger.warning("Multiple classic plugin instances of class '{}' detected".format(classname))
 
-            if self._debug_plugins == True:
+            try:
                 plugin_thread = PluginWrapper(smarthome, plugin, classname, classpath, args, instance)
-                self._threads.append(plugin_thread)
-                self._plugins.append(plugin_thread.plugin)
-                logger.info('Plugins: Loaded plugin {}'.format( plugin ) )
-            else:
                 try:
-                    plugin_thread = PluginWrapper(smarthome, plugin, classname, classpath, args, instance)
-                    self._threads.append(plugin_thread)
                     self._plugins.append(plugin_thread.plugin)
-                except Exception as e:
-#                    logger.error("Plugin '{}' configuration error: Plugin '{}' not found or class '{}' not found in module file".format(plugin, classpath, classname))
-                    logger.exception("Plugin {0} exception: {1}".format(plugin, e))
+                    self._threads.append(plugin_thread)
+                    logger.info('Plugins: Loaded plugin {}'.format( plugin ) )
+                except:
+                    logger.warning("Plugin '{0}' not loaded".format(plugin))
+            except Exception as e:
+#                logger.error("Plugin '{}' configuration error: Plugin '{}' not found or class '{}' not found in module file".format(plugin, classpath, classname))
+                logger.exception("Plugin '{0}' exception: {1}".format(plugin, e))
+
         del(_conf)  # clean up
 
     def __iter__(self):
@@ -146,8 +145,12 @@ class PluginWrapper(threading.Thread):
     def __init__(self, smarthome, name, classname, classpath, args, instance):
         threading.Thread.__init__(self, name=name)
 
-        exec("import {0}".format(classpath))
-
+        try:
+            exec("import {0}".format(classpath))
+        except Exception as e:
+            logger.exception("Plugin '{0}' exception during import of __init__.py: {1}".format(name, e))
+            return
+            
         #exec("self.plugin = {0}.{1}(smarthome{2})".format(classpath, classname, args))
         exec("self.plugin = {0}.{1}.__new__({0}.{1})".format(classpath, classname))
         setattr(smarthome, self.name, self.plugin)
