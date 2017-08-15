@@ -23,6 +23,7 @@
 import logging
 import os
 import cherrypy
+from collections import OrderedDict
 
 from lib.utils import Utils
 
@@ -134,8 +135,8 @@ class http():
         """
         Register an application for CherryPy
         
-        :param app: Instance of the applicaion object
-        :param plugoinname: Mount point for the application
+        :param app: Instance of the application object
+        :param pluginname: Mount point for the application
         :param conf: Cherrypy application configuration dictionary
         :param plugin: Name of the plugin's class
         :param instance: Instance of the plugin (if multi-instance)
@@ -152,7 +153,7 @@ class http():
         mount = '/' + pluginname
         
         if description == '':
-           description = pluginclass
+           description = 'Webinterface of plugin ' + pluginname
            
         self.logger.info("Module http: Registering application/plugin '{}' from pluginclass '{}' instance '{}'".format( pluginname, pluginclass, instance ) )
         
@@ -258,10 +259,12 @@ class PluginsApp:
     @cherrypy.expose
     def index(self):
         result = self.part1
-        result += '<br>Plugins:<br>'
-        for app in self.mod.applications.keys():
+        result += '<h3>Plugins:</h3>'
+        applist = list(self.mod.applications.keys())
+        applist.sort()
+        for app in applist:
             href = app + ' - ' + str(self.mod.applications[app]['Description'])
-            href = '<li class="nav-item"><a href="' + app + '">' + href + '</a></li>'
+            href = '<li class="nav-item"><a href="/' + app + '">' + href + '</a></li>'
             result += '<br>' + href
         result += self.part2
         return result
