@@ -20,7 +20,7 @@ A plugin is a class based on the class SmartPlugin. The methods of SmartPlugin a
    :maxdepth: 2
    :titlesonly:
 
-   /lib/model/smartplugin
+   smartplugin
 
 
 .. toctree::
