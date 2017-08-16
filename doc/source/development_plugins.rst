@@ -23,12 +23,12 @@ A plugin is a class based on the class SmartPlugin. The methods of SmartPlugin a
 
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 3
    :titlesonly:
    :hidden:
    
+   development_plugin/sampleplugins
    development_plugin/libraries_plugins
-   development_plugin/sampleplugin
 
 
 
@@ -42,18 +42,3 @@ Some very specific info upon some plugins can be found here:
    plugins/visu_websocket/README_for_visu_developers.md
 
 
-A skeleton of a plugin can be found here in **sample_plugin**:   
-
-.. toctree::
-   :maxdepth: 1
-   :titlesonly:
-
-   plugins/sample_plugin/README.md
-   plugins/sample_plugin/__init__.py
-
-   develop/sample_plugin/README.md
-   develop/sample_plugin/__init__.py
-
-.. literalinclude:: plugins/sample_plugin/__init__.py
-
-   
