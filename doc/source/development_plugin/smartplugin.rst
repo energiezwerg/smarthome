@@ -6,7 +6,8 @@ The class SmartPlugin implements the base class of all smart-plugins. The implem
 
 In adition the methods implemented in lib.utils.Utils are inhereted.
 
-.. automodule:: lib.model.smartplugin
+.. autoclass:: lib.model.smartplugin.SmartPlugin
     :members:
     :undoc-members:
     :show-inheritance:
+    :member-order: bysource

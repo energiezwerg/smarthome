@@ -11,7 +11,6 @@ It is accessible via ``sh``-Object. The libraries provide extra functionality li
    :hidden:
    
    development_plugin/plugin_in5minutes.md
-   libraries_plugins
    
 
 A plugin is a class based on the class SmartPlugin. The methods of SmartPlugin are documented here.
@@ -20,7 +19,7 @@ A plugin is a class based on the class SmartPlugin. The methods of SmartPlugin a
    :maxdepth: 2
    :titlesonly:
 
-   smartplugin
+   development_plugin/smartplugin
 
 
 .. toctree::
@@ -28,7 +27,7 @@ A plugin is a class based on the class SmartPlugin. The methods of SmartPlugin a
    :titlesonly:
    :hidden:
    
-   libraries_plugins
+   development_plugin/libraries_plugins
 
 
 Some very specific info upon some plugins can be found here:
@@ -39,4 +38,11 @@ Some very specific info upon some plugins can be found here:
 
    plugins/visu_smartvisu/README_for_developers.md
    plugins/visu_websocket/README_for_visu_developers.md
+   
+.. toctree::
+   :maxdepth: 1
+   :titlesonly:
+
+   dev/sample_plugin/README.md
+   dev/sample_plugin/__init__.py
    
