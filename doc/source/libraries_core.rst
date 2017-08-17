@@ -16,6 +16,7 @@ The description of their functions is shown here:
    /lib/item_conversion  
    /lib/log       
    /lib/logic  
+   /lib/module
    /lib/plugin  
    /lib/scene      
    /lib/shyaml  
