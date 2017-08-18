@@ -27,6 +27,7 @@ from lib.utils import Utils
 import logging
 import os
 
+
 class SmartPlugin(SmartObject, Utils):
     """
     The class SmartPlugin implements the base class of call smart-plugins.
@@ -41,7 +42,7 @@ class SmartPlugin(SmartObject, Utils):
     _classname = ''     #: Classname of the plugin; is initialized during loading of the plugin; :Warning: Don't change it
 
     logger = logging.getLogger(__name__)
-        
+    
     
     def get_shortname(self):
         """
@@ -67,7 +68,6 @@ class SmartPlugin(SmartObject, Utils):
         :type shortname: str
         """
         self._shortname = shortname
-        
         
     def get_classname(self):
         """
@@ -117,7 +117,6 @@ class SmartPlugin(SmartObject, Utils):
         if self.ALLOW_MULTIINSTANCE:
             self.__instance = instance
         else: 
-#            self.logger.warning("Plugin does not allow more than one instance")
             self.logger.warning("Plugin '{}': Only multi-instance capable plugins allow setting a name for an instance".format(self.get_shortname()))
 
 
@@ -129,6 +128,28 @@ class SmartPlugin(SmartObject, Utils):
         :rtype: str
         """
         return self.__instance
+
+
+    def get_loginstance(self):
+        """
+        Returns a prefix for logmessages of multi instance capable plugins.
+        
+        The result is an empty string, if the instancename is empty. Otherwise the result
+        is a string containing the instance name preseeded by a '@' and traild by ': '.
+        
+        This way it is easy to show the instance name in log messages. Just write
+        
+        self.logger.info(self.get_loginstance()+"Your text")
+        
+        and the logmessage is preseeded by the instance name, if needed.
+        
+        :return: instance name for logstring
+        :rtype: str
+        """
+        if self.__instance == '':
+            return ''
+        else:
+            return self.__instance+'@: '
 
 
     def is_multi_instance_capable(self):
@@ -312,9 +333,9 @@ class SmartPlugin(SmartObject, Utils):
         except:
              mymod = None
         if mymod == None:
-            self.logger.error("Plugin '{}': Module '{}' not loaded".format(self.get_shortname(), modulename))
+            self.logger.error("Module '{}' not loaded".format(modulename))
         else:
-            self.logger.warning("Plugin '{}': Using module '{}'".format(self.get_shortname(), str( mymod.shortname ) ) )
+            self.logger.info("Using module '{}'".format(str( mymod.shortname ) ) )
         return mymod
         
 

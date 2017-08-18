@@ -70,7 +70,7 @@ class Plugins():
             
         for plugin in _conf:
             args = {}
-            logger.debug("Plugin: {0}".format(plugin))
+            logger.debug("Section: {0}".format(plugin))
             for arg in _conf[plugin]:
                 if arg != KEY_CLASS_NAME and arg != KEY_CLASS_PATH and arg != KEY_INSTANCE:
                     value = _conf[plugin][arg]
@@ -106,12 +106,14 @@ class Plugins():
                 try:
                     self._plugins.append(plugin_thread.plugin)
                     self._threads.append(plugin_thread)
-                    logger.info('Plugins: Loaded plugin {}'.format( plugin ) )
+                    if instance == '':
+                        logger.info("Loaded plugin '{}' from from section '{}'".format( str(classpath).split('.')[1], plugin ) )
+                    else:
+                        logger.info("Loaded plugin '{}' instance '{}' from from section '{}'".format( str(classpath).split('.')[1], instance, plugin ) )
                 except:
-                    logger.warning("Plugin '{0}' not loaded".format(plugin))
+                    logger.warning("Plugin '{}' from from section '{}' not loaded".format( str(classpath).split('.')[1], plugin ) )
             except Exception as e:
-#                logger.error("Plugin '{}' configuration error: Plugin '{}' not found or class '{}' not found in module file".format(plugin, classpath, classname))
-                logger.exception("Plugin '{0}' exception: {1}".format(plugin, e))
+                logger.exception("Plugin '{}' from section '{}' exception: {}".format(str(classpath).split('.')[1], plugin, e))
 
         del(_conf)  # clean up
 
@@ -122,13 +124,25 @@ class Plugins():
     def start(self):
         logger.info('Start Plugins')
         for plugin in self._threads:
-            logger.debug('Starting {} Plugin'.format(plugin.name))
+            try:
+                instance = plugin.get_implementation().get_instance_name()
+                if instance != '':
+                    instance = ", instance '"+instance+"'"
+                logger.debug("Starting plugin '{}'{}".format(plugin.get_implementation().get_shortname(), instance))
+            except:
+                logger.debug("Starting classic-plugin from section '{}'".format(plugin.name))
             plugin.start()
 
     def stop(self):
         logger.info('Stop Plugins')
         for plugin in self._threads:
-            logger.debug('Stopping {} Plugin'.format(plugin.name))
+            try:
+                instance = plugin.get_implementation().get_instance_name()
+                if instance != '':
+                    instance = ", instance '"+instance+"'"
+                logger.debug("Stopping plugin '{}'{}".format(plugin.get_implementation().get_shortname(), instance))
+            except:
+                logger.debug("Stopping classic-plugin from section '{}'".format(plugin.name))
             plugin.stop()
     
     def get_plugin(self, name):
@@ -167,7 +181,7 @@ class PluginWrapper(threading.Thread):
 
         arglist = [name for name in self.args if name in args]
         argstring = ",".join(["{}={}".format(name, args[name]) for name in arglist])
-        logger.debug("Using arguments {}".format(arglist))
+        logger.debug("Plugin '{}' using arguments {}".format(str(classpath).split('.')[1], arglist))
 
         exec("self.plugin.__init__(smarthome{0}{1})".format("," if len(arglist) else "", argstring))
 
@@ -203,3 +217,4 @@ class PluginWrapper(threading.Thread):
             :rtype: object of plugin
         """
         return self.plugin
+    
