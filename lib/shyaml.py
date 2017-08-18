@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2016-       Martin Sinn                         m.sinn@gmx.de
+# Copyright 2016-2017   Martin Sinn                         m.sinn@gmx.de
 #########################################################################
 #  This file is part of SmartHomeNG
 #  https://github.com/smarthomeNG/smarthome
@@ -34,11 +34,28 @@ are implemented in this library.
 """
 
 import logging
-import yaml
+import os
 from collections import OrderedDict
+from lib.constants import (YAML_FILE)
 
 
 logger = logging.getLogger(__name__)
+
+try:
+    import ruamel.yaml as yaml
+    EDITING_ENABLED = True
+except:
+    EDITING_ENABLED = False
+    import yaml
+
+
+yaml_version = '1.1'
+indent_spaces = 4
+
+  
+def editing_is_enabled():
+    return False
+
 
 # ==================================================================================
 #   Routines to handle yaml files
