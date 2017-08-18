@@ -28,6 +28,7 @@ A plugin is a class based on the class SmartPlugin. The methods of SmartPlugin a
    :hidden:
    
    development_plugin/sampleplugins
+   development_plugin/modules_plugins
    development_plugin/libraries_plugins
 
 

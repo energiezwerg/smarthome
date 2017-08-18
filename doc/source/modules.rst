@@ -1,4 +1,4 @@
-Non classified Plugins
+Modules for use with plugins
 ----------------------------
 
 .. toctree::
@@ -6,4 +6,4 @@ Non classified Plugins
    :glob:
    :titlesonly:
 
-   plugins/nut/README.md
+   modules/http/README.md

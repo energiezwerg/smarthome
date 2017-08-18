@@ -135,6 +135,8 @@ class http():
         """
         Register an application for CherryPy
         
+        This method is called by a plugin to register a webinterface
+        
         :param app: Instance of the application object
         :param pluginname: Mount point for the application
         :param conf: Cherrypy application configuration dictionary
@@ -189,7 +191,15 @@ class http():
 
     
 class ModuleApp:
+    """
+    The module http implements it's own webinterface.
+    This WebApp implements the entrypoint for the webinterface of the module 'http'.
 
+    Depenting on the configuration of the 'http' module, it redirects to the webinterface of a 
+    specified plugin or it redirects to a chooser which allows the start of the differnt webinterfaces of the plugins.
+    
+    This webinterface is mounted to CherryPy as '/'
+    """
 
     def __init__(self, sh, mod, starturl):
         self._sh = sh
@@ -198,29 +208,37 @@ class ModuleApp:
     
     #<meta http-equiv="refresh" content="5; URL=http://wiki.selfhtml.org/">
 
-    part1 = '<html><meta http-equiv="refresh" content="0; URL=/'
+    _part1 = '<html><meta http-equiv="refresh" content="0; URL=/'
 
-    part2 = '"></html>'
+    _part2 = '"></html>'
 
     @cherrypy.expose
     def index(self):
-        result = self.part1
+        """
+        This method is exposed to CherryPy. It implements the page 'index.html'
+        """
+        result = self._part1
         if self.starturl in self.mod.applications.keys():
             result += self.starturl
         else:
             result += 'plugins'
-        result += self.part2
+        result += self._part2
         return result
 
 
 
 class PluginsApp:
-
+    """
+    The module 'http' implements it's own webinterface.
+    This WebApp implements the chooser which allows the start of the differnt webinterfaces of the plugins.
+    
+    This webinterface is mounted to CherryPy as '/plugins'
+    """
 
     def __init__(self, mod):
         self.mod = mod
         
-    part1 = """<html>
+    _part1 = """<html>
 <head>
     <link rel="stylesheet" href="static/css/font-awesome.min.css" type="text/css"/>
     <link rel="stylesheet" href="static/css/bootstrap.min.css" type="text/css"/>
@@ -247,7 +265,7 @@ class PluginsApp:
 			<br>
 """
 
-    part2 = """<br>
+    _part2 = """<br>
         <br>
         <br>
         </div><!-- //main content -->
@@ -258,7 +276,11 @@ class PluginsApp:
 
     @cherrypy.expose
     def index(self):
-        result = self.part1
+        """
+        This method is exposed to CherryPy. It implements the page 'plugins/index.html'
+        """
+
+        result = self._part1
         result += '<h3>Plugins:</h3>'
         applist = list(self.mod.applications.keys())
         applist.sort()
@@ -266,6 +288,6 @@ class PluginsApp:
             href = app + ' - ' + str(self.mod.applications[app]['Description'])
             href = '<li class="nav-item"><a href="/' + app + '">' + href + '</a></li>'
             result += '<br>' + href
-        result += self.part2
+        result += self._part2
         return result
 
