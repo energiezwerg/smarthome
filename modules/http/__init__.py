@@ -125,10 +125,26 @@ class http():
 
 
     def get_local_ip_address(self):
+        """
+        Returns the local ip address under which the webinterface can be reached
+        
+        :return: ip address
+        :rtype: str
+        """
         import socket
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("10.10.10.10", 80))
         return s.getsockname()[0]
+
+ 
+    def get_local_port(self):
+        """
+        Returns the local port under which the webinterface can be reached
+        
+        :return: port number
+        :rtype: int
+        """
+        return self.port
 
  
     def register_app(self, app, pluginname, conf, pluginclass, instance='', description=''):
