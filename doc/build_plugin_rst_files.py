@@ -94,20 +94,25 @@ def build_pluginlist( plugin_type='all' ):
     plugin_type = plugin_type.lower()
     for metaplugin in plugins_git:
         metafile = metaplugin + '/plugin.yaml' 
-        if metaplugin in pluginsyaml_git:
-            plugin_yaml = shyaml.yaml_load(metafile)
-            section_dict = plugin_yaml.get('plugin')
-            if section_dict != None:
-                if section_dict.get('type').lower() in plugin_types:
-                    plgtype = section_dict.get('type').lower()
+        if metaplugin in plugins_git:    #pluginsyaml_git
+            if os.path.isfile(metafile):
+                plugin_yaml = shyaml.yaml_load(metafile)
+            else:
+                plugin_yaml = ''
+            if plugin_yaml != '':
+                section_dict = plugin_yaml.get('plugin')
+                if section_dict != None:
+                    if section_dict.get('type').lower() in plugin_types:
+                        plgtype = section_dict.get('type').lower()
+                    else:
+                        plgtype = type_unclassified
+                        if plugin_type == type_unclassified:
+                            print("not found: plugin type '{}' defined in plugin '{}'".format(section_dict.get('type'),metaplugin))
                 else:
                     plgtype = type_unclassified
-                    if plugin_type == type_unclassified:
-                        print("not found: plugin type '{}' defined in plugin '{}'".format(section_dict.get('type'),metaplugin))
             else:
                 plgtype = type_unclassified
-        else:
-            plgtype = type_unclassified
+                
         if (plgtype == plugin_type) or (plugin_type == 'all'):
             result.append(metaplugin)
     return result
@@ -124,19 +129,24 @@ def write_rstfile(plgtype='All', heading=''):
     print('Datei: '+rst_filename+ ' '*(26-len(rst_filename)) +'  -  '+title)
     
     plglist = build_pluginlist(plgtype)
-
+    
     fh = open(plugin_rst_dir+'/'+rst_filename, "w")
     fh.write(title+'\n')
     fh.write('-'*len(title)+'\n')
     fh.write('\n')
-    fh.write('.. toctree::\n')
-    fh.write('   :maxdepth: 2\n')
-    fh.write('   :glob:\n')
-    fh.write('   :titlesonly:\n')
-    fh.write('\n')
-    for plg in plglist:
-        fh.write('   plugins/'+plg+'/README.md\n')
-    fh.write('\n')
+
+    if (len(plglist) == 0):
+        fh.write('At the moments there are no plugins that have not been classified.\n')
+    else:
+        fh.write('.. toctree::\n')
+        fh.write('   :maxdepth: 2\n')
+        fh.write('   :glob:\n')
+        fh.write('   :titlesonly:\n')
+        fh.write('\n')
+        for plg in plglist:
+            fh.write('   plugins/'+plg+'/README.md\n')
+        fh.write('\n')
+        
     fh.close()
     
 
@@ -150,39 +160,23 @@ if __name__ == '__main__':
     # change the working diractory to the directory from which the converter is loaded (../tools)
     os.chdir(os.path.dirname(os.path.abspath(os.path.basename(__file__))))
     
-#    plugindirectory = os.path.abspath('../plugins')
     plugindirectory = '../plugins'
     pluginabsdirectory = os.path.abspath(plugindirectory)
-    
-#    if item_conversion.is_ruamelyaml_installed() == False:
-#        exit(1)
-        
+            
     os.chdir(pluginabsdirectory)
     
-#    plg_git = subprocess.check_output(['git', 'ls-files', '*/__init__.py'], stderr=subprocess.STDOUT).decode().strip('\n')
-#    plugins_git = []
-#    for plg in plg_git.split('\n'):
-#        if plg.split('/')[1] == '__init__.py':
-##            print(plg.split('/')[0], '   -   ', plg)
-#            plugins_git.append(plg.split('/')[0])
-
     plugins_git = get_pluginlist_fromgit()
     if not 'xmpp' in plugins_git:
         plugins_git.append('xmpp')
         
     print('--- Liste der Plugins auf github ('+str(len(plugins_git))+'):')
-#    print(plugins_git)
-#    print()
     
     pluginsyaml_git = get_pluginyamllist_fromgit()
     if not 'xmpp' in plugins_git:
         plugins_git.append('xmpp')
         
     print('--- Liste der Plugins mit Metadaten auf github ('+str(len(pluginsyaml_git))+'):')
-#    print(pluginsyaml_git)
     print()
-#    print('----------------------------------------------')
-#    print()
     
     
 
@@ -193,20 +187,8 @@ if __name__ == '__main__':
     plugin_types = []
     for pl in plugin_sections:
        plugin_types.append(pl[0])
-       
-#    print('plugin_sections:')
-#    print(plugin_sections)
-#    print()
-#    print('plugin_types:')
-#    print(plugin_types)
-    
+           
     for pl in plugin_sections:
         write_rstfile(pl[0], pl[1])
     print()
-
-#    abs_path = os.path.abspath('.')
-#    print("os.listdir('.'):")
-#    print(" -> "+abs_path)
-#    plugins_local = get_local_pluginlist()
-        
     
