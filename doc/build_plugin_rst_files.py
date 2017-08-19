@@ -41,6 +41,16 @@ import shyaml
 import subprocess
 
 
+type_unclassified = 'unclassified'
+plugin_sections = [ ['gateway', 'Gateway'],
+                    ['interface', 'Interface'],
+                    ['protocol', 'Protocol'],
+                    ['system', 'System'],
+                    [type_unclassified, 'Non classified Plugins'],
+                    ['web', 'Web / Cloud Plugins']
+                  ]
+
+
 def get_pluginlist_fromgit():
     plglist = []
     plg_git = subprocess.check_output(['git', 'ls-files', '*/__init__.py'], stderr=subprocess.STDOUT).decode().strip('\n')
@@ -83,40 +93,39 @@ def build_pluginlist( plugin_type='all' ):
     result = []
     plugin_type = plugin_type.lower()
     for metaplugin in plugins_git:
-#        metafile = plugindirectory + '/' + metaplugin + '/plugin.yaml' 
         metafile = metaplugin + '/plugin.yaml' 
-#        print("Plugin '{}', Metafile '{}'".format(metaplugin, metafile) )
         if metaplugin in pluginsyaml_git:
             plugin_yaml = shyaml.yaml_load(metafile)
-#        print(plugin_yaml['plugin']['type'])
             section_dict = plugin_yaml.get('plugin')
             if section_dict != None:
-                plgtype = section_dict.get('type').lower()
+                if section_dict.get('type').lower() in plugin_types:
+                    plgtype = section_dict.get('type').lower()
+                else:
+                    plgtype = type_unclassified
+                    if plugin_type == type_unclassified:
+                        print("not found: plugin type '{}' defined in plugin '{}'".format(section_dict.get('type'),metaplugin))
             else:
-                plgtype = 'un-classified'
+                plgtype = type_unclassified
         else:
-            plgtype = 'un-classified'
+            plgtype = type_unclassified
         if (plgtype == plugin_type) or (plugin_type == 'all'):
             result.append(metaplugin)
-#            print("Plugin '{}', type = '{}'".format(metaplugin, plgtype) )
     return result
 
 
-def write_rstfile(plgtype='All'):
+def write_rstfile(plgtype='All', heading=''):
 
-    plglist = build_pluginlist(plgtype)
-#    print()
-#    print(plgtype+':')
-#    print( plglist )
-    print()
+    if heading == '':
+        title = plgtype + ' Plugins'
+    else:
+        title = heading
 
-    print('zu schreiben in: '+program_dir)
     rst_filename = 'plugins_'+plgtype.lower()+'.rst'
-    print('Dateiname: '+rst_filename)
+    print('Datei: '+rst_filename+ ' '*(26-len(rst_filename)) +'  -  '+title)
     
-    title = plgtype + ' Plugins'
+    plglist = build_pluginlist(plgtype)
 
-    fh = open(program_dir+'/'+rst_filename, "w")
+    fh = open(plugin_rst_dir+'/'+rst_filename, "w")
     fh.write(title+'\n')
     fh.write('-'*len(title)+'\n')
     fh.write('\n')
@@ -162,40 +171,42 @@ if __name__ == '__main__':
         plugins_git.append('xmpp')
         
     print('--- Liste der Plugins auf github ('+str(len(plugins_git))+'):')
-    print(plugins_git)
-    print()
+#    print(plugins_git)
+#    print()
     
     pluginsyaml_git = get_pluginyamllist_fromgit()
     if not 'xmpp' in plugins_git:
         plugins_git.append('xmpp')
         
     print('--- Liste der Plugins mit Metadaten auf github ('+str(len(pluginsyaml_git))+'):')
-    print(pluginsyaml_git)
+#    print(pluginsyaml_git)
     print()
-    print('----------------------------------------------')
-    print()
+#    print('----------------------------------------------')
+#    print()
     
     
 
-    plgtype = 'Gateway'
-    plgtype = 'System'
 
-    write_rstfile('Gateway')
-    write_rstfile('Interface')
-    write_rstfile('Protocol')
-    write_rstfile('System')
-    write_rstfile('un-Classified')
-    write_rstfile('Web')
+    plugin_rst_dir = program_dir+'/source'
+    print('zu schreiben in: '+plugin_rst_dir)
 
+    plugin_types = []
+    for pl in plugin_sections:
+       plugin_types.append(pl[0])
+       
+#    print('plugin_sections:')
+#    print(plugin_sections)
+#    print()
+#    print('plugin_types:')
+#    print(plugin_types)
+    
+    for pl in plugin_sections:
+        write_rstfile(pl[0], pl[1])
     print()
-    abs_path = os.path.abspath('.')
-    print("os.listdir('.'):")
-    print(" -> "+abs_path)
-    plugins_local = get_local_pluginlist()
+
+#    abs_path = os.path.abspath('.')
+#    print("os.listdir('.'):")
+#    print(" -> "+abs_path)
+#    plugins_local = get_local_pluginlist()
         
-    print()
-    for plg in plugins_local:
-        if not(plg in plugins_git):
-            print(plg, ord(plg[0]))
-    print()
     
