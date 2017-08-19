@@ -9,20 +9,23 @@ A good basis for your own plugin is found in ``dev/sample_plugin/__init__.py``
 
 The plugin is placed in it's own folder within the plugins folder. The name of the folder ist the name of the plugin and has to be **all lowercase**.
 
-At the moment, the Plugin is made up of a minium of two files, which are located within that folder.
+At the moment, the Plugin is made up of a minium of three files, which are located within that folder.
 
 Those files are:
 
 - `__init__.py`
 - `README.md`
+- `plugin.yaml`
 
 The file `__init__.py` contains the Python code of the plugin. The code should be at least Python 3.4 comatible.
 
 The file `README.md` contains the basic documentation (in english language) of the plugin.
 
+The file `plugin.yaml` contains metadata for the plugin. It is used to build the documentation. In the future, additional entries will be used by a graphical configuration frontend.
+
 To get thee plugin loaded, it has to be configured in the configuration file etc/plugin.yaml (or etc/plugin.conf for older installations).
 
-### The README.md file
+#### The `README.md` file
 
 The README.md file should have the following structure.
 
@@ -67,8 +70,41 @@ Make sure, that the first heading with the pluginname is the only first level he
 
 ```
 
+#### The metadata file `plugin.yaml`
 
-### The plugin configuration file
+The file containing metadata of the plugin has the following sections:
+
+* `plugin`  -  global attributes of the plugin 
+* `plugin_parameters`  - definition of the parameters used in `etc/plugin.yaml`
+* `item_attributes`  -  definition of the item-attributes that are defined by this plugin
+
+At the moment only one definition is required. It is the type of the plugin. The type of the plugin can be one of the following:
+
+* gateway
+* interface
+* protocol
+* system
+* web
+
+
+Example of a metadate file:
+
+```yaml
+# Metadata for the plugin
+plugin:
+    # Global plugin attributes
+    type: interface                # plugin type (gateway, interface, protocol, system, web)
+
+plugin_parameters:
+    # Definition of parameters to be configured in etc/plugin.yaml
+    
+item_attributes:
+    # Definition of item attributes defined by this plugin
+    
+```
+
+### Configuring the plugin in the configuration file `etc/plugin.yaml`
+
 The file plugin.yaml (or plugin.conf) is located in the subdirectory ``etc`` of SmartHomeNG base directory. It tells SmartHomeNG which plugins to load and where to find them. The following box is a typical entry for your new plugin in that file (old configuration file format.
 
 Let's assume you are writing a new plugin named **myplugin**.
