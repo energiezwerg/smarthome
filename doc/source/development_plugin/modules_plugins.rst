@@ -14,4 +14,5 @@ files of the modules
    :titlesonly:
    :hidden:
    
+   module_dummy
    module_http

@@ -2,6 +2,16 @@
 Development - Plugin API
 ========================
 
+
+Information about writing a plugin and getting it included in SmartHomeNG can be found here: 
+
+.. toctree::
+   :maxdepth: 1
+   :titlesonly:
+
+   /dev/README.md
+
+
 More info upon the functions and their parameters can be found here. The core which resides in bin/smarthome.py is the heart of the system.
 It is accessible via ``sh``-Object. The libraries provide extra functionality like scheduling, database access, connections etc.
 
@@ -29,6 +39,7 @@ A plugin is a class based on the class SmartPlugin. The methods of SmartPlugin a
    
    development_plugin/sampleplugins
    development_plugin/modules_plugins
+   development_plugin/modules_readmes
    development_plugin/libraries_plugins
 
 

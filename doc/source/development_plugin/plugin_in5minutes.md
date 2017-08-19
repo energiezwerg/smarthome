@@ -1,4 +1,4 @@
-# How to write a Plugin 
+# How to write a Plugin in 5 min.
 
 Plugins are additions to the SmartHomeNG code that enable additional functions. Plugins are written in Python. To add a plugin you need the plugin code itself and an additional entry in the plugin.conf file. 
 A good basis for your own plugin is found in ``dev/sample_plugin/__init__.py``

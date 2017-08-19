@@ -1,7 +1,7 @@
 Module http
 ===========
 
-This module implements the possibility to writw web interfaces for SmartHomeNG plugins.
+This module implements the possibility to write web interfaces for SmartHomeNG plugins.
 
 
 .. automodule:: modules.http
@@ -9,4 +9,7 @@ This module implements the possibility to writw web interfaces for SmartHomeNG p
     :undoc-members:
     :show-inheritance:
     :member-order: bysource
+
+.. literalinclude:: ../../../modules/http/README.md
+    :caption: README.md
 

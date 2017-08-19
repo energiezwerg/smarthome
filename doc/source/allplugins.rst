@@ -16,3 +16,4 @@ There are a lot of plugins to extend the functionality of SmartHomeNG. They are 
    plugins_unclassified
    modules
    
+   

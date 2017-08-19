@@ -78,7 +78,8 @@ release = '1.3a dev'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = []
+#exclude_patterns = ['plugins/backend_shng_1_3', 'plugins/backend/static', '._*']
+exclude_patterns = ['plugins/deprecated_plugins', 'plugins/*shng_1_3', 'plugins/backend/static', '**/._*md']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
