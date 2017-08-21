@@ -68,6 +68,7 @@ class Plugins():
         if _conf == {}:
             return
             
+        logger.info('Load plugins')
         for plugin in _conf:
             args = {}
             logger.debug("Section: {0}".format(plugin))
@@ -115,6 +116,7 @@ class Plugins():
             except Exception as e:
                 logger.exception("Plugin '{}' from section '{}' exception: {}".format(str(classpath).split('.')[1], plugin, e))
 
+        logger.info('Load of plugins finished')
         del(_conf)  # clean up
 
     def __iter__(self):
@@ -122,7 +124,7 @@ class Plugins():
             yield plugin
 
     def start(self):
-        logger.info('Start Plugins')
+        logger.info('Start plugins')
         for plugin in self._threads:
             try:
                 instance = plugin.get_implementation().get_instance_name()
@@ -132,9 +134,10 @@ class Plugins():
             except:
                 logger.debug("Starting classic-plugin from section '{}'".format(plugin.name))
             plugin.start()
+        logger.info('Start of plugins finished')
 
     def stop(self):
-        logger.info('Stop Plugins')
+        logger.info('Stop plugins')
         for plugin in self._threads:
             try:
                 instance = plugin.get_implementation().get_instance_name()
@@ -144,6 +147,7 @@ class Plugins():
             except:
                 logger.debug("Stopping classic-plugin from section '{}'".format(plugin.name))
             plugin.stop()
+        logger.info('Stop of plugins finished')
     
     def get_plugin(self, name):
         """

@@ -192,7 +192,7 @@ class SmartHome():
         self.checkConfigFiles()
         # setup logging
         self.initLogging()
-
+        
         #############################################################
         # Check Time
         while datetime.date.today().isoformat() < '2014-03-16':  # XXX update date
@@ -382,7 +382,7 @@ class SmartHome():
         #############################################################
         # Init Items
         #############################################################
-        self._logger.info("Init Items")
+        self._logger.info("Start initialization of items")
         item_conf = None
         item_conf = lib.config.parse_itemsdir(self._env_dir, item_conf)
         item_conf = lib.config.parse_itemsdir(self._items_dir, item_conf)
@@ -403,7 +403,7 @@ class SmartHome():
         for item in self.return_items():
             item._init_run()
         self.item_count = len(self.__items)
-        self._logger.info("Items: {}".format(self.item_count))
+        self._logger.info("Items initialization finished, {} items loaded".format(self.item_count))
 
         #############################################################
         # Init Logics
