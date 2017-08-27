@@ -22,22 +22,28 @@
 
 import logging
 import os
-import cherrypy
 from collections import OrderedDict
+
+import cherrypy
+from jinja2 import Environment, FileSystemLoader
 
 from lib.utils import Utils
 
 
 class http():
 
-    version = '1.4.0'
+    version = '1.4.2'
     shortname = ''
     longname = 'CherryPy http module for SmartHomeNG'
     
-    applications = {}
+    applications = OrderedDict()
+    services = OrderedDict()
     
+    _port = None
+    _servicesport = None
+
     
-    def __init__(self, sh, port=None, ip='', threads=8, starturl=''):
+    def __init__(self, sh, port=None, servicesport=None, ip='', showpluginlist='True', showservicelist='False', showtraceback='False', threads=8, starturl=''):
         """
         Initialization Routine for the module
         """
@@ -46,24 +52,33 @@ class http():
         self._sh = sh
         self.logger.debug("{}: Initializing".format(self.shortname))
         
-        #
+        # ------------------------------------------------------------------------
         # Testing parameter values
         #
         if Utils.is_int(port):
-            self.port = int(port)
+            self._port = int(port)
         else:
-            self.port = 8383
+            self._port = 8383
             if port is not None:
-                self.logger.error("Module http: Invalid value '"+str(port)+"' configured for attribute 'port' in module.yaml, using '"+str(self.port)+"' instead")
+                self.logger.error("Module http: Invalid value '"+str(port)+"' configured for attribute 'port' in module.yaml, using '"+str(self._port)+"' instead")
+
+        if Utils.is_int(servicesport):
+            self._servicesport = int(servicesport)
+        else:
+            self._servicesport = 8384
+            if servicesport is not None:
+                self.logger.error("Module http: Invalid value '"+str(servicesport)+"' configured for attribute 'servicesport' in module.yaml, using '"+str(self._servicesport)+"' instead")
 
         if ip == '':
-            ip = self.get_local_ip_address()
-            self.logger.debug("Module http: Using local ip address '{0}'".format(ip))
+            self._ip = self._get_local_ip_address()
         else:
-            pass
-        #    if not self.is_ip(ip):
-        #         self.logger.error("module http: Invalid value '"+str(ip)+"' configured for attribute ip in module.yaml, using '"+str('0.0.0.0')+"' instead")
-        #         ip = '0.0.0.0'
+            if not self.is_ip(ip):
+                self._ip = self._get_local_ip_address()
+                self.logger.error("module http: Invalid value '"+str(ip)+"' configured for attribute ip in module.yaml, using '"+str(self._ip)+"' instead")
+            else:
+                self._ip = self._get_local_ip_address()
+                self.logger.warning("module http: Setting of ip address is not yet supported, using '"+str(self._ip)+"' instead")
+        self.logger.debug("Module http: Using local ip address '{0}'".format(self._ip))
 
         if Utils.is_int(threads):
             self.threads = int(threads)
@@ -73,60 +88,139 @@ class http():
 
         self._basic_auth = False
 
-        current_dir = os.path.dirname(os.path.abspath(__file__))
+        self._showpluginlist = Utils.to_bool(showpluginlist, default=True)
+        self._showservicelist = Utils.to_bool(showservicelist, default=False)
+        self._showtraceback = Utils.to_bool(showtraceback, default=False)
 
+        # ------------------------------------------------------------------------
+        # Setting up webinterface environment
         #
-        # Setting global configuration for CherryPy
-        #
-        global_conf = {'global': {
-            'engine.autoreload.on': False,
-            'server.socket_host': ip,
-            'server.socket_port': int(self.port),
-#            'tools.staticdir.debug': True,
-#            'tools.trailing_slash.on': False,
-#            'log.screen': False,
-            }
-        }
+        self.webif_dir = os.path.dirname(os.path.abspath(__file__)) + '/webif'
+
+        self.logger.info("Module http: ip address = {}, hostname = '{}'".format(self.get_local_ip_address(), self.get_local_hostname()))
         
-        application_conf = {
+        self.root = ModuleApp(self, starturl)
+
+        global_conf = {
+            'global': {
+                'engine.autoreload.on': False,
+                'error_page.404': self._error_page,
+                'error_page.500': self._error_page,
+            },
+        }
+
+        # Update the global CherryPy configuration
+        cherrypy.config.update(global_conf)
+
+        self._server1 = cherrypy._cpserver.Server()
+        self._server1.socket_port=int(self._port)
+        self._server1.socket_host=self._ip
+        self._server1.thread_pool=self.threads
+        self._server1.subscribe()
+
+        if self._port != self._servicesport:
+            self._server2 = cherrypy._cpserver.Server()
+            self._server2.socket_port=int(self._servicesport)
+            self._server2.socket_host=self._ip
+            self._server2.thread_pool=self.threads
+            self._server2.subscribe()
+
+        self._build_hostmaps()
+        
+        self.tplenv = Environment(loader=FileSystemLoader(os.path.join( self.webif_dir, 'templates' ) ))
+
+        self.module_conf = {
             '/': {
-#                'tools.staticfile.root': current_dir,
-                'tools.staticdir.root': current_dir,
+                'tools.staticdir.root': self.webif_dir,
                 'tools.staticdir.debug': True,
                 'tools.trailing_slash.on': False,
                 'log.screen': False,
+                'request.dispatch': cherrypy.dispatch.VirtualHost(**self._hostmap),
             },
-#            '/logo_big.png': {
-#                'tools.staticfile.on': True,
-#                'tools.staticfile.filename': 'static/logo_big.png',
-#            },
             '/static': {
                 'tools.staticdir.on': True,
                 'tools.staticdir.dir': 'static',
             },
         }
-        
-        # Update the global CherryPy configuration
-        cherrypy.config.update(global_conf)
+
+        self.msg_conf = {
+            '/': {
+                'tools.staticdir.root': self.webif_dir,
+            },
+            '/static': {
+                'tools.staticdir.on': True,
+                'tools.staticdir.dir': 'static'
+            }
+        }
 
         # mount the application on the '/' base path (Creating an app-instance on the way)
-        cherrypy.tree.mount(ModuleApp(self._sh, self, starturl), '/', config = application_conf)
-        cherrypy.tree.mount(PluginsApp(self), '/plugins', config = application_conf)
+        self.root = ModuleApp(self, starturl)
+
+        self.logger.info("module_conf = {}".format(self.module_conf))
+        cherrypy.tree.mount(self.root, '/', config = self.msg_conf)
 
         # Start the CherryPy HTTP server engine
         cherrypy.engine.start()
 
 
+        # Register the plugins-list app and the services-list app
+        self.logger.info("mount '/plugins' - webif_dir = '{}'".format(self.webif_dir))
+        config = {
+            '/': {
+                'tools.staticdir.root': self.webif_dir,
+            },
+            '/static': {
+                'tools.staticdir.on': True,
+                'tools.staticdir.dir': 'static'
+            }
+        }
+    
+        if self._showpluginlist == True:
+            # Register the plugin-list as a cherrypy app
+            self.root.plugins = PluginsApp(self)
+            self.register_app(self.root.plugins, 'plugins', config) 
+#                              pluginclass='', instance='', description='')
 
-# aus dem Backend: --------------------------------------------
-#
-#         self._server.thread_pool = self.threads
-# 
+        if self._showservicelist == True:
+            # Register the service-list as a cherrypy app
+            self.root.services = ServicesApp(self)
+            self.register_service(self.root.services, 'services', config) 
+#                                  pluginclass='', instance='', description='')
+
+        return
 
 
-    def get_local_ip_address(self):
+    def _error_page(self, status, message, traceback, version):
         """
-        Returns the local ip address under which the webinterface can be reached
+        Generate html page for errors
+
+        :param status: error number and description
+        :param message: detailed error description
+        :param traceback: traceback that lead to the error
+        :param version: CherryPy version
+        :type status: str
+        :type message: str
+        :type traceback: str
+        :type version: str
+
+        :return: html error page
+        :rtype: str
+        
+        """
+        tmpl = self.tplenv.get_template('error_page.html')
+        errno = status.split()[0]
+        if (self._showtraceback == False) or (errno == '404'):
+            traceback = ''
+        else:
+            traceback = traceback.replace('\n', '<br>&nbsp;&nbsp;')
+            traceback = traceback.replace(' ', '&nbsp;&nbsp;')
+            traceback = '&nbsp;&nbsp;' + traceback
+        return tmpl.render( errno=errno, errmsg=message, traceback=traceback, cpversion=version )
+        
+
+    def _get_local_ip_address(self):
+        """
+        Detemine the local ip address used for the network connection
         
         :return: ip address
         :rtype: str
@@ -137,6 +231,27 @@ class http():
         return s.getsockname()[0]
 
  
+    def get_local_ip_address(self):
+        """
+        Returns the local ip address under which the webinterface can be reached
+        
+        :return: ip address
+        :rtype: str
+        """
+        return self._ip
+
+ 
+    def get_local_hostname(self):
+        """
+        Returns the local hostname under which the webinterface can be reached
+        
+        :return: fully qualified hostname 
+        :rtype: str
+        """
+        import socket
+        return socket.gethostbyaddr(self.get_local_ip_address())[0]
+
+ 
     def get_local_port(self):
         """
         Returns the local port under which the webinterface can be reached
@@ -144,10 +259,54 @@ class http():
         :return: port number
         :rtype: int
         """
-        return self.port
+        return self._port
 
  
-    def register_app(self, app, pluginname, conf, pluginclass, instance='', description=''):
+    def get_local_servicesport(self):
+        """
+        Returns the local port under which the webservices can be reached
+        
+        :return: port number
+        :rtype: int
+        """
+        return self._servicesport
+
+ 
+    def _build_hostmaps(self):
+        """
+        Build hostmaps for working with two different ports for web interfaces and services
+        """
+        self._hostmap = {}
+        self._hostmap_webifs = {}
+        self._hostmap_services = {}
+
+        self.dom1 = self.get_local_ip_address()+':'+str(self._port)
+        self.dom2 = self.get_local_hostname()+':'+str(self._port)
+        self.dom3 = self.get_local_ip_address()+':'+str(self._servicesport)
+        self.dom4 = self.get_local_hostname()+':'+str(self._servicesport)
+        
+        self._hostmap = {}
+        if self._port != self._servicesport:
+            self._hostmap[self.dom1] = '/plugins'
+            self._hostmap[self.dom2] = '/plugins'
+            self._hostmap[self.dom3] = '/services'
+            self._hostmap[self.dom4] = '/services'
+        self.logger.info("_hostmap = {}".format(self._hostmap))
+
+        self._hostmap_webifs = {}
+        self._hostmap_services = {}
+        if self._port != self._servicesport:
+            self._hostmap_webifs[self.dom1] = '/msg'
+            self._hostmap_webifs[self.dom2] = '/msg'
+
+            self._hostmap_services[self.dom3] = '/msg'
+            self._hostmap_services[self.dom4] = '/msg'
+
+            self.logger.info("_hostmap_webifs = {}".format(self._hostmap_webifs))
+            self.logger.info("_hostmap_services = {}".format(self._hostmap_services))
+
+        
+    def register_app(self, app, pluginname, conf, pluginclass='', instance='', description=''):
         """
         Register an application for CherryPy
         
@@ -174,12 +333,50 @@ class http():
            description = 'Webinterface of plugin ' + pluginname
            
         self.logger.info("Module http: Registering application/plugin '{}' from pluginclass '{}' instance '{}'".format( pluginname, pluginclass, instance ) )
-        
-        self.applications[pluginname] = {'mount': mount, 'Plugin': pluginclass, 'Instance': instance, 'conf': conf, 'Description': description}
+        if pluginclass != '':
+            self.applications[pluginname] = {'mount': mount, 'Plugin': pluginclass, 'Instance': instance, 'conf': conf, 'Description': description}
+
+        if len(self._hostmap_services) > 0:
+            conf['/']['request.dispatch'] = cherrypy.dispatch.VirtualHost(**self._hostmap_services)
 
         cherrypy.tree.mount(app, mount, config = conf)
-#        cherrypy.engine.start()
+        return
+        
 
+    def register_service(self, service, servicename, conf, pluginclass='', instance='', description=''):
+        """
+        Register a service for CherryPy
+        
+        This method is called by a plugin to register a webinterface
+        
+        :param service: Instance of the service object
+        :param servicename: Mount point for the service
+        :param conf: Cherrypy application configuration dictionary
+        :param plugin: Name of the plugin's class
+        :param instance: Instance of the plugin (if multi-instance)
+        :param description: Description of the functionallity of the plugin / cherrypy app
+        :type service: object
+        :type servicename: str
+        :type conf: dict
+        :type plugin: str
+        :type istance: str
+        :type description: str
+        
+        """
+        servicename = servicename.lower()
+        mount = '/' + servicename
+        
+        if description == '':
+           description = 'Service of plugin ' + servicename
+           
+        self.logger.info("Module http: Registering service/plugin '{}' from pluginclass '{}' instance '{}'".format( servicename, pluginclass, instance ) )
+        if pluginclass != '':
+            self.services[servicename] = {'mount': mount, 'Plugin': pluginclass, 'Instance': instance, 'conf': conf, 'Description': description}
+
+        if len(self._hostmap_webifs) > 0:
+            conf['/']['request.dispatch'] = cherrypy.dispatch.VirtualHost(**self._hostmap_webifs)
+
+        cherrypy.tree.mount(service, mount, config = conf)
         return
         
 
@@ -201,9 +398,9 @@ class http():
         
         Otherwise don't enter code here
         """
-        self.logger.warning("{}: Shutting down".format(self.shortname))   # should be debug
+        self.logger.info("{}: Shutting down".format(self.shortname))   # should be debug
         cherrypy.engine.exit()
-        self.logger.warning("{}: engine exited".format(self.shortname))   # should be debug
+        self.logger.debug("{}: CherryPy engine exited".format(self.shortname))
 
     
 class ModuleApp:
@@ -217,30 +414,32 @@ class ModuleApp:
     This webinterface is mounted to CherryPy as '/'
     """
 
-    def __init__(self, sh, mod, starturl):
-        self._sh = sh
+    def __init__(self, mod, starturl):
         self.mod = mod
         self.starturl = starturl    
     
-    #<meta http-equiv="refresh" content="5; URL=http://wiki.selfhtml.org/">
-
-    _part1 = '<html><meta http-equiv="refresh" content="0; URL=/'
-
-    _part2 = '"></html>'
 
     @cherrypy.expose
     def index(self):
         """
         This method is exposed to CherryPy. It implements the page 'index.html'
         """
-        result = self._part1
-        if self.starturl in self.mod.applications.keys():
-            result += self.starturl
+        self.mod.logger.info("ModuleApp: local.name '{}', local.port '{}'".format(cherrypy.request.local.name, cherrypy.request.local.port))
+        if cherrypy.request.local.port == self.mod._port:
+            if self.starturl in self.mod.applications.keys():
+                result = self.starturl
+            else:
+                if self.mod._showpluginlist == True:
+                    result = 'plugins'
+                else:
+                    return ''
         else:
-            result += 'plugins'
-        result += self._part2
+            if self.mod._showservicelist == True:
+                result = 'services'
+            else:
+                return ''
+        result = '<html><meta http-equiv="refresh" content="0; URL=/' + result + '"></html>'
         return result
-
 
 
 class PluginsApp:
@@ -254,56 +453,35 @@ class PluginsApp:
     def __init__(self, mod):
         self.mod = mod
         
-    _part1 = """<html>
-<head>
-    <link rel="stylesheet" href="static/css/font-awesome.min.css" type="text/css"/>
-    <link rel="stylesheet" href="static/css/bootstrap.min.css" type="text/css"/>
-    <link rel="icon" href="static/img/favicon.ico" type="image/png">
-</head>
-
-<body>
-<div class="container">
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-	<br>
-    <div class="row">
-        <div align="center" class="col-md-7 col-md-offset-2 panel panel-default">
-			<h1 class="margin-base-vertical">
-			<img src="static/img/logo_big.png" width="150" height="75">
-	    	&nbsp; SmartHomeNG</h1>
-	    	
-            <p align="center">
-                Willkommen bei SmartHomeNG.
-            </p>
-			<br>
-"""
-
-    _part2 = """<br>
-        <br>
-        <br>
-        </div><!-- //main content -->
-    </div><!-- //row -->
-</div> <!-- //container -->
-</body>
-</html>"""
-
     @cherrypy.expose
     def index(self):
         """
         This method is exposed to CherryPy. It implements the page 'plugins/index.html'
         """
 
-        result = self._part1
-        result += '<h3>Plugins:</h3>'
-        applist = list(self.mod.applications.keys())
-        applist.sort()
-        for app in applist:
-            href = app + ' - ' + str(self.mod.applications[app]['Description'])
-            href = '<li class="nav-item"><a href="/' + app + '">' + href + '</a></li>'
-            result += '<br>' + href
-        result += self._part2
+        tmpl = self.mod.tplenv.get_template('plugins.html')
+        result = tmpl.render( webinterfaces=self.mod.applications )
+        return result
+
+
+class ServicesApp:
+    """
+    The module 'http' implements it's own webservice.
+    This WebApp implements the chooser which allows the start of the differnt services of the plugins.
+    
+    This webinterface is mounted to CherryPy as '/services'
+    """
+
+    def __init__(self, mod):
+        self.mod = mod
+
+    @cherrypy.expose
+    def index(self):
+        """
+        This method is exposed to CherryPy. It implements the page 'services/index.html'
+        """
+
+        tmpl = self.mod.tplenv.get_template('services.html')
+        result = tmpl.render( services=self.mod.services )
         return result
 

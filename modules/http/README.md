@@ -28,26 +28,40 @@ And please pay attention that the lib(s) are installed for Python3 and not an ol
 # etc/module.yaml
 http:
     class_name: http
-    class_path: modules.http
-#    port: '1234'
+#    port: 8383
+#    servicesport: 8384
+#    showpluginlist: False
+    showservicelist: True
 #    starturl: backend
+#    threads: 8
+#    showtraceback: True
 
 ```
 
 #### port (optional)
 The port on which the html interface listens. By default port **`8383`** is used.
 
-####  threads (optional)
+#### servicesport (optional)
+The port on which the html interface listens. By default port **`8384`** is used.
 
-Number of worker threads to start by cherrypy (default 8, which may be too much for slow CPUs)
+#### showpluginlist
+If set to `False` no list of pluins with web interface is shown under `smarthomeNG.local:8383/plugins`. By default, **showpluginlist** is **True**.
+
+#### showservicelist
+If set to `True` a list of webservices is shown under `smarthomeNG.local:8384/services`. By default, ** showservicelist** is **False**.
 
 #### starturl (optional)
+The name of the plugin that is started when calling url `smarthomeNG.local:8383` without further detailing that url. If you want to startup the **backend** plugin for example: You set `starturl: backend`. That results in a redirect which redirects `smarthomeNG.local:8383` to `smarthomeNG.local:8383/backend`. 
 
-The name of the plugin that is started when calling url `smarthomeNG.local:8383` without further detailing that url. If you want to startup the **backend** plugin for example: You set `starturl: backend`. That results in a redirect which redirects `smarthomeNG.local:8383` to `smarthomeNG.local:8383/backend`.
-
-if `starturl` is not specified or point to an url that does not exist, a redirect to `smarthomeNG.local:8383/plugins` will take place. It points to a page that lists all plugins that have registered a html interface and allows you to start those interfaces.
+if `starturl` is not specified or point to an url that does not exist, a redirect to `smarthomeNG.local:8383/plugins` will take place (if ** showpluginlist** is **True**). It points to a page that lists all plugins that have registered a html interface and allows you to start those interfaces.
 
 > Note: If you have redirected to a specific plugin, you can always get to the page with the list of all plugins that have registered a html interface, by entering the url `smarthomeNG.local:8383/plugins`.
+
+####  threads (optional)
+Number of worker threads to start by cherrypy (default 8, which may be too much for slow CPUs)
+
+#### showtraceback
+If set to **True, error-pages (except for error 404) will show the Python traceback for that error.
 
 
 ## API of module http
@@ -125,3 +139,38 @@ self.mod_http.register_app(Backend(self, self.updates_allowed, language, self.de
 For details about implementing a web interface (CherryPy application) for your plugin, refer to the CherryPy documentation.
 
 The documentation will tell you how to expose parts of your python code to be availabe through CheryPy`s http-server.
+
+### Methods for implementing a web interface
+
+#### get_local_ip_address()
+Returns the ip address under which the web interface is listening.
+
+#### get_local_hostname()
+Returns the hostname (with domain) under which the web interface is listening.
+
+#### get_local_port()
+Returns the port under which the implemented web interfaces can be reached.
+
+#### get_local_servicesport( ... )
+Returns the port under which the implemented webservices can be reached.
+
+#### register_app()
+
+##### Parameters
+- **app**	- Instance of the CherryPy App
+- **pluginname**  - Standard would be: Shortname of the plugin (name of the plugin's directory)
+- **conf**  - dict with CherryPy App-Config
+- **pluginclass**  - Class of the plugin
+- **instance**   - Optional: Instance of the plugin (if multi-instance)
+- **description**  - Optional: Description to be shown on page with plugin-list
+
+#### register_service( ... )
+
+##### Parameters
+- **service**	- Instance of the CherryPy App
+- **servicename**  - Standard would be: Shortname of the plugin (name of the plugin's directory)
+- **conf**  - dict with CherryPy App-Config
+- **pluginclass**  - Class of the plugin
+- **instance**   - Optional: Instance of the plugin (if multi-instance)
+- **description**  - Optional: Description to be shown on page with services-list
+
