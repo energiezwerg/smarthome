@@ -166,6 +166,10 @@ class SmartHome():
     _utctz = TZ
     _logger = logging.getLogger(__name__)
 
+    plugin_load_complete = False
+    item_load_complete = False
+    plugin_start_complete = False
+    
     def __init__(self, smarthome_conf_basename=os.path.join(_etc_dir,'smarthome')):
         # set default timezone to UTC
         self._smarthome_conf_basename = smarthome_conf_basename
@@ -179,6 +183,9 @@ class SmartHome():
         self.version = VERSION
         self.connections = []
 
+        # setup logging
+        self.initLogging()
+
         # Fork process and write pidfile
         if MODE == 'default':
             lib.daemon.daemonize(PIDFILE)
@@ -190,8 +197,8 @@ class SmartHome():
 
         # check config files
         self.checkConfigFiles()
-        # setup logging
-        self.initLogging()
+#        # setup logging
+#        self.initLogging()
         
         #############################################################
         # Check Time
@@ -312,6 +319,10 @@ class SmartHome():
         
         fo = open(self._log_config, 'r')
         doc = lib.shyaml.yaml_load(self._log_config, False)
+        if doc == None:
+            print()
+            print("ERROR: Invalid logging configuration in file 'logging.yaml'")
+            exit(1)
         logging.config.dictConfig(doc)
         fo.close()
         if MODE == 'interactive':  # remove default stream handler
@@ -378,6 +389,7 @@ class SmartHome():
         #############################################################
         self._logger.info("Init Plugins")
         self._plugins = lib.plugin.Plugins(self, configfile=self._plugin_conf_basename)
+        self.plugin_load_complete = True
 
         #############################################################
         # Init Items
@@ -404,7 +416,8 @@ class SmartHome():
             item._init_run()
         self.item_count = len(self.__items)
         self._logger.info("Items initialization finished, {} items loaded".format(self.item_count))
-
+        self.item_load_complete = True
+        
         #############################################################
         # Init Logics
         #############################################################
@@ -424,6 +437,7 @@ class SmartHome():
         # Start Plugins
         #############################################################
         self._plugins.start()
+        self.plugin_start_complete = True
 
         #############################################################
         # Execute Maintenance Method
@@ -903,7 +917,11 @@ if __name__ == '__main__':
         MODE = 'interactive'
         import code
         import rlcompleter  # noqa
-        import readline
+        try:
+            import readline
+        except:
+            print("ERROR: module 'readline' is not installed. Without this module the interactive mode can't be used")
+            exit(1)
         import atexit
         # history file
         histfile = os.path.join(os.environ['HOME'], '.history.python')
