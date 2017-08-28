@@ -52,6 +52,8 @@ class http():
         self._sh = sh
         self.logger.debug("{}: Initializing".format(self.shortname))
         
+        self.logger.debug("Module '{}': Parameters = '{}'".format(self.shortname, str(self._parameters)))
+
         # ------------------------------------------------------------------------
         # Testing parameter values
         #

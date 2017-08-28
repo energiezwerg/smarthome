@@ -1,0 +1,161 @@
+# Metadata for the plugin
+module:
+    # Global plugin attributes
+    classname: http
+    version: 1.4.2
+    sh_minversion: 1.3a
+#   sh_maxversion:              # maximum shNG version to use this plugin (leave empty if latest)
+    description:
+        de: 'Modul zur Implementierung von Backend-Webinterfaces für Plugins'
+        en: 'Module for implementing a backend-webinterface for plugins'
+
+parameters:
+    # Definition of parameters to be configured in etc/module.yaml
+    port:
+        type: int
+        default: 8383
+        description:
+            de: Portnummer für die Webinterfaces
+            en: Port number for the web interfaces
+    servicesport:
+        type: int
+        default: 8384
+    showpluginlist:
+        type: bool
+        default: True
+    showservicelist:
+        type: bool
+        default: False
+    starturl:
+        type: str
+        default: 
+    threads:
+        type: int
+        default: 8
+        valid_list:
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+    showtraceback:
+        type: bool
+        default: False
+#    test1:
+#        type: pint
+#        default: -1
+#    test2:
+#        type: int
+#        default: 8
+#        valid_list:
+#          - 4
+#          - 2
+#          - 3
+#          - 5
+#          - 6
+        
+#    class_name: http
+#    port: 1234
+#    servicesport: 1235
+##    showpluginlist: False
+#    showservicelist: True
+##    starturl: backend
+##    threads: 8
+#    showtraceback: True
+
+
+#parameters:
+#    # Definition of parameters to be configured in etc/plugin.yaml
+#    host:
+#        type: ip-addr
+#        description:
+#            de: IP Adresse des MQTT Brokers
+#            en: IP Address of MQTT broker
+#
+#    port:
+#        type: int
+#        description:
+#            de: Portnummer auf dem MQTT Broker
+#            en: Port number on MQTT broker
+#
+#    qos:
+#        type: int
+#        description:
+#            de: Quality of Service
+#            en: Quality of Service
+#        valid:
+#          - 0
+#          - 1
+#          - 2
+#
+#    last_will_topic:
+#        type: str
+#        description:
+#            de: ...
+#            en: Message topic to be sent by broker to subscribers if SmartHomeNG connection aborts
+#
+#    last_will_payload:
+#        type: str
+#        description:
+#            de: ...
+#            en: Message payload to be sent by broker to subscribers if SmartHomeNG connection aborts
+#    
+#    birth_topic:
+#        type: str
+#        description:
+#            de: ...
+#            en: Message topic to be sent to the broker when SmartHomeNG establishes a connection
+#
+#    birth_payload:
+#        type: str
+#        description:
+#            de: ...
+#            en: Message payload to be sent to the broker when SmartHomeNG establishes a connection
+#    
+#    publish_items:
+#        type: bool
+#        description:
+#            de: ...
+#            en: Publish item tree
+#        
+#    items_topic_prefix:
+#        type: str
+#        default: devices/shng
+#        description:
+#            de: ...
+#            en: When publishing the item tree, the message topic is to be build by this string followed by the item-path
+#        
+#    user:
+#        type: str
+#        description:
+#            de: ...
+#            en: User to login to the broker
+#    
+#    password:
+#        type: str
+#        description:
+#            de: ...
+#            en: Password to login to the broker
+#    
+#    tls:
+#        type: str | None
+#        description:
+#            de: ...
+#            en: ...
+#    
+#    ca_certs:
+#        type: str
+#        default: /etc/
+#        description:
+#            de: ...
+#            en: ...
+#    
+#    acl:
+#        type: str
+#        default: none
+#        description:
+#            de: ...
+#            en: ...
+    
