@@ -43,10 +43,14 @@ parameters:
     showtraceback:
         type: bool
         default: False
+        
 #    test1:
+#        Test auf einen ungültigen Default Wert (-1 bei Datentyp positive Integer): es wird der default für pint (0) verwendet
 #        type: pint
 #        default: -1
+
 #    test2:
+#        Test auf einen ungültigen Default Wert (8 ist nicht Element der Liste): es wird der 1. Listeneintrag verwendet
 #        type: int
 #        default: 8
 #        valid_list:
@@ -56,106 +60,3 @@ parameters:
 #          - 5
 #          - 6
         
-#    class_name: http
-#    port: 1234
-#    servicesport: 1235
-##    showpluginlist: False
-#    showservicelist: True
-##    starturl: backend
-##    threads: 8
-#    showtraceback: True
-
-
-#parameters:
-#    # Definition of parameters to be configured in etc/plugin.yaml
-#    host:
-#        type: ip-addr
-#        description:
-#            de: IP Adresse des MQTT Brokers
-#            en: IP Address of MQTT broker
-#
-#    port:
-#        type: int
-#        description:
-#            de: Portnummer auf dem MQTT Broker
-#            en: Port number on MQTT broker
-#
-#    qos:
-#        type: int
-#        description:
-#            de: Quality of Service
-#            en: Quality of Service
-#        valid:
-#          - 0
-#          - 1
-#          - 2
-#
-#    last_will_topic:
-#        type: str
-#        description:
-#            de: ...
-#            en: Message topic to be sent by broker to subscribers if SmartHomeNG connection aborts
-#
-#    last_will_payload:
-#        type: str
-#        description:
-#            de: ...
-#            en: Message payload to be sent by broker to subscribers if SmartHomeNG connection aborts
-#    
-#    birth_topic:
-#        type: str
-#        description:
-#            de: ...
-#            en: Message topic to be sent to the broker when SmartHomeNG establishes a connection
-#
-#    birth_payload:
-#        type: str
-#        description:
-#            de: ...
-#            en: Message payload to be sent to the broker when SmartHomeNG establishes a connection
-#    
-#    publish_items:
-#        type: bool
-#        description:
-#            de: ...
-#            en: Publish item tree
-#        
-#    items_topic_prefix:
-#        type: str
-#        default: devices/shng
-#        description:
-#            de: ...
-#            en: When publishing the item tree, the message topic is to be build by this string followed by the item-path
-#        
-#    user:
-#        type: str
-#        description:
-#            de: ...
-#            en: User to login to the broker
-#    
-#    password:
-#        type: str
-#        description:
-#            de: ...
-#            en: Password to login to the broker
-#    
-#    tls:
-#        type: str | None
-#        description:
-#            de: ...
-#            en: ...
-#    
-#    ca_certs:
-#        type: str
-#        default: /etc/
-#        description:
-#            de: ...
-#            en: ...
-#    
-#    acl:
-#        type: str
-#        default: none
-#        description:
-#            de: ...
-#            en: ...
-    
