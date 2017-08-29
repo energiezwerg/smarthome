@@ -27,7 +27,7 @@ class dummy():
     version = '1.4.0'
     longname = 'Dummy module for SmartHomeNG'
 
-    def __init__(self, sh):
+    def __init__(self, sh, testparam=''):
         """
         Initialization Routine for the module
         """
@@ -36,6 +36,7 @@ class dummy():
         self._sh = sh
         self.logger.debug("Module '{}': Initializing".format(self.shortname))
 
+        self.logger.debug("Module '{}': Parameters = '{}'".format(self.shortname, str(self._parameters)))
         pass
         
         

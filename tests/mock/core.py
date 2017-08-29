@@ -24,7 +24,8 @@ class MockScheduler():
 
 class MockSmartHome():
 
-    base_dir = BASE
+    _base_dir = BASE
+    base_dir = _base_dir     # for external modules using that var (backend, ...?)
 
     def __init__(self):
         self.__logs = {}
@@ -38,6 +39,9 @@ class MockSmartHome():
         self._tzinfo = dateutil.tz.tzutc()
         self.scheduler = MockScheduler()
         self.connections = lib.connection.Connections()
+
+    def getBaseDir(self):
+        return self._base_dir
 
     def with_plugins_from(self, conf):
         lib.plugin.Plugins._plugins = []
