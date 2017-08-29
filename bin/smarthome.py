@@ -271,7 +271,7 @@ class SmartHome():
         :return: Bas directory as an absolute path
         :rtype: str
         """
-        return _self_base_dir
+        return self._base_dir
         
         
     def checkConfigFiles(self):
