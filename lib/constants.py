@@ -24,9 +24,15 @@ This file describes a group of system wide constants for items, plugins and file
 """
 
 #item types
-ITEM_DEFAULTS= __defaults = {'num': 0, 'str': '', 'bool': False, 'list': [], 'dict': {}, 'foo': None, 'scene': 0}
 ITEM_TYPES=["num","str","bool", "list","dict","foo","scene"]
+ITEM_DEFAULTS= __defaults = {'num': 0, 'str': '', 'bool': False, 'list': [], 'dict': {}, 'foo': None, 'scene': 0}
 FOO = 'foo'
+
+#metadata types
+META_DATA_TYPES=['bool', 'int', 'pint', 'float', 'pfloat', 'str', 'list', 'dict', 'ip', 'mac', 'foo']
+META_DATA_DEFAULTS={'bool': False, 'int': 0, 'pint': 0, 'float': 0.0, 'pfloat': 0.0, 'str': '', 
+                    'list': [], 'dict': {}, 'OrderedDict': {}, 'num': 0, 'scene': 0, 
+                    'ip': '0.0.0.0', 'mac': '00:00:00:00:00:00', 'foo': None}
 
 #config params for items
 KEY_ENFORCE_UPDATES = 'enforce_updates'

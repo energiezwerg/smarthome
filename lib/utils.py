@@ -293,3 +293,24 @@ class Utils(object):
         # todo: check pwd_to_check for minimum length?
 
         return Utils.create_hash(pwd_to_check) == hashed_pwd.lower()
+
+    @staticmethod
+    def strip_quotes(string):
+        """
+        If a string contains quotes as first and last character, this function
+        returns the string without quotes, otherwise the string is returned unchanged
+        
+        :param string: string to check for quotes
+        :type string: str
+
+        :return: sting with quotes stripped
+        :rtype: str
+        """
+        if type(string) is str:
+            string = string.strip()
+            if len(string) >= 2:
+                if string[0] in ['"', "'"]:  # check if string starts with ' or "
+                    if string[0] == string[-1]:  # and end with it
+                        if string.count(string[0]) == 2:  # if they are the only one
+                            string = string[1:-1]  # remove them
+        return string

@@ -6,4 +6,9 @@
 #    port: '1234'
 
 dummy:
-    class_name: dummy
+    module_name: dummy
+
+#test_metadata:
+##    module_name: 
+#    class_name: test_metadata
+#    class_path: tests.resources.test_metadata
