@@ -22,6 +22,6 @@ More info upon the functions and their parameters can be found here.
    :hidden:
    
    core
-   libraries_core
-   modules_core 
+   core_libraries
+   core_modules 
 

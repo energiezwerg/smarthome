@@ -38,8 +38,8 @@ A plugin is a class based on the class SmartPlugin. The methods of SmartPlugin a
    :hidden:
    
    development_plugin/sampleplugins
-   development_plugin/modules_plugins
-   development_plugin/modules_readmes
+   modules_doc/modules_plugins
+   modules_doc/modules_readmes
    development_plugin/libraries_plugins
 
 

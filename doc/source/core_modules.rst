@@ -15,8 +15,8 @@ At the moment, the following modules exist:
    :titlesonly:
    :hidden:
    
-   modules/dummy
-   modules/http
+   /modules/dummy
+   /modules/http
 
 
 A module is made up of two files:

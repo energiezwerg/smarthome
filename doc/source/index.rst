@@ -31,7 +31,7 @@ Feel free to contribute in any way you want and can.
    items
    logics
    logging
-   allplugins
+   plugins_all
    tools
    development_plugins
    development_core
