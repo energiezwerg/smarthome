@@ -10,6 +10,9 @@ The main object which is in instance of the class defined in ``bin/smarthome.py`
 is accessible and named  ``sh`` in most contexts. From time to time it is referred to as
 ``_sh`` or ``smarthome``. 
 
+The functionallity of the core can be extended by the use of loadable modules. a description of the
+module system follows below.
+
 The libraries listed here provide the extra functionality for the core.
 More info upon the functions and their parameters can be found here. 
 
@@ -20,4 +23,5 @@ More info upon the functions and their parameters can be found here.
    
    core
    libraries_core
-   
+   modules_core 
+
