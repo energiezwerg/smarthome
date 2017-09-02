@@ -139,11 +139,13 @@ class Metadata():
         key_dict = self.addon_metadata.get(mlkey)
         if key_dict == None:
             return ''
-        result = key_dict.get(self.default_language, '')
+        result = self.addon_metadata.get(key, '')
         if result == '':
-            result = key_dict.get('en','')
+            result = key_dict.get(self.default_language, '')
             if result == '':
-                result = key_dict.get('de','')
+                result = key_dict.get('en','')
+                if result == '':
+                    result = key_dict.get('de','')
         return result
         
     
@@ -160,72 +162,96 @@ class Metadata():
         return str(self.parameters[param].get('type', FOO)).lower()
         
         
+    def _test_valuetype(self, typ, value):
+        """
+        Returns True, if the value can be converted to the specified type
+        """
+        if typ == 'bool':
+            return (Utils.to_bool(value, default='?') != '?')
+        elif typ == 'int':
+            return Utils.is_int(value)
+        elif typ == 'pint':
+            if Utils.is_int(value):
+                return (int(value) >= 0)
+            else:
+                return False
+        elif typ in ['float','num']:
+            return Utils.is_float(value)
+        elif typ == 'pfloat':
+            if Utils.is_float(value):
+                return (float(value) >= 0.0)
+            else:
+                return False
+        elif typ == 'scene':
+            if Utils.is_int(value):
+                return (int(value) >= 0) and (int(value) < 256)
+            else:
+                return False
+        elif typ == 'str':
+#            return (type(value) is str)
+            return True     # Everything can be converted to a string
+        elif typ == 'list':
+            return (type(value) is list)
+        elif typ == 'dict':
+            return (type(value) is dict)
+        elif typ == 'ip':
+            return Utils.is_ip(value)
+        elif typ == 'mac':
+            return Utils.is_mac(value)
+        elif typ == FOO:
+            return True
+
+    
     def _test_value(self, param, value):
         """
-        Returns True, if the value can be converted to the parameters type
+        Returns True, if the value can be converted to specified type
         """
         if param in self._paramlist:
             typ = self._get_type(param)
-            if typ == 'bool':
-                return (Utils.to_bool(value, default='?') != '?')
-            elif typ == 'int':
-                return Utils.is_int(value)
-            elif typ == 'pint':
-                if Utils.is_int(value):
-                    return (int(value) >= 0)
-                else:
-                    return False
-            elif typ in ['float','num']:
-                return Utils.is_float(value)
-            elif typ == 'pfloat':
-                if Utils.is_float(value):
-                    return (float(value) >= 0.0)
-                else:
-                    return False
-            elif typ == 'scene':
-                if Utils.is_int(value):
-                    return (int(value) >= 0) and (int(value) < 256)
-                else:
-                    return False
-            elif typ == 'str':
-#                return (type(value) is str)
-                return True     # Everything can be converted to a string
-            elif typ == 'list':
-                return (type(value) is list)
-            elif typ == 'dict':
-                return (type(value) is dict)
-            elif typ == 'ip':
-                return Utils.is_ip(value)
-            elif typ == 'mac':
-                return Utils.is_mac(value)
-            elif typ == FOO:
-                return True
+            return self._test_valuetype(typ, value)
         return False
     
 
-    def _convert_valuetotype(self, param, value):
+    def _convert_valuetotype(self, typ, value):
         """
         Returns the value converted to the parameters type
         """
+        if typ == 'bool':
+            result = Utils.to_bool(value)
+        elif typ in ['int', 'pint','scene']:
+            result = int(value)
+        elif typ in ['float', 'pfloat','num']:
+            result = float(value)
+        elif typ == 'str':
+            result = str(value)
+        elif typ == 'list':
+            result = list(value)
+        elif typ == 'dict':
+            result = dict(value)
+        elif typ in ['ip', 'mac']:
+            result = str(value)
+        elif typ == FOO:
+            result = value
+        else:
+            logger.error(self._log_premsg+"unhandled type {}".format(typ))
+        return result
+        
+            
+    def _convert_value(self, param, value):
+        """
+        Returns the value converted to the parameters type
+        """
+        result = False
         if param in self._paramlist:
             typ = self._get_type(param)
-            if typ == 'bool':
-                return Utils.to_bool(value)
-            elif typ in ['int', 'pint','scene']:
-                return int(value)
-            elif typ in ['float', 'pfloat','num']:
-                return float(value)
-            elif typ == 'str':
-                return str(value)
-            elif typ == 'list':
-                return list(value)
-            elif typ == 'dict':
-                return dict(value)
-            elif typ in ['ip', 'mac']:
-                return str(value)
-            elif typ == FOO:
-                return value
-        return False
+            result = self._convert_valuetotype(typ, value)
+
+            orig = result
+            result = self._test_validity(param, result)
+            if result != orig:
+                # Für non-default Prüfung nur Warning
+                logger.error(self._log_premsg+"Invalid default '{}' in metadata file '{}' for parameter '{}' -> using '{}' instead".format( orig, self.relative_filename, param, result ) )
+        return result
     
 
     def _test_validity(self, param, value):
@@ -234,15 +260,37 @@ class Metadata():
         If valid, it returns the value. 
         Otherwise it returns the first entry of the list of valid values.
         """
-        valid_list = self.parameters[param].get('valid_list')
-        if (valid_list == None) or (len(valid_list) == 0):
-            return value
+        result = value
+        if self.parameters[param] != None:
+            if self.parameters[param].get('type') in ['int', 'pint', 'float', 'pfloat', 'num', 'scene']:
+                valid_min = self.parameters[param].get('valid_min')
+                if valid_min != None:
+                    logger.warning(self._log_premsg+"1. type {}, valid_min {}, value {}".format(self.parameters[param].get('type'), valid_min, result))
+                    if self._test_value(param, valid_min):
+                        logger.warning(self._log_premsg+"2. type {}, valid_min {}, value {}, test_min {}".format(self.parameters[param].get('type'), valid_min, result, self._convert_valuetotype(self._get_type(param), valid_min)))
+                        if result < self._convert_valuetotype(self._get_type(param), valid_min):
+                            logger.warning(self._log_premsg+"3. type {}, valid_min {}, value {}, test_min {}".format(self.parameters[param].get('type'), valid_min, result, self._convert_valuetotype(self._get_type(param), valid_min)))
+                            result = valid_min
+                    logger.warning(self._log_premsg+"4. type {}, valid_min {}, value {}".format(self.parameters[param].get('type'), valid_min, result))
+                valid_max = self.parameters[param].get('valid_max')
+                if valid_max != None:
+                    if self._test_value(param, valid_max):
+                        if result > self._convert_valuetotype(self._get_type(param), valid_max):
+                            result = valid_max
+                    logger.warning(self._log_premsg+"8. type {}, valid_max {}, value {}".format(self.parameters[param].get('type'), valid_max, result))
+        
+        if self.parameters[param] == None:
+            logger.warning(self._log_premsg+"_test_validity: param {}".format(param))
         else:
-            if value in valid_list:
-                return value
+            valid_list = self.parameters[param].get('valid_list')
+            if (valid_list == None) or (len(valid_list) == 0):
+                pass
             else:
-                return valid_list[0]
-
+                if result in valid_list:
+                    pass
+                else:
+                    result = valid_list[0]
+        return result
 
     def _get_default_if_none(self, typ):
         """
@@ -271,7 +319,9 @@ class Metadata():
                     value = None
                 if value == None:
                     value = self._get_default_if_none(typ)
-            
+
+                self._convert_value(param, value)
+
                 orig_value = value
                 value = self._test_validity(param, value)
                 if value != orig_value:
@@ -310,7 +360,7 @@ class Metadata():
                 logger.debug(self._log_premsg+"'{}' not found in /etc/{}, using default value '{}'".format(param, self._addon_type+YAML_FILE, addon_params[param]))
             else:
                 if self._test_value(param, value):
-                    addon_params[param] = self._convert_valuetotype(param, value)
+                    addon_params[param] = self._convert_value(param, value)
                     logger.debug(self._log_premsg+"Found '{}' with value '{}' in /etc/{}".format(param, value, self._addon_type+YAML_FILE))
                 else:
                     addon_params[param] = self._get_defaultvalue(param)

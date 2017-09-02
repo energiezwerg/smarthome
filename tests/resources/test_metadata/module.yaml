@@ -19,6 +19,14 @@ parameters:
     int_nodefault:
         type: int
 
+    int_validmin_nodefault:
+        type: int
+        valid_min: 2
+
+    int_validmax_nodefault:
+        type: int
+        valid_max: -42
+
     pint_nodefault:
         type: pint
 
@@ -31,6 +39,13 @@ parameters:
     str_nodefault:
         type: str
 
+    str_validlist_nodefault:
+        type: str
+        valid_list:
+          - ''
+          - 'string1'
+          - 'string2'
+                 
     list_nodefault:
         type: list
 
@@ -46,10 +61,6 @@ parameters:
     foo_nodefault:
         type: foo
 
-    int_default:
-        type: int
-        default: 42
-        
     # parameters with default value
     notype_default1:
         default: 42
@@ -81,6 +92,22 @@ parameters:
         type: str
         default: '42'
 
+    str_validlist_default:
+        type: str
+        default: 'string2'
+        valid_list:
+          - 'string1'
+          - 'string2'
+          - ''
+                 
+    str_validlist_invalid_default:
+        type: str
+        default: 'string3'
+        valid_list:
+          - 'string1'
+          - 'string2'
+          - ''
+                 
     list_default:
         type: list
         default:

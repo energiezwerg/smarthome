@@ -48,10 +48,13 @@ class LibMetadataTest(unittest.TestCase):
         self.assertIsNone(processed_args['notype_nodefault'])
         self.assertEqual(False, processed_args['bool_nodefault'])
         self.assertEqual(0, processed_args['int_nodefault'])
+        self.assertEqual(2, processed_args['int_validmin_nodefault'])
+        self.assertEqual(-42, processed_args['int_validmax_nodefault'])
         self.assertEqual(0, processed_args['pint_nodefault'])
         self.assertEqual(0, processed_args['float_nodefault'])
         self.assertEqual(0, processed_args['pfloat_nodefault'])
         self.assertEqual('', processed_args['str_nodefault'])
+        self.assertEqual('', processed_args['str_validlist_nodefault'])
         self.assertEqual([], processed_args['list_nodefault'])
         self.assertEqual({}, processed_args['dict_nodefault'])
         self.assertEqual('0.0.0.0', processed_args['ip_nodefault'])
@@ -67,6 +70,8 @@ class LibMetadataTest(unittest.TestCase):
         self.assertEqual(4.2, processed_args['float_default'])
         self.assertEqual(4.2, processed_args['pfloat_default'])
         self.assertEqual('42', processed_args['str_default'])
+        self.assertEqual('string2', processed_args['str_validlist_default'])
+        self.assertEqual('string1', processed_args['str_validlist_invalid_default'])
         self.assertEqual([4,2], processed_args['list_default'])
         self.assertEqual({'answer': 42}, processed_args['dict_default'])
         self.assertEqual('127.0.0.1', processed_args['ip_default'])
@@ -75,7 +80,8 @@ class LibMetadataTest(unittest.TestCase):
 
         args = {
             'notype_nodefault': True, 'bool_nodefault': '42', 'int_nodefault': -24, 'pint_nodefault': 24, 
-            'float_nodefault': -24.2, 'pfloat_nodefault': 24.3, 'str_nodefault': 'answer',
+            'float_nodefault': -24.2, 'pfloat_nodefault': 24.3, 'str_nodefault': 'answer', 'str_validlist_nodefault': 'string2',
+            'str_validlist_default': 'x', 'str_validlist_invalid_default': 'string2',
             'list_nodefault': [24,42], 'dict_nodefault': {'question': 24, 'answer': '42'}, 
             'ip_nodefault': '1.2.3.4', 'mac_nodefault': 'aa:ab:ac:ad:ae:af',
             'foo_nodefault': [4, 2], 
@@ -97,6 +103,7 @@ class LibMetadataTest(unittest.TestCase):
         self.assertEqual(-24.2, processed_args['float_nodefault'])
         self.assertEqual(24.3, processed_args['pfloat_nodefault'])
         self.assertEqual('answer', processed_args['str_nodefault'])
+        self.assertEqual('string2', processed_args['str_validlist_nodefault'])
         self.assertEqual([24,42], processed_args['list_nodefault'])
         self.assertEqual({'question': 24, 'answer': '42'}, processed_args['dict_nodefault'])
         self.assertEqual('1.2.3.4', processed_args['ip_nodefault'])
@@ -113,6 +120,8 @@ class LibMetadataTest(unittest.TestCase):
         self.assertEqual(4.2, processed_args['float_default'])            # default value taken (42 instead of '-x')
         self.assertEqual(4.2, processed_args['pfloat_default'])           # default value taken (42 instead of -24)
         self.assertEqual('25', processed_args['str_default'])             # default value not taken, because 25 can be converted to '25'
+        self.assertEqual('string1', processed_args['str_validlist_default'])  # default value taken ('string1' instead of 'x')
+        self.assertEqual('string2', processed_args['str_validlist_invalid_default'])
         self.assertEqual([4,2], processed_args['list_default'])           # default value taken ([4,2] instead of string '[24,42]')
         self.assertEqual({'answer': 42}, processed_args['dict_default'])  # default value taken ({'answer': 42} instead of invalid dict {24, '42'})
         self.assertEqual('127.0.0.1', processed_args['ip_default'])       # default value taken ('127.0.0.1' instead of invalid ip '1.2.3.256')
