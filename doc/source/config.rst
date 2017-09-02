@@ -160,7 +160,7 @@ The object name can be any valid Python name, the class name and class path need
        # date_ga: 1/1/2 # default none
 
 There is a `README.md` for every plugin that gives the necessary configuration information.
-To continue reading follow the :doc:`plugin <allplugins>` page.
+To continue reading follow the :doc:`plugin <plugins_all>` page.
 
 logging.yaml
 ------------
