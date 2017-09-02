@@ -1,9 +1,10 @@
 Non classified Plugins
-----------------------------
+----------------------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :glob:
    :titlesonly:
 
-   plugins/nut/README.md
+   plugins/pushover/README.md
+

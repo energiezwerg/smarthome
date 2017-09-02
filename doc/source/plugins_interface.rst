@@ -1,8 +1,8 @@
-Interface Plugins
------------------
+Interface
+---------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :glob:
    :titlesonly:
 
@@ -11,8 +11,6 @@ Interface Plugins
    plugins/avdevice/README.md
    plugins/avm/README.md
    plugins/buderus/README.md
-   plugins/buderus/URLs.md
-   plugins/buderus/TODO.md
    plugins/comfoair/README.md
    plugins/dlms/README.md
    plugins/drexelundweiss/README.md
@@ -22,8 +20,8 @@ Interface Plugins
    plugins/eta_pu/README.md
    plugins/gpio/README.md
    plugins/harmony/README.md
-   plugins/homematic/README.md
    plugins/helios/README.md
+   plugins/homematic/README.md
    plugins/intercom_2n/README.md
    plugins/jointspace/README.md
    plugins/kathrein/README.md
@@ -48,3 +46,4 @@ Interface Plugins
    plugins/xbmc/README.md
    plugins/xiaomi/README.md
    plugins/yamaha/README.md
+

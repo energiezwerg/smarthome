@@ -2,7 +2,7 @@ Web / Cloud Plugins
 -------------------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :glob:
    :titlesonly:
 
@@ -12,6 +12,7 @@ Web / Cloud Plugins
    plugins/ical/README.md
    plugins/join/README.md
    plugins/mail/README.md
+   plugins/mvg_live/README.md
    plugins/nma/README.md
    plugins/odlinfo/README.md
    plugins/openenergymonitor/README.md
@@ -21,6 +22,7 @@ Web / Cloud Plugins
    plugins/tankerkoenig/README.md
    plugins/telegram/README.md
    plugins/traffic/README.md
-   plugins/mvg_live/README.md
+   plugins/webservices/README.md
    plugins/wettercom/README.md
    plugins/wunderground/README.md
+

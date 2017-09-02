@@ -25,80 +25,20 @@ A module is made up of two files:
 Both files reside in a folder within the ``/modules`` folder. The name of the folder reflects
 the name of the module.
 
-The metadata file cas two main sections:
+The **metadata** file is named ``/modules/<name of the module>/module.yaml``. It has two main sections:
+
 
 - ``module:`` - Global metadata of the module
 - ``parameters:`` - Definition of the parameters that can bei used in ``/etc/module.yaml`` to configure the module
 
-The global metadata section has the following keys:
+.. include:: metadata/module_global.rst
 
-.. code:: yaml
+.. include:: metadata/parameters.rst
 
-    # Metadata for the plugin
-    module:
-        # Global plugin attributes
-        classname: Http
-        version: 1.4.3
-        sh_minversion: 1.3a
-    #   sh_maxversion:          # maximum shNG version to use this plugin (leave empty if latest)
-        description:
-            de: 'Modul zur Implementierung von Backend-Webinterfaces für Plugins'
-            en: 'Module for implementing a backend-webinterface for plugins'
+xxxxxx
 
-Description of the keys in the section ``module:``
+.. toctree::
+   :maxdepth: 3
+   :titlesonly:
 
-    - **classname:** Name of the Python class to initialize
-    - **version:** Version number of the module. It is checked against the version number defined in the Python source code
-    - **sh_minversion:** Minimum SmartHomeNG version this module is compatible with [Test not yet implemented]
-    - **sh_maxversion:** Maximum SmartHomeNG version this module is compatible with (or empty) [Test not yet implemented]
-    - **description:** Multilanguage Text describing what the module does. - The texts in the different languages are specified in sub-entries in the form <language>: <text>. Use the standard two letter codes for specifying the language (de, en, fr, pl, ..)
-    - **classpath:** **Usually not specified.** Only needed, if the module resides outside the ``/modules`` folder
-
-The ``parameters:`` section has a section for each parameter that is impelemented. The name of that
-section is the name of the parameter.
-
-
-.. code:: yaml
-
-    parameters:
-        param1:
-            type: int
-            default: 1234
-            description:
-                de: 'Deutsche Beschreibung'
-                en: 'English description'
-            valid_list:
-              - 1234
-              - 2222
-              - 4321
-        
-        param2:
-            type: ...
-            
-        
-Description of the keys in the section of a parameter:
-
-- **type:** specifies the datatype of the parameter. Valid datatypes are:
-
-    - *bool* - a boolean value
-    - *int* - an integer vaue
-    - *pint* - a positive integer value
-    - *float* - a float value
-    - *pfloat* - a positive float value
-    - *str* - a string
-    - *list* - a list
-    - *dict* - a dictionary
-    - *ip* - a string, representing an ip-address
-    - *mac* - a string, representing a mac-address
-    - *foo* - the universal datatype
-
-- **default:** specifies the default value to be used, if no value is given in `/etc/module.yaml`
-
-- **description:** is a multilanguage text. - The texts in the different languages are specified in sub-entries in the form <language>: <text>. Use the standard two letter codes for specifying the language (de, en, fr, pl, ..)
-
-- **valid_list** List of allowed values for the parameter
-
-- **min** for datatypes *int* and *float*: minimum allowed value for the parameter [Test not yet implemented]
-
-- **max** for datatypes *int* and *float*: maximum allowed value for the parameter [Test not yet implemented]
-
+   /modules_doc/module_metadata

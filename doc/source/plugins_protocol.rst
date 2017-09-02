@@ -1,8 +1,8 @@
-Protocol Plugins
------------------
+Protocol
+--------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :glob:
    :titlesonly:
 
@@ -11,3 +11,4 @@ Protocol Plugins
    plugins/network/README.md
    plugins/wol/README.md
    plugins/xmpp/README.md
+

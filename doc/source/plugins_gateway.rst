@@ -1,8 +1,8 @@
-Gateway Plugins
----------------
+Gateway
+-------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :glob:
    :titlesonly:
 
@@ -26,3 +26,4 @@ Gateway Plugins
    plugins/sonos/README.md
    plugins/squeezebox/README.md
    plugins/tellstick/README.md
+

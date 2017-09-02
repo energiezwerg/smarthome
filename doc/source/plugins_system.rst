@@ -1,5 +1,5 @@
-System Plugins
---------------
+System
+------
 
 .. toctree::
    :maxdepth: 2
@@ -7,6 +7,7 @@ System Plugins
    :titlesonly:
 
    plugins/backend/README.md
+   plugins/backend_shng_1_3/README.md
    plugins/cli/README.md
    plugins/database/README.md
    plugins/datalog/README.md
@@ -19,6 +20,7 @@ System Plugins
    plugins/simulation/README.md
    plugins/sqlite/README.md
    plugins/sqlite_visu2_8/README.md
+   plugins/uzsu/README.md
    plugins/visu_smartvisu/README.md
    plugins/visu_websocket/README.md
-   plugins/uzsu/README.md
+
