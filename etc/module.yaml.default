@@ -2,9 +2,9 @@
 ---
 # etc/module.yaml
 dummy:
-    class_name: dummy
+    module_name: dummy
 
 http:
-    class_name: http
+    module_name: http
 #    port: '1234'
 #    starturl: backend
