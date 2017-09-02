@@ -73,12 +73,15 @@ class Modules():
 
         for module in _conf:
             module_name = _conf[module].get('module_name','')
-            if module_name == '':
+            if module_name != '':
+                self.meta = Metadata(self._sh, module_name, 'module')
+            else:
                 classpath = _conf[module].get(KEY_CLASS_PATH,'')
                 if classpath != '':
 #                    module_name = classpath.split('.')[1]
                     module_name = classpath.split('.')[len(classpath.split('.'))-1]
-            self.meta = Metadata(self._sh, module_name, 'module')
+                logger.warning('Modules __init__: module_name {}, classpath {}'.format(module_name, classpath))
+                self.meta = Metadata(self._sh, module_name, 'module', classpath)
 
             logger.debug("Modules, section: {}".format(module))
             args = {}

@@ -12,6 +12,8 @@ from lib.constants import (CONF_FILE, YAML_FILE)
 ITEM_FILE_TYPE = CONF_FILE
 #ITEM_FILE_TYPE = YAML_FILE
 
+verbose = False
+
 
 class TestItem(unittest.TestCase):
     def props(self,cls):   
@@ -27,6 +29,9 @@ class TestItem(unittest.TestCase):
         """
         sh=MockSmartHome()
         
+        if verbose == True:
+            print()
+            print('===== test_item_relative_references:')
         #load items
         conf_filename = common.BASE + "/tests/resources/item_items"+ITEM_FILE_TYPE
         item_conf = None
@@ -34,8 +39,8 @@ class TestItem(unittest.TestCase):
         if item_conf == {}:
             print()
             print("config file '"+conf_filename+"' not found")
-        print(item_conf)
-        print(item_conf.items())
+#        print('test_item_relative_references:', item_conf)
+#        print('test_item_relative_references:', item_conf.items())
         for attr, value in item_conf.items():
             if isinstance(value, dict):
                 child_path = attr
@@ -52,7 +57,8 @@ class TestItem(unittest.TestCase):
 
         # -----------------------------------------------------------------
         
-        print()
+#        if verbose == True:
+#            print()
         it = sh.return_item("item_tree.grandparent.parent.my_item")
         self.assertIsNotNone(it)
         self.assertEqual(it._type, 'bool')
@@ -60,7 +66,9 @@ class TestItem(unittest.TestCase):
         self.assertIsNotNone(it)
         self.assertEqual(it._type, 'foo')
 
-        print('=== eval_trigger Tests:')
+        if verbose == True:
+            print()
+            print('=== eval_trigger Tests:')
         # Attribute with relative references
         it = sh.return_item("item_tree.grandparent.parent.my_item")
         self.assertEqual(it.get_absolutepath('.', 'eval_trigger'), 'item_tree.grandparent.parent.my_item')
@@ -79,7 +87,9 @@ class TestItem(unittest.TestCase):
         self.assertEqual(it.get_absolutepath('item_tree.grandparent.parent.my_item', 'eval_trigger'), 'item_tree.grandparent.parent.my_item')
         self.assertEqual(it.get_absolutepath('abc', 'eval_trigger'), 'abc')
 
-        print('=== eval Tests:')
+        if verbose == True:
+            print()
+            print('=== eval Tests:')
         it = sh.return_item("item_tree.grandparent.parent.my_item")
         #print(it.get_stringwithabsolutepathes('sh..child()', 'sh.', '(', 'eval'))
         self.assertEqual(it.get_stringwithabsolutepathes('sh..child()', 'sh.', '(', 'eval'), 'sh.item_tree.grandparent.parent.my_item.child()')
@@ -96,7 +106,9 @@ class TestItem(unittest.TestCase):
         self.assertNotEqual(it.get_stringwithabsolutepathes('sh.....changed_by()', 'sh.', '(', 'eval'), 'sh.item_tree.grandparent.changed_by()')
         self.assertEqual(it.get_stringwithabsolutepathes('sh....self.changed_by()', 'sh.', '(', 'eval'), 'sh.item_tree.grandparent.changed_by()')
 
-        print('=== plugin-attribute Tests:')
+        if verbose == True:
+            print()
+            print('=== plugin-attribute Tests:')
         # Attribute with relative references
         it = sh.return_item("item_tree.grandparent.parent.my_item")
         it.expand_relativepathes('sv_widget', "'", "'")
@@ -122,9 +134,13 @@ class TestItem(unittest.TestCase):
         """
         Tests about the autotimer attribut and value casting
         """
+        if verbose == True:
+            print()
+            print('===== test_item_autotimers:')
         sh=None
         sh=MockSmartHome()
-        print()
+#        if verbose == True:
+#            print()
         
         #load items
         conf_filename = common.BASE + "/tests/resources/item_timers"+ITEM_FILE_TYPE
@@ -133,7 +149,7 @@ class TestItem(unittest.TestCase):
         if item_conf == {}:
             print()
             print("config file '"+conf_filename+"' not found")
-        print(item_conf)
+#        print('test_item_autotimers:', item_conf)
         for attr, value in item_conf.items():
             if isinstance(value, dict):
                 child_path = attr
@@ -349,6 +365,10 @@ class TestItem(unittest.TestCase):
         self.assertEqual(100, item._value)
 
     def test_set(self):
+        
+        if verbose == True:
+            print()
+            print('===== test_set:')
         sh = MockSmartHome()
         conf = {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}
         item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
@@ -364,6 +384,9 @@ class TestItem(unittest.TestCase):
         item.set('14')
 
     def test_cast_duration(self):
+        if verbose == True:
+            print()
+            print('===== test_item_relative_references:')
         sh = MockSmartHome()
         conf = {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}
         item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
@@ -375,6 +398,10 @@ class TestItem(unittest.TestCase):
         self.assertFalse(item._cast_duration(None))
 
     def test_call(self):
+        print()
+        print('=== test_item:')
+        if verbose == True:
+            print('===== test_call:')
         sh = MockSmartHome()
         conf = {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}
         item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')

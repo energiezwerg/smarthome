@@ -3,6 +3,8 @@ import unittest
 import common
 import lib.config
 
+verbose = True
+
 
 class ConfigBaseTests:
     fmt = None
@@ -102,6 +104,9 @@ class TestConfigConf( unittest.TestCase,ConfigBaseTests):
     fmt = 'conf'
 
     def test_confread_ignores_empty_name(self):
+        if verbose == True:
+            print()
+            print('=== TestConfigConf:')
         conf = self.config('empty')
         self.assertEqual(0, len(conf['empty']))
 
@@ -117,6 +122,9 @@ class TestConfigYaml(unittest.TestCase,ConfigBaseTests):
     fmt = 'yaml'
 
     def test_yamlread_multiline(self):
+        if verbose == True:
+            print()
+            print('=== TestConfigYaml:')
         conf = self.config('keyvalues')
         self.assertEqual(conf['section']['key_multiline'], 'line1line2')
         self.assertEqual(conf['section']['key_multiline_quotes'], 'line1line2')
