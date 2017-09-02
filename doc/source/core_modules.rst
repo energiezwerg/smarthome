@@ -13,10 +13,8 @@ At the moment, the following modules exist:
 .. toctree::
    :maxdepth: 3
    :titlesonly:
-   :hidden:
    
-   /modules/dummy
-   /modules/http
+   /modules_doc/modules_readmes
 
 
 A module is made up of two files:
