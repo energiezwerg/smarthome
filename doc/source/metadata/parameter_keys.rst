@@ -5,10 +5,8 @@ Description of the keys in the section of a parameter/attribute:
 
     - *bool* - a boolean value
     - *int* - an integer vaue
-    - *pint* - a positive integer value
     - *float* - a float value
     - *num* - an equivalent to float
-    - *pfloat* - a positive float value
     - *scene* - a positive integer in the range between 0 and 255
     - *str* - a string
     - *list* - a list

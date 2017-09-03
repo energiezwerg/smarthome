@@ -27,8 +27,8 @@ import lib.shyaml as shyaml
 from lib.constants import (YAML_FILE, FOO, META_DATA_TYPES, META_DATA_DEFAULTS)
 
 META_PARAMETER_SECTION = 'parameters'
-#META_DATA_TYPES=['bool', 'int', 'pint', 'float', 'pfloat', 'str', 'list', 'dict', 'ip', 'mac', 'foo']
-#META_DATA_DEFAULTS={'bool': False, 'int': 0, 'pint': 0, 'float': 0.0, 'pfloat': 0.0, 'str': '', 'list': [], 'dict': {}, 'OrderedDict': {}, 'num': 0, 'scene': 0, 'ip': '0.0.0.0', 'mac': '00:00:00:00:00:00', 'foo': None}
+#META_DATA_TYPES=['bool', 'int', 'float', 'str', 'list', 'dict', 'ip', 'mac', 'foo']
+#META_DATA_DEFAULTS={'bool': False, 'int': 0, 'float': 0.0, 'str': '', 'list': [], 'dict': {}, 'OrderedDict': {}, 'num': 0, 'scene': 0, 'ip': '0.0.0.0', 'mac': '00:00:00:00:00:00', 'foo': None}
 
 
 logger = logging.getLogger(__name__)
@@ -170,18 +170,8 @@ class Metadata():
             return (Utils.to_bool(value, default='?') != '?')
         elif typ == 'int':
             return Utils.is_int(value)
-        elif typ == 'pint':
-            if Utils.is_int(value):
-                return (int(value) >= 0)
-            else:
-                return False
         elif typ in ['float','num']:
             return Utils.is_float(value)
-        elif typ == 'pfloat':
-            if Utils.is_float(value):
-                return (float(value) >= 0.0)
-            else:
-                return False
         elif typ == 'scene':
             if Utils.is_int(value):
                 return (int(value) >= 0) and (int(value) < 256)
@@ -218,9 +208,9 @@ class Metadata():
         """
         if typ == 'bool':
             result = Utils.to_bool(value)
-        elif typ in ['int', 'pint','scene']:
+        elif typ in ['int','scene']:
             result = int(value)
-        elif typ in ['float', 'pfloat','num']:
+        elif typ in ['float','num']:
             result = float(value)
         elif typ == 'str':
             result = str(value)
@@ -237,7 +227,7 @@ class Metadata():
         return result
         
             
-    def _convert_value(self, param, value):
+    def _convert_value(self, param, value, is_default=False):
         """
         Returns the value converted to the parameters type
         """
@@ -247,14 +237,14 @@ class Metadata():
             result = self._convert_valuetotype(typ, value)
 
             orig = result
-            result = self._test_validity(param, result)
+            result = self._test_validity(param, result, is_default)
             if result != orig:
                 # Für non-default Prüfung nur Warning
                 logger.error(self._log_premsg+"Invalid default '{}' in metadata file '{}' for parameter '{}' -> using '{}' instead".format( orig, self.relative_filename, param, result ) )
         return result
     
 
-    def _test_validity(self, param, value):
+    def _test_validity(self, param, value, is_default=False):
         """
         Checks the value against a list of valid values.
         If valid, it returns the value. 
@@ -262,17 +252,23 @@ class Metadata():
         """
         result = value
         if self.parameters[param] != None:
-            if self.parameters[param].get('type') in ['int', 'pint', 'float', 'pfloat', 'num', 'scene']:
+            if self.parameters[param].get('type') in ['int', 'float', 'num', 'scene']:
                 valid_min = self.parameters[param].get('valid_min')
                 if valid_min != None:
                     if self._test_value(param, valid_min):
                         if result < self._convert_valuetotype(self._get_type(param), valid_min):
-                            result = valid_min
+                            if is_default == False:
+                                result = self._get_defaultvalue(param)   # instead of valid_min
+                            else:
+                                result = valid_min
                 valid_max = self.parameters[param].get('valid_max')
                 if valid_max != None:
                     if self._test_value(param, valid_max):
                         if result > self._convert_valuetotype(self._get_type(param), valid_max):
-                            result = valid_max
+                            if is_default == False:
+                                result = self._get_defaultvalue(param)   # instead of valid_max
+                            else:
+                                result = valid_max
         
         if self.parameters[param] == None:
             logger.warning(self._log_premsg+"_test_validity: param {}".format(param))
@@ -315,10 +311,10 @@ class Metadata():
                 if value == None:
                     value = self._get_default_if_none(typ)
 
-                self._convert_value(param, value)
+                self._convert_value(param, value, is_default=True)
 
                 orig_value = value
-                value = self._test_validity(param, value)
+                value = self._test_validity(param, value, is_default=True)
                 if value != orig_value:
                     # Für non-default Prüfung nur Warning
                     logger.error(self._log_premsg+"Invalid default '{}' in metadata file '{}' for parameter '{}' -> using '{}' instead".format( orig_value, self.relative_filename, param, value ) )

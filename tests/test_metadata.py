@@ -116,7 +116,7 @@ class LibMetadataTest(unittest.TestCase):
         self.assertEqual(24, processed_args['notype_default2'])
         self.assertTrue(processed_args['bool_default'])
         self.assertEqual(42, processed_args['int_default'])               # default value taken (42 instead of '-x')
-        self.assertEqual(42, processed_args['pint_default'])              # dafault value taken (42 instead of -24)
+        self.assertEqual(42, processed_args['pint_default'])              # default value taken (42 instead of -24)
         self.assertEqual(4.2, processed_args['float_default'])            # default value taken (42 instead of '-x')
         self.assertEqual(4.2, processed_args['pfloat_default'])           # default value taken (42 instead of -24)
         self.assertEqual('25', processed_args['str_default'])             # default value not taken, because 25 can be converted to '25'

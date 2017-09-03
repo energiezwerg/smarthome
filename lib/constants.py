@@ -29,8 +29,8 @@ ITEM_DEFAULTS= __defaults = {'num': 0, 'str': '', 'bool': False, 'list': [], 'di
 FOO = 'foo'
 
 #metadata types
-META_DATA_TYPES=['bool', 'int', 'pint', 'float', 'pfloat', 'str', 'list', 'dict', 'num', 'scene', 'ip', 'mac', 'foo']
-META_DATA_DEFAULTS={'bool': False, 'int': 0, 'pint': 0, 'float': 0.0, 'pfloat': 0.0, 'str': '', 
+META_DATA_TYPES=['bool', 'int', 'float', 'str', 'list', 'dict', 'num', 'scene', 'ip', 'mac', 'foo']
+META_DATA_DEFAULTS={'bool': False, 'int': 0, 'float': 0.0, 'str': '', 
                     'list': [], 'dict': {}, 'OrderedDict': {}, 'num': 0, 'scene': 0, 
                     'ip': '0.0.0.0', 'mac': '00:00:00:00:00:00', 'foo': None}
 
