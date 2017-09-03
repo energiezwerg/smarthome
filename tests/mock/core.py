@@ -44,6 +44,9 @@ class MockSmartHome():
     def get_defaultlanguage(self):
         return self._default_language
 
+    def set_defaultlanguage(self, language):
+        self._default_language = language
+
     def getBaseDir(self):
         return self._base_dir
 

@@ -270,6 +270,13 @@ class SmartHome():
         return self._default_language
         
         
+    def set_defaultlanguage(self, language):
+        """
+        Returns the configured default language of SmartHomeNG
+        """
+        self._default_language = language
+        
+        
     def getBaseDir(self):
         """
         Function to return the base directory of the running SmartHomeNG installation
