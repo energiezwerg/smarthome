@@ -335,7 +335,7 @@ class SmartPlugin(SmartObject, Utils):
         if mymod == None:
             self.logger.error("Module '{}' not loaded".format(modulename))
         else:
-            self.logger.info("Using module '{}'".format(str( mymod.shortname ) ) )
+            self.logger.info("Using module '{}'".format(str( mymod._shortname ) ) )
         return mymod
         
 

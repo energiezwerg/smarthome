@@ -33,11 +33,11 @@ from lib.utils import Utils
 class Http():
 
     version = '1.4.4'
-    shortname = ''
-    longname = 'CherryPy http module for SmartHomeNG'
+    _shortname = ''
+    _longname = 'CherryPy http module for SmartHomeNG'
     
-    applications = OrderedDict()
-    services = OrderedDict()
+    _applications = OrderedDict()
+    _services = OrderedDict()
     
     _port = None
     _servicesport = None
@@ -52,14 +52,14 @@ class Http():
         Initialization Routine for the module
         """
         # TO DO: Shortname anders setzen (oder warten bis der Plugin Loader es beim Laden setzt 
-        self.shortname = self.__class__.__name__
-        self.shortname = self.shortname.lower()
+        self._shortname = self.__class__.__name__
+        self._shortname = self._shortname.lower()
         
         self.logger = logging.getLogger(__name__)
         self._sh = sh
-        self.logger.debug("{}: Initializing".format(self.shortname))
+        self.logger.debug("{}: Initializing".format(self._shortname))
         
-        self.logger.debug("Module '{}': Parameters = '{}'".format(self.shortname, str(self._parameters)))
+        self.logger.debug("Module '{}': Parameters = '{}'".format(self._shortname, str(self._parameters)))
         try:
             self._port = self._parameters['port']
             self._servicesport = self._parameters['servicesport']
@@ -68,7 +68,7 @@ class Http():
             self._showservicelist = self._parameters['showservicelist']
             self._showtraceback = self._parameters['showtraceback']
         except:
-            self.logger.critical("Module '{}': Inconsistent module (invalid metadata definition)".format(self.shortname))
+            self.logger.critical("Module '{}': Inconsistent module (invalid metadata definition)".format(self._shortname))
             self._init_complete = False
             return
             
@@ -163,13 +163,13 @@ class Http():
     
         if self._showpluginlist == True:
             # Register the plugin-list as a cherrypy app
-            self.root.plugins = PluginsApp(self)
+            self.root.plugins = _PluginsApp(self)
             self.register_webif(self.root.plugins, 'plugins', config) 
 #                               pluginclass='', instance='', description='', webifname='')
 
         if self._showservicelist == True:
             # Register the service-list as a cherrypy app
-            self.root.services = ServicesApp(self)
+            self.root.services = _ServicesApp(self)
             self.register_service(self.root.services, 'services', config) 
 #                                  pluginclass='', instance='', description='', servicename='')
 
@@ -304,13 +304,14 @@ class Http():
         
         The information is returned as a list of dicts. One listentry for each registered webinterface.
         The dict for each registered webinterface has the following structure:
-            webif_dict = {'Mount': mount, 
-                          'Pluginclass': pluginclass, 
-                          'Webifname': webifname, 
-                          'Pluginname': pluginname, 
-                          'Instance': instance, 
-                          'Conf': conf, 
-                          'Description': description}
+        
+        webif_dict = {'mount': mount, 
+                      'pluginclass': pluginclass, 
+                      'webifname': webifname, 
+                      'pluginname': pluginname, 
+                      'instance': instance, 
+                      'conf': conf, 
+                      'description': description}
 
         
         :param pluginname: Shortname of the plugin
@@ -320,9 +321,9 @@ class Http():
         :rtype: list of dicts
         """
         result_list = []
-        for webif in self.applications.keys():
-            if self.applications[webif]['Pluginname'] == pluginname:
-                result_list.append(self.applications[webif])
+        for webif in self._applications.keys():
+            if self._applications[webif]['Pluginname'] == pluginname:
+                result_list.append(self._applications[webif])
         return result_list
         
     
@@ -332,13 +333,14 @@ class Http():
         
         The information is returned as a list of dicts. One listentry for each registered webservice.
         The dict for each registered webinterface has the following structure:
-            service_dict = {'Mount': mount, 
-                            'Pluginclass': pluginclass, 
-                            'Servicename': servicename, 
-                            'Pluginname': pluginname, 
-                            'Instance': instance, 
-                            'Conf': conf, 
-                            'Description': description}
+        
+        service_dict = {'mount': mount, 
+                        'pluginclass': pluginclass, 
+                        'servicename': servicename, 
+                        'pluginname': pluginname, 
+                        'instance': instance, 
+                        'conf': conf, 
+                        'description': description}
 
 
         :param pluginname: Shortname of the plugin
@@ -348,9 +350,9 @@ class Http():
         :rtype: list of dicts
         """
         result_list = []
-        for service in self.services.keys():
-            if self.services[service]['Pluginname'] == pluginname:
-                result_list.append(self.services[service])
+        for service in self._services.keys():
+            if self._services[service]['Pluginname'] == pluginname:
+                result_list.append(self._services[service])
         return result_list
         
     
@@ -399,8 +401,8 @@ class Http():
                 webif_key = webifname
             else:
                 webif_key = instance + '@' + webifname
-            self.applications[webif_key] = {'Mount': mount, 'Pluginclass': pluginclass, 'Webifname': webifname, 'Pluginname': pluginname, 'Instance': instance, 'Conf': conf, 'Description': description}
-            self.logger.info("self.applications['{}'] = {}".format(webif_key, self.applications[webif_key]))
+            self._applications[webif_key] = {'Mount': mount, 'Pluginclass': pluginclass, 'Webifname': webifname, 'Pluginname': pluginname, 'Instance': instance, 'Conf': conf, 'Description': description}
+            self.logger.info("self._applications['{}'] = {}".format(webif_key, self._applications[webif_key]))
         if len(self._hostmap_services) > 0:
             conf['/']['request.dispatch'] = cherrypy.dispatch.VirtualHost(**self._hostmap_services)
 
@@ -453,8 +455,8 @@ class Http():
                 service_key = servicename
             else:
                 service_key = instance + '@' + servicename
-            self.services[servicename] = {'Mount': mount, 'Pluginclass': pluginclass, 'Servicename': servicename, 'Pluginname': pluginname, 'Instance': instance, 'Conf': conf, 'Description': description}
-            self.logger.info("self.services['{}'] = {}".format(service_key, self.services[service_key]))
+            self._services[servicename] = {'Mount': mount, 'Pluginclass': pluginclass, 'Servicename': servicename, 'Pluginname': pluginname, 'Instance': instance, 'Conf': conf, 'Description': description}
+            self.logger.info("self._services['{}'] = {}".format(service_key, self._services[service_key]))
         if len(self._hostmap_webifs) > 0:
             conf['/']['request.dispatch'] = cherrypy.dispatch.VirtualHost(**self._hostmap_webifs)
 
@@ -469,7 +471,7 @@ class Http():
         
         Otherwise don't enter code here
         """
-#        self.logger.debug("{}: Starting up".format(self.shortname))
+#        self.logger.debug("{}: Starting up".format(self._shortname))
         pass
 
 
@@ -480,9 +482,9 @@ class Http():
         
         Otherwise don't enter code here
         """
-        self.logger.info("{}: Shutting down".format(self.shortname))   # should be debug
+        self.logger.info("{}: Shutting down".format(self._shortname))   # should be debug
         cherrypy.engine.exit()
-        self.logger.debug("{}: CherryPy engine exited".format(self.shortname))
+        self.logger.debug("{}: CherryPy engine exited".format(self._shortname))
 
     
 class ModuleApp:
@@ -508,7 +510,7 @@ class ModuleApp:
         """
         self.mod.logger.info("ModuleApp: local.name '{}', local.port '{}'".format(cherrypy.request.local.name, cherrypy.request.local.port))
         if cherrypy.request.local.port == self.mod._port:
-            if self.starturl in self.mod.applications.keys():
+            if self.starturl in self.mod._applications.keys():
                 result = self.starturl
             else:
                 if self.mod._showpluginlist == True:
@@ -524,7 +526,7 @@ class ModuleApp:
         return result
 
 
-class PluginsApp:
+class _PluginsApp:
     """
     The module 'http' implements it's own webinterface.
     This WebApp implements the chooser which allows the start of the differnt webinterfaces of the plugins.
@@ -542,11 +544,11 @@ class PluginsApp:
         """
 
         tmpl = self.mod.tplenv.get_template('plugins.html')
-        result = tmpl.render( webinterfaces=self.mod.applications )
+        result = tmpl.render( webinterfaces=self.mod._applications )
         return result
 
 
-class ServicesApp:
+class _ServicesApp:
     """
     The module 'http' implements it's own webservice.
     This WebApp implements the chooser which allows the start of the differnt services of the plugins.
@@ -564,6 +566,6 @@ class ServicesApp:
         """
 
         tmpl = self.mod.tplenv.get_template('services.html')
-        result = tmpl.render( services=self.mod.services )
+        result = tmpl.render( services=self.mod._services )
         return result
 

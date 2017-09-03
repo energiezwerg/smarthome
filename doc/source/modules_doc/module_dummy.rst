@@ -19,7 +19,7 @@ A formatted version of the sample README.md can be found here:
 
    /modules/dummy/README.md
 
-A raw version of the README.md for copy and paste can be found below the Python source code.
+A raw version of the README.md for copy and paste can be found below the metadata file.
 
 
 The meta data file:
