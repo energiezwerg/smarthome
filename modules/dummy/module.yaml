@@ -9,3 +9,7 @@ module:
         de: 'Modul zur Implementierung von ...'
         en: 'Module for implementing ...'
 
+parameters:
+    dummy: 
+        type: str
+    
