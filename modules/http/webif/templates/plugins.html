@@ -25,7 +25,7 @@
 			<h3>Plugins:</h3>
 			{% for webif in webinterfaces.keys() %}
 				<br>
-				<li class="nav-item"><a href="/{{ webif }}">{{ webinterfaces[webif].Pluginname }} {{ webinterfaces[webif].Instance }} - {{ webinterfaces[webif].Description }}</a></li>
+				<li class="nav-item"><a href="/{{ webif }}">{{ webinterfaces[webif].Webifname }} {{ webinterfaces[webif].Instance }} - {{ webinterfaces[webif].Description }}</a></li>
 			{% endfor %}
 			<br>
 			<br>
