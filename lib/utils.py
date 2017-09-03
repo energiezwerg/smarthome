@@ -129,6 +129,35 @@ class Utils(object):
             return False
 
     @staticmethod
+    def is_knx_groupaddress(groupaddress):
+        """
+        Checks if the passed string is a valid knx goup address
+        
+        The checked format is:
+           main group (0-31 = 5 bits)
+           middle group (0-7 = 3 bits)
+           subgroup (0-255 = 8 bits)
+        
+        :param groupaddress: String to check
+        :type groupaddress: str
+
+        :return: True if a groupaddress can be recognized, false otherwise.
+        :rtype: bool
+        """
+        g = groupaddress.split('/')
+        if len(g) != 3:
+            return False
+        if not( Utils.is_int(g[0]) and Utils.is_int(g[1]) and Utils.is_int(g[2]) ):
+            return False
+        if (int(g[0]) < 0) or (int(g[0]) > 31):
+            return False
+        if (int(g[1]) < 0) or (int(g[1]) > 7):
+            return False
+        if (int(g[2]) < 0) or (int(g[2]) > 255):
+            return False
+        return True
+    
+    @staticmethod
     def to_timeframe(value):
         """
         Converts a timeframe value to milliseconds. See is_timeframe() method.

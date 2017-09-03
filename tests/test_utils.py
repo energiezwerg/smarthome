@@ -26,6 +26,20 @@ from lib.utils import Utils
 #from wakeonlan import WakeOnLan
 class LibUtilsTest(unittest.TestCase):
 
+    def test_is_knx_groupaddress(self):
+        self.assertFalse(Utils.is_knx_groupaddress("1/2"))
+        self.assertTrue(Utils.is_knx_groupaddress("1/2/3"))
+        self.assertFalse(Utils.is_knx_groupaddress("-1/2/3"))
+        self.assertFalse(Utils.is_knx_groupaddress("32/2/3"))
+        self.assertFalse(Utils.is_knx_groupaddress("1/-1/3"))
+        self.assertFalse(Utils.is_knx_groupaddress("1/8/3"))
+        self.assertFalse(Utils.is_knx_groupaddress("1/2/-1"))
+        self.assertFalse(Utils.is_knx_groupaddress("1/2/256"))
+        self.assertFalse(Utils.is_knx_groupaddress("a/2/3"))
+        self.assertFalse(Utils.is_knx_groupaddress("1/a/3"))
+        self.assertFalse(Utils.is_knx_groupaddress("1/2/a"))
+
+
     def test_is_mac(self):
         self.assertTrue(True)
         self.assertTrue(Utils.is_mac("11:22:33:44:55:66"))
