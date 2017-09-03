@@ -139,7 +139,7 @@ class Metadata():
         key_dict = self.addon_metadata.get(mlkey)
         if key_dict == None:
             return ''
-        result = self.addon_metadata.get(key, '')
+        result = self.addon_metadata.get(mlkey, '')
         if result == '':
             result = key_dict.get(self.default_language, '')
             if result == '':
@@ -265,19 +265,14 @@ class Metadata():
             if self.parameters[param].get('type') in ['int', 'pint', 'float', 'pfloat', 'num', 'scene']:
                 valid_min = self.parameters[param].get('valid_min')
                 if valid_min != None:
-                    logger.warning(self._log_premsg+"1. type {}, valid_min {}, value {}".format(self.parameters[param].get('type'), valid_min, result))
                     if self._test_value(param, valid_min):
-                        logger.warning(self._log_premsg+"2. type {}, valid_min {}, value {}, test_min {}".format(self.parameters[param].get('type'), valid_min, result, self._convert_valuetotype(self._get_type(param), valid_min)))
                         if result < self._convert_valuetotype(self._get_type(param), valid_min):
-                            logger.warning(self._log_premsg+"3. type {}, valid_min {}, value {}, test_min {}".format(self.parameters[param].get('type'), valid_min, result, self._convert_valuetotype(self._get_type(param), valid_min)))
                             result = valid_min
-                    logger.warning(self._log_premsg+"4. type {}, valid_min {}, value {}".format(self.parameters[param].get('type'), valid_min, result))
                 valid_max = self.parameters[param].get('valid_max')
                 if valid_max != None:
                     if self._test_value(param, valid_max):
                         if result > self._convert_valuetotype(self._get_type(param), valid_max):
                             result = valid_max
-                    logger.warning(self._log_premsg+"8. type {}, valid_max {}, value {}".format(self.parameters[param].get('type'), valid_max, result))
         
         if self.parameters[param] == None:
             logger.warning(self._log_premsg+"_test_validity: param {}".format(param))
