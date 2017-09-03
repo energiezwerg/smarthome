@@ -1,8 +1,8 @@
 # Metadata for the plugin
 module:
     # Global plugin attributes
-    classname: http
-    version: 1.4.2
+    classname: Http
+    version: 1.4.4
     sh_minversion: 1.3a
 #   sh_maxversion:              # maximum shNG version to use this plugin (leave empty if latest)
     description:

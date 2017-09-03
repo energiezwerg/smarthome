@@ -25,7 +25,7 @@
 			<h3>Services:</h3>
 			{% for service in services.keys() %}
 				<br>
-				<li class="nav-item"><a href="/{{ service }}">{{ service }} - {{ services[service].Description }}</a></li>
+				<li class="nav-item"><a href="/{{ service }}">{{ services[service].Servicename }} {{ services[service].Instance }} - {{ services[service].Description }}</a></li>
 			{% endfor %}
 			<br>
 			<br>

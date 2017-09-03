@@ -30,9 +30,9 @@ from jinja2 import Environment, FileSystemLoader
 from lib.utils import Utils
 
 
-class http():
+class Http():
 
-    version = '1.4.2'
+    version = '1.4.4'
     shortname = ''
     longname = 'CherryPy http module for SmartHomeNG'
     
@@ -42,64 +42,48 @@ class http():
     _port = None
     _servicesport = None
 
+    _hostmap = {}
+    _hostmap_webifs = {}
+    _hostmap_services = {}
+
     
     def __init__(self, sh, port=None, servicesport=None, ip='', showpluginlist='True', showservicelist='False', showtraceback='False', threads=8, starturl=''):
         """
         Initialization Routine for the module
         """
+        # TO DO: Shortname anders setzen (oder warten bis der Plugin Loader es beim Laden setzt 
         self.shortname = self.__class__.__name__
+        self.shortname = self.shortname.lower()
+        
         self.logger = logging.getLogger(__name__)
         self._sh = sh
         self.logger.debug("{}: Initializing".format(self.shortname))
         
         self.logger.debug("Module '{}': Parameters = '{}'".format(self.shortname, str(self._parameters)))
-
-        # ------------------------------------------------------------------------
-        # Testing parameter values
-        #
-        if Utils.is_int(port):
-            self._port = int(port)
-        else:
-            self._port = 8383
-            if port is not None:
-                self.logger.error("Module http: Invalid value '"+str(port)+"' configured for attribute 'port' in module.yaml, using '"+str(self._port)+"' instead")
-
-        if Utils.is_int(servicesport):
-            self._servicesport = int(servicesport)
-        else:
-            self._servicesport = 8384
-            if servicesport is not None:
-                self.logger.error("Module http: Invalid value '"+str(servicesport)+"' configured for attribute 'servicesport' in module.yaml, using '"+str(self._servicesport)+"' instead")
-
-        if ip == '':
-            self._ip = self._get_local_ip_address()
-        else:
-            if not self.is_ip(ip):
-                self._ip = self._get_local_ip_address()
-                self.logger.error("module http: Invalid value '"+str(ip)+"' configured for attribute ip in module.yaml, using '"+str(self._ip)+"' instead")
-            else:
-                self._ip = self._get_local_ip_address()
-                self.logger.warning("module http: Setting of ip address is not yet supported, using '"+str(self._ip)+"' instead")
-        self.logger.debug("Module http: Using local ip address '{0}'".format(self._ip))
-
-        if Utils.is_int(threads):
-            self.threads = int(threads)
-        else:
-            self.threads = 8
-            self.logger.error("Module http: Invalid value '"+str(threads)+"' configured for attribute 'thread' in module.yaml, using '"+str(self.threads)+"' instead")
+        try:
+            self._port = self._parameters['port']
+            self._servicesport = self._parameters['servicesport']
+            self.threads = self._parameters['threads']
+            self._showpluginlist = self._parameters['showpluginlist']
+            self._showservicelist = self._parameters['showservicelist']
+            self._showtraceback = self._parameters['showtraceback']
+        except:
+            self.logger.critical("Module '{}': Inconsistent module (invalid metadata definition)".format(self.shortname))
+            self._init_complete = False
+            return
+            
+        if self._servicesport == 0:
+            self._servicesport = self._port
 
         self._basic_auth = False
-
-        self._showpluginlist = Utils.to_bool(showpluginlist, default=True)
-        self._showservicelist = Utils.to_bool(showservicelist, default=False)
-        self._showtraceback = Utils.to_bool(showtraceback, default=False)
+        self._ip = self._get_local_ip_address()
 
         # ------------------------------------------------------------------------
         # Setting up webinterface environment
         #
         self.webif_dir = os.path.dirname(os.path.abspath(__file__)) + '/webif'
 
-        self.logger.info("Module http: ip address = {}, hostname = '{}'".format(self.get_local_ip_address(), self.get_local_hostname()))
+        self.logger.info("Module 'http': ip address = {}, hostname = '{}'".format(self.get_local_ip_address(), self.get_local_hostname()))
         
         self.root = ModuleApp(self, starturl)
 
@@ -284,25 +268,31 @@ class http():
 
         self.dom1 = self.get_local_ip_address()+':'+str(self._port)
         self.dom2 = self.get_local_hostname()+':'+str(self._port)
-        self.dom3 = self.get_local_ip_address()+':'+str(self._servicesport)
-        self.dom4 = self.get_local_hostname()+':'+str(self._servicesport)
+        self.dom3 = self.get_local_hostname().split('.')[0]+'.local'+':'+str(self._port)
+        self.dom4 = self.get_local_ip_address()+':'+str(self._servicesport)
+        self.dom5 = self.get_local_hostname()+':'+str(self._servicesport)
+        self.dom6 = self.get_local_hostname().split('.')[0]+'.local'+':'+str(self._servicesport)
         
         self._hostmap = {}
         if self._port != self._servicesport:
             self._hostmap[self.dom1] = '/plugins'
             self._hostmap[self.dom2] = '/plugins'
-            self._hostmap[self.dom3] = '/services'
+            self._hostmap[self.dom3] = '/plugins'
             self._hostmap[self.dom4] = '/services'
-        self.logger.info("_hostmap = {}".format(self._hostmap))
+            self._hostmap[self.dom5] = '/services'
+            self._hostmap[self.dom6] = '/services'
+#        self.logger.info("_hostmap = {}".format(self._hostmap))
 
         self._hostmap_webifs = {}
         self._hostmap_services = {}
         if self._port != self._servicesport:
             self._hostmap_webifs[self.dom1] = '/msg'
             self._hostmap_webifs[self.dom2] = '/msg'
+            self._hostmap_webifs[self.dom3] = '/msg'
 
-            self._hostmap_services[self.dom3] = '/msg'
             self._hostmap_services[self.dom4] = '/msg'
+            self._hostmap_services[self.dom5] = '/msg'
+            self._hostmap_services[self.dom6] = '/msg'
 
             self.logger.info("_hostmap_webifs = {}".format(self._hostmap_webifs))
             self.logger.info("_hostmap_services = {}".format(self._hostmap_services))
@@ -336,8 +326,11 @@ class http():
            
         self.logger.info("Module http: Registering application/plugin '{}' from pluginclass '{}' instance '{}'".format( pluginname, pluginclass, instance ) )
         if pluginclass != '':
-            self.applications[pluginname] = {'mount': mount, 'Plugin': pluginclass, 'Instance': instance, 'conf': conf, 'Description': description}
-
+            if instance == '':
+                plugin_key = pluginname
+            else:
+                plugin_key = instance + '@' + pluginname
+            self.applications[plugin_key] = {'mount': mount, 'Plugin': pluginclass, 'Pluginname': pluginname, 'Instance': instance, 'Conf': conf, 'Description': description}
         if len(self._hostmap_services) > 0:
             conf['/']['request.dispatch'] = cherrypy.dispatch.VirtualHost(**self._hostmap_services)
 
@@ -373,7 +366,11 @@ class http():
            
         self.logger.info("Module http: Registering service/plugin '{}' from pluginclass '{}' instance '{}'".format( servicename, pluginclass, instance ) )
         if pluginclass != '':
-            self.services[servicename] = {'mount': mount, 'Plugin': pluginclass, 'Instance': instance, 'conf': conf, 'Description': description}
+            if instance == '':
+                service_key = servicename
+            else:
+                service_key = instance + '@' + servicename
+            self.services[service_key] = {'mount': mount, 'Plugin': pluginclass, 'Servicename': servicename, 'Instance': instance, 'Conf': conf, 'Description': description}
 
         if len(self._hostmap_webifs) > 0:
             conf['/']['request.dispatch'] = cherrypy.dispatch.VirtualHost(**self._hostmap_webifs)
