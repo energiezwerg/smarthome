@@ -164,14 +164,14 @@ class Http():
         if self._showpluginlist == True:
             # Register the plugin-list as a cherrypy app
             self.root.plugins = PluginsApp(self)
-            self.register_app(self.root.plugins, 'plugins', config) 
-#                              pluginclass='', instance='', description='')
+            self.register_webif(self.root.plugins, 'plugins', config) 
+#                               pluginclass='', instance='', description='', webifname='')
 
         if self._showservicelist == True:
             # Register the service-list as a cherrypy app
             self.root.services = ServicesApp(self)
             self.register_service(self.root.services, 'services', config) 
-#                                  pluginclass='', instance='', description='')
+#                                  pluginclass='', instance='', description='', servicename='')
 
         return
 
@@ -298,39 +298,109 @@ class Http():
             self.logger.info("_hostmap_services = {}".format(self._hostmap_services))
 
         
-    def register_app(self, app, pluginname, conf, pluginclass='', instance='', description=''):
+    def get_webifs_for_plugin(self, pluginname):
+        """
+        Returns infos about the registered webinterfaces for a plugin (specified by shortname)
+        
+        The information is returned as a list of dicts. One listentry for each registered webinterface.
+        The dict for each registered webinterface has the following structure:
+            webif_dict = {'Mount': mount, 
+                          'Pluginclass': pluginclass, 
+                          'Webifname': webifname, 
+                          'Pluginname': pluginname, 
+                          'Instance': instance, 
+                          'Conf': conf, 
+                          'Description': description}
+
+        
+        :param pluginname: Shortname of the plugin
+        :type pluginname: str
+        
+        :return: Tnfos about the registered webinterfaces
+        :rtype: list of dicts
+        """
+        result_list = []
+        for webif in self.applications.keys():
+            if self.applications[webif]['Pluginname'] == pluginname:
+                result_list.append(self.applications[webif])
+        return result_list
+        
+    
+    def get_services_for_plugin(self, pluginname):
+        """
+        Returns infos about the registered webservices for a plugin (specified by shortname)
+        
+        The information is returned as a list of dicts. One listentry for each registered webservice.
+        The dict for each registered webinterface has the following structure:
+            service_dict = {'Mount': mount, 
+                            'Pluginclass': pluginclass, 
+                            'Servicename': servicename, 
+                            'Pluginname': pluginname, 
+                            'Instance': instance, 
+                            'Conf': conf, 
+                            'Description': description}
+
+
+        :param pluginname: Shortname of the plugin
+        :type pluginname: str
+        
+        :return: Tnfos about the registered webservices
+        :rtype: list of dicts
+        """
+        result_list = []
+        for service in self.services.keys():
+            if self.services[service]['Pluginname'] == pluginname:
+                result_list.append(self.services[service])
+        return result_list
+        
+    
+    def register_webif(self, app, pluginname, conf, pluginclass='', instance='', description='', webifname=''):
         """
         Register an application for CherryPy
         
         This method is called by a plugin to register a webinterface
         
+        It should be called like this:
+
+            self.mod_http.register_webif(WebInterface( ... ), 
+                               self.get_shortname(), 
+                               config, 
+                               self.get_classname(), self.get_instance_name(),
+                               description,
+                               webifname)
+
+
         :param app: Instance of the application object
         :param pluginname: Mount point for the application
         :param conf: Cherrypy application configuration dictionary
-        :param plugin: Name of the plugin's class
+        :param pluginclass: Name of the plugin's class
         :param instance: Instance of the plugin (if multi-instance)
-        :param description: Description of the functionallity of the plugin / cherrypy app
+        :param description: Description of the functionallity of the webif. If left empty, a generic description will be generated
+        :param webifname: Name of the webinterface. If left empty, the pluginname is used
         :type app: object
-        :type mount: str
+        :type pluginname: str
         :type conf: dict
-        :type plugin: str
+        :type pluginclass: str
         :type istance: str
         :type description: str
+        :type webifname: str
         
         """
         pluginname = pluginname.lower()
-        mount = '/' + pluginname
-        
+        if webifname == '':
+            webifname = pluginname
+        mount = '/' + webifname
         if description == '':
-           description = 'Webinterface of plugin ' + pluginname
+           description = 'Webinterface {} of plugin {}'.format(webifname, pluginname)
            
-        self.logger.info("Module http: Registering application/plugin '{}' from pluginclass '{}' instance '{}'".format( pluginname, pluginclass, instance ) )
+        self.logger.info("Module http: Registering webinterface '{}' of plugin '{}' from pluginclass '{}' instance '{}'".format( webifname, pluginname, pluginclass, instance ) )
         if pluginclass != '':
             if instance == '':
-                plugin_key = pluginname
+                webif_key = webifname
             else:
-                plugin_key = instance + '@' + pluginname
-            self.applications[plugin_key] = {'mount': mount, 'Plugin': pluginclass, 'Pluginname': pluginname, 'Instance': instance, 'Conf': conf, 'Description': description}
+                webif_key = instance + '@' + webifname
+            self.applications[webif_key] = {'Mount': mount, 'Pluginclass': pluginclass, 'Webifname': webifname, 'Pluginname': pluginname, 'Instance': instance, 'Conf': conf, 'Description': description}
+            self.logger.info("self.applications['{}'] = {}".format(webif_key, self.applications[webif_key]))
         if len(self._hostmap_services) > 0:
             conf['/']['request.dispatch'] = cherrypy.dispatch.VirtualHost(**self._hostmap_services)
 
@@ -338,44 +408,57 @@ class Http():
         return
         
 
-    def register_service(self, service, servicename, conf, pluginclass='', instance='', description=''):
+    def register_service(self, app, pluginname, conf, pluginclass='', instance='', description='', servicename=''):
         """
         Register a service for CherryPy
         
-        This method is called by a plugin to register a webinterface
+        This method is called by a plugin to register a webservice.
         
-        :param service: Instance of the service object
-        :param servicename: Mount point for the service
+        It should be called like this:
+
+            self.mod_http.register_service(Webservice( ... ), 
+                                   self.get_shortname(), 
+                                   config, 
+                                   self.get_classname(), self.get_instance_name(),
+                                   description,
+                                   servicename)
+
+
+        :param app: Instance of the service object
+        :param pluginname: Mount point for the service
         :param conf: Cherrypy application configuration dictionary
-        :param plugin: Name of the plugin's class
+        :param pluginclass: Name of the plugin's class
         :param instance: Instance of the plugin (if multi-instance)
-        :param description: Description of the functionallity of the plugin / cherrypy app
-        :type service: object
-        :type servicename: str
+        :param description: Description of the functionallity of the webif. If left empty, a generic description will be generated
+        :param servicename: Name of the service. I if left empty, the pluginname is used
+        :type app: object
+        :type pluginname: str
         :type conf: dict
-        :type plugin: str
+        :type pluginclass: str
         :type istance: str
         :type description: str
+        :type servicename: str
         
         """
-        servicename = servicename.lower()
+        pluginname = pluginname.lower()
+        if servicename == '':
+            servicename = pluginname
         mount = '/' + servicename
-        
         if description == '':
-           description = 'Service of plugin ' + servicename
-           
-        self.logger.info("Module http: Registering service/plugin '{}' from pluginclass '{}' instance '{}'".format( servicename, pluginclass, instance ) )
+           description = 'Service {} of plugin {}'.format(servicename, pluginname)
+
+        self.logger.info("Module http: Registering service '{}' of plugin '{}' from pluginclass '{}' instance '{}'".format( servicename, pluginname, pluginclass, instance ) )
         if pluginclass != '':
             if instance == '':
                 service_key = servicename
             else:
                 service_key = instance + '@' + servicename
-            self.services[service_key] = {'mount': mount, 'Plugin': pluginclass, 'Servicename': servicename, 'Instance': instance, 'Conf': conf, 'Description': description}
-
+            self.services[servicename] = {'Mount': mount, 'Pluginclass': pluginclass, 'Servicename': servicename, 'Pluginname': pluginname, 'Instance': instance, 'Conf': conf, 'Description': description}
+            self.logger.info("self.services['{}'] = {}".format(service_key, self.services[service_key]))
         if len(self._hostmap_webifs) > 0:
             conf['/']['request.dispatch'] = cherrypy.dispatch.VirtualHost(**self._hostmap_webifs)
 
-        cherrypy.tree.mount(service, mount, config = conf)
+        cherrypy.tree.mount(app, mount, config = conf)
         return
         
 
