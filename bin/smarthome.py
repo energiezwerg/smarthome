@@ -244,6 +244,10 @@ class SmartHome():
         self._logger.debug("Python {0}".format(sys.version.split()[0]))
         self._starttime = datetime.datetime.now()
 
+        # test if a valid locale is set in the operating system
+        if os.environ['LANG'].find('UTF-8') == -1:
+            self._logger.error("Locale for the enviroment is not set to a valid value. Set the LANG environment variable to a value supporting UTF-8")
+            
         #############################################################
         # Link Tools
         self.tools = lib.tools.Tools()
