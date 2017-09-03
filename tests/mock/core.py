@@ -26,7 +26,8 @@ class MockSmartHome():
 
     _base_dir = BASE
     base_dir = _base_dir     # for external modules using that var (backend, ...?)
-
+    _default_language = 'de'
+    
     def __init__(self):
         self.__logs = {}
         self.__item_dict = {}
@@ -39,6 +40,9 @@ class MockSmartHome():
         self._tzinfo = dateutil.tz.tzutc()
         self.scheduler = MockScheduler()
         self.connections = lib.connection.Connections()
+
+    def get_defaultlanguage(self):
+        return self._default_language
 
     def getBaseDir(self):
         return self._base_dir

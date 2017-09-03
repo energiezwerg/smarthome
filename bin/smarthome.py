@@ -165,6 +165,7 @@ class SmartHome():
     __item_dict = {}
     _utctz = TZ
     _logger = logging.getLogger(__name__)
+    _default_language = 'de'
 
     plugin_load_complete = False
     item_load_complete = False
@@ -197,8 +198,6 @@ class SmartHome():
 
         # check config files
         self.checkConfigFiles()
-#        # setup logging
-#        self.initLogging()
         
         #############################################################
         # Check Time
@@ -220,7 +219,7 @@ class SmartHome():
                 if not isinstance(config[attr], dict):  # ignore sub items
                     vars(self)['_' + attr] = config[attr]
             del(config)  # clean up
-
+        
         if hasattr(self, '_module_paths'):
             sys.path.extend(self._module_paths if type(self._module_paths) is list else [self._module_paths])
 
@@ -264,6 +263,13 @@ class SmartHome():
             self.moon = lib.orb.Orb('moon', self._lon, self._lat, self._elev)
 
 
+    def get_defaultlanguage(self):
+        """
+        Returns the configured default language of SmartHomeNG
+        """
+        return self._default_language
+        
+        
     def getBaseDir(self):
         """
         Function to return the base directory of the running SmartHomeNG installation
