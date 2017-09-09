@@ -20,11 +20,17 @@
 #  You should have received a copy of the GNU General Public License
 #  along with SmartHomeNG If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
+
 import common
 import unittest
+import logging
+
 from lib.metadata import Metadata
 
 from tests.mock.core import MockSmartHome
+
+
+logger = logging.getLogger(__name__)
 
 class LibMetadataTest(unittest.TestCase):
 
@@ -35,14 +41,13 @@ class LibMetadataTest(unittest.TestCase):
 #    def test_check_parameters(self):
     
     def test_meta_is_registered(self):
-        print()
-        print('=== Metadata Tests:')
+        logger.warning('')
+        logger.warning('=== Begin Metadata Tests:')
+        
         self.sh = MockSmartHome()
-     #   self.modules = self.sh.with_modules_from(common.BASE + "/tests/resources/module")
         self.meta = Metadata(self.sh, 'test_resources', 'module', 'tests.resources.test_metadata')
         args = {}
         processed_args = self.meta.check_parameters(args)
-#        print('check_parameters (1): '+str(processed_args))
         
         # Test default values for datatypes
         self.assertIsNone(processed_args['notype_nodefault'])
@@ -92,9 +97,7 @@ class LibMetadataTest(unittest.TestCase):
             'foo_default': ['4', 2, [4, '2']] 
         }
         processed_args = self.meta.check_parameters(args)
-#        print()
-#        print('check_parameters (2): '+str(processed_args))
-
+        
         # Test valid parameter configurations
         self.assertEqual(True, processed_args['notype_nodefault'])
         self.assertEqual(False, processed_args['bool_nodefault'])
@@ -128,7 +131,7 @@ class LibMetadataTest(unittest.TestCase):
         self.assertEqual('01:23:45:67:89:ab', processed_args['mac_default'])  # default value taken (instead of invalid mac 'aa:ab:ac:ad:ae:ag')
         self.assertEqual(['4', 2, [4, '2']], processed_args['foo_default'])   # accepts any data (no default is taken, if a value is specified)
 
-        print('=== End metadata Tests')
+        logger.warning('=== End metadata Tests')
         
 
 
