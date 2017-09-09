@@ -20,7 +20,7 @@ After the base system is installed a closer look at the SmartHomeNG directory
    items/         should contain one or more item configuration files.
    lib/           contains the core libraries of SmartHomeNG
    logics/        should contain the logic scripts
-   media/         some logos and images are found here
+   modules/       loadable core modules. These modules extend the functionality of the core
    plugins/       contains the available plugins
    requirements/  you will find the requirements file here for the core and all plugins
    scenes/        scene files
@@ -50,7 +50,7 @@ The configuration is done by the widespread `yaml <https://en.wikipedia.org/wiki
 Older versions used `configobj <http://www.voidspace.org.uk/python/articles/configobj.shtml>`_ file format which is like a well-known `ini-file <https://en.wikipedia.org/wiki/INI_file>`_ but with the ability to create multilevel sub-sections.
 It is still supported in SmartHomeNG but it is deprecated now and only displayed here for informational purposes.
 
-If ``ruamelyaml`` is installed and the backend-plugin is configured then a service can be used to convert the old ``*.conf`` format into ``*.yaml`` format for code snippets.
+If ``ruamel.yaml`` is installed and the backend-plugin is configured then a service can be used to convert the old ``*.conf`` format into ``*.yaml`` format for code snippets.
 
 There is however a service tool at ``tools/conf_to_yaml_converter.py`` that can be used to convert your whole configuration. Please have a look at :doc:`tools`.
 
@@ -84,6 +84,7 @@ to ``smarthome.yaml`` and edit it to your needs. It should look like the followi
    lon: 10.4476         # longitude
    elev: 500            # elevation
    tz: Europe/Berlin    # timezone, the example will be fine for most parts of central Europe
+   default_language: de # default language for use with the backend plugin and multi-language entries in metadata
 
 The coordinates can be found out by using GPS of a mobile or via an adequate website (e.g. http://www.mapcoordinates.net/)
    

@@ -15,3 +15,4 @@ The main object of SmartHomeNG is described below:
     :members:
     :undoc-members:
     :show-inheritance:
+    :member-order: bysource
