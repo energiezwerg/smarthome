@@ -14,12 +14,13 @@ The global metadata section ``plugin:`` has the following keys:
         classname: <plugin_class>
         version: 1.4.3
         sh_minversion: 1.3a
-    #   sh_maxversion:          # maximum shNG version to use this plugin (leave empty if latest)
+    #    sh_maxversion:          # maximum shNG version to use this plugin (leave empty if latest)
         multi_instance: true        # plugin supports multi instance (if not specified, False is assumed)
         description:
             de: 'Plugin für ...'
             en: 'Plugin for ...'
         documentation: https://github.com/smarthomeNG/...        # url of additional wiki page (in addition to README.md of plugin
+    #    support: https://knx-user-forum.de/forum/supportforen/smarthome-py      # url of the support thread or forum
         maintainer: msinn           # Optional: Who maintains this plugin?
     #   tester:                     # Optional: Who tests this plugin?
 

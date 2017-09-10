@@ -23,7 +23,14 @@ It is accessible via ``sh``-Object. The libraries provide extra functionality li
    development_plugin/plugin_in5minutes.md
    
 
-A plugin is a class based on the class SmartPlugin. The methods of SmartPlugin are documented here.
+A plugin consists of a minimum of three files:
+
+   - A Python source code file ``__init__``
+   - A metadata file ``plugin.yaml``
+   - A documentation file ``README.md``
+   
+
+The plugin code is a class based on the class SmartPlugin. The methods of SmartPlugin are documented here.
 
 .. toctree::
    :maxdepth: 2

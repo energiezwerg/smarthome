@@ -19,7 +19,7 @@ The **metadata** file is named ``/plugins/<name of the plugin>/plugin.yaml``. It
 
 - ``plugin:`` - Global metadata of the plugin
 - ``parameters:`` - Definition of the parameters that can bei used in ``/etc/plugin.yaml`` to configure the plugin
-- ``item_attributes:`` - n the future: Definition of the additional attributes for items, defined by this plugin
+- ``item_attributes:`` - In the future: Definition of the additional attributes for items, defined by this plugin
 
 :Note: After the completion of the implementation of metadata for plugins, the following variables in the Python code of SmartPlugins need not be set anymore. They are read from the global metadata and are automatically set in the instance of the plugin:
 

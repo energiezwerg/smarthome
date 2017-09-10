@@ -129,6 +129,26 @@ def get_tester(section_dict, maxlen=20):
     return lines
 
 
+def get_docurl(section_dict, maxlen=70):
+    maint = section_dict.get('documentation', '')
+            
+    import textwrap
+    lines = textwrap.wrap(maint, maxlen, break_long_words=True)
+    if lines == []:
+        lines.append('')
+    return lines
+
+
+def get_supurl(section_dict, maxlen=70):
+    maint = section_dict.get('support', '')
+            
+    import textwrap
+    lines = textwrap.wrap(maint, maxlen, break_long_words=True)
+    if lines == []:
+        lines.append('')
+    return lines
+
+
 def build_pluginlist( plugin_type='all' ):
     """
     Return a list of dicts with a dict for each plugin of the requested type
@@ -155,6 +175,7 @@ def build_pluginlist( plugin_type='all' ):
                         plg_dict['maint'] = get_maintainer(section_dict, 15)
                         plg_dict['test'] = get_tester(section_dict, 15)
                         plg_dict['doc'] = section_dict.get('documentation', '')
+                        plg_dict['sup'] = section_dict.get('support', '')
                     else:
                         plgtype = type_unclassified
                         if plugin_type == type_unclassified:
@@ -171,6 +192,9 @@ def build_pluginlist( plugin_type='all' ):
                 plg_dict['maint'] = get_maintainer(section_dict, 15)
                 plg_dict['test'] = get_tester(section_dict, 15)
                 plg_dict['doc'] = section_dict.get('documentation', '')
+                plg_dict['sup'] = section_dict.get('support', '')
+            
+            plg_dict['desc'].append('')
             
             # Adjust list lengths
             maxlen = max( len(plg_dict['desc']), len(plg_dict['maint']), len(plg_dict['test']) )
@@ -229,16 +253,22 @@ def write_rstfile(plgtype='All', heading=''):
         fh.write('.. table:: \n')
         fh.write('   :widths: grid\n')
         fh.write('\n')
-        fh.write('   +-------------------+---------------------------------------------------------------------------------------+-----------------+-----------------+\n')
-        fh.write('   | Plugin            | Description                                                                           | Maintainer      | Tester          |\n')
-        fh.write('   +===================+=======================================================================================+=================+=================+\n')
+        fh.write('   +-------------------+----------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+\n')
+        fh.write('   | Plugin            | Description                                                                                                                                  | Maintainer      | Tester          |\n')
+        fh.write('   +===================+============================================================================================================================+=================+=================+=================+\n')
         for plg in plglist:
-            fh.write('   | {plg:<17.17} | {desc:<85.85} | {maint:<15.15} | {test:<15.15} |\n'.format(plg=plg['name'], desc=plg['desc'][0], maint=plg['maint'][0], test=plg['test'][0]))
+            fh.write('   | {plg:<17.17} | {desc:<140.140} | {maint:<15.15} | {test:<15.15} |\n'.format(plg=plg['name'], desc=plg['desc'][0], maint=plg['maint'][0], test=plg['test'][0]))
             for l in range(1, len(plg['desc'])):
-                fh.write('   | {plg:<17.17} | {desc:<85.85} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['desc'][l], maint=plg['maint'][l], test=plg['test'][l]))
+                fh.write('   | {plg:<17.17} | {desc:<140.140} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['desc'][l], maint=plg['maint'][l], test=plg['test'][l]))
             if plg['doc'] != '':
-                fh.write('   | {plg:<17.17} |     {desc:<81.81} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['doc'], maint='', test=''))
-            fh.write('   +-------------------+---------------------------------------------------------------------------------------+-----------------+-----------------+\n')
+                plg['doc'] = "`Additional info <"+plg['doc']+">`_"
+                fh.write('   | {plg:<17.17} |     {desc:<136.136} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['doc'], maint='', test=''))
+            if plg['sup'] != '':
+                if plg['doc'] != '':
+                    fh.write('   | {plg:<17.17} |     {desc:<136.136} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc='', maint='', test=''))
+                plg['sup'] = "`Support <"+plg['sup']+">`_"
+                fh.write('   | {plg:<17.17} |     {desc:<136.136} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['sup'], maint='', test=''))
+            fh.write('   +-------------------+----------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+\n')
         fh.write('\n')
         fh.write('\n')
         

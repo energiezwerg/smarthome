@@ -1,6 +1,15 @@
 Metadata section `parameters:`
 ------------------------------
 
+Parameter metadata is used to check if the configured parameters in ``/etc`` are valid.
+If the configured data is not valid, warnings are logged in the logfile of SmartHomeNG.
+
+If the configuration is valid, the parameters are handed over to the plugin/module through
+a dict, that contains a value for each parameter (defined in the metadata file). The datatype
+of those values correspond to the type-definitions in the metadata.
+
+Metadata is supported in SmartHomeNG v1.4 and up.
+
 The ``parameters:`` section has a section for each parameter that is implemented. The name of that
 section is the name of the parameter.
 
