@@ -11,7 +11,8 @@ Description of the keys in the section of a parameter/attribute:
     - *str* - a string
     - *list* - a list
     - *dict* - a dictionary
-    - *ip* - a string, representing an ip-address
+    - *ip* - a string, representing a hostname or an ipv4-address
+    - *ipv4* - a string, representing strictly an ipv4-address
     - *mac* - a string, representing a mac-address
     - *foo* - the universal datatype
 

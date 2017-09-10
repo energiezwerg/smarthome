@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2016-       Martin Sinn                         m.sinn@gmx.de
+# Copyright 2017-       Martin Sinn                         m.sinn@gmx.de
 #########################################################################
 #  This file is part of SmartHomeNG
 #  https://github.com/smarthomeNG/smarthome
@@ -86,14 +86,49 @@ def get_pluginyamllist_fromgit():
     return plglist
     
     
+def get_description(section_dict, maxlen=70, lang='en'):
+    desc = ''
+    if lang == 'en':
+        lang2 = 'de'
+    else:
+        lang2 = 'en'
+    try:
+        desc = section_dict['description'].get(lang, '')
+    except:
+        pass
+    if desc == '':
+        try:
+            desc = section_dict['description'].get(lang2, '')
+        except:
+            pass
+            
+    import textwrap
+    lines = textwrap.wrap(desc, maxlen, break_long_words=False)
+    if lines == []:
+        lines.append('')
+    return lines
+
+
+def get_maintainer(section_dict, maxlen=20):
+    maint = section_dict.get('maintainer', '')
+            
+    import textwrap
+    lines = textwrap.wrap(maint, maxlen, break_long_words=False)
+    if lines == []:
+        lines.append('')
+    return lines
+
+
 def build_pluginlist( plugin_type='all' ):
     """
-    return a list with all pluginnames of the requested type
+    Return a list of dicts with a dict for each plugin of the requested type
+    The dict contains the plugin name, type and description
     """
     result = []
     plugin_type = plugin_type.lower()
     for metaplugin in plugins_git:
         metafile = metaplugin + '/plugin.yaml' 
+        plg_dict = {}
         if metaplugin in plugins_git:    #pluginsyaml_git
             if os.path.isfile(metafile):
                 plugin_yaml = shyaml.yaml_load(metafile)
@@ -104,6 +139,10 @@ def build_pluginlist( plugin_type='all' ):
                 if section_dict != None:
                     if section_dict.get('type').lower() in plugin_types:
                         plgtype = section_dict.get('type').lower()
+                        plg_dict['name'] = metaplugin.lower()
+                        plg_dict['type'] = plgtype
+                        plg_dict['desc'] = get_description(section_dict, 80)
+                        plg_dict['maint'] = get_maintainer(section_dict, 15)
                     else:
                         plgtype = type_unclassified
                         if plugin_type == type_unclassified:
@@ -113,13 +152,28 @@ def build_pluginlist( plugin_type='all' ):
             else:
                 plgtype = type_unclassified
                 
+            if plgtype == type_unclassified:
+                plg_dict['name'] = metaplugin.lower()
+                plg_dict['type'] = type_unclassified
+                plg_dict['desc'] = get_description(section_dict, 80)
+                plg_dict['maint'] = get_maintainer(section_dict, 15)
+            
+            while len(plg_dict['maint']) < len(plg_dict['desc']):
+                plg_dict['maint'].append('')
+                
+            while len(plg_dict['desc']) < len(plg_dict['maint']):
+                plg_dict['desc'].append('')
+
         if (plgtype == plugin_type) or (plugin_type == 'all'):
-            result.append(metaplugin)
+#            result.append(metaplugin)
+            result.append(plg_dict)
     return result
 
 
 def write_rstfile(plgtype='All', heading=''):
-
+    """
+    Create a .rst file for each plugin category
+    """
     if heading == '':
         title = plgtype + ' Plugins'
     else:
@@ -138,13 +192,31 @@ def write_rstfile(plgtype='All', heading=''):
     if (len(plglist) == 0):
         fh.write('At the moments there are no plugins that have not been classified.\n')
     else:
+        # write toc
         fh.write('.. toctree::\n')
         fh.write('   :maxdepth: 2\n')
         fh.write('   :glob:\n')
         fh.write('   :titlesonly:\n')
+        fh.write('   :hidden:\n')
         fh.write('\n')
         for plg in plglist:
-            fh.write('   plugins/'+plg+'/README.md\n')
+            fh.write('   plugins/'+plg['name']+'/README.md\n')
+        fh.write('\n')
+        
+        # write table with details
+        fh.write('\n')
+        fh.write('\n')
+        fh.write('.. table:: \n')
+        fh.write('   :widths: grid\n')
+        fh.write('\n')
+        fh.write('   +-------------------+----------------------------------------------------------------------------------+-----------------+\n')
+        fh.write('   | Plugin            | Description                                                                      | Maintainer      |\n')
+        fh.write('   +===================+==================================================================================+=================+\n')
+        for plg in plglist:
+            fh.write('   | {plg:<17.17} | {desc:<80.80} | {maint:<15.15} |\n'.format(plg=plg['name'], desc=plg['desc'][0], maint=plg['maint'][0]))
+            for l in range(1, len(plg['desc'])):
+                fh.write('   | {plg:<17.17} | {desc:<80.80} | {maint:<15.15} |\n'.format(plg='', desc=plg['desc'][l], maint=plg['maint'][l]))
+            fh.write('   +-------------------+----------------------------------------------------------------------------------+-----------------+\n')
         fh.write('\n')
         
     fh.close()
@@ -189,6 +261,7 @@ if __name__ == '__main__':
        plugin_types.append(pl[0])
            
     for pl in plugin_sections:
-        write_rstfile(pl[0], pl[1])
+#        write_rstfile(pl[0], pl[1])
+        write_rstfile(pl[0])
     print()
     
