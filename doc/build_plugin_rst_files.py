@@ -119,6 +119,16 @@ def get_maintainer(section_dict, maxlen=20):
     return lines
 
 
+def get_tester(section_dict, maxlen=20):
+    maint = section_dict.get('tester', '')
+            
+    import textwrap
+    lines = textwrap.wrap(maint, maxlen, break_long_words=False)
+    if lines == []:
+        lines.append('')
+    return lines
+
+
 def build_pluginlist( plugin_type='all' ):
     """
     Return a list of dicts with a dict for each plugin of the requested type
@@ -141,8 +151,10 @@ def build_pluginlist( plugin_type='all' ):
                         plgtype = section_dict.get('type').lower()
                         plg_dict['name'] = metaplugin.lower()
                         plg_dict['type'] = plgtype
-                        plg_dict['desc'] = get_description(section_dict, 80)
+                        plg_dict['desc'] = get_description(section_dict, 85)
                         plg_dict['maint'] = get_maintainer(section_dict, 15)
+                        plg_dict['test'] = get_tester(section_dict, 15)
+                        plg_dict['doc'] = section_dict.get('documentation', '')
                     else:
                         plgtype = type_unclassified
                         if plugin_type == type_unclassified:
@@ -155,14 +167,20 @@ def build_pluginlist( plugin_type='all' ):
             if plgtype == type_unclassified:
                 plg_dict['name'] = metaplugin.lower()
                 plg_dict['type'] = type_unclassified
-                plg_dict['desc'] = get_description(section_dict, 80)
+                plg_dict['desc'] = get_description(section_dict, 85)
                 plg_dict['maint'] = get_maintainer(section_dict, 15)
+                plg_dict['test'] = get_tester(section_dict, 15)
+                plg_dict['doc'] = section_dict.get('documentation', '')
             
-            while len(plg_dict['maint']) < len(plg_dict['desc']):
-                plg_dict['maint'].append('')
-                
-            while len(plg_dict['desc']) < len(plg_dict['maint']):
+            # Adjust list lengths
+            maxlen = max( len(plg_dict['desc']), len(plg_dict['maint']), len(plg_dict['test']) )
+            while len(plg_dict['desc']) < maxlen:
                 plg_dict['desc'].append('')
+            while len(plg_dict['maint']) < maxlen:
+                plg_dict['maint'].append('')
+            while len(plg_dict['test']) < maxlen:
+                plg_dict['test'].append('')
+                
 
         if (plgtype == plugin_type) or (plugin_type == 'all'):
 #            result.append(metaplugin)
@@ -179,14 +197,15 @@ def write_rstfile(plgtype='All', heading=''):
     else:
         title = heading
 
-    rst_filename = 'plugins_'+plgtype.lower()+'.rst'
+    rst_filename = 'plugins_doc/plugins_'+plgtype.lower()+'.rst'
     print('Datei: '+rst_filename+ ' '*(26-len(rst_filename)) +'  -  '+title)
     
     plglist = build_pluginlist(plgtype)
     
     fh = open(plugin_rst_dir+'/'+rst_filename, "w")
-    fh.write(title+'\n')
-    fh.write('-'*len(title)+'\n')
+#    fh.write(title+'\n')
+#    fh.write('-'*len(title)+'\n')
+    fh.write('.. include:: /plugins_doc/plugins_'+plgtype+'_header.rst\n')
     fh.write('\n')
 
     if (len(plglist) == 0):
@@ -200,25 +219,31 @@ def write_rstfile(plgtype='All', heading=''):
         fh.write('   :hidden:\n')
         fh.write('\n')
         for plg in plglist:
-            fh.write('   plugins/'+plg['name']+'/README.md\n')
+            fh.write('   /plugins/'+plg['name']+'/README.md\n')
         fh.write('\n')
         
         # write table with details
+#        fh.write('.. include:: /plugins_doc/plugins_'+plgtype+'_header.rst\n')
         fh.write('\n')
         fh.write('\n')
         fh.write('.. table:: \n')
         fh.write('   :widths: grid\n')
         fh.write('\n')
-        fh.write('   +-------------------+----------------------------------------------------------------------------------+-----------------+\n')
-        fh.write('   | Plugin            | Description                                                                      | Maintainer      |\n')
-        fh.write('   +===================+==================================================================================+=================+\n')
+        fh.write('   +-------------------+---------------------------------------------------------------------------------------+-----------------+-----------------+\n')
+        fh.write('   | Plugin            | Description                                                                           | Maintainer      | Tester          |\n')
+        fh.write('   +===================+=======================================================================================+=================+=================+\n')
         for plg in plglist:
-            fh.write('   | {plg:<17.17} | {desc:<80.80} | {maint:<15.15} |\n'.format(plg=plg['name'], desc=plg['desc'][0], maint=plg['maint'][0]))
+            fh.write('   | {plg:<17.17} | {desc:<85.85} | {maint:<15.15} | {test:<15.15} |\n'.format(plg=plg['name'], desc=plg['desc'][0], maint=plg['maint'][0], test=plg['test'][0]))
             for l in range(1, len(plg['desc'])):
-                fh.write('   | {plg:<17.17} | {desc:<80.80} | {maint:<15.15} |\n'.format(plg='', desc=plg['desc'][l], maint=plg['maint'][l]))
-            fh.write('   +-------------------+----------------------------------------------------------------------------------+-----------------+\n')
+                fh.write('   | {plg:<17.17} | {desc:<85.85} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['desc'][l], maint=plg['maint'][l], test=plg['test'][l]))
+            if plg['doc'] != '':
+                fh.write('   | {plg:<17.17} |     {desc:<81.81} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['doc'], maint='', test=''))
+            fh.write('   +-------------------+---------------------------------------------------------------------------------------+-----------------+-----------------+\n')
+        fh.write('\n')
         fh.write('\n')
         
+        fh.write('.. include:: /plugins_doc/plugins_footer.rst\n')
+
     fh.close()
     
 
