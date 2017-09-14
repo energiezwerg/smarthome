@@ -135,8 +135,8 @@ parameters:
         type: foo
         default: 42
 
-        
 
+        
     test01: 
         type: str
     

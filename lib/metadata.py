@@ -477,19 +477,19 @@ class Metadata():
         for param in self._paramlist:
             value = Utils.strip_quotes(args.get(param))
             if value == None:
-                if self.parameters[param].get('mandatory') == True:
-                    logger.error(self._log_premsg+"'{}' is mandatory, but was not found in /etc/{}".format(param, self._addon_type+YAML_FILE))
-                    allparams_ok = False
-                else:
-                    addon_params[param] = self._get_defaultvalue(param)
-                    logger.debug(self._log_premsg+"'{}' not found in /etc/{}, using default value '{}'".format(param, self._addon_type+YAML_FILE, addon_params[param]))
+                addon_params[param] = self._get_defaultvalue(param)
+                logger.debug(self._log_premsg+"'{}' not found in /etc/{}, using default value '{}'".format(param, self._addon_type+YAML_FILE, addon_params[param]))
             else:
                 if self._test_value(param, value):
                     addon_params[param] = self._convert_value(param, value)
                     logger.debug(self._log_premsg+"Found '{}' with value '{}' in /etc/{}".format(param, value, self._addon_type+YAML_FILE))
                 else:
-                    addon_params[param] = self._get_defaultvalue(param)
-                    logger.error(self._log_premsg+"Found invalid value '{}' for parameter '{}' in /etc/{}, using default value '{}' instead".format(value, param, self._addon_type+YAML_FILE, str(addon_params[param])))
+                    if self.parameters[param].get('mandatory') == True:
+                        logger.error(self._log_premsg+"'{}' is mandatory, but was not found in /etc/{}".format(param, self._addon_type+YAML_FILE))
+                        allparams_ok = False
+                    else:
+                        addon_params[param] = self._get_defaultvalue(param)
+                        logger.error(self._log_premsg+"Found invalid value '{}' for parameter '{}' in /etc/{}, using default value '{}' instead".format(value, param, self._addon_type+YAML_FILE, str(addon_params[param])))
 
         return (addon_params, allparams_ok)
         
