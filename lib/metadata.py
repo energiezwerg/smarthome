@@ -26,22 +26,26 @@ from lib.utils import Utils
 import lib.shyaml as shyaml
 from lib.constants import (YAML_FILE, FOO, META_DATA_TYPES, META_DATA_DEFAULTS)
 
-META_PARAMETER_SECTION = 'parameters'
-#META_DATA_TYPES=['bool', 'int', 'float', 'str', 'list', 'dict', 'ip', 'mac', 'foo']
-#META_DATA_DEFAULTS={'bool': False, 'int': 0, 'float': 0.0, 'str': '', 'list': [], 'dict': {}, 'OrderedDict': {}, 'num': 0, 'scene': 0, 'ip': '0.0.0.0', 'mac': '00:00:00:00:00:00', 'foo': None}
+META_MODULE_PARAMETER_SECTION = 'parameters'
+META_PLUGIN_PARAMETER_SECTION = 'parameters'
+#META_DATA_TYPES=['bool', 'int', 'float', 'str', 'list', 'dict', 'ip', 'ipv4', 'mac', 'foo']
+#META_DATA_DEFAULTS={'bool': False, 'int': 0, 'float': 0.0, 'str': '', 'list': [], 'dict': {}, 'OrderedDict': {}, 'num': 0, 'scene': 0, 'ip': '0.0.0.0', 'ipv4': '0.0.0.0', 'mac': '00:00:00:00:00:00', 'foo': None}
 
 
 logger = logging.getLogger(__name__)
 
 class Metadata():
 
-    default_language = 'de'   # in the future: to be read from the smarthome object
+#    default_language = 'xx'    # is read from sh object
+    version = '?'
+    
     
     def __init__(self, sh, addon_name, addon_type, classpath=''):
         self._sh = sh
         self._addon_name = addon_name.lower()
         self._addon_type = addon_type
         self._paramlist = []
+        self.default_language = self._sh.get_defaultlanguage()
 
         self._log_premsg = "Metadata {} '{}': ".format(addon_type, self._addon_name)
 
@@ -58,18 +62,20 @@ class Metadata():
             self.relative_filename = os.path.join( classpath.replace('.', os.sep), addon_type+YAML_FILE )
 #        logger.warning(self._log_premsg+"relative_filename = '{}'".format( self.relative_filename ) )
         
-        basedir = self._sh.getBaseDir()
-        filename = os.path.join( self._sh.getBaseDir(), self.relative_filename )
+        filename = os.path.join( self._sh.get_basedir(), self.relative_filename )
         self.meta = shyaml.yaml_load(filename, ordered=True)
         if self.meta != None:
-            self.parameters = self.meta.get(META_PARAMETER_SECTION)
+            if self._addon_type == 'module':
+                self.parameters = self.meta.get(META_MODULE_PARAMETER_SECTION)
+            else:
+                self.parameters = self.meta.get(META_PLUGIN_PARAMETER_SECTION)
             if self.parameters != None:
                 self._paramlist = list(self.parameters.keys())
-        logger.info(self._log_premsg+"Metadata paramlist = '{}'".format( str(self._paramlist) ) )
+                logger.info(self._log_premsg+"Metadata paramlist = '{}'".format( str(self._paramlist) ) )
 
         # Test parameter definitions for validity
         for param in self._paramlist:
-            logger.info(self._log_premsg+"param = '{}'".format( str(param) ) )
+            logger.debug(self._log_premsg+"param = '{}'".format( str(param) ) )
             if self.parameters[param] != None:
                 typ = str(self.parameters[param].get('type', FOO)).lower()
                 # to be implemented: timeframe
@@ -119,6 +125,22 @@ class Metadata():
         return self.addon_metadata.get(key, '')
         
 
+    def get_bool(self, key):
+        """
+        Return the value for a global key as a bool
+        
+        :param key: global key to look up (in section 'plugin' or 'module')
+        :type key: str
+        
+        :return: value for the key
+        :rtype: bool
+        """
+        if self.addon_metadata == None:
+            return False
+
+        return Utils.to_bool(self.addon_metadata.get(key, ''))
+        
+
     def get_mlstring(self, mlkey):
         """
         Return the value for a global multilanguage-key as a string
@@ -149,6 +171,76 @@ class Metadata():
         return result
         
     
+    def test_shngcompatibility(self):
+        """
+        Test if the actual running version of SmartHomeNG is in the range of supported versions for this addon (module/plugin)
+        
+        :return: True if the SmartHomeNG version is in the supported range
+        :rtype: bool
+        """
+        l = str(self._sh.version).split('.')
+        shng_version = l[0]+'.'+l[1]
+        l = str(self.get_string('sh_minversion')).split('.')
+        min_shngversion = l[0]
+        if len(l) > 1:
+            min_shngversion += '.'+l[1]
+        l = str(self.get_string('sh_maxversion')).split('.')
+        max_shngversion = l[0]
+        if len(l) > 1:
+            max_shngversion += '.'+l[1]
+        mod_version = self.get_string('version')
+
+        if min_shngversion != '':
+            if min_shngversion > shng_version:
+                logger.error("{0} '{1}': The version of SmartHomeNG is too old for this {0}. It requires at least version v{2}. The {0} was not loaded.".format(self._addon_type, self._addon_name, min_shngversion))
+                return False
+        if max_shngversion != '':
+            if max_shngversion < shng_version:
+                logger.error("{0} '{1}': The version of SmartHomeNG is too new for this {0}. It requires a version up to v{2}. The {0} was not loaded.".format(self._addon_type, self._addon_name, max_shngversion))
+                return False
+        return True
+        
+        
+    def get_version(self):
+        """
+        Returns the version of the addon
+        
+        If test_version has been called before, the code_version is taken into account,
+        otherwise the version of the metadata-file is returned
+        
+        :return: version
+        :rtype: str
+        """
+        if self.version == '?':
+            self.version = self.get_string('version')
+        return self.version
+        
+            
+    def test_version(self, code_version):
+        """
+        Tests if the loaded Python code has a version set and compares it to the metadata version.
+        
+        :param code_version: version of the python code
+        :type code_version: str
+        
+        :return: True: version numbers match, or Python code has no version
+        :rtype: bool
+        """
+        self.version = self.get_string('version')
+        if code_version == None:
+            logger.info("{} '{}' version not defined in Python code, metadata version is {}".format(self._addon_type, self._addon_name, self.version))
+            return True
+        else:
+            if self.version == '':
+                logger.info("{} '{}' metadata contains no version number".format(self._addon_type, self._addon_name))
+                self.version = code_version
+            else:
+                if str(code_version) != self.version:
+                    logger.error("{} '{}' version differs between Python code ({}) and metadata ({})".format(self._addon_type, self._addon_name, str(code_version), self.version))
+                    return False
+        return True
+        
+        
     # ------------------------------------------------------------------------
     # Methods for parameter checking
     #
@@ -185,6 +277,10 @@ class Metadata():
         elif typ == 'dict':
             return (type(value) is dict)
         elif typ == 'ip':
+            if Utils.is_ip(value):
+                return True
+            return Utils.is_hostname(value)
+        elif typ == 'ipv4':
             return Utils.is_ip(value)
         elif typ == 'mac':
             return Utils.is_mac(value)
@@ -218,7 +314,7 @@ class Metadata():
             result = list(value)
         elif typ == 'dict':
             result = dict(value)
-        elif typ in ['ip', 'mac']:
+        elif typ in ['ip', 'ipv4', 'mac']:
             result = str(value)
         elif typ == FOO:
             result = value
@@ -322,33 +418,71 @@ class Metadata():
         return value
 
 
+    def get_parameterlist(self):
+        """
+        Returns the list of parameter names
+        
+        :return: List of strings with parameter names
+        :rtype: list of str
+        """
+        result = []
+        for param in self._paramlist:
+            result.append(param)
+        return result
+        
+        
+    def get_parameterkey(self, parameter, key):
+        """
+        Returns the value for a key of a parameter as a string
+        
+        :param parameter: parameter to get the definition info from
+        :param key: key of the definition info
+        :type parameter: str
+        :type key: str
+
+        :return: List of strings with parameter names (None if parameter is not found)
+        :rtype: str
+        """
+        try:
+            result = self.parameters[parameter].get('key')
+        except:
+            result = None
+        return result
+            
+        
     def check_parameters(self, args):
         """
         Checks the values of a dict of configured parameters. 
         
-        Returns a dict with all defined parameters with values. It returns default values
+        Returns a dict with all defined parameters with values and a bool indicating if all parameters are ok (True)
+        or if a mandatory parameter is not configured (False). It returns default values
         for parameters that have not been configured. The resulting dict contains the
         values in the the datatype of the parameter definition  
 
         :param args: Configuraed parameters with the values
         :type args: dict of parameter-values (values as string)
         
-        :return: All defined parameters with values
-        :rtype: dict of parameters with values (values in the the datatype of the parameter definition)
+        :return: All defined parameters with values, Flag if all parameters are ok (no mandatory is missing)
+        :rtype: dict, bool
         """
         addon_params = {}
         if self.meta == None:
             logger.info(self._log_premsg+"No metadata found" )
-            return addon_params
+            return (addon_params, True)
         if self.parameters == None:
             logger.info(self._log_premsg+"No parameter definitions found in metadata" )
-            return addon_params
+            return (addon_params, True)
             
+        allparams_ok = True
         for param in self._paramlist:
             value = Utils.strip_quotes(args.get(param))
             if value == None:
-                addon_params[param] = self._get_defaultvalue(param)
-                logger.debug(self._log_premsg+"'{}' not found in /etc/{}, using default value '{}'".format(param, self._addon_type+YAML_FILE, addon_params[param]))
+                if self.parameters[param].get('mandatory') == True:
+                    logger.error(self._log_premsg+"'{}' is mandatory, but was not found in /etc/{}".format(param, self._addon_type+YAML_FILE))
+                    allparams_ok = False
+                else:
+                    addon_params[param] = self._get_defaultvalue(param)
+                    logger.debug(self._log_premsg+"'{}' not found in /etc/{}, using default value '{}'".format(param, self._addon_type+YAML_FILE, addon_params[param]))
             else:
                 if self._test_value(param, value):
                     addon_params[param] = self._convert_value(param, value)
@@ -357,6 +491,6 @@ class Metadata():
                     addon_params[param] = self._get_defaultvalue(param)
                     logger.error(self._log_premsg+"Found invalid value '{}' for parameter '{}' in /etc/{}, using default value '{}' instead".format(value, param, self._addon_type+YAML_FILE, str(addon_params[param])))
 
-        return addon_params
+        return (addon_params, allparams_ok)
         
     

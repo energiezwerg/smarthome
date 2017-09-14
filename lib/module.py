@@ -20,6 +20,10 @@
 ##########################################################################
 
 
+# TO DO
+# - consolidate with plugin.py
+
+
 """
 This library implements loading and starting of core modules of SmartHomeNG.
 
@@ -43,7 +47,8 @@ logger = logging.getLogger(__name__)
 
 class Modules():
     """
-    Module loader class. Parses config file and creates a worker thread for each module
+    Module loader class. Parses config file and creates an instance for each module.
+    To start the modules, the start() method has to be called.
     
     :param smarthome: Instance of the smarthome master-object
     :param configfile: Basename of the module configuration file
@@ -56,64 +61,23 @@ class Modules():
     
     def __init__(self, smarthome, configfile):
         self._sh = smarthome
+        self._sh._moduledict = {}
 
-#        try:
-#            self._debug_modules = Utils.to_bool(self._sh._debug_modules)
-#        except:
-#            self._debug_modules = False
-#        if self._debug_modules:
-#            logger.warning('Modules: Debugging of modules is enabled. Exceptions are not caught outside of the module(s)' )
-
-        # read module configuration (from module.yaml)
+        # read module configuration (from etc/module.yaml)
         _conf = lib.config.parse_basename(configfile, configtype='module')
         if _conf == {}:
             return
             
-        self._sh._moduledict = {}
-
         for module in _conf:
-            module_name = _conf[module].get('module_name','')
-            if module_name != '':
-                self.meta = Metadata(self._sh, module_name, 'module')
-            else:
-                classpath = _conf[module].get(KEY_CLASS_PATH,'')
-                if classpath != '':
-#                    module_name = classpath.split('.')[1]
-                    module_name = classpath.split('.')[len(classpath.split('.'))-1]
-                logger.warning('Modules __init__: module_name {}, classpath {}'.format(module_name, classpath))
-                self.meta = Metadata(self._sh, module_name, 'module', classpath)
-
             logger.debug("Modules, section: {}".format(module))
-            args = {}
-            for arg in _conf[module]:
-                if arg != KEY_CLASS_NAME and arg != KEY_CLASS_PATH and arg != KEY_INSTANCE:
-                    value = _conf[module][arg]
-                    if isinstance(value, str):
-                        value = "'{0}'".format(value)
-                    args[arg] = value
-            classname = self.meta.get_string('classname')
-            if classname == '':
-                classname = _conf[module].get(KEY_CLASS_NAME,'')
-            try:
-                classpath = _conf[module][KEY_CLASS_PATH]
-            except:
-                classpath = 'modules.' + module_name.lower()
-                        
-            # give a warning if a module uses the same class twice
-            double = False
-            for m in self._modules:
-                if m.__class__.__name__ == classname:
-                    double = True
-                    logger.warning("Modules, section '{}': Multiple module instances of class '{}' detected, additional instance not initialized".format(module, classname))
-
-            if not double:
-                if False:  # if self._debug_modules == True:
-                     self._LoadModule(module, classname, classpath, args)
-                else:
+            module_name, self.meta = self._get_modulename_and_metadata(_conf[module])
+            if self.meta.test_shngcompatibility():
+                args = self._get_conf_args(_conf[module])
+                classname, classpath = self._get_classname_and_classpath(_conf[module], module_name)
+                if not self._test_duplicate_configuration(module, classname):
                     try:
-                        self._LoadModule(module, classname, classpath, args)
+                        self._load_module(module, classname, classpath, args)
                     except Exception as e:
-#                        logger.error("Modules, section '{}' configuration error: Module '{}' not found or class '{}' not found in module file".format(module, classpath, classname))
                         logger.exception("Module {0} exception: {1}".format(module, e))
 
         self._sh._moduledict = self._moduledict
@@ -125,7 +89,92 @@ class Modules():
         return
 
 
-    def _LoadModule(self, name, classname, classpath, args):
+    def _get_modulename_and_metadata(self, mod_conf):
+        """
+        Return the actual module name and the metadata instance
+        
+        :param mod_conf: loaded section of the module.yaml for the actual module
+        :type mod_conf: dict
+        
+        :return: module_name and metadata_instance
+        :rtype: string, object
+        """
+        module_name = mod_conf.get('module_name','').lower()
+        if module_name != '':
+            meta = Metadata(self._sh, module_name, 'module')
+        else:
+            classpath = mod_conf.get(KEY_CLASS_PATH,'')
+            if classpath != '':
+                module_name = classpath.split('.')[len(classpath.split('.'))-1].lower()
+            logger.info("Modules: module_name '{}' was extracted from classpath '{}'".format(module_name, classpath))
+            meta = Metadata(self._sh, module_name, 'module', classpath)
+        return (module_name, meta)
+        
+
+    def _get_conf_args(self, mod_conf):
+        """
+        Return the parameters/values for the actual module as args-dict
+        
+        :param mod_conf: loaded section of the module.yaml for the actual module
+        :type mod_conf: dict
+        
+        :return: args = specified parameters and their values
+        :rtype: dict
+        """
+        args = {}
+        for arg in mod_conf:
+            if arg != KEY_CLASS_NAME and arg != KEY_CLASS_PATH and arg != KEY_INSTANCE:
+                value = mod_conf[arg]
+                if isinstance(value, str):
+                    value = "'{0}'".format(value)
+                args[arg] = value
+        return args
+
+
+    def _get_classname_and_classpath(self, mod_conf, module_name):
+        """
+        Returns the classname and the classpath for the actual module
+        
+        :param mod_conf: loaded section of the module.yaml for the actual module
+        :param module_name: Module name (to be used, for building classpass, if it is not specified in the configuration
+        :type mod_conf: dict
+        :type module_name: str
+        
+        :return: classname, classpass
+        :rtype: str, str
+        """
+        classname = self.meta.get_string('classname')
+        if classname == '':
+            classname = mod_conf.get(KEY_CLASS_NAME,'')
+        try:
+            classpath = mod_conf[KEY_CLASS_PATH]
+        except:
+            classpath = 'modules.' + module_name
+        return (classname, classpath)
+        
+
+    def _test_duplicate_configuration(self, module, classname):
+        """
+        Returns True, if a module instance of the classname is already loaded by another configuration section
+        
+        :param module: Name of the configuration
+        :param classname: Name of the class to check
+        :type module: str
+        :type classname: str
+        
+        :return: True, if module is already loaded
+        :rtype: bool
+        """
+        # give a warning if a module uses the same class twice
+        duplicate = False
+        for m in self._modules:
+            if m.__class__.__name__ == classname:
+                duplicate = True
+                logger.warning("Modules, section '{}': Multiple module instances of class '{}' detected, additional instance not initialized".format(module, classname))
+        return duplicate
+        
+        
+    def _load_module(self, name, classname, classpath, args):
         """
         Module Loader. Loads one module defined by the parameters classname and classpath.
         Parameters defined in the configuration file are passed to this function as 'args'
@@ -142,53 +191,54 @@ class Modules():
         :return: loaded module
         :rtype: object
         """
-
-        exec("import {0}".format(classpath))
+        logger.debug('_load_module: Section {}, Module {}, classpath {}'.format( name, classname, classpath ))
+        
+        # Load an instance of the module
+        try:
+            exec("import {0}".format(classpath))
+        except Exception as e:
+            logger.exception("Module '{0}' exception during import of __init__.py: {1}".format(name, e))
+            return None
         exec("self.loadedmodule = {0}.{1}.__new__({0}.{1})".format(classpath, classname))
-        
-        logger.debug('_LoadModule: Section {}, Module {}, classpath {}'.format( name, classname, classpath ))
-        
+                
         # get arguments defined in __init__ of module's class to self.args
         exec("self.args = inspect.getargspec({0}.{1}.__init__)[0][1:]".format(classpath, classname))
 
         # get list of argument used names, if they are defined in the module's class
+        logger.debug("Module '{}': args = '{}'".format(classname, str(args)))
         arglist = [name for name in self.args if name in args]
         argstring = ",".join(["{}={}".format(name, args[name]) for name in arglist])
-#        logger.debug('_LoadModule: Using arguments {}'.format(arglist))    # ex debug
-# -----
-        logger.debug("Module '{}': args = '{}'".format(classname, str(args)))
-#        logger.info("Module '{}': argstring = '{}'".format(classname, str(argstring)))
-#        self.meta = Metadata(self._sh, classname, 'module')
-        module_params = self.meta.check_parameters(args)
-        if module_params != {}:
-            argstring = ",".join(["{}={}".format(name, "'"+str(module_params.get(name,''))+"'") for name in arglist])
-#            logger.info("Module '{}': argstring(neu) = '{}'".format(classname, str(argstring)))
 
-        self.loadedmodule._parameters = module_params
-        self.loadedmodule._init_complete = True   # set to false by module, if an initalization error occurs
-     
-# -----
-        
-        exec("self.loadedmodule.__init__(self._sh{0}{1})".format("," if len(arglist) else "", argstring))
+        self.loadedmodule._init_complete = False
+        (module_params, params_ok) = self.meta.check_parameters(args)
+        if params_ok == True:
+            if module_params != {}:
+                # initialize parameters the old way
+                argstring = ",".join(["{}={}".format(name, "'"+str(module_params.get(name,''))+"'") for name in arglist])
+            # initialize parameters the new way: Define a dict within the instance
+            self.loadedmodule._parameters = module_params
+            self.loadedmodule._metadata = self.meta
 
-        if self.loadedmodule._init_complete == True:
-            # if initialized or if module without metadata (legacy)
-#            self._moduledict[classname] = self.loadedmodule
-#            self._modules.append(self._moduledict[classname])
-#            logger.info("Modules: Loaded module '{}' v{}: {}".format( str(self._moduledict[classname].__class__.__name__), str(self._moduledict[classname].version), str(self._moduledict[classname].longname) ) )
+            # initialize the loaded instance of the module
+            self.loadedmodule._init_complete = True   # set to false by module, if an initalization error occurs
+            exec("self.loadedmodule.__init__(self._sh{0}{1})".format("," if len(arglist) else "", argstring))
             
-            if str(self.loadedmodule.version) == self.meta.get_string('version'):
-                self._moduledict[name] = self.loadedmodule
-                self._modules.append(self._moduledict[name])
-#                logger.info("Modules: Loaded module '{}' v{}: {}".format( str(self._moduledict[name].__class__.__name__), str(self._moduledict[name].version), str(self._moduledict[name].longname) ) )
-                logger.info("Modules: Loaded module '{}' (class '{}') v{}: {}".format( name, str(self._moduledict[name].__class__.__name__), self.meta.get_string('version'), self.meta.get_mlstring('description') ) )
-                return self.loadedmodule
+        if self.loadedmodule._init_complete == True:
+            try:
+                code_version = self.loadedmodule.version
+            except:
+                code_version = None    # if module code without version
+            if self.meta.test_version(code_version):
+                 logger.info("Modules: Loaded module '{}' (class '{}') v{}: {}".format( name, str(self.loadedmodule.__class__.__name__), self.meta.get_version(), self.meta.get_mlstring('description') ) )
+                 self._moduledict[name] = self.loadedmodule
+                 self._modules.append(self._moduledict[name])
+                 return self.loadedmodule
             else:
-                logger.error("Modules: Module '{}' version differs between Python code ({}) and metadata ({})".format(classpath.split('.')[1], str(self.loadedmodule.version), self.meta.get_string('version')))
                 return None
         else:
-            logger.error("Modules: Module '{}' not loaded".format(classpath.split('.')[1]))
+            logger.error("Modules: Module '{}' initialization failed, module not loaded".format(classpath.split('.')[1]))
             return None
+
         
     def start(self):
         """

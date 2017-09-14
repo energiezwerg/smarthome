@@ -108,6 +108,25 @@ class Utils(object):
             return False
 
     @staticmethod
+    def is_hostname(string):
+        """
+        Checks if a string is a valid hostname
+        
+        The hostname has is checked to have a valid format
+        
+        :param string: String to check
+        :type string: str
+        
+        :return: True if a hostname, false otherwise.
+        :rtype: bool
+        """
+        
+        try:
+            return bool(re.match("^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$", string))
+        except TypeError:
+            return False
+
+    @staticmethod
     def is_timeframe(string):
         """
         Checks if a string is a timeframe. A timeframe consists of a

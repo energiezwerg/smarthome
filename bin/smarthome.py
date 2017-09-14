@@ -26,8 +26,8 @@
 # Check Python Version
 #####################################################################
 import sys
-if sys.hexversion < 0x03020000:
-    print("Sorry your python interpreter ({0}.{1}) is too old. Please update to 3.2 or newer.".format(sys.version_info[0], sys.version_info[1]))
+if sys.hexversion < 0x03030000:
+    print("Sorry your python interpreter ({0}.{1}) is too old. Please update to 3.3 or newer.".format(sys.version_info[0], sys.version_info[1]))
     exit()
 
 #####################################################################
@@ -130,7 +130,7 @@ class SmartHome():
     _base_dir = BASE
     base_dir = _base_dir     # for external modules using that var (backend, ...?)
     """
-    **base_dir** is deprecated. Use method getBaseDir() instead.
+    **base_dir** is deprecated. Use method get_basedir() instead.
     """
         
     _etc_dir = os.path.join(_base_dir, 'etc')
@@ -201,9 +201,9 @@ class SmartHome():
         
         #############################################################
         # Check Time
-        while datetime.date.today().isoformat() < '2014-03-16':  # XXX update date
+        while datetime.date.today().isoformat() < '2016-03-16':  # XXX update date
             time.sleep(5)
-            print("Waiting for updated time.")
+#            print("Waiting for updated time.")
             self._logger.info("Waiting for updated time.")
 
         #############################################################
@@ -281,10 +281,22 @@ class SmartHome():
         self._default_language = language
         
         
+    def get_basedir(self):
+        """
+        Function to return the base directory of the running SmartHomeNG installation
+        
+        :return: Bas directory as an absolute path
+        :rtype: str
+        """
+        return self._base_dir
+        
+        
     def getBaseDir(self):
         """
         Function to return the base directory of the running SmartHomeNG installation
         
+        **getBaseDir()** is deprecated. Use method get_basedir() instead.
+
         :return: Bas directory as an absolute path
         :rtype: str
         """
