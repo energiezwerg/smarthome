@@ -241,15 +241,6 @@ class Metadata():
     # Methods for parameter checking
     #
 
-    def _get_type(self, param):
-        """
-        Returns the type of a parameter
-        """
-        if self.parameters[param] == None:
-            return FOO
-        return str(self.parameters[param].get('type', FOO)).lower()
-        
-        
     def _test_valuetype(self, typ, value):
         """
         Returns True, if the value can be converted to the specified type
@@ -289,7 +280,7 @@ class Metadata():
         Returns True, if the value can be converted to specified type
         """
         if param in self._paramlist:
-            typ = self._get_type(param)
+            typ = self.get_parameter_type(param)
             return self._test_valuetype(typ, value)
         return False
     
@@ -325,7 +316,7 @@ class Metadata():
         """
         result = False
         if param in self._paramlist:
-            typ = self._get_type(param)
+            typ = self.get_parameter_type(param)
             result = self._convert_valuetotype(typ, value)
 
             orig = result
@@ -348,17 +339,17 @@ class Metadata():
                 valid_min = self.parameters[param].get('valid_min')
                 if valid_min != None:
                     if self._test_value(param, valid_min):
-                        if result < self._convert_valuetotype(self._get_type(param), valid_min):
+                        if result < self._convert_valuetotype(self.get_parameter_type(param), valid_min):
                             if is_default == False:
-                                result = self.get_defaultvalue(param)   # instead of valid_min
+                                result = self.get_parameter_defaultvalue(param)   # instead of valid_min
                             else:
                                 result = valid_min
                 valid_max = self.parameters[param].get('valid_max')
                 if valid_max != None:
                     if self._test_value(param, valid_max):
-                        if result > self._convert_valuetotype(self._get_type(param), valid_max):
+                        if result > self._convert_valuetotype(self.get_parameter_type(param), valid_max):
                             if is_default == False:
-                                result = self.get_defaultvalue(param)   # instead of valid_max
+                                result = self.get_parameter_defaultvalue(param)   # instead of valid_max
                             else:
                                 result = valid_max
         
@@ -383,7 +374,37 @@ class Metadata():
         return META_DATA_DEFAULTS.get(typ, None)
         
     
-    def get_defaultvalue(self, param):
+    def get_parameterlist(self):
+        """
+        Returns the list of parameter names
+        
+        :return: List of strings with parameter names
+        :rtype: list of str
+        """
+        result = []
+        for param in self._paramlist:
+            result.append(param)
+        return result
+        
+        
+    def get_parameter_type(self, param):
+        """
+        Returns the datatype of a parameter
+        
+        If the defined datatype is 'foo', None is returned
+
+        :param param: Name of the parameter
+        :type param: str
+        
+        :return: datatype of the parameter
+        :rtype: str or None
+        """
+        if self.parameters[param] == None:
+            return FOO
+        return str(self.parameters[param].get('type', FOO)).lower()
+        
+        
+    def get_parameter_defaultvalue(self, param):
         """
         Returns the default value for the parameter
         
@@ -401,12 +422,12 @@ class Metadata():
         value = None
         if param in self._paramlist:
             if self.parameters[param] != None:
-                if self._get_type(param) == 'dict':
+                if self.get_parameter_type(param) == 'dict':
                     if self.parameters[param].get('default') != None:
                         value = dict(self.parameters[param].get('default'))
                 else:
                     value = self.parameters[param].get('default')
-                typ = self._get_type(param)
+                typ = self.get_parameter_type(param)
                 if value == None:
                     value = self._get_default_if_none(typ)
                     
@@ -428,19 +449,6 @@ class Metadata():
         return value
 
 
-    def get_parameterlist(self):
-        """
-        Returns the list of parameter names
-        
-        :return: List of strings with parameter names
-        :rtype: list of str
-        """
-        result = []
-        for param in self._paramlist:
-            result.append(param)
-        return result
-        
-        
     def get_parameterkey(self, parameter, key):
         """
         Returns the value for a key of a parameter as a string
@@ -487,7 +495,7 @@ class Metadata():
         for param in self._paramlist:
             value = Utils.strip_quotes(args.get(param))
             if value == None:
-                addon_params[param] = self.get_defaultvalue(param)
+                addon_params[param] = self.get_parameter_defaultvalue(param)
                 logger.debug(self._log_premsg+"'{}' not found in /etc/{}, using default value '{}'".format(param, self._addon_type+YAML_FILE, addon_params[param]))
             else:
                 if self._test_value(param, value):
@@ -498,7 +506,7 @@ class Metadata():
                         logger.error(self._log_premsg+"'{}' is mandatory, but was not found in /etc/{}".format(param, self._addon_type+YAML_FILE))
                         allparams_ok = False
                     else:
-                        addon_params[param] = self.get_defaultvalue(param)
+                        addon_params[param] = self.get_parameter_defaultvalue(param)
                         logger.error(self._log_premsg+"Found invalid value '{}' for parameter '{}' in /etc/{}, using default value '{}' instead".format(value, param, self._addon_type+YAML_FILE, str(addon_params[param])))
 
         return (addon_params, allparams_ok)
