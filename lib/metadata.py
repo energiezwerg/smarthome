@@ -36,7 +36,6 @@ logger = logging.getLogger(__name__)
 
 class Metadata():
 
-#    default_language = 'xx'    # is read from sh object
     version = '?'
     
     
@@ -45,7 +44,6 @@ class Metadata():
         self._addon_name = addon_name.lower()
         self._addon_type = addon_type
         self._paramlist = []
-        self.default_language = self._sh.get_defaultlanguage()
 
         self._log_premsg = "Metadata {} '{}': ".format(addon_type, self._addon_name)
 
@@ -125,22 +123,6 @@ class Metadata():
         return self.addon_metadata.get(key, '')
         
 
-    def get_bool(self, key):
-        """
-        Return the value for a global key as a bool
-        
-        :param key: global key to look up (in section 'plugin' or 'module')
-        :type key: str
-        
-        :return: value for the key
-        :rtype: bool
-        """
-        if self.addon_metadata == None:
-            return False
-
-        return Utils.to_bool(self.addon_metadata.get(key, ''))
-        
-
     def get_mlstring(self, mlkey):
         """
         Return the value for a global multilanguage-key as a string
@@ -161,16 +143,30 @@ class Metadata():
         key_dict = self.addon_metadata.get(mlkey)
         if key_dict == None:
             return ''
-        result = self.addon_metadata.get(mlkey, '')
+        result = key_dict.get(self._sh.get_defaultlanguage(), '')
         if result == '':
-            result = key_dict.get(self.default_language, '')
+            result = key_dict.get('en','')
             if result == '':
-                result = key_dict.get('en','')
-                if result == '':
-                    result = key_dict.get('de','')
+                result = key_dict.get('de','')
         return result
         
     
+    def get_bool(self, key):
+        """
+        Return the value for a global key as a bool
+        
+        :param key: global key to look up (in section 'plugin' or 'module')
+        :type key: str
+        
+        :return: value for the key
+        :rtype: bool
+        """
+        if self.addon_metadata == None:
+            return False
+
+        return Utils.to_bool(self.addon_metadata.get(key, ''))
+        
+
     def test_shngcompatibility(self):
         """
         Test if the actual running version of SmartHomeNG is in the range of supported versions for this addon (module/plugin)
@@ -354,7 +350,7 @@ class Metadata():
                     if self._test_value(param, valid_min):
                         if result < self._convert_valuetotype(self._get_type(param), valid_min):
                             if is_default == False:
-                                result = self._get_defaultvalue(param)   # instead of valid_min
+                                result = self.get_defaultvalue(param)   # instead of valid_min
                             else:
                                 result = valid_min
                 valid_max = self.parameters[param].get('valid_max')
@@ -362,7 +358,7 @@ class Metadata():
                     if self._test_value(param, valid_max):
                         if result > self._convert_valuetotype(self._get_type(param), valid_max):
                             if is_default == False:
-                                result = self._get_defaultvalue(param)   # instead of valid_max
+                                result = self.get_defaultvalue(param)   # instead of valid_max
                             else:
                                 result = valid_max
         
@@ -387,7 +383,21 @@ class Metadata():
         return META_DATA_DEFAULTS.get(typ, None)
         
     
-    def _get_defaultvalue(self, param):
+    def get_defaultvalue(self, param):
+        """
+        Returns the default value for the parameter
+        
+        If no default value is specified for the parameter, the default value for the datatype
+        of the parameter is returned.
+        
+        If the parameter is not defined, None is returned
+        
+        :param param: Name of the parameter
+        :type param: str
+        
+        :return: Default value
+        :rtype: str or None
+        """
         value = None
         if param in self._paramlist:
             if self.parameters[param] != None:
@@ -477,7 +487,7 @@ class Metadata():
         for param in self._paramlist:
             value = Utils.strip_quotes(args.get(param))
             if value == None:
-                addon_params[param] = self._get_defaultvalue(param)
+                addon_params[param] = self.get_defaultvalue(param)
                 logger.debug(self._log_premsg+"'{}' not found in /etc/{}, using default value '{}'".format(param, self._addon_type+YAML_FILE, addon_params[param]))
             else:
                 if self._test_value(param, value):
@@ -488,7 +498,7 @@ class Metadata():
                         logger.error(self._log_premsg+"'{}' is mandatory, but was not found in /etc/{}".format(param, self._addon_type+YAML_FILE))
                         allparams_ok = False
                     else:
-                        addon_params[param] = self._get_defaultvalue(param)
+                        addon_params[param] = self.get_defaultvalue(param)
                         logger.error(self._log_premsg+"Found invalid value '{}' for parameter '{}' in /etc/{}, using default value '{}' instead".format(value, param, self._addon_type+YAML_FILE, str(addon_params[param])))
 
         return (addon_params, allparams_ok)
