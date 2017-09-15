@@ -7,3 +7,4 @@ This library module implements the metadata handling for plugins and SmartHomeNG
     :members:
     :undoc-members:
     :show-inheritance:
+    :member-order: bysource

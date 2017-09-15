@@ -3,33 +3,37 @@
 Configuration
 =============
 
-Folder Structure
-================
+Filesystem Structure of SmartHomeNG
+===================================
 
 After the base system is installed a closer look at the SmartHomeNG directory 
 (e.g. ``/usr/local/smarthome/``) is advised to learn something about its content:
 
 .. code-block:: bash
-   :emphasize-lines: 4,6,8
+   :emphasize-lines: 6,8,10
 
-   bin/           contains smarthome.py, the main application
-   dev/           development files like a sample plugin
-   doc/           the documentation of the project resides here
-   etc/           should contain the basic configuration files (smarthome.yaml, plugin.yaml, logic.yaml)
-   examples/      contains some example files for the configuration and the visu plugin
-   items/         should contain one or more item configuration files.
-   lib/           contains the core libraries of SmartHomeNG
-   logics/        should contain the logic scripts
-   modules/       loadable core modules. These modules extend the functionality of the core
-   plugins/       contains the available plugins
-   requirements/  you will find the requirements file here for the core and all plugins
-   scenes/        scene files
-   tools/         contains little programs helping to maintain SmartHomeNG
-   var/           its subdirectories contain various collected data
-   var/cache/     contains cached item values
-   var/db/        may contain a SQLite3 database
-   var/log/       contains the logfiles
-   var/rrd/       may contain a Round Robin Databases if rrd plugin is used (deprecated)
+   # directories
+   bin            contains smarthome.py, the main application
+   deprecated     contains deprecated tools, which will be removed in an upcoming release of SmartHomeNG
+   dev            development files like a sample plugin
+   doc            the documentation of the project resides here
+   etc            should contain the basic configuration files (smarthome.yaml, plugin.yaml, logic.yaml)
+   examples       contains some example files for the configuration and the visu plugin
+   items          should contain one or more item configuration files.
+   lib            contains the core libraries of SmartHomeNG
+   logics         should contain the logic scripts
+   media          contains logos of SmartHomeNG
+   modules        loadable core modules. These modules extend the functionality of the core
+   plugins        contains the available plugins
+   requirements   you will find the requirements file here for the core and all plugins
+   scenes         scene files
+   tests          contains the test environment with tests and testdata
+   tools          contains little programs helping to maintain SmartHomeNG
+   var            its subdirectories contain various collected data
+   var/cache      contains cached item values
+   var/db         may contain a SQLite3 database
+   var/log        contains the logfiles
+   var/rrd        may contain a Round Robin Databases if rrd plugin is used (deprecated)
    
    # files
    CHANGELOG.md   changes of this project. (deprecated, should be documented in doc)
@@ -43,8 +47,8 @@ Those are the locations were configuration is stored and maintained.
 The following discusses how these directories are populated.
 
 
-Config files in etc/
-====================
+directory *etc*: Config files
+=============================
 
 The configuration is done by the widespread `yaml <https://en.wikipedia.org/wiki/YAML>`_ format. 
 Older versions used `configobj <http://www.voidspace.org.uk/python/articles/configobj.shtml>`_ file format which is like a well-known `ini-file <https://en.wikipedia.org/wiki/INI_file>`_ but with the ability to create multilevel sub-sections.
@@ -180,13 +184,23 @@ See further details at :doc:`logging <logging>`.
 
 .. _`item configuration files`:
 
-Config files in items/\*.yaml
------------------------------
+
+directory *items*: Config files containing item definitions
+===========================================================
 
 The items represent the heart of the configuration. An item can be accessed from any logic, plugin or eval.
 Any number of item configuration files may be used and any number of items may be defined (depends on your memory) in one of these files.
 
+This directory contains yaml files with the definitions of the items SmartHomeNG can use. The yaml files can be named
+the way you want.
+
 To find out more details about items and scenes configuration continue reading the :doc:`items <items>` page.
+
+
+directory *logics*: Config files containing item definitions
+============================================================
+
+This directory contains logics you write, which are used by SmartHomeNG.
 
 
 SmartHomeNG start options
