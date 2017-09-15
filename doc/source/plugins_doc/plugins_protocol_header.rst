@@ -10,5 +10,13 @@ Protocol Plugins
    :alt: protocol plugin
    :align: left
 
+.. |br| raw:: html
+
+   <br />
+
 A protocol plugin implements a communication protocol (without explicitly supporting individual devices).
 
+|br|
+|br|
+|br|
+|br|
