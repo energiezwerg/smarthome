@@ -21,6 +21,7 @@
 
 import logging
 import os
+import collections
 
 from lib.utils import Utils
 import lib.shyaml as shyaml
@@ -485,7 +486,7 @@ class Metadata():
         :return: All defined parameters with values, Flag if all parameters are ok (no mandatory is missing)
         :rtype: dict, bool
         """
-        addon_params = {}
+        addon_params = collections.OrderedDict()
         if self.meta == None:
             logger.info(self._log_premsg+"No metadata found" )
             return (addon_params, True)
