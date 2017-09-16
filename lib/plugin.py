@@ -74,7 +74,7 @@ class Plugins():
             return
             
         logger.info('Load plugins')
-
+        
         for plugin in _conf:
             logger.debug("Plugins, section: {}".format(plugin))
             plugin_name, self.meta = self._get_pluginname_and_metadata(_conf[plugin])
@@ -100,7 +100,7 @@ class Plugins():
 
         logger.info('Load of plugins finished')
         del(_conf)  # clean up
-
+        
 
     def _get_pluginname_and_metadata(self, plg_conf):
         """
@@ -266,7 +266,7 @@ class PluginWrapper(threading.Thread):
     Wrapper class for loading plugins
 
     :param smarthome: Instance of the smarthome master-object
-    :param name: Section name in plugi configuration file (etc/plugin.yaml)
+    :param name: Section name in plugin configuration file (etc/plugin.yaml)
     :param classname: Name of the (main) class in the plugin
     :param classpath: Path to the Python file containing the class
     :param args: Parameter as specified in the configuration file (etc/module.yaml)
@@ -296,10 +296,11 @@ class PluginWrapper(threading.Thread):
             return
         exec("self.plugin = {0}.{1}.__new__({0}.{1})".format(classpath, classname))
 
-        # make the plugin a method/function of the main smarthome object
-        setattr(smarthome, self.name, self.plugin)
+        # make the plugin a method/function of the main smarthome object  (MS: Ist das zu früh? Falls Init fehlschlägt?)
+#        setattr(smarthome, self.name, self.plugin)
         # initialize attributes of the newly created plugin object instance
         if isinstance(self.get_implementation(), SmartPlugin):
+            self.get_implementation()._config_section = name
             self.get_implementation()._set_shortname(str(classpath).split('.')[1])
             self.get_implementation()._set_classname(classname)
             if instance != '':
@@ -307,6 +308,11 @@ class PluginWrapper(threading.Thread):
                 self.get_implementation()._set_instance_name(instance)
             self.get_implementation()._set_sh(smarthome)
             self.get_implementation()._set_plugin_dir( os.path.join( os.path.dirname( os.path.dirname(os.path.abspath(__file__)) ), classpath.replace('.',os.sep) ) )
+        else:
+            # classic plugin
+            self.get_implementation()._config_section = name
+            self.get_implementation()._shortname = str(classpath).split('.')[1]
+            self.get_implementation()._classname = classname
 
         # get arguments defined in __init__ of module's class to self.args
         exec("self.args = inspect.getargspec({0}.{1}.__init__)[0][1:]".format(classpath, classname))
@@ -336,6 +342,8 @@ class PluginWrapper(threading.Thread):
         # set the initialization complete status for the wrapper instance
         self._init_complete = self.get_implementation()._init_complete
         if self.get_implementation()._init_complete == True:
+            # make the plugin a method/function of the main smarthome object  (MS: Ist das zu früh? Falls Init fehlschlägt?)
+            setattr(smarthome, self.name, self.plugin)
             try:
                 code_version = self.get_implementation().PLUGIN_VERSION
             except:
