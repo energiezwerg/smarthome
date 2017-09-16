@@ -399,6 +399,8 @@ class Metadata():
         :return: datatype of the parameter
         :rtype: str or None
         """
+        if self.parameters == None:
+            return FOO
         if self.parameters[param] == None:
             return FOO
         return str(self.parameters[param].get('type', FOO)).lower()
@@ -449,7 +451,7 @@ class Metadata():
         return value
 
 
-    def get_parameterkey(self, parameter, key):
+    def get_parameterdefinition(self, parameter, key):
         """
         Returns the value for a key of a parameter as a string
         

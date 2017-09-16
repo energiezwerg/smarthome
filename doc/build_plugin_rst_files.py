@@ -182,19 +182,28 @@ def build_pluginlist( plugin_type='all' ):
                             print("not found: plugin type '{}' defined in plugin '{}'".format(section_dict.get('type'),metaplugin))
                 else:
                     plgtype = type_unclassified
+
+                if (plgtype == type_unclassified) and (plugin_yaml != ''):
+                    plg_dict['name'] = metaplugin.lower()
+                    plg_dict['type'] = type_unclassified
+                    plg_dict['desc'] = get_description(section_dict, 85)
+                    plg_dict['maint'] = get_maintainer(section_dict, 15)
+                    plg_dict['test'] = get_tester(section_dict, 15)
+                    plg_dict['doc'] = section_dict.get('documentation', '')
+                    plg_dict['sup'] = section_dict.get('support', '')
+                    print("unclassified: metafile = {}, plg_dict = {}".format(metafile, str(plg_dict)))
+                    
+                plg_dict['desc'].append('')
             else:
                 plgtype = type_unclassified
-                
-            if plgtype == type_unclassified:
                 plg_dict['name'] = metaplugin.lower()
                 plg_dict['type'] = type_unclassified
-                plg_dict['desc'] = get_description(section_dict, 85)
-                plg_dict['maint'] = get_maintainer(section_dict, 15)
-                plg_dict['test'] = get_tester(section_dict, 15)
-                plg_dict['doc'] = section_dict.get('documentation', '')
-                plg_dict['sup'] = section_dict.get('support', '')
-            
-            plg_dict['desc'].append('')
+                plg_dict['desc'] = ['No metadata (plugin.yaml) was provided for this plugin!']
+                plg_dict['maint'] = ['']
+                plg_dict['test'] = ['']
+                plg_dict['doc'] = ''
+                plg_dict['sup'] = ''
+                
             
             # Adjust list lengths
             maxlen = max( len(plg_dict['desc']), len(plg_dict['maint']), len(plg_dict['test']) )
