@@ -22,32 +22,35 @@
 #########################################################################
 
 """
-This script converts the configuration files of SmartHomeNG from the old CONF format to the newly supported YAML format.
+This script converts the configuration files of SmartHomeNG from the old CONF
+format to the newly supported YAML format.
 
 It asks if it should convert the items and/or the configuration of SmartHomnNG.
 
-The old files remain in their directories. The `item/*.conf` files have to be moved/deleted to prevent 
-the items from being read two times. The ``etc/*.conf`` files can remain in position (or can be moved/deleted
-as well). If a configuration exists in ``etc`` in both file formats, the YAML file will be used.
-
+The old files remain in their directories. The `item/*.conf` files have to be
+moved/deleted to prevent the items from being read two times.
+The ``etc/*.conf`` files can remain in position (or can be moved/deleted as
+well). If a configuration exists in ``etc`` in both file formats, the YAML file
+will be used.
 """
 
 
 import os
+import sys
 
 print('')
 print(os.path.basename(__file__) + ' - tool to convert shng .conf files to yaml')
 print('')
 
-import sys
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, '../lib')
-import item_conversion
 
+import item_conversion # noqa
 
 # ==================================================================================
 #   Convert all .conf files in a directory
 #
+
 
 def _convert_directory(dir):
 
@@ -60,7 +63,7 @@ def _convert_directory(dir):
 
             ydata = item_conversion.parse_for_convert(configurationfile+'.conf')
             try:
-                if ydata != None:
+                if ydata is not None:
                     item_conversion.yaml_save(configurationfile, ydata)
             except Exception as e:
                 print()
@@ -75,22 +78,22 @@ if __name__ == '__main__':
 
     # change the working diractory to the directory from which the converter is loaded (../tools)
     os.chdir(os.path.dirname(os.path.abspath(os.path.basename(__file__))))
-    
+
     directory = os.path.abspath('../items')
     etc_dir = os.path.abspath('../etc')
-    
-    if item_conversion.is_ruamelyaml_installed() == False:
+
+    if item_conversion.is_ruamelyaml_installed() is False:
         exit(1)
-        
+
     print('converting .conf-files from the following directories:')
     print('- item-directory  : ' + directory)
     print('- config-directory: ' + etc_dir)
     print('')
-    
+
     ans_item = input('Convert item files (y/n)?: ').upper()
-    ans_etc  = input('Convert config files (y/n)?: ').upper()
+    ans_etc = input('Convert config files (y/n)?: ').upper()
     print()
-    
+
     if ans_item == 'Y':
         print('Converting item files:')
         _convert_directory(directory)
@@ -104,7 +107,7 @@ if __name__ == '__main__':
     if ans_item == 'Y' or ans_etc == 'Y':
         print('Conversion finished!')
         print()
-        
+
     if ans_item == 'Y':
         print('You MUST move the old item.conf files out of the directory,')
         print('since SmartHomeNG tries to read all .yaml AND all .conf files')
