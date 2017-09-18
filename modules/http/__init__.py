@@ -235,7 +235,16 @@ class Http():
         :rtype: str
         """
         import socket
-        return socket.gethostbyaddr(self.get_local_ip_address())[0]
+        try:
+            return socket.gethostbyaddr(self.get_local_ip_address())[0] # can fail with default /etc/hosts
+        except socket.herror:
+            try:
+                return socket.gethostbyaddr("127.0.1.1")[0]	# in debian based systems hostname is assigned to "127.0.1.1" by default
+            except socket.herror:
+                try:
+                    return socket.gethostbyaddr("127.0.0.1")[0]	# 'localhost' in most cases
+                except socket.herror:
+                    return "localhost"	# should not happen
 
  
     def get_local_port(self):
