@@ -91,6 +91,7 @@ class Http():
             'global': {
                 'engine.autoreload.on': False,
                 'error_page.404': self._error_page,
+                'error_page.400': self._error_page,
                 'error_page.500': self._error_page,
             },
         }

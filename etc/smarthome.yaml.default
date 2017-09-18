@@ -7,6 +7,11 @@ elev: 35
 
 tz: 'Europe/Berlin'
 
+# Version 1.4
+#
+# the default_language is used, where multiple languages are supported (de, if not specified)
+#default_language: de
+
 # Version 1.3
 # db: Format: <name>:<python-module>, list of database-entries is possible
 # db:
@@ -22,3 +27,4 @@ tz: 'Europe/Berlin'
 #use_modules: False
 #debug_modules: True
 #debug_plugins: True
+
