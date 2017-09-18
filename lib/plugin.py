@@ -298,6 +298,7 @@ class PluginWrapper(threading.Thread):
 
         threading.Thread.__init__(self, name=name)
 
+        self._init_complete = False
         self.meta = meta
         # Load an instance of the plugin
         try:

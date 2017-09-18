@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 
 class Metadata():
 
-    version = '?'
+    _version = '?'
     
     
     def __init__(self, sh, addon_name, addon_type, classpath=''):
@@ -61,6 +61,7 @@ class Metadata():
             self.relative_filename = os.path.join( classpath.replace('.', os.sep), addon_type+YAML_FILE )
 #        logger.warning(self._log_premsg+"relative_filename = '{}'".format( self.relative_filename ) )
         
+        self.parameters = None
         filename = os.path.join( self._sh.get_basedir(), self.relative_filename )
         self.meta = shyaml.yaml_load(filename, ordered=True)
         if self.meta != None:
@@ -71,7 +72,7 @@ class Metadata():
             if self.parameters != None:
                 self._paramlist = list(self.parameters.keys())
                 logger.info(self._log_premsg+"Metadata paramlist = '{}'".format( str(self._paramlist) ) )
-
+            
         # Test parameter definitions for validity
         for param in self._paramlist:
             logger.debug(self._log_premsg+"param = '{}'".format( str(param) ) )
@@ -208,9 +209,9 @@ class Metadata():
         :return: version
         :rtype: str
         """
-        if self.version == '?':
-            self.version = self.get_string('version')
-        return self.version
+        if self._version == '?':
+            self._version = self.get_string('version')
+        return self._version
         
             
     def test_version(self, code_version):
@@ -223,17 +224,17 @@ class Metadata():
         :return: True: version numbers match, or Python code has no version
         :rtype: bool
         """
-        self.version = self.get_string('version')
+        self._version = self.get_string('version')
         if code_version == None:
-            logger.info("{} '{}' version not defined in Python code, metadata version is {}".format(self._addon_type, self._addon_name, self.version))
+            logger.info("{} '{}' version not defined in Python code, metadata version is {}".format(self._addon_type, self._addon_name, self._version))
             return True
         else:
-            if self.version == '':
+            if self._version == '':
                 logger.info("{} '{}' metadata contains no version number".format(self._addon_type, self._addon_name))
-                self.version = code_version
+                self._version = code_version
             else:
-                if str(code_version) != self.version:
-                    logger.error("{} '{}' version differs between Python code ({}) and metadata ({})".format(self._addon_type, self._addon_name, str(code_version), self.version))
+                if str(code_version) != self._version:
+                    logger.error("{} '{}' version differs between Python code ({}) and metadata ({})".format(self._addon_type, self._addon_name, str(code_version), self._version))
                     return False
         return True
         
