@@ -132,7 +132,7 @@ class SmartHome():
     """
     **base_dir** is deprecated. Use method get_basedir() instead.
     """
-        
+
     _etc_dir = os.path.join(_base_dir, 'etc')
     _var_dir = os.path.join(_base_dir, 'var')
     _lib_dir = os.path.join(_base_dir,'lib')
@@ -151,7 +151,7 @@ class SmartHome():
     _cache_dir = os.path.join(_var_dir,'cache'+os.path.sep)
     _log_config = os.path.join(_etc_dir,'logging'+YAML_FILE)
     _smarthome_conf_basename = None
-
+    _extern_conf_dir = None
     _log_buffer = 50
     __logs = {}
     __event_listeners = {}
@@ -171,9 +171,10 @@ class SmartHome():
     item_load_complete = False
     plugin_start_complete = False
     
-    def __init__(self, smarthome_conf_basename=os.path.join(_etc_dir,'smarthome')):
+    def __init__(self, smarthome_conf_basename=os.path.join(_etc_dir,'smarthome'), extern_conf_dir=None):
         # set default timezone to UTC
         self._smarthome_conf_basename = smarthome_conf_basename
+        self._extern_conf_dir = extern_conf_dir
         global TZ
         self.tz = 'UTC'
         os.environ['TZ'] = self.tz
@@ -184,8 +185,21 @@ class SmartHome():
         self.version = VERSION
         self.connections = []
 
+        if self._extern_conf_dir is not None:
+            self._etc_dir = os.path.join(self._extern_conf_dir, 'etc')
+            self._items_dir = os.path.join(self._extern_conf_dir, 'items'+os.path.sep)
+            self._logic_dir = os.path.join(self._extern_conf_dir, 'logics'+os.path.sep)
+            self._smarthome_conf_basename = os.path.join(self._etc_dir,'smarthome')
+            self._logic_conf_basename = os.path.join(self._etc_dir, 'logic')
+            self._module_conf_basename = os.path.join(self._etc_dir,'module')
+            self._plugin_conf_basename = os.path.join(self._etc_dir,'plugin')
+            self._log_config = os.path.join(self._etc_dir,'logging'+YAML_FILE)
+
         # setup logging
         self.initLogging()
+
+        if self._extern_conf_dir is not None:
+            self._logger.warning("Using external config dir: {}".format(self._extern_conf_dir))
 
         # Fork process and write pidfile
         if MODE == 'default':
@@ -213,7 +227,7 @@ class SmartHome():
         #############################################################
         # Reading smarthome.yaml
 
-        config = lib.config.parse_basename(smarthome_conf_basename, configtype='SmartHomeNG')
+        config = lib.config.parse_basename(self._smarthome_conf_basename, configtype='SmartHomeNG')
         if config != {}:
             for attr in config:
                 if not isinstance(config[attr], dict):  # ignore sub items
@@ -318,27 +332,28 @@ class SmartHome():
         """
         
         # logging
+        log_default = os.path.join(self._base_dir, 'etc', 'logging' + YAML_FILE + DEFAULT_FILE)
         if not (os.path.isfile(self._log_config)):
-            if os.path.isfile(self._log_config + DEFAULT_FILE):
-                shutil.copy2(self._log_config + DEFAULT_FILE, self._log_config)
+            if os.path.isfile(log_default):
+                shutil.copy2(log_default, self._log_config)
         # smarthome.yaml
+        smarthome_default = os.path.join(self._base_dir, 'etc', 'smarthome' + YAML_FILE + DEFAULT_FILE)
         if not (os.path.isfile(self._smarthome_conf_basename + YAML_FILE)) and not (
                 os.path.isfile(self._smarthome_conf_basename + CONF_FILE)):
-            if os.path.isfile(self._smarthome_conf_basename + YAML_FILE + DEFAULT_FILE):
-                shutil.copy2(self._smarthome_conf_basename + YAML_FILE + DEFAULT_FILE,
-                             self._smarthome_conf_basename + YAML_FILE)
+            if os.path.isfile(smarthome_default):
+                shutil.copy2(smarthome_default, self._smarthome_conf_basename + YAML_FILE)
         # loadable modules
+        module_default = os.path.join(self._base_dir, 'etc', 'module' + YAML_FILE + DEFAULT_FILE)
         if not (os.path.isfile(self._module_conf_basename + YAML_FILE)) and not (
                 os.path.isfile(self._module_conf_basename + CONF_FILE)):
-            if os.path.isfile(self._module_conf_basename + YAML_FILE + DEFAULT_FILE):
-                shutil.copy2(self._module_conf_basename + YAML_FILE + DEFAULT_FILE,
-                             self._module_conf_basename + YAML_FILE)
+            if os.path.isfile(module_default):
+                shutil.copy2(module_default, self._module_conf_basename + YAML_FILE)
         # plugins
+        plugin_default = os.path.join(self._base_dir, 'etc', 'plugin' + YAML_FILE + DEFAULT_FILE)
         if not (os.path.isfile(self._plugin_conf_basename + YAML_FILE)) and not (
                 os.path.isfile(self._plugin_conf_basename + CONF_FILE)):
-            if os.path.isfile(self._plugin_conf_basename + YAML_FILE + DEFAULT_FILE):
-                shutil.copy2(self._plugin_conf_basename + YAML_FILE + DEFAULT_FILE,
-                             self._plugin_conf_basename + YAML_FILE)
+            if os.path.isfile(plugin_default):
+                shutil.copy2(plugin_default, self._plugin_conf_basename + YAML_FILE)
 
 
     def initLogging(self):
@@ -940,7 +955,22 @@ if __name__ == '__main__':
     arggroup.add_argument('-q', '--quiet', help='DEPRECATED use logging config (reduce logging to the logfile)', action='store_true')
     arggroup.add_argument('-V', '--version', help='show SmartHomeNG version', action='store_true')
     arggroup.add_argument('--start', help='start SmartHomeNG and detach from console (default)', default=True, action='store_true')
+    argparser.add_argument('-c', '--config_dir', help='use external config dir (should contain "etc", "logics" and "items" subdirectories)')
     args = argparser.parse_args()
+
+    extern_conf_dir = None
+    if args.config_dir is not None:
+        if os.path.isdir(args.config_dir):
+            missing = []
+            for d in ['etc', 'logics', 'items']:
+                if not os.path.isdir(os.path.join(args.config_dir, d)):
+                    missing.append(d)
+            if not missing:
+                extern_conf_dir = os.path.normpath(args.config_dir)
+            else:
+                print("ERROR: missing {} subdirectory(ies) in {}. Looking for config in {}".format(missing, args.config_dir, BASE))
+        else:
+            print("ERROR: {} is not a directory. Looking for config in {}".format(args.config_dir, BASE))
 
     if args.interactive:
         MODE = 'interactive'
@@ -960,7 +990,7 @@ if __name__ == '__main__':
             pass
         atexit.register(readline.write_history_file, histfile)
         readline.parse_and_bind("tab: complete")
-        sh = SmartHome()
+        sh = SmartHome(extern_conf_dir=extern_conf_dir)
         _sh_thread = threading.Thread(target=sh.start)
         _sh_thread.start()
         shell = code.InteractiveConsole(locals())
@@ -990,5 +1020,5 @@ if __name__ == '__main__':
     if MODE == 'debug':
         lib.daemon.write_pidfile(psutil.Process().pid, PIDFILE)
     # Starting SmartHomeNG
-    sh = SmartHome()
+    sh = SmartHome(extern_conf_dir=extern_conf_dir)
     sh.start()
