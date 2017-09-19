@@ -195,6 +195,9 @@ class SmartHome():
             self._plugin_conf_basename = os.path.join(self._etc_dir,'plugin')
             self._log_config = os.path.join(self._etc_dir,'logging'+YAML_FILE)
 
+        # check config files
+        self.checkConfigFiles()
+
         # setup logging
         self.initLogging()
 
@@ -210,9 +213,6 @@ class SmartHome():
         signal.signal(signal.SIGINT, self.stop)
         signal.signal(signal.SIGTERM, self.stop)
 
-        # check config files
-        self.checkConfigFiles()
-        
         #############################################################
         # Check Time
         while datetime.date.today().isoformat() < '2016-03-16':  # XXX update date
