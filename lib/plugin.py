@@ -164,9 +164,9 @@ class Plugins():
         :return: classname, classpass
         :rtype: str, str
         """
-        classname = self.meta.get_string('classname')
+        classname = plg_conf.get(KEY_CLASS_NAME,'')
         if classname == '':
-            classname = plg_conf.get(KEY_CLASS_NAME,'')
+            classname = self.meta.get_string('classname')
         try:
             classpath = plg_conf[KEY_CLASS_PATH]
         except:
