@@ -196,6 +196,8 @@ class SmartHome():
         # check config files
         self.checkConfigFiles()
 
+        if MODE == 'unittest':
+            return
         # setup logging
         self.initLogging()
         self._logger.info("Using config dir: {}".format(self._extern_conf_dir))
