@@ -171,7 +171,7 @@ class SmartHome():
     item_load_complete = False
     plugin_start_complete = False
     
-    def __init__(self, smarthome_conf_basename=None, extern_conf_dir=_base_dir):
+    def __init__(self, extern_conf_dir=_base_dir):
         # set default timezone to UTC
         self._extern_conf_dir = extern_conf_dir
         global TZ
@@ -192,9 +192,6 @@ class SmartHome():
         self._module_conf_basename = os.path.join(self._etc_dir,'module')
         self._plugin_conf_basename = os.path.join(self._etc_dir,'plugin')
         self._log_conf_basename = os.path.join(self._etc_dir,'logging')
-
-        if smarthome_conf_basename is not None:
-            self._smarthome_conf_basename = smarthome_conf_basename
 
         # check config files
         self.checkConfigFiles()
