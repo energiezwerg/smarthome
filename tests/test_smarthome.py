@@ -72,8 +72,8 @@ class SmarthomeTest(unittest.TestCase):
         self.assertEqual(sh._logic_dir,_logic_dir)
         _cache_dir = os.path.join(base_dir + '/var/cache/'.replace('/', os.path.sep))
         self.assertEqual(sh._cache_dir,_cache_dir)
-        _log_config = os.path.join(base_dir + '/etc/logging.yaml'.replace('/', os.path.sep))
-        self.assertEqual(sh._log_config, _log_config)
+        _log_conf_basename = os.path.join(base_dir + '/etc/logging'.replace('/', os.path.sep))
+        self.assertEqual(sh._log_conf_basename, _log_conf_basename)
         #_pidfile = os.path.join(base_dir + '/var/run/smarthome.pid'.replace('/', os.path.sep))
         #self.assertEqual(sh.PIDFILE,_pidfile)
 

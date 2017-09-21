@@ -133,16 +133,23 @@ class SmartHome():
     **base_dir** is deprecated. Use method get_basedir() instead.
     """
 
+    _etc_dir = os.path.join(_base_dir, 'etc')
     _var_dir = os.path.join(_base_dir, 'var')
     _lib_dir = os.path.join(_base_dir,'lib')
     _env_dir = os.path.join(_lib_dir, 'env' + os.path.sep)
 
+    _module_conf_basename = os.path.join(_etc_dir,'module')
     _module_conf = ''	# is filled by module.py while reading the configuration file, needed by Backend plugin
 
+    _plugin_conf_basename = os.path.join(_etc_dir,'plugin')
     _plugin_conf = ''	# is filled by plugin.py while reading the configuration file, needed by Backend plugin
 
     _env_logic_conf_basename = os.path.join( _env_dir ,'logic')
+    _items_dir = os.path.join(_base_dir, 'items'+os.path.sep)
+    _logic_conf_basename = os.path.join(_etc_dir, 'logic')
+    _logic_dir = os.path.join(_base_dir, 'logics'+os.path.sep)
     _cache_dir = os.path.join(_var_dir,'cache'+os.path.sep)
+    _log_conf_basename = os.path.join(_etc_dir,'logging')
     _smarthome_conf_basename = None
     _extern_conf_dir = BASE
     _log_buffer = 50
