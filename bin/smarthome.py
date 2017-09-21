@@ -303,6 +303,16 @@ class SmartHome():
         return self._base_dir
         
         
+    def get_confdir(self):
+        """
+        Function to return the config directory (that contain 'etc', 'logics' and 'items' subdirectories)
+        
+        :return: Config directory as an absolute path
+        :rtype: str
+        """
+        return self._extern_conf_dir
+        
+        
     def getBaseDir(self):
         """
         Function to return the base directory of the running SmartHomeNG installation
