@@ -12,7 +12,7 @@ before_install:
 
 install:
     - pip install tox-travis "virtualenv<14.0.0"
-    - pip install ruamel.yaml>=0.13.7,<=0.15
+    - pip install 'ruamel.yaml>=0.13.7,<=0.15'
 
 script:
     - tox
