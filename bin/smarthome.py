@@ -689,8 +689,10 @@ class SmartHome():
     def reload_logics(self, signum=None, frame=None):
         """
         Function to reload all logics
+
+        DEPRECATED - Use Logics.reload_logics() instead
         """
-        
+        self._logger.warning("Using deprecated function smarthome.reload_logics()")
         for logic in self._logics:
             self._logics[logic].generate_bytecode()
 
@@ -699,13 +701,15 @@ class SmartHome():
         """
         Returns (the object of) one loaded logic with given name 
 
+        DEPRECATED - Use Logics.return_logic() instead
+        
         :param name: name of the logic to get
         :type name: str
 
         :return: object of the logic
         :rtype: object
         """
-        
+        self._logger.warning("Using deprecated function smarthome.return_logic()")
         return self._logics[name]
 
 
@@ -713,10 +717,12 @@ class SmartHome():
         """
         Returns a list with the names of all loaded logics
 
+        DEPRECATED - Use Logics.return_loaded_logics() instead
+
         :return: list of logic names
         :rtype: list
         """
-
+        self._logger.warning("Using deprecated function smarthome.return_logics()")
         for logic in self._logics:
             yield logic
 

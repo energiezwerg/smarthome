@@ -23,10 +23,19 @@
 import logging
 import os
 
+import ast
+
 import lib.config
+import lib.shyaml as shyaml
 from lib.constants import PLUGIN_PARSE_LOGIC
+from lib.constants import (YAML_FILE, CONF_FILE)
 
 logger = logging.getLogger(__name__)
+
+
+_smarthome = None
+_logics_instance = None
+_config_type = None
 
 
 class Logics():
@@ -34,45 +43,78 @@ class Logics():
     def __init__(self, smarthome, userlogicconf, envlogicconf):
         logger.info('Start Logics')
         self._sh = smarthome
+        self._userlogicconf = userlogicconf
+        self._env_dir = smarthome._env_dir
+        self._envlogicconf = envlogicconf
+        self._logic_dir = smarthome._logic_dir
         self._workers = []
         self._logics = {}
         self._bytecode = {}
         self.alive = True
+        global _smarthome
+        _smarthome = smarthome
+        global _logics_instance
+        _logics_instance = self
         _config = {}
-        _config.update(self._read_logics(envlogicconf, smarthome._env_dir))
-        _config.update(self._read_logics(userlogicconf, smarthome._logic_dir))
+        _config.update(self._read_logics(envlogicconf, self._env_dir))
+        _config.update(self._read_logics(userlogicconf, self._logic_dir))
 
         for name in _config:
-            logger.debug("Logic: {}".format(name))
-            logic = Logic(self._sh, name, _config[name])
-            if hasattr(logic, 'bytecode'):
-                self._logics[name] = logic
-                self._sh.scheduler.add(name, logic, logic.prio, logic.crontab, logic.cycle)
-            else:
-                continue
-            # plugin hook
-            for plugin in self._sh._plugins:
-                if hasattr(plugin, PLUGIN_PARSE_LOGIC):
-                    update = plugin.parse_logic(logic)
-                    if update:
-                        logic.add_method_trigger(update)
-            # item hook
-            if hasattr(logic, 'watch_item'):
-                if isinstance(logic.watch_item, str):
-                    logic.watch_item = [logic.watch_item]
-                for entry in logic.watch_item:
-                    for item in self._sh.match_items(entry):
-                        item.add_logic_trigger(logic)
+            self._load_logic(name, _config)
+
 
     def _read_logics(self, filename, directory):
+        """
+        Read the logics configuration file
+        
+        :param filename: name of the logics configurtion file
+        :param directory: directory where the logics are stored
+        """
         logger.debug("Reading Logics from {}.*".format(filename))
         config = lib.config.parse_basename(filename, configtype='logics')
         if config != {}:
+            global _config_type
+            if os.path.isfile(filename+YAML_FILE):
+                _config_type = YAML_FILE
+            else:
+                _config_type = CONF_FILE
+
             for name in config:
                 if 'filename' in config[name]:
                     config[name]['filename'] = directory + config[name]['filename']
         return config
 
+
+    def _load_logic(self, name, config):
+        """
+        Load a logic, specified by section name in config
+        """
+        logger.debug("_load_logic: Logics.is_logic_loaded(name) = {}.".format( str(Logics.is_logic_loaded(name)) ))
+        if Logics.is_logic_loaded(name):
+            return False
+        logger.debug("Logic: {}".format(name))
+        logic = Logic(self._sh, name, config[name])
+        if hasattr(logic, 'bytecode'):
+            self._logics[name] = logic
+            self._sh.scheduler.add(name, logic, logic.prio, logic.crontab, logic.cycle)
+        else:
+            return False
+        # plugin hook
+        for plugin in self._sh._plugins:
+            if hasattr(plugin, PLUGIN_PARSE_LOGIC):
+                update = plugin.parse_logic(logic)
+                if update:
+                    logic.add_method_trigger(update)
+        # item hook
+        if hasattr(logic, 'watch_item'):
+            if isinstance(logic.watch_item, str):
+                logic.watch_item = [logic.watch_item]
+            for entry in logic.watch_item:
+                for item in self._sh.match_items(entry):
+                    item.add_logic_trigger(logic)
+        return True
+        
+    
     def __iter__(self):
         for logic in self._logics:
             yield logic
@@ -80,6 +122,312 @@ class Logics():
     def __getitem__(self, name):
         if name in self._logics:
             return self._logics[name]
+
+    def _delete_logic(self, name):
+        if name in self._logics:
+            del self._logics[name]
+
+
+    @staticmethod
+    def return_config_type():
+        """
+        Return the used config type
+    
+        :return: '.yaml', '.conf' or None
+        :rtype: str or None
+        """
+        return _config_type
+
+
+    @staticmethod
+    def return_logic(name):
+        """
+        Returns (the object of) one loaded logic with given name 
+
+        :param name: name of the logic to get
+        :type name: str
+
+        :return: object of the logic
+        :rtype: object
+        """
+        
+        return _logics_instance[name]
+
+
+    def return_logics(self):
+        """
+        Returns a list with the names of all loaded logics
+
+        :return: list of logic names
+        :rtype: list
+        """
+        for logic in _logics_instance:
+            yield logic
+
+
+    @staticmethod
+    def is_logic_loaded(name):
+        """
+        Test if a logic is loaded. Givewn is the name of the section in /etc/logic.yaml
+    
+        :param name: logic name (name of the configuration section section)
+        :type name: str
+    
+        :return: True: Logic is loaded
+        :rtype: bool
+        """
+        if _smarthome == None:
+            logger.critical("is_logic_loaded: _smarthome is not initialized")
+            return False
+        
+        if Logics.return_logic(name) == None:
+            return False
+        else:
+            return True
+
+
+    @staticmethod
+    def reload_logics(signum=None, frame=None):
+        """
+        Function to reload all logics
+        
+        Generates new bytecode for every logic that is loaded. The triggers are not modified
+        """
+        for logic in self._logics:
+            _logics_instance[logic].generate_bytecode()
+
+
+    @staticmethod
+    def unload_logic(name):
+        """
+        Unload a specified logic
+        """
+        if _smarthome == None:
+            logger.critical("unload_logic: _smarthome is not initialized")
+            return False
+
+        logger.info("lib.logic: unload_logic: logic = '{}'".format(name))
+        mylogic = Logics.return_logic(name)
+        if mylogic == None:
+            return False
+        
+        mylogic.enabled = False
+        mylogic.cycle = None
+        mylogic.crontab = None
+
+        # Scheduler entfernen
+        _smarthome.scheduler.remove(name)
+    
+        # watch_items entfernen
+        if hasattr(mylogic, 'watch_item'):
+            if isinstance(mylogic.watch_item, str):
+                mylogic.watch_item = [mylogic.watch_item]
+            for entry in mylogic.watch_item:
+                # item hook
+                for item in _smarthome.match_items(entry):
+                    try:
+                        item.remove_logic_trigger(mylogic)
+                    except:
+                        logger.error("lib.logic: unload_logic: logic = '{}' - cannot remove logic_triggers".format(name))
+        mylogic.watch_item = []
+        _logics_instance._delete_logic(name)
+        return True
+
+
+    @staticmethod
+    def load_logic(name):
+        """
+        Load a specified logic
+        """
+        _config = _logics_instance._read_logics(_smarthome._logic_conf_basename, _smarthome._logic_dir)
+        logger.info("lib.logic: try load_logic ({}): _config = {}".format( name, str(_config) ))
+        if not (name in _config):
+            return False
+    
+        logger.info("lib.logic: load_logic ({}): _config = {}".format( name, str(_config) ))
+        return _logics_instance._load_logic(name, _config)
+
+
+    @staticmethod
+    def return_logictype(name):
+        """
+        Returns the type of a specified logic (Python, Blockly, None)
+        
+        :return: Logic type
+        :rtype: str
+        """
+        # load /etc/logic.yaml
+        conf_filename = os.path.join(_smarthome._etc_dir, 'logic') 
+        config = shyaml.yaml_load_roundtrip(conf_filename)
+
+        filename = config[name]['filename']
+        blocklyname = os.path.splitext(os.path.basename(filename))[0]+'.xml'
+        logic_type = 'None'
+        if os.path.isfile(os.path.join(_smarthome._logic_dir, filename)):
+            logic_type = 'Python'
+            if os.path.isfile(os.path.join(_smarthome._logic_dir, blocklyname)):
+                logic_type = 'Blockly'
+        logger.info("lib.logic: return_logictype: name '{}', logic_type '{}'".format(name, logic_type))
+        return logic_type
+        
+
+    @staticmethod
+    def return_defined_logics(withtype=False):
+        """
+        Returns the names of defined logics from file /etc/logic.yaml
+
+        :return: list of defined logics or dict of defined logics with type
+        :rtype: list or dict
+        """
+        if withtype:
+            logic_list = {}
+        else:
+            logic_list = []
+        if _smarthome == None:
+            logger.critical("update_config_section: _smarthome is not initialized")
+            return logic_list
+        
+        # load /etc/logic.yaml
+        conf_filename = os.path.join(_smarthome._etc_dir, 'logic') 
+        config = shyaml.yaml_load_roundtrip(conf_filename)
+
+        for section in config:
+            logic_dict = {}
+            filename = config[section]['filename']
+            blocklyname = os.path.splitext(os.path.basename(filename))[0]+'.xml'
+            logic_type = 'None'
+            if os.path.isfile(os.path.join(_smarthome._logic_dir, filename)):
+                logic_type = 'Python'
+                if os.path.isfile(os.path.join(_smarthome._logic_dir, blocklyname)):
+                    logic_type = 'Blockly'
+            logger.info("lib.logic: get_defined_logics: section '{}', logic_type '{}'".format(section, logic_type))
+            
+            if withtype:
+                logic_list[section] = logic_type
+            else:
+                logic_list.append(section)
+
+        return logic_list
+        
+
+    @staticmethod
+    def return_loaded_logics():
+        """
+        Returns a list with the names of all loaded logics
+
+        :return: list of logic names
+        :rtype: list
+        """
+
+        logic_list = []
+        for logic in _logics_instance._logics:
+            logic_list.append(logic)
+        return logic_list
+
+
+    @staticmethod
+    def read_config_section(section):
+        """
+        Read a section from /etc/logic.yaml
+        """
+        if Logics.return_config_type() != YAML_FILE:
+            logger.error("update_config_section: Editing of configuration only possible with new (yaml) config format")
+            return False
+            
+        if _smarthome == None:
+            logger.critical("update_config_section: _smarthome is not initialized")
+            return False
+        
+        # load /etc/logic.yaml
+        conf_filename = os.path.join(_smarthome._etc_dir, 'logic') 
+        conf = shyaml.yaml_load_roundtrip(conf_filename)
+
+        config_list = []
+        section_dict = conf.get(section, {})
+#        logger.warning("read_config_section: read_config_section('{}') = {}".format(section, str(section_dict) ))
+        for key in section_dict:
+            if isinstance(section_dict[key], list):
+                value = section_dict[key]
+                comment = []            # 'Comment 6: ' + loaded['a']['c'].ca.items[0][0].value      'Comment 7: ' + loaded['a']['c'].ca.items[1][0].value
+                for i in range(len(value)):
+                    c = section_dict[key].ca.items[i][0].value
+                    if c[0] == '#':
+                        c = c[1:]
+                    
+                    comment.append(c.strip())
+            else:
+                value = section_dict[key]
+                c = section_dict.ca.items[key][2].value    # if not list: loaded['a'].ca.items['b'][2].value 
+                if c[0] == '#':
+                        c = c[1:]
+                comment = c.strip()
+            
+#            logger.warning("-> read_config_section: section_dict['{}'] = {}, comment = '{}'".format(key, str(section_dict[key]), comment ))
+            config_list.append([key, value, comment])
+        return config_list
+        
+        
+    @staticmethod
+    def update_config_section(active, section, config_list):
+        """
+        Update file /etc/logic.yaml
+    
+        This method creates/updates a section in /etc/logic.yaml. If the section exist, it is cleared
+        before new configuration imformation is written to the section
+    
+        :param active: True: logic is/should be active
+        :param section: name of section to configure in logics configurationfile
+        :param config_list: list of configuration entries. Each entry of this list is a list with three string entries: ['key', 'value', 'comment']
+        :type active: bool
+        :type section: str
+        :type config_list: list of lists
+        """
+        if Logics.return_config_type() != YAML_FILE:
+            logger.error("update_config_section: Editing of configuration only possible with new (yaml) config format")
+            return False
+            
+        if _smarthome == None:
+            logger.critical("update_config_section: _smarthome is not initialized")
+            return False
+        
+        # load /etc/logic.yaml
+        conf_filename = os.path.join(_smarthome._etc_dir, 'logic') 
+        conf = shyaml.yaml_load_roundtrip(conf_filename)
+
+        # empty section
+        conf[section] = shyaml.get_emptynode()
+
+        if active:
+            # add entries to section
+            for c in config_list:
+                # process config entries
+                key = c[0].strip()
+                value = c[1]
+                comment = c[2]
+
+                if isinstance(value, str):
+                    value = value.strip()
+                    comment = comment.strip()
+                    if value[0] == '[' and value[-1] == ']':
+                        # convert a list of triggers to list, if given as a string
+                        value = ast.literal_eval(value)
+                        comment = ast.literal_eval(comment)
+                    else:
+                        # process single trigger
+                        conf[section][key] = value
+                        conf[section].yaml_add_eol_comment(comment, key, column=50)
+
+                if isinstance(value, list):
+                    # process a list of triggers
+                    conf[section][key] = shyaml.get_commentedseq(value)
+                    listvalue = True
+                    for i in range(len(value)):
+                        if comment[i] != '':
+                            conf[section][key].yaml_add_eol_comment(comment[i], i, column=50)
+
+        if conf[section] == shyaml.get_emptynode():
+            conf[section] = None
+        shyaml.yaml_save_roundtrip(conf_filename, conf, True)
 
 
 class Logic():
@@ -129,7 +477,10 @@ class Logic():
                 logger.warning("{}: Could not access logic file ({}) => ignoring.".format(self.name, self.filename))
                 return
             try:
-                code = open(self.filename, encoding='UTF-8').read()
+#                code = open(self.filename, encoding='UTF-8').read()
+                f = open(self.filename, encoding='UTF-8')
+                code = f.read()
+                f.close()
                 code = code.lstrip('\ufeff')  # remove BOM
                 self.bytecode = compile(code, self.filename, 'exec')
             except Exception as e:
@@ -142,4 +493,5 @@ class Logic():
 
     def get_method_triggers(self):
         return self.__methods_to_trigger
+
 

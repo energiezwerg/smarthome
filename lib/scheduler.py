@@ -189,7 +189,10 @@ class Scheduler(threading.Thread):
         :return:
         """
         self._lock.acquire()
-        name = self.check_caller(name)
+        try:
+            name = self.check_caller(name)
+        except:
+            pass
         logger.debug("remove scheduler entry with name:{0}".format(name))
         if name in self._scheduler:
             del(self._scheduler[name])
