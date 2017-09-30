@@ -30,7 +30,7 @@ This API enables plugins to configure new logics or change the configuration of 
 Each logic is represented by an instance of the class ``Logic``.
 
 
-:Warning: This library is part of the core of SmartHomeNG. **Only the static methods** should be called directly from plugins!
+:Note: This library is part of the core of SmartHomeNG. Regular plugins should not need to use this API.  It is manily implemented for plugins near to the core like **backend** or **blockly**!
 
 """
 import logging
@@ -210,7 +210,7 @@ class Logics():
         """
         Unload a specified logic
         
-        This function unloads a logic. Before unloading, it remove defined schedules and triggers for ``watch_item``s.
+        This function unloads a logic. Before unloading, it remove defined schedules and triggers for ``watch_item`` s.
         
         :param name: Name of the section that defines the logic in the configuration file
         :type name: str
