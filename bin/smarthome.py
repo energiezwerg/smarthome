@@ -694,7 +694,7 @@ class SmartHome():
         """
         self._logger.warning("Using deprecated function smarthome.reload_logics()")
         for logic in self._logics:
-            self._logics[logic].generate_bytecode()
+            self._logics[logic]._generate_bytecode()
 
 
     def return_logic(self, name):
@@ -725,6 +725,7 @@ class SmartHome():
         self._logger.warning("Using deprecated function smarthome.return_logics()")
         for logic in self._logics:
             yield logic
+
 
     #################################################################
     # Log Methods

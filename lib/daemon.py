@@ -143,7 +143,7 @@ def check_sh_is_running(pidfile):
     return psutil.pid_exists(read_pidfile(pidfile))
 
 
-def kill(pidfile, waittime=10):
+def kill(pidfile, waittime=15):
     """
     This method kills the process identified by pidfile.
     

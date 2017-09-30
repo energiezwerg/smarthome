@@ -20,6 +20,19 @@
 #  along with SmartHomeNG  If not, see <http://www.gnu.org/licenses/>.
 ##########################################################################
 
+"""
+This library implements logics in SmartHomeNG. 
+
+The main class ``Logics`` implements the handling for all logics. This class has a couple
+of static methods. These methods implement the API for handling logics from within SmartHomeNG and from plugins.
+This API enables plugins to configure new logics or change the configuration of existing plugins.
+
+Each logic is represented by an instance of the class ``Logic``.
+
+
+:Warning: This library is part of the core of SmartHomeNG. **Only the static methods** should be called directly from plugins!
+
+"""
 import logging
 import os
 
@@ -39,7 +52,11 @@ _config_type = None
 
 
 class Logics():
-
+    """
+    This is the main class for the implementation og logics in SmartHomeNG. It implements the API for the
+    handling of those logics.
+    """
+    
     def __init__(self, smarthome, userlogicconf, envlogicconf):
         logger.info('Start Logics')
         self._sh = smarthome
@@ -128,33 +145,7 @@ class Logics():
             del self._logics[name]
 
 
-    @staticmethod
-    def return_config_type():
-        """
-        Return the used config type
-    
-        :return: '.yaml', '.conf' or None
-        :rtype: str or None
-        """
-        return _config_type
-
-
-    @staticmethod
-    def return_logic(name):
-        """
-        Returns (the object of) one loaded logic with given name 
-
-        :param name: name of the logic to get
-        :type name: str
-
-        :return: object of the logic
-        :rtype: object
-        """
-        
-        return _logics_instance[name]
-
-
-    def return_logics(self):
+    def _return_logics(self):
         """
         Returns a list with the names of all loaded logics
 
@@ -166,9 +157,22 @@ class Logics():
 
 
     @staticmethod
+    def reload_logics():
+        """
+        Function to reload all logics
+        
+        It generates new bytecode for every logic that is loaded. The configured triggers 
+        are not loaded from the configuration, so the triggers that where active before the
+        reload remain active.
+        """
+        for logic in self._logics:
+            _logics_instance[logic]._generate_bytecode()
+
+
+    @staticmethod
     def is_logic_loaded(name):
         """
-        Test if a logic is loaded. Givewn is the name of the section in /etc/logic.yaml
+        Test if a logic is loaded. Given is the name of the section in /etc/logic.yaml
     
         :param name: logic name (name of the configuration section section)
         :type name: str
@@ -187,20 +191,29 @@ class Logics():
 
 
     @staticmethod
-    def reload_logics(signum=None, frame=None):
+    def return_logic(name):
         """
-        Function to reload all logics
+        Returns (the object of) one loaded logic with given name 
+
+        :param name: name of the logic to get
+        :type name: str
+
+        :return: object of the logic
+        :rtype: object
+        """
         
-        Generates new bytecode for every logic that is loaded. The triggers are not modified
-        """
-        for logic in self._logics:
-            _logics_instance[logic].generate_bytecode()
+        return _logics_instance[name]
 
 
     @staticmethod
     def unload_logic(name):
         """
         Unload a specified logic
+        
+        This function unloads a logic. Before unloading, it remove defined schedules and triggers for ``watch_item``s.
+        
+        :param name: Name of the section that defines the logic in the configuration file
+        :type name: str
         """
         if _smarthome == None:
             logger.critical("unload_logic: _smarthome is not initialized")
@@ -238,6 +251,15 @@ class Logics():
     def load_logic(name):
         """
         Load a specified logic
+        
+        Load a logic as defined in the configuration section. After loading the logic's code,
+        the defined schedules and/or triggers adre set.
+        
+        :param name: Name of the logic (name of the configuration section)
+        :type name: str
+        
+        :return: Success
+        :rtype: bool
         """
         _config = _logics_instance._read_logics(_smarthome._logic_conf_basename, _smarthome._logic_dir)
         logger.info("lib.logic: try load_logic ({}): _config = {}".format( name, str(_config) ))
@@ -253,8 +275,11 @@ class Logics():
         """
         Returns the type of a specified logic (Python, Blockly, None)
         
-        :return: Logic type
-        :rtype: str
+        :param name: Name of the logic (name of the configuration section)
+        :type name: str
+        
+        :return: Logic type ('Python', 'Blockly' or None)
+        :rtype: str or None
         """
         # load /etc/logic.yaml
         conf_filename = os.path.join(_smarthome._etc_dir, 'logic') 
@@ -274,8 +299,14 @@ class Logics():
     @staticmethod
     def return_defined_logics(withtype=False):
         """
-        Returns the names of defined logics from file /etc/logic.yaml
+        Returns the names of defined logics from file /etc/logic.yaml as a list
+        
+        If ``withtype`` is specified and set to True, the function returns a dict with names and
+        logictypes ('Python', 'Blockly')
 
+        :param withtype: If specified and set to True, the function will additionally return the logic types
+        :type withtype: bool
+        
         :return: list of defined logics or dict of defined logics with type
         :rtype: list or dict
         """
@@ -313,7 +344,7 @@ class Logics():
     @staticmethod
     def return_loaded_logics():
         """
-        Returns a list with the names of all loaded logics
+        Returns a list with the names of all logics that are currently loaded
 
         :return: list of logic names
         :rtype: list
@@ -326,9 +357,38 @@ class Logics():
 
 
     @staticmethod
+    def return_config_type():
+        """
+        Return the used config type 
+        
+        After initialization this function returns '.conf', if the used logic configuration file in /etc
+        is in the old file format or '.yaml' if the used configuration file is in YAML format.
+        
+        To use the following functions for reading and manipulating the logic configuration, the
+        configuration file **has to be** in YAML format. Otherwise the functions will not work/return empty results.
+    
+        :return: '.yaml', '.conf' or None
+        :rtype: str or None
+        """
+        return _config_type
+
+
+    @staticmethod
     def read_config_section(section):
         """
         Read a section from /etc/logic.yaml
+        
+        This funtion returns the data from one section of the configuration file as a list of
+        configuration entries. A configuration entry is a list with three items:
+          - key      configuration key
+          - value    configuration value (string or list)
+          - comment  comment for the value (string or list)
+          
+        :param section: Name of the logic (section)
+        :type section: str
+        
+        :return: config_list: list of configuration entries. Each entry of this list is a list with three string entries: ['key', 'value', 'comment']
+        :rtype: list of lists
         """
         if Logics.return_config_type() != YAML_FILE:
             logger.error("update_config_section: Editing of configuration only possible with new (yaml) config format")
@@ -431,7 +491,9 @@ class Logics():
 
 
 class Logic():
-
+    """
+    Class for the representation of a loaded logic
+    """
     def __init__(self, smarthome, name, attributes):
         self._sh = smarthome
         self.name = name
@@ -446,12 +508,15 @@ class Logic():
             for attribute in attributes:
                 vars(self)[attribute] = attributes[attribute]
             self.prio = int(self.prio)
-            self.generate_bytecode()
+            self._generate_bytecode()
         else:
             logger.error("Logic {} is not configured correctly (configuration has no attibutes)".format(self.name))
         
 
     def id(self):
+        """
+        Returns the id of the loaded logic
+        """
         return self.name
 
     def __str__(self):
@@ -462,16 +527,22 @@ class Logic():
             self._sh.scheduler.trigger(self.name, self, prio=self.prio, by=caller, source=source, dest=dest, value=value, dt=dt)
 
     def enable(self):
+        """
+        Enables the loaded logic
+        """
         self.enabled =True
 
     def disable(self):
+        """
+        Disables the loaded logic
+        """
         self.enabled = False
 
     def trigger(self, by='Logic', source=None, value=None, dest=None, dt=None):
         if self.enabled:
             self._sh.scheduler.trigger(self.name, self, prio=self.prio, by=by, source=source, dest=dest, value=value, dt=dt)
 
-    def generate_bytecode(self):
+    def _generate_bytecode(self):
         if hasattr(self, 'filename'):
             if not os.access(self.filename, os.R_OK):
                 logger.warning("{}: Could not access logic file ({}) => ignoring.".format(self.name, self.filename))
