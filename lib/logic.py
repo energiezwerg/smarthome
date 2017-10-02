@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2011-2013   Marcus Popp                        marcus@popp.mx
 # Copyright 2016-       Martin Sinn                         m.sinn@gmx.de
+# Copyright 2011-2013   Marcus Popp                        marcus@popp.mx
 #########################################################################
 #  This file is part of SmartHomeNG
 #
@@ -29,6 +29,14 @@ This API enables plugins to configure new logics or change the configuration of 
 
 Each logic is represented by an instance of the class ``Logic``.
 
+The **static** methods of the class Logics implement the API for logics. 
+They can be used the following way: To call eg. **is_logic_loaded()**, use the floowing syntax:
+
+    from lib.logic import Logics          # für update der /etc/logic.yaml
+    if Logics.is_logic_loaded(name):
+        ...
+
+:Note: Do not use the functions or variables of the main smarthome object any more. They are deprecated. Use the static methods of the class **Logics** instead.
 
 :Note: This library is part of the core of SmartHomeNG. Regular plugins should not need to use this API.  It is manily implemented for plugins near to the core like **backend** or **blockly**!
 
@@ -46,8 +54,7 @@ from lib.constants import (YAML_FILE, CONF_FILE)
 logger = logging.getLogger(__name__)
 
 
-_smarthome = None
-_logics_instance = None
+_logics_instance = None    # Pointer to the initialized instance of the Logics class (for use by static methods)
 _config_type = None
 
 
@@ -63,18 +70,19 @@ class Logics():
         self._userlogicconf = userlogicconf
         self._env_dir = smarthome._env_dir
         self._envlogicconf = envlogicconf
+        self._etc_dir = smarthome._etc_dir
         self._logic_dir = smarthome._logic_dir
         self._workers = []
         self._logics = {}
         self._bytecode = {}
         self.alive = True
-        global _smarthome
-        _smarthome = smarthome
         global _logics_instance
         _logics_instance = self
         _config = {}
-        _config.update(self._read_logics(envlogicconf, self._env_dir))
-        _config.update(self._read_logics(userlogicconf, self._logic_dir))
+        self._systemlogics = self._read_logics(envlogicconf, self._env_dir)
+        _config.update(self._systemlogics)
+        self._userlogics = self._read_logics(userlogicconf, self._logic_dir)
+        _config.update(self._userlogics)
 
         for name in _config:
             self._load_logic(name, _config)
@@ -98,7 +106,8 @@ class Logics():
 
             for name in config:
                 if 'filename' in config[name]:
-                    config[name]['filename'] = directory + config[name]['filename']
+                    config[name]['pathname'] = directory + config[name]['filename']
+            
         return config
 
 
@@ -106,7 +115,7 @@ class Logics():
         """
         Load a logic, specified by section name in config
         """
-        logger.debug("_load_logic: Logics.is_logic_loaded(name) = {}.".format( str(Logics.is_logic_loaded(name)) ))
+#        logger.debug("_load_logic: Logics.is_logic_loaded(name) = {}.".format( str(Logics.is_logic_loaded(name)) ))
         if Logics.is_logic_loaded(name):
             return False
         logger.debug("Logic: {}".format(name))
@@ -155,6 +164,37 @@ class Logics():
         for logic in _logics_instance:
             yield logic
 
+    # ------------------------------------------------------------------------------------
+    #   Following static methods of the class Logics implement the API for logics in shNG
+    # ------------------------------------------------------------------------------------
+
+    @staticmethod
+    def get_logics_dir():
+        """
+        Returns the path of the dirctory, where the user-logics are stored
+        
+        :return: path to logics directory
+        :rtype: str
+        """
+        if _logics_instance == None:
+            return ''
+        else:
+            return _logics_instance._logic_dir
+
+
+    @staticmethod
+    def _get_etc_dir():
+        """
+        Returns the path of the dirctory, where the SmartHomeNG configuration (/etc) is stored
+        
+        :return: path to SmartHomeNG configuration directory
+        :rtype: str
+        """
+        if _logics_instance == None:
+            return ''
+        else:
+            return _logics_instance._etc_dir
+
 
     @staticmethod
     def reload_logics():
@@ -180,10 +220,6 @@ class Logics():
         :return: True: Logic is loaded
         :rtype: bool
         """
-        if _smarthome == None:
-            logger.critical("is_logic_loaded: _smarthome is not initialized")
-            return False
-        
         if Logics.return_logic(name) == None:
             return False
         else:
@@ -215,11 +251,7 @@ class Logics():
         :param name: Name of the section that defines the logic in the configuration file
         :type name: str
         """
-        if _smarthome == None:
-            logger.critical("unload_logic: _smarthome is not initialized")
-            return False
-
-        logger.info("lib.logic: unload_logic: logic = '{}'".format(name))
+        logger.info("Unload Logic: {}".format(name))
         mylogic = Logics.return_logic(name)
         if mylogic == None:
             return False
@@ -229,7 +261,7 @@ class Logics():
         mylogic.crontab = None
 
         # Scheduler entfernen
-        _smarthome.scheduler.remove(name)
+        _logics_instance._sh.scheduler.remove(name)
     
         # watch_items entfernen
         if hasattr(mylogic, 'watch_item'):
@@ -237,11 +269,11 @@ class Logics():
                 mylogic.watch_item = [mylogic.watch_item]
             for entry in mylogic.watch_item:
                 # item hook
-                for item in _smarthome.match_items(entry):
+                for item in _logics_instance._sh.match_items(entry):
                     try:
                         item.remove_logic_trigger(mylogic)
                     except:
-                        logger.error("lib.logic: unload_logic: logic = '{}' - cannot remove logic_triggers".format(name))
+                        logger.error("unload_logic: logic = '{}' - cannot remove logic_triggers".format(name))
         mylogic.watch_item = []
         _logics_instance._delete_logic(name)
         return True
@@ -261,12 +293,15 @@ class Logics():
         :return: Success
         :rtype: bool
         """
-        _config = _logics_instance._read_logics(_smarthome._logic_conf_basename, _smarthome._logic_dir)
-        logger.info("lib.logic: try load_logic ({}): _config = {}".format( name, str(_config) ))
+        if Logics.is_logic_loaded(name):
+            Logics.unload_logic(name)
+
+        _config = _logics_instance._read_logics(_logics_instance._sh._logic_conf_basename, Logics.get_logics_dir())
+        logger.info("load_logic: Try: Logic '{}', _config = {}".format( name, str(_config) ))
         if not (name in _config):
             return False
     
-        logger.info("lib.logic: load_logic ({}): _config = {}".format( name, str(_config) ))
+        logger.info("load_logic: Logic '{}', _config = {}".format( name, str(_config) ))
         return _logics_instance._load_logic(name, _config)
 
 
@@ -281,18 +316,29 @@ class Logics():
         :return: Logic type ('Python', 'Blockly' or None)
         :rtype: str or None
         """
-        # load /etc/logic.yaml
-        conf_filename = os.path.join(_smarthome._etc_dir, 'logic') 
-        config = shyaml.yaml_load_roundtrip(conf_filename)
 
-        filename = config[name]['filename']
-        blocklyname = os.path.splitext(os.path.basename(filename))[0]+'.xml'
         logic_type = 'None'
-        if os.path.isfile(os.path.join(_smarthome._logic_dir, filename)):
-            logic_type = 'Python'
-            if os.path.isfile(os.path.join(_smarthome._logic_dir, blocklyname)):
-                logic_type = 'Blockly'
-        logger.info("lib.logic: return_logictype: name '{}', logic_type '{}'".format(name, logic_type))
+        filename = ''
+        if name in _logics_instance._userlogics:
+            filename = _logics_instance._userlogics[name].get('filename', '')
+        elif name in _logics_instance._systemlogics:
+            filename = _logics_instance._systemlogics[name].get('filename', '')
+        else:
+            logger.info("return_logictype: name {} is not loaded".format(name))
+            # load /etc/logic.yaml if logic is not in the loaded logics
+            conf_filename = os.path.join(Logics._get_etc_dir(), 'logic') 
+            config = shyaml.yaml_load_roundtrip(conf_filename)
+            if name in config:
+                filename = config[name].get('filename', '')
+
+        if filename != '':
+            blocklyname = os.path.splitext(os.path.basename(filename))[0]+'.blockly'
+            if os.path.isfile(os.path.join(Logics.get_logics_dir(), filename)):
+                logic_type = 'Python'
+                if os.path.isfile(os.path.join(Logics.get_logics_dir(), blocklyname)):
+                    logic_type = 'Blockly'
+                    
+        logger.debug("return_logictype: name '{}', filename '{}', logic_type '{}'".format(name, filename, logic_type))
         return logic_type
         
 
@@ -314,12 +360,9 @@ class Logics():
             logic_list = {}
         else:
             logic_list = []
-        if _smarthome == None:
-            logger.critical("update_config_section: _smarthome is not initialized")
-            return logic_list
         
         # load /etc/logic.yaml
-        conf_filename = os.path.join(_smarthome._etc_dir, 'logic') 
+        conf_filename = os.path.join(Logics._get_etc_dir(), 'logic') 
         config = shyaml.yaml_load_roundtrip(conf_filename)
 
         for section in config:
@@ -327,11 +370,11 @@ class Logics():
             filename = config[section]['filename']
             blocklyname = os.path.splitext(os.path.basename(filename))[0]+'.xml'
             logic_type = 'None'
-            if os.path.isfile(os.path.join(_smarthome._logic_dir, filename)):
+            if os.path.isfile(os.path.join(Logics.get_logics_dir(), filename)):
                 logic_type = 'Python'
-                if os.path.isfile(os.path.join(_smarthome._logic_dir, blocklyname)):
+                if os.path.isfile(os.path.join(Logics.get_logics_dir(), blocklyname)):
                     logic_type = 'Blockly'
-            logger.info("lib.logic: get_defined_logics: section '{}', logic_type '{}'".format(section, logic_type))
+            logger.debug("return_defined_logics: section '{}', logic_type '{}'".format(section, logic_type))
             
             if withtype:
                 logic_list[section] = logic_type
@@ -391,15 +434,11 @@ class Logics():
         :rtype: list of lists
         """
         if Logics.return_config_type() != YAML_FILE:
-            logger.error("update_config_section: Editing of configuration only possible with new (yaml) config format")
+            logger.error("read_config_section: Editing of configuration only possible with new (yaml) config format")
             return False
             
-        if _smarthome == None:
-            logger.critical("update_config_section: _smarthome is not initialized")
-            return False
-        
         # load /etc/logic.yaml
-        conf_filename = os.path.join(_smarthome._etc_dir, 'logic') 
+        conf_filename = os.path.join(Logics._get_etc_dir(), 'logic') 
         conf = shyaml.yaml_load_roundtrip(conf_filename)
 
         config_list = []
@@ -435,48 +474,51 @@ class Logics():
         This method creates/updates a section in /etc/logic.yaml. If the section exist, it is cleared
         before new configuration imformation is written to the section
     
-        :param active: True: logic is/should be active
+        :param active: True: logic is/should be active, False: Triggers are not written to /etc/logic.yaml
         :param section: name of section to configure in logics configurationfile
         :param config_list: list of configuration entries. Each entry of this list is a list with three string entries: ['key', 'value', 'comment']
         :type active: bool
         :type section: str
         :type config_list: list of lists
         """
+        if section == '':
+            logger.error("update_config_section: No section name specified. Not updatind logics configuration.")
+            return False
+            
         if Logics.return_config_type() != YAML_FILE:
             logger.error("update_config_section: Editing of configuration only possible with new (yaml) config format")
             return False
             
-        if _smarthome == None:
-            logger.critical("update_config_section: _smarthome is not initialized")
-            return False
-        
         # load /etc/logic.yaml
-        conf_filename = os.path.join(_smarthome._etc_dir, 'logic') 
+        conf_filename = os.path.join(Logics._get_etc_dir(), 'logic') 
         conf = shyaml.yaml_load_roundtrip(conf_filename)
 
         # empty section
         conf[section] = shyaml.get_emptynode()
 
-        if active:
-            # add entries to section
-            for c in config_list:
-                # process config entries
-                key = c[0].strip()
-                value = c[1]
-                comment = c[2]
-
-                if isinstance(value, str):
-                    value = value.strip()
-                    comment = comment.strip()
-                    if value[0] == '[' and value[-1] == ']':
-                        # convert a list of triggers to list, if given as a string
-                        value = ast.literal_eval(value)
-                        comment = ast.literal_eval(comment)
-                    else:
-                        # process single trigger
+        # add entries to section
+        logger.info("update_config_section: section {}".format(section))
+        for c in config_list:
+            # process config entries
+            key = c[0].strip()
+            value = c[1]
+            comment = c[2]
+            logger.info("update_config_section: key {}, value {}, comment {}".format(key, str(value), str(comment)))
+            if isinstance(value, str):
+                value = value.strip()
+                comment = comment.strip()
+                if value[0] == '[' and value[-1] == ']':
+                    # convert a list of triggers to list, if given as a string
+                    value = ast.literal_eval(value)
+                    comment = ast.literal_eval(comment)
+                else:
+                    # process single trigger
+                    if active or (key == 'filename'):
                         conf[section][key] = value
-                        conf[section].yaml_add_eol_comment(comment, key, column=50)
+                        if comment != '':
+                            conf[section].yaml_add_eol_comment(comment, key, column=50)
 
+            if active:
                 if isinstance(value, list):
                     # process a list of triggers
                     conf[section][key] = shyaml.get_commentedseq(value)
@@ -489,6 +531,7 @@ class Logics():
             conf[section] = None
         shyaml.yaml_save_roundtrip(conf_filename, conf, True)
 
+# ------------------------------------------------------------------------------------
 
 class Logic():
     """
@@ -543,17 +586,16 @@ class Logic():
             self._sh.scheduler.trigger(self.name, self, prio=self.prio, by=by, source=source, dest=dest, value=value, dt=dt)
 
     def _generate_bytecode(self):
-        if hasattr(self, 'filename'):
-            if not os.access(self.filename, os.R_OK):
-                logger.warning("{}: Could not access logic file ({}) => ignoring.".format(self.name, self.filename))
+        if hasattr(self, 'pathname'):
+            if not os.access(self.pathname, os.R_OK):
+                logger.warning("{}: Could not access logic file ({}) => ignoring.".format(self.name, self.pathname))
                 return
             try:
-#                code = open(self.filename, encoding='UTF-8').read()
-                f = open(self.filename, encoding='UTF-8')
+                f = open(self.pathname, encoding='UTF-8')
                 code = f.read()
                 f.close()
                 code = code.lstrip('\ufeff')  # remove BOM
-                self.bytecode = compile(code, self.filename, 'exec')
+                self.bytecode = compile(code, self.pathname, 'exec')
             except Exception as e:
                 logger.exception("Exception: {}".format(e))
         else:

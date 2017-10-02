@@ -93,7 +93,7 @@ from lib.constants import (YAML_FILE, CONF_FILE, DEFAULT_FILE)
 # Globals
 #####################################################################
 MODE = 'default'
-VERSION = '1.3a.'
+VERSION = '1.3b.'
 TZ = gettz('UTC')
 try:
     os.chdir(BASE)
@@ -692,7 +692,7 @@ class SmartHome():
 
         DEPRECATED - Use Logics.reload_logics() instead
         """
-        self._logger.warning("Using deprecated function smarthome.reload_logics()")
+        self._logger.warning("Using deprecated function 'smarthome.reload_logics()', called by {} in class {} - use 'Logics.reload_logics()' instead".format(sys._getframe(1).f_code.co_name, sys._getframe(1).f_locals['self'].__class__.__name__))
         for logic in self._logics:
             self._logics[logic]._generate_bytecode()
 
@@ -709,7 +709,7 @@ class SmartHome():
         :return: object of the logic
         :rtype: object
         """
-        self._logger.warning("Using deprecated function smarthome.return_logic()")
+        self._logger.warning("Using deprecated function 'smarthome.return_logic()', called by {} in class {} - use 'Logics.return_logic()' instead".format(sys._getframe(1).f_code.co_name, sys._getframe(1).f_locals['self'].__class__.__name__))
         return self._logics[name]
 
 
@@ -722,7 +722,7 @@ class SmartHome():
         :return: list of logic names
         :rtype: list
         """
-        self._logger.warning("Using deprecated function smarthome.return_logics()")
+        self._logger.warning("Using deprecated function 'smarthome.return_logics()', called by {} in class {} - use 'Logics.return_loaded_logics()' instead".format(sys._getframe(1).f_code.co_name, sys._getframe(1).f_locals['self'].__class__.__name__))
         for logic in self._logics:
             yield logic
 
@@ -858,9 +858,10 @@ class SmartHome():
     # Helper Methods
     #################################################################
     def _maintenance(self):
+        self._logger.debug("_maintenace: Started")
         self._garbage_collection()
         references = sum(self._object_refcount().values())
-        self._logger.debug("Object references: {}".format(references))
+        self._logger.debug("_maintenace: Object references: {}".format(references))
 
     def _excepthook(self, typ, value, tb):
         mytb = "".join(traceback.format_tb(tb))

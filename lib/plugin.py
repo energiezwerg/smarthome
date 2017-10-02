@@ -77,7 +77,7 @@ class Plugins():
         
         for plugin in _conf:
             logger.debug("Plugins, section: {}".format(plugin))
-            plugin_name, self.meta = self._get_pluginname_and_metadata(_conf[plugin])
+            plugin_name, self.meta = self._get_pluginname_and_metadata(plugin, _conf[plugin])
             if self.meta.test_shngcompatibility():
                 classname, classpath = self._get_classname_and_classpath(_conf[plugin], plugin_name)
                 if (classname == '') and (classpath == ''):
@@ -110,7 +110,7 @@ class Plugins():
         del(_conf)  # clean up
         
 
-    def _get_pluginname_and_metadata(self, plg_conf):
+    def _get_pluginname_and_metadata(self, plg_section, plg_conf):
         """
         Return the actual plugin name and the metadata instance
         
@@ -127,8 +127,11 @@ class Plugins():
             classpath = plg_conf.get(KEY_CLASS_PATH,'')
             if classpath != '':
                 plugin_name = classpath.split('.')[len(classpath.split('.'))-1].lower()
-            logger.debug("Plugins __init__: pluginname = '{}', classpath '{}'".format(plugin_name, classpath))
-            meta = Metadata(self._sh, plugin_name, 'plugin', classpath)
+                logger.debug("Plugins __init__: pluginname = '{}', classpath '{}'".format(plugin_name, classpath))
+                meta = Metadata(self._sh, plugin_name, 'plugin', classpath)
+            else:
+                logger.error("Plugin configuration section '{}': Neither 'plugin_name' nor '{}' are defined.".format( plg_section, KEY_CLASS_PATH ))
+                meta = Metadata(self._sh, plugin_name, 'plugin', classpath)
         return (plugin_name, meta)
         
 

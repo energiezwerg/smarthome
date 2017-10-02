@@ -105,7 +105,7 @@ class TestLogics(unittest.TestCase):
         logger.warning('----- Logic Test: 05_test_load_logic')
         self.assertFalse('logic2' in lib.logic.Logics.return_loaded_logics())
         self.assertTrue(lib.logic.Logics.load_logic('logic2'))
-        self.assertFalse(lib.logic.Logics.load_logic('logic2'))
+        self.assertTrue(lib.logic.Logics.load_logic('logic2'))   # A loaded Logic can be reloaded this way (it is unloaded first)
         
 
     def test_06_update_and_read_section(self):
