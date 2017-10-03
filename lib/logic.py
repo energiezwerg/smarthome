@@ -29,18 +29,19 @@ This API enables plugins to configure new logics or change the configuration of 
 
 Each logic is represented by an instance of the class ``Logic``.
 
-The **static** methods of the class Logics implement the API for logics. 
-They can be used the following way: To call eg. **is_logic_loaded()**, use the floowing syntax:
+The methods of the class Logics implement the API for logics. 
+They can be used the following way: To call eg. **enable_logic(name)**, use the following syntax:
 
-    ```python
+.. code-block:: python
+
     from lib.logic import Logics
-    logics = Logics.getinstance()
+    logics = Logics.get_instance()
 
     # to access a method (eg. enable_logic()):
-    b = logics.enable_logic(name)
-    ```
+    logics.enable_logic(name)
 
-:Note: Do not use the functions or variables of the main smarthome object any more. They are deprecated. Use the static methods of the class **Logics** instead.
+
+:Note: Do not use the functions or variables of the main smarthome object any more. They are deprecated. Use the methods of the class **Logics** instead.
 
 :Note: This library is part of the core of SmartHomeNG. Regular plugins should not need to use this API.  It is manily implemented for plugins near to the core like **backend** or **blockly**!
 
@@ -83,6 +84,7 @@ class Logics():
         self.alive = True
         global _logics_instance
         _logics_instance = self
+        
         _config = {}
         self._systemlogics = self._read_logics(envlogicconf, self._env_dir)
         _config.update(self._systemlogics)
@@ -179,13 +181,14 @@ class Logics():
         
         Use it the following way to access the api:
         
-        ```python
-        from lib.logic import Logics
-        logics = Logics.getinstance()
+        .. code-block:: python
 
-        # to access a method (eg. enable_logic()):
-        b = logics.enable_logic(name)
-        ```
+            from lib.logic import Logics
+            logics = Logics.get_instance()
+            
+            # to access a method (eg. enable_logic()):
+            logics.enable_logic(name)
+
         
         :return: logics instance
         :rtype: object of None
