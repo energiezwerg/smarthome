@@ -271,8 +271,8 @@ class Modules():
             from lib.module import Modules
             modules = Modules.get_instance()
             
-            # to access a method (eg. enable_logic()):
-            moddules.xxx()
+            # to access a method (eg. xxx()):
+            modules.xxx()
 
         
         :return: logics instance

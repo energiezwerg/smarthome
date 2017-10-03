@@ -28,6 +28,17 @@
 """
 This library implements loading and starting of plugins of SmartHomeNG.
 
+The methods of the class Plugins implement the API for plugins. 
+They can be used the following way: To call eg. **xxx()**, use the following syntax:
+
+.. code-block:: python
+
+        from lib.plugin import Plugins
+        plugins = Plugins.get_instance()
+        
+        # to access a method (eg. xxx()):
+        moddules.xxx()
+
 
 :Warning: This library is part of the core of SmartHomeNG. It **should not be called directly** from plugins!
 
@@ -46,6 +57,9 @@ from lib.metadata import Metadata
 logger = logging.getLogger(__name__)
 
 
+_plugins_instance = None    # Pointer to the initialized instance of the Plugins class (for use by static methods)
+
+
 class Plugins():
     """
     Plugin loader Class. Parses config file and creates a worker thread for each plugin
@@ -61,6 +75,8 @@ class Plugins():
     
     def __init__(self, smarthome, configfile):
         self._sh = smarthome
+        global _plugins_instance
+        _plugins_instance = self
 
         # until Backend plugin is modified
         if os.path.isfile(configfile+ YAML_FILE):
@@ -229,11 +245,39 @@ class Plugins():
         return duplicate
         
         
-    # ---------------------------------------------------------------------------------
 
     def __iter__(self):
         for plugin in self._plugins:
             yield plugin
+
+    # ------------------------------------------------------------------------------------
+    #   Following (static) methods of the class Plugins implement the API for plugins in shNG
+    # ------------------------------------------------------------------------------------
+
+    @staticmethod
+    def get_instance():
+        """
+        Returns the instance of the Plugins class, to be used to access the plugin-api
+        
+        Use it the following way to access the api:
+        
+        .. code-block:: python
+
+            from lib.plugin import Plugins
+            plugins = Plugins.get_instance()
+            
+            # to access a method (eg. xxx()):
+            plugins.xxx()
+
+        
+        :return: logics instance
+        :rtype: object of None
+        """
+        if _plugins_instance == None:
+            return None
+        else:
+            return _plugins_instance
+
 
     def start(self):
         logger.info('Start plugins')
