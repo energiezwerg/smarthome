@@ -205,7 +205,7 @@ class Logics():
         are not loaded from the configuration, so the triggers that where active before the
         reload remain active.
         """
-        for logic in self._logics:
+        for logic in _logics_instance._sh._logics:
             _logics_instance[logic]._generate_bytecode()
 
 
@@ -239,6 +239,98 @@ class Logics():
         """
         
         return _logics_instance[name]
+
+
+    @staticmethod
+    def is_logic_enabled(name):
+        """
+        Returns True, if the logic is enabled
+        """
+        mylogic = Logics.return_logic(name)
+        return mylogic.enabled
+
+
+    @staticmethod
+    def enable_logic(name):
+        """
+        Enable a logic
+        """
+        mylogic = Logics.return_logic(name)
+        mylogic.enable()
+        return mylogic.enabled
+    
+    
+    @staticmethod
+    def disable_logic(name):
+        """
+        Disable a logic
+        """
+        mylogic = Logics.return_logic(name)
+        mylogic.disable()
+        return mylogic.enabled
+    
+    
+    @staticmethod
+    def toggle_logic(name):
+        """
+        Toggle a logic (Invert the enabled/disabled state)
+        """
+        mylogic = Logics.return_logic(name)
+        if mylogic.enabled:
+            mylogic.disable()
+        else:
+            mylogic.enable()
+        return mylogic.enabled
+    
+    
+    @staticmethod
+    def trigger_logic(name, by='unknown'):
+        """
+        Trigger a logic
+        """
+        logger.debug("trigger_logic: Trigger logic = '{}'".format(name))
+        if name in Logics.return_loaded_logics():
+            _logics_instance._sh.trigger(name, by='Backend')
+        else:
+            logger.warning("trigger_logic: Logic '{}' not found/loaded".format(name))
+
+
+    @staticmethod
+    def is_userlogic(name):
+        """
+        Returns True if userlogic and False if systemlogic or unknown 
+        """
+        try:
+            pathname = str(Logics.return_logic(name).pathname)
+        except:
+            return False
+        return os.path.basename(os.path.dirname(pathname)) == 'logics'
+        
+
+    @staticmethod
+    def load_logic(name):
+        """
+        Load a specified logic
+        
+        Load a logic as defined in the configuration section. After loading the logic's code,
+        the defined schedules and/or triggers adre set.
+        
+        :param name: Name of the logic (name of the configuration section)
+        :type name: str
+        
+        :return: Success
+        :rtype: bool
+        """
+        if Logics.is_logic_loaded(name):
+            Logics.unload_logic(name)
+
+        _config = _logics_instance._read_logics(_logics_instance._sh._logic_conf_basename, Logics.get_logics_dir())
+        logger.info("load_logic: Try: Logic '{}', _config = {}".format( name, str(_config) ))
+        if not (name in _config):
+            return False
+    
+        logger.info("load_logic: Logic '{}', _config = {}".format( name, str(_config) ))
+        return _logics_instance._load_logic(name, _config)
 
 
     @staticmethod
@@ -280,32 +372,6 @@ class Logics():
 
 
     @staticmethod
-    def load_logic(name):
-        """
-        Load a specified logic
-        
-        Load a logic as defined in the configuration section. After loading the logic's code,
-        the defined schedules and/or triggers adre set.
-        
-        :param name: Name of the logic (name of the configuration section)
-        :type name: str
-        
-        :return: Success
-        :rtype: bool
-        """
-        if Logics.is_logic_loaded(name):
-            Logics.unload_logic(name)
-
-        _config = _logics_instance._read_logics(_logics_instance._sh._logic_conf_basename, Logics.get_logics_dir())
-        logger.info("load_logic: Try: Logic '{}', _config = {}".format( name, str(_config) ))
-        if not (name in _config):
-            return False
-    
-        logger.info("load_logic: Logic '{}', _config = {}".format( name, str(_config) ))
-        return _logics_instance._load_logic(name, _config)
-
-
-    @staticmethod
     def return_logictype(name):
         """
         Returns the type of a specified logic (Python, Blockly, None)
@@ -320,7 +386,11 @@ class Logics():
         logic_type = 'None'
         filename = ''
         if name in _logics_instance._userlogics:
-            filename = _logics_instance._userlogics[name].get('filename', '')
+            try:
+                filename = _logics_instance._userlogics[name].get('filename', '')
+            except:
+                logger.warning("return_logictype: _logics_instance._userlogics[name] = '{}'".format(str(_logics_instance._userlogics[name])))
+                logger.warning("return_logictype: _logics_instance._userlogics = '{}'".format(str(_logics_instance._userlogics)))
         elif name in _logics_instance._systemlogics:
             filename = _logics_instance._systemlogics[name].get('filename', '')
         else:
@@ -510,22 +580,33 @@ class Logics():
                 if value[0] == '[' and value[-1] == ']':
                     # convert a list of triggers to list, if given as a string
                     value = ast.literal_eval(value)
-                    comment = ast.literal_eval(comment)
+                    if comment != '':
+                        comment = ast.literal_eval(comment)
                 else:
                     # process single trigger
                     if active or (key == 'filename'):
                         conf[section][key] = value
                         if comment != '':
                             conf[section].yaml_add_eol_comment(comment, key, column=50)
-
+            elif isinstance(value, int) or isinstance(value, bool) or isinstance(value, float):
+                comment = comment.strip()
+                # process single trigger
+                if active:
+                    conf[section][key] = value
+                    if comment != '':
+                        conf[section].yaml_add_eol_comment(comment, key, column=50)
+            else:
+                logger.warning("update_config_section: unsupported datatype for key '{}'".format(key))
+                
             if active:
                 if isinstance(value, list):
                     # process a list of triggers
                     conf[section][key] = shyaml.get_commentedseq(value)
                     listvalue = True
                     for i in range(len(value)):
-                        if comment[i] != '':
-                            conf[section][key].yaml_add_eol_comment(comment[i], i, column=50)
+                        if comment != '':
+                            if comment[i] != '':
+                                conf[section][key].yaml_add_eol_comment(comment[i], i, column=50)
 
         if conf[section] == shyaml.get_emptynode():
             conf[section] = None

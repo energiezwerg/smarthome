@@ -674,7 +674,7 @@ class SmartHome():
     #################################################################
     def return_plugins(self):
         """
-        Returns a list with the names of all loaded plugins
+        Returns a list with the instances of all loaded plugins
 
         :return: list of plugin names
         :rtype: list

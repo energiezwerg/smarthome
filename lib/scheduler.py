@@ -189,10 +189,7 @@ class Scheduler(threading.Thread):
         :return:
         """
         self._lock.acquire()
-        try:
-            name = self.check_caller(name)
-        except:
-            pass
+        name = self.check_caller(name)
         logger.debug("remove scheduler entry with name:{0}".format(name))
         if name in self._scheduler:
             del(self._scheduler[name])
@@ -200,12 +197,15 @@ class Scheduler(threading.Thread):
 
     def check_caller(self, name):
         stack = inspect.stack()
-        obj = stack[2][0].f_locals["self"]
-        if isinstance(obj, SmartPlugin):
-            iname = obj.get_instance_name()
-            if iname != '':
-                if not str(name).endswith('_' + iname):
-                    name = name + '_' + obj.get_instance_name()
+        try:
+            obj = stack[2][0].f_locals["self"]
+            if isinstance(obj, SmartPlugin):
+                iname = obj.get_instance_name()
+                if iname != '':
+                    if not str(name).endswith('_' + iname):
+                        name = name + '_' + obj.get_instance_name()
+        except:
+            pass
         return name
 
     def return_next(self, name):
