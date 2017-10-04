@@ -37,7 +37,7 @@ They can be used the following way: To call eg. **xxx()**, use the following syn
         plugins = Plugins.get_instance()
         
         # to access a method (eg. xxx()):
-        moddules.xxx()
+        plugins.xxx()
 
 
 :Warning: This library is part of the core of SmartHomeNG. It **should not be called directly** from plugins!

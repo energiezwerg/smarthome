@@ -330,7 +330,9 @@ class Logics():
         Load a specified logic
         
         Load a logic as defined in the configuration section. After loading the logic's code,
-        the defined schedules and/or triggers adre set.
+        the defined schedules and/or triggers are set.
+        
+        If a logic is already loaded, it is unloaded and then reloaded.
         
         :param name: Name of the logic (name of the configuration section)
         :type name: str
@@ -342,8 +344,8 @@ class Logics():
             self.unload_logic(name)
 
         _config = self._read_logics(self._sh._logic_conf_basename, self.get_logics_dir())
-        logger.info("load_logic: Try: Logic '{}', _config = {}".format( name, str(_config) ))
         if not (name in _config):
+            logger.warning("load_logic: FAILED: Logic '{}', _config = {}".format( name, str(_config) ))
             return False
     
         logger.info("load_logic: Logic '{}', _config = {}".format( name, str(_config) ))
@@ -587,7 +589,7 @@ class Logics():
             if isinstance(value, str):
                 value = value.strip()
                 comment = comment.strip()
-                if value[0] == '[' and value[-1] == ']':
+                if value != '' and value[0] == '[' and value[-1] == ']':
                     # convert a list of triggers to list, if given as a string
                     value = ast.literal_eval(value)
                     if comment != '':

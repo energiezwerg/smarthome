@@ -26,6 +26,9 @@ New helper-functions are going to be implemented in this library.
 
 """
 
+import logging
+logger = logging.getLogger(__name__)
+
 import re
 import hashlib
 
@@ -351,14 +354,64 @@ class Utils(object):
         :param string: string to check for quotes
         :type string: str
 
-        :return: sting with quotes stripped
+        :return: string with quotes stripped
         :rtype: str
         """
         if type(string) is str:
             string = string.strip()
             if len(string) >= 2:
-                if string[0] in ['"', "'"]:  # check if string starts with ' or "
-                    if string[0] == string[-1]:  # and end with it
+                if string[0] in ['"', "'"]:        # check if string starts with ' or "
+                    if string[-1] == string[0]:    # and end with it
                         if string.count(string[0]) == 2:  # if they are the only one
                             string = string[1:-1]  # remove them
         return string
+
+
+    @staticmethod
+    def strip_square_brackets(string):
+        """
+        If a string contains square brackets as first and last character, this function
+        returns the string without the brackets, otherwise the string is returned unchanged
+        
+        :param string: string to check for square brackets
+        :type string: str
+
+        :return: string with square brackets stripped
+        :rtype: str
+        """
+        if type(string) is str:
+            string = string.strip()
+            if len(string) >= 2:
+                if string[0] == '[':           # check if string starts with [
+                    if string[-1] == ']':      # and end with ]
+                        string = string[1:-1]  # remove them
+        return string
+
+
+    @staticmethod
+    def strip_quotes_fromlist(string):
+        """
+        If a string representation of a list contains quotes as first and last character of
+        a list entry, this function returns the string representation without the qoutes,
+        otherwise the string is returned unchanged
+        
+        :param string: string representation of a list to check for quotes
+        :type string: str
+
+        :return: string representation with square quotes stripped
+        :rtype: str
+        """
+        if type(string) is str:
+            string = string.strip()
+            if len(string) >= 2:
+                string2 = Utils.strip_square_brackets(string)
+                if string2 != string:
+                    str_list = string2.split(',')
+                    string3 = ''
+                    for s in str_list:
+                        if string3 != '':
+                            string3 += ', '
+                        string3 += Utils.strip_quotes(s)
+                    string = string3
+        return string
+
