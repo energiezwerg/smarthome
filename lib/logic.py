@@ -53,6 +53,7 @@ import ast
 
 import lib.config
 import lib.shyaml as shyaml
+from lib.utils import Utils
 from lib.constants import PLUGIN_PARSE_LOGIC
 from lib.constants import (YAML_FILE, CONF_FILE)
 
@@ -270,7 +271,7 @@ class Logics():
         Returns True, if the logic is enabled
         """
         mylogic = self.return_logic(name)
-        return mylogic.enabled
+        return mylogic.is_enabled()
 
 
     def enable_logic(self, name):
@@ -279,6 +280,8 @@ class Logics():
         """
         mylogic = self.return_logic(name)
         mylogic.enable()
+#        self.set_config_section_key(name, 'enabled', True)
+        self.set_config_section_key(name, 'enabled', None)
         return mylogic.enabled
     
     
@@ -288,6 +291,7 @@ class Logics():
         """
         mylogic = self.return_logic(name)
         mylogic.disable()
+        self.set_config_section_key(name, 'enabled', False)
         return mylogic.enabled
     
     
@@ -299,6 +303,7 @@ class Logics():
         if mylogic.enabled:
             mylogic.disable()
         else:
+            logger.info("toggle_logic: name = {}".format(name))
             mylogic.enable()
         return mylogic.enabled
     
@@ -309,7 +314,10 @@ class Logics():
         """
         logger.debug("trigger_logic: Trigger logic = '{}'".format(name))
         if name in self.return_loaded_logics():
-            self._sh.trigger(name, by='Backend')
+            if self.is_logic_enabled(name):
+                self._sh.trigger(name, by='Backend')
+            else:
+                logger.warning("trigger_logic: Logic '{}' not triggered because it is disabled".format(name))
         else:
             logger.warning("trigger_logic: Logic '{}' not found/loaded".format(name))
 
@@ -549,6 +557,23 @@ class Logics():
         return config_list
         
         
+    def set_config_section_key(self, section, key, value):
+        """
+        """
+        # load /etc/logic.yaml
+        conf_filename = os.path.join(self._get_etc_dir(), 'logic') 
+        conf = shyaml.yaml_load_roundtrip(conf_filename)
+        
+        if value == None:
+            del conf[section][key]
+        else:
+            conf[section][key] = value
+
+        # save /etc/logic.yaml
+        shyaml.yaml_save_roundtrip(conf_filename, conf, True)
+        return
+        
+        
     def update_config_section(self, active, section, config_list):
         """
         Update file /etc/logic.yaml
@@ -633,7 +658,7 @@ class Logic():
     def __init__(self, smarthome, name, attributes):
         self._sh = smarthome
         self.name = name
-        self.enabled = True if 'enabled' not in attributes else bool(attributes['enabled'])
+        self.enabled = True if 'enabled' not in attributes else Utils.to_bool(attributes['enabled'])
         self.crontab = None
         self.cycle = None
         self.prio = 3
@@ -642,7 +667,8 @@ class Logic():
         self.__methods_to_trigger = []
         if attributes != 'None':
             for attribute in attributes:
-                vars(self)[attribute] = attributes[attribute]
+                if attribute != 'enabled':
+                    vars(self)[attribute] = attributes[attribute]
             self.prio = int(self.prio)
             self._generate_bytecode()
         else:
@@ -666,13 +692,20 @@ class Logic():
         """
         Enables the loaded logic
         """
-        self.enabled =True
+        self.enabled = True
 
     def disable(self):
         """
         Disables the loaded logic
         """
         self.enabled = False
+
+    def is_enabled(self):
+        """
+        Is the loaded logic enabled?
+        """
+        return self.enabled
+        
 
     def trigger(self, by='Logic', source=None, value=None, dest=None, dt=None):
         if self.enabled:
