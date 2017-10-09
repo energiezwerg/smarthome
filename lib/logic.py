@@ -49,6 +49,8 @@ They can be used the following way: To call eg. **enable_logic(name)**, use the 
 import logging
 import os
 
+from collections import OrderedDict
+
 import ast
 
 import lib.config
@@ -266,6 +268,44 @@ class Logics():
         return self[name]
 
 
+    def get_logic_info(self, name, ordered=False):
+        """
+        Returns a dict with information about the logic
+        
+        :param name: name of the logic to get info for
+        :type name: str
+
+        :return: information about the logic
+        :rtype: dict
+        """
+        if ordered:
+            info = OrderedDict()
+        else:
+            info = {}
+        logic = self.return_logic(name)
+        if logic == None:
+            return info
+
+        info['name'] = logic.name
+        info['enabled'] = logic.enabled
+
+        if self._sh.scheduler.return_next(logic.name):
+            info['next_exec'] = self._sh.scheduler.return_next(logic.name).strftime('%Y-%m-%d %H:%M:%S%z')
+
+        info['cycle'] = logic.cycle
+        info['crontab'] = logic.crontab
+        try:
+            info['watch_item'] = logic.watch_item
+        except:
+            info['watch_item'] = ''
+        info['userlogic'] = self.is_userlogic(logic.name)
+        info['logictype'] = self.return_logictype(logic.name)
+        info['filename'] = logic.filename
+        info['pathname'] = logic.pathname
+#        info['watch_item_list'] = []
+        return info
+        
+
     def is_logic_enabled(self, name):
         """
         Returns True, if the logic is enabled
@@ -418,6 +458,7 @@ class Logics():
                 logger.warning("return_logictype: self._userlogics = '{}'".format(str(self._userlogics)))
         elif name in self._systemlogics:
             filename = self._systemlogics[name].get('filename', '')
+            logic_type = 'Python'
         else:
             logger.info("return_logictype: name {} is not loaded".format(name))
             # load /etc/logic.yaml if logic is not in the loaded logics
@@ -601,6 +642,7 @@ class Logics():
         conf = shyaml.yaml_load_roundtrip(conf_filename)
 
         # empty section
+        keep_enabled = conf[section].get('enabled', None)
         conf[section] = shyaml.get_emptynode()
 
         # add entries to section
@@ -645,9 +687,27 @@ class Logics():
                             if comment[i] != '':
                                 conf[section][key].yaml_add_eol_comment(comment[i], i, column=50)
 
+        if keep_enabled != None:
+            conf[section]['enabled'] = keep_enabled
+            
         if conf[section] == shyaml.get_emptynode():
             conf[section] = None
         shyaml.yaml_save_roundtrip(conf_filename, conf, True)
+
+
+    def delete_logic(self, name):
+        """
+        Deletes a complete logic
+        
+        The python code and the section from the configuration file /etc/logic.yaml are
+        removed. If it is a blockly logic, the blockly code is removed too.
+        
+        :param name: name of the logic
+        :type name: str
+        """
+        logger.info("delete_logic: Hier fehlt die Methode zum löschen der Logik '{}'".format(name))
+        return
+        
 
 # ------------------------------------------------------------------------------------
 
