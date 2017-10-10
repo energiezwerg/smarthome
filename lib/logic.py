@@ -704,9 +704,43 @@ class Logics():
         
         :param name: name of the logic
         :type name: str
+        
+        :return: True, if deletion fas successful
+        :rtype: bool
         """
-        logger.info("delete_logic: Hier fehlt die Methode zum löschen der Logik '{}'".format(name))
-        return
+        logger.warning("delete_logic: This is a dummy routine. It simulates the deletion of logic '{}'".format(name))
+        
+        # load /etc/logic.yaml
+        conf_filename = os.path.join(self._get_etc_dir(), 'logic') 
+        conf = shyaml.yaml_load_roundtrip(conf_filename)
+
+        section = conf.get(name, None)
+        if section is None:
+            logger.warning("delete_logic: Section '{}' not found in logic configuration.".format(name))
+            return False
+
+        filename = section.get('filename', None)
+        if filename is None:
+            logger.warning("delete_logic: Filename of logic is not defined in section '{}' of logic configuration.".format(name))
+        else:
+            blocklyname = os.path.join(self.get_logics_dir(), os.path.splitext(os.path.basename(filename))[0]+'.blockly')
+            filename = os.path.join(self._logic_dir, filename)
+            if not os.path.isfile(filename):
+                logger.warning("delete_logic: Filename '{}' not found".format(filename))
+
+            # Deletion of the parts of the logic
+            if os.path.isfile(blocklyname):
+                logger.warning("delete_logic: Blockly-Logic file '{}' should be deleted here".format(blocklyname))
+                # os.remove(blocklyname)
+            logger.warning("delete_logic: Logic file '{}' should be deleted here".format(filename))
+            # os.remove(filename)
+            
+        logger.warning("delete_logic: Section '{}' with content {} from configurtion should be deleted here".format(name, dict(section)))
+#        del conf[section]
+        
+        # save /etc/logic.yaml
+        shyaml.yaml_save_roundtrip(conf_filename, conf, True)
+        return True
         
 
 # ------------------------------------------------------------------------------------
