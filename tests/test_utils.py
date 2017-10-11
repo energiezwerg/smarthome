@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2016 Christian Strassburg  c.strassburg@gmx.de
+#  Copyright 2016- Christian Strassburg              c.strassburg@gmx.de
+#  Copyright 2017- Serge Wagener                     serge@wagener.family
 #########################################################################
 #  This file is part of SmartHomeNG
 #  https://github.com/smarthomeNG/smarthome
@@ -55,7 +56,7 @@ class LibUtilsTest(unittest.TestCase):
         self.assertFalse(Utils.is_mac(""))
         self.assertFalse(Utils.is_mac(self))
 
-    def test_is_ip(self):
+    def test_is_ipv4(self):
         self.assertFalse(Utils.is_ip(""))
         self.assertFalse(Utils.is_ip(None))
         self.assertFalse(Utils.is_ip(self))
@@ -72,6 +73,19 @@ class LibUtilsTest(unittest.TestCase):
         self.assertFalse(Utils.is_ip("561.256.256.256"))
         self.assertFalse(Utils.is_ip("161.256.256"))
         self.assertTrue(Utils.is_ip("10.0.0.173"))
+
+    def test_is_ipv6(self):
+        self.assertFalse(Utils.is_ipv6(""))
+        self.assertFalse(Utils.is_ipv6(None))
+        self.assertFalse(Utils.is_ipv6(self))
+
+        self.assertTrue(Utils.is_ipv6("1:2:3:4:5:6:7:8"))
+        self.assertTrue(Utils.is_ipv6("2001:db8:a0b:12f0::1"))
+        self.assertTrue(Utils.is_ipv6("FF02:0:0:0:0:0:0:2"))
+        self.assertTrue(Utils.is_ipv6("F::1"))
+        self.assertFalse(Utils.is_ipv6("G::1"))
+        self.assertFalse(Utils.is_ipv6("AB:02:3008:8CFD:AB:02:3008:8CFD:02")) # tpp long
+        self.assertFalse(Utils.is_ipv6("AB:02:3008:8CFD::02::8CFD")) # can't have two ::
 
     def test_is_timeframe(self):
         self.assertFalse(Utils.is_timeframe(""))

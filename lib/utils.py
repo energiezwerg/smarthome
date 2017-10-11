@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2016 Christian Strassburg  c.strassburg@gmx.de
+#  Copyright 2016- Christian Strassburg              c.strassburg@gmx.de
+#  Copyright 2017- Serge Wagener                     serge@wagener.family
 #########################################################################
 #  This file is part of SmartHomeNG
 #
@@ -27,34 +28,14 @@ New helper-functions are going to be implemented in this library.
 """
 
 import logging
-logger = logging.getLogger(__name__)
-
 import re
 import hashlib
+import ipaddress
 
-IP_REGEX = re.compile(r"""
-        ^
-        (?:
-          # Dotted variants:
-          (?:
-            # Decimal 1-255 (no leading 0's)
-            [3-9]\d?|2(?:5[0-5]|[0-4]?\d)?|1\d{0,2}|0
-          |
-            0x0*[0-9a-f]{1,2}  # Hexadecimal 0x0 - 0xFF (possible leading 0's)
-          )
-          (?:                  # Repeat 0-3 times, separated by a dot
-            \.
-            (?:
-              [3-9]\d?|2(?:5[0-5]|[0-4]?\d)?|1\d{0,2}|0
-            |
-              0x0*[0-9a-f]{1,2}
-            )
-          ){0,3}
-        )
-        $
-    """, re.VERBOSE | re.IGNORECASE)
+logger = logging.getLogger(__name__)
 
 TIMEFRAME_REGEX = re.compile(r'^(\d+)([ihdwmy]?)$', re.VERBOSE | re.IGNORECASE)
+
 
 class Utils(object):
 
@@ -65,11 +46,11 @@ class Utils(object):
 
         :param mac: MAC address
         :type string: str
-        
+
         :return: True if value is a MAC
         :rtype: bool
         """
-        
+
         mac = str(mac)
         if len(mac) == 12:
             for c in mac:
@@ -94,36 +75,68 @@ class Utils(object):
     @staticmethod
     def is_ip(string):
         """
-        Checks if a string is a valid ip-address (v4)
-        
-        The ip-address has is checked to have the format with four decimal numbers divided by three dots (example: 10.0.0.250)
-        
+        FUTURE: Checks if a string is a valid ip-address (v4 or v6)
+        ACTUAL: redirects to ipv4 only check for backwards compatibility
+
         :param string: String to check
         :type string: str
-        
+
         :return: True if an ip, false otherwise.
         :rtype: bool
         """
-        
+
+        return Utils.is_ipv4(string)
+
+    @staticmethod
+    def is_ipv4(string):
+        """
+        Checks if a string is a valid ip-address (v4)
+
+        :param string: String to check
+        :type string: str
+
+        :return: True if an ip, false otherwise.
+        :rtype: bool
+        """
+
         try:
-            return bool(IP_REGEX.search(string))
-        except TypeError:
+            ipaddress.IPv4Address(string)
+            return True
+        except ipaddress.AddressValueError:
+            return False
+
+    @staticmethod
+    def is_ipv6(string):
+        """
+        Checks if a string is a valid ip-address (v6)
+
+        :param string: String to check
+        :type string: str
+
+        :return: True if an ipv6, false otherwise.
+        :rtype: bool
+        """
+
+        try:
+            ipaddress.IPv6Address(string)
+            return True
+        except ipaddress.AddressValueError:
             return False
 
     @staticmethod
     def is_hostname(string):
         """
         Checks if a string is a valid hostname
-        
+
         The hostname has is checked to have a valid format
-        
+
         :param string: String to check
         :type string: str
-        
+
         :return: True if a hostname, false otherwise.
         :rtype: bool
         """
-        
+
         try:
             return bool(re.match("^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$", string))
         except TypeError:
@@ -137,7 +150,7 @@ class Utils(object):
         Unit identifiers are: i for minutes, h for hours, d for days,
         w for weeks, m for months, y for years. If omitted milliseconds
         are assumed.
-        
+
         :param string: String to check.
         :type string: str
 
@@ -154,12 +167,12 @@ class Utils(object):
     def is_knx_groupaddress(groupaddress):
         """
         Checks if the passed string is a valid knx goup address
-        
+
         The checked format is:
            main group (0-31 = 5 bits)
            middle group (0-7 = 3 bits)
            subgroup (0-255 = 8 bits)
-        
+
         :param groupaddress: String to check
         :type groupaddress: str
 
@@ -169,7 +182,7 @@ class Utils(object):
         g = groupaddress.split('/')
         if len(g) != 3:
             return False
-        if not( Utils.is_int(g[0]) and Utils.is_int(g[1]) and Utils.is_int(g[2]) ):
+        if not(Utils.is_int(g[0]) and Utils.is_int(g[1]) and Utils.is_int(g[2])):
             return False
         if (int(g[0]) < 0) or (int(g[0]) > 31):
             return False
@@ -178,7 +191,7 @@ class Utils(object):
         if (int(g[2]) < 0) or (int(g[2]) > 255):
             return False
         return True
-    
+
     @staticmethod
     def to_timeframe(value):
         """
@@ -191,7 +204,7 @@ class Utils(object):
         :return: True if cant be converted and is true, False otherwise.
         :rtype: bool
         """
-        
+
         minute = 60 * 1000
         hour = 60 * minute
         day = 24 * hour
@@ -216,14 +229,14 @@ class Utils(object):
     def is_int(string):
         """
         Checks if a string is a integer.
-        
+
         :param string: String to check.
         :type string: str
-        
+
         :return: True if a cast to int works, false otherwise.
         :rtype: bool
         """
-        
+
         try:
             int(string)
             return True
@@ -236,7 +249,7 @@ class Utils(object):
     def is_float(string):
         """
         Checks if a string is a float.
-        
+
         :param string: String to check.
         :type string: str
 
@@ -256,28 +269,28 @@ class Utils(object):
     def to_bool(value, default='exception'):
         """
         Converts a value to boolean.
-        
+
         Raises exception if value is a string and can't be converted and if no default value is given
         Case is ignored. These string values are allowed:
         - True: 'True', "1", "true", "yes", "y", "t", "on"
         - False: "", "0", "faLse", "no", "n", "f", "off"
         Non-string values are passed to bool constructor.
-        
+
         :param value : value to convert
         :param default: optional, value to return if value can not be parsed, if default is not set this method throws an exception
         :type value: str, object, int, ...
         :type value: str, object, int, ...
-        
+
         :return: True if cant be converted and is true, False otherwise.
         :rtype: bool
         """
         # -> should it be possible to cast strings: 0 -> False and non-0 -> True (analog to integer values)?
-        if type(value) == type(''):
-            if value.lower() in ("yes", "y", "true",  "t", "1","on"):
+        if isinstance(value, str):
+            if value.lower() in ("yes", "y", "true", "t", "1", "on"):
                 return True
-            if value.lower() in ("no",  "n", "false", "f", "0", "off", ""):
+            if value.lower() in ("no", "n", "false", "f", "0", "off", ""):
                 return False
-            if default=='exception':
+            if default == 'exception':
                 raise Exception('Invalid value for boolean conversion: ' + value)
             else:
                 return default
@@ -287,10 +300,10 @@ class Utils(object):
     def create_hash(plaintext):
         """
         Create hash (currently sha512) for given plaintext value
-        
+
         :param plaintext: plaintext
         :type plaintext: str
-        
+
         :return: hash of plaintext, lowercase letters
         :rtype: str
         """
@@ -303,10 +316,10 @@ class Utils(object):
     def is_hash(value):
         """
         Check if value is a valid hash (currently sha512) value
-        
+
         :param value: value to check
         :type value: str
-        
+
         :return: True: given value can be a sha512 hash, False: given value can not be a sha512 hash
         :rtype: bool
         """
@@ -327,7 +340,7 @@ class Utils(object):
         """
         Check if given plaintext password matches the hashed password
         An empty password is always rejected
-        
+
         :param pwd_to_check: plaintext password to check
         :type pwd_to_check: str
         :param hashed_pwd: hashed password
@@ -350,7 +363,7 @@ class Utils(object):
         """
         If a string contains quotes as first and last character, this function
         returns the string without quotes, otherwise the string is returned unchanged
-        
+
         :param string: string to check for quotes
         :type string: str
 
@@ -366,13 +379,12 @@ class Utils(object):
                             string = string[1:-1]  # remove them
         return string
 
-
     @staticmethod
     def strip_square_brackets(string):
         """
         If a string contains square brackets as first and last character, this function
         returns the string without the brackets, otherwise the string is returned unchanged
-        
+
         :param string: string to check for square brackets
         :type string: str
 
@@ -387,14 +399,13 @@ class Utils(object):
                         string = string[1:-1]  # remove them
         return string
 
-
     @staticmethod
     def strip_quotes_fromlist(string):
         """
         If a string representation of a list contains quotes as first and last character of
         a list entry, this function returns the string representation without the qoutes,
         otherwise the string is returned unchanged
-        
+
         :param string: string representation of a list to check for quotes
         :type string: str
 
@@ -414,4 +425,3 @@ class Utils(object):
                         string3 += Utils.strip_quotes(s)
                     string = string3
         return string
-
