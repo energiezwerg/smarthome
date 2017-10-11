@@ -464,8 +464,9 @@ class Logics():
             # load /etc/logic.yaml if logic is not in the loaded logics
             conf_filename = os.path.join(self._get_etc_dir(), 'logic') 
             config = shyaml.yaml_load_roundtrip(conf_filename)
-            if name in config:
-                filename = config[name].get('filename', '')
+            if config is not None:
+                if name in config:
+                    filename = config[name].get('filename', '')
 
         if filename != '':
             blocklyname = os.path.splitext(os.path.basename(filename))[0]+'.blockly'
@@ -500,21 +501,22 @@ class Logics():
         conf_filename = os.path.join(self._get_etc_dir(), 'logic') 
         config = shyaml.yaml_load_roundtrip(conf_filename)
 
-        for section in config:
-            logic_dict = {}
-            filename = config[section]['filename']
-            blocklyname = os.path.splitext(os.path.basename(filename))[0]+'.xml'
-            logic_type = 'None'
-            if os.path.isfile(os.path.join(self.get_logics_dir(), filename)):
-                logic_type = 'Python'
-                if os.path.isfile(os.path.join(self.get_logics_dir(), blocklyname)):
-                    logic_type = 'Blockly'
-            logger.debug("return_defined_logics: section '{}', logic_type '{}'".format(section, logic_type))
+        if config is not None:
+            for section in config:
+                logic_dict = {}
+                filename = config[section]['filename']
+                blocklyname = os.path.splitext(os.path.basename(filename))[0]+'.xml'
+                logic_type = 'None'
+                if os.path.isfile(os.path.join(self.get_logics_dir(), filename)):
+                    logic_type = 'Python'
+                    if os.path.isfile(os.path.join(self.get_logics_dir(), blocklyname)):
+                        logic_type = 'Blockly'
+                logger.debug("return_defined_logics: section '{}', logic_type '{}'".format(section, logic_type))
             
-            if withtype:
-                logic_list[section] = logic_type
-            else:
-                logic_list.append(section)
+                if withtype:
+                    logic_list[section] = logic_type
+                else:
+                    logic_list.append(section)
 
         return logic_list
         
@@ -574,27 +576,28 @@ class Logics():
         conf = shyaml.yaml_load_roundtrip(conf_filename)
 
         config_list = []
-        section_dict = conf.get(section, {})
-#        logger.warning("read_config_section: read_config_section('{}') = {}".format(section, str(section_dict) ))
-        for key in section_dict:
-            if isinstance(section_dict[key], list):
-                value = section_dict[key]
-                comment = []            # 'Comment 6: ' + loaded['a']['c'].ca.items[0][0].value      'Comment 7: ' + loaded['a']['c'].ca.items[1][0].value
-                for i in range(len(value)):
-                    c = section_dict[key].ca.items[i][0].value
+        if config is not None:
+            section_dict = conf.get(section, {})
+#            logger.warning("read_config_section: read_config_section('{}') = {}".format(section, str(section_dict) ))
+            for key in section_dict:
+                if isinstance(section_dict[key], list):
+                    value = section_dict[key]
+                    comment = []            # 'Comment 6: ' + loaded['a']['c'].ca.items[0][0].value      'Comment 7: ' + loaded['a']['c'].ca.items[1][0].value
+                    for i in range(len(value)):
+                        c = section_dict[key].ca.items[i][0].value
+                        if c[0] == '#':
+                            c = c[1:]
+                    
+                        comment.append(c.strip())
+                else:
+                    value = section_dict[key]
+                    c = section_dict.ca.items[key][2].value    # if not list: loaded['a'].ca.items['b'][2].value 
                     if c[0] == '#':
                         c = c[1:]
-                    
-                    comment.append(c.strip())
-            else:
-                value = section_dict[key]
-                c = section_dict.ca.items[key][2].value    # if not list: loaded['a'].ca.items['b'][2].value 
-                if c[0] == '#':
-                        c = c[1:]
-                comment = c.strip()
+                    comment = c.strip()
             
-#            logger.warning("-> read_config_section: section_dict['{}'] = {}, comment = '{}'".format(key, str(section_dict[key]), comment ))
-            config_list.append([key, value, comment])
+#                logger.warning("-> read_config_section: section_dict['{}'] = {}, comment = '{}'".format(key, str(section_dict[key]), comment ))
+                config_list.append([key, value, comment])
         return config_list
         
         
@@ -640,7 +643,9 @@ class Logics():
         # load /etc/logic.yaml
         conf_filename = os.path.join(self._get_etc_dir(), 'logic') 
         conf = shyaml.yaml_load_roundtrip(conf_filename)
-
+        if conf is None:
+            conf = shyaml.get_emptynode()
+            
         # empty section
         try:
             keep_enabled = conf[section].get('enabled', None)
@@ -698,6 +703,18 @@ class Logics():
         shyaml.yaml_save_roundtrip(conf_filename, conf, True)
 
 
+    def _count_filename_uses(self, conf, filename):
+        """
+        Count the number of logics (sections) that reference this filename
+        """
+        count = 0
+        for name in conf:
+            section = conf.get(name, None)
+            fn = section.get('filename', None)
+            if fn.lower() == filename.lower():
+                count += 1
+        return count
+    
     def delete_logic(self, name):
         """
         Deletes a complete logic
@@ -731,19 +748,23 @@ class Logics():
         if filename is None:
             logger.warning("delete_logic: Filename of logic is not defined in section '{}' of logic configuration.".format(name))
         else:
+            count = self._count_filename_uses(conf, filename)
             blocklyname = os.path.join(self.get_logics_dir(), os.path.splitext(os.path.basename(filename))[0]+'.blockly')
             filename = os.path.join(self._logic_dir, filename)
 
-            # Deletion of the parts of the logic
-            if os.path.isfile(blocklyname):
-                os.remove(blocklyname)
-                logger.warning("delete_logic: Blockly-Logic file '{}' deleted".format(blocklyname))
-            if os.path.isfile(filename):
-                os.remove(filename)
-                logger.warning("delete_logic: Logic file '{}' deleted".format(filename))
+            if count < 2:
+                # Deletion of the parts of the logic
+                if os.path.isfile(blocklyname):
+                    os.remove(blocklyname)
+                    logger.warning("delete_logic: Blockly-Logic file '{}' deleted".format(blocklyname))
+                if os.path.isfile(filename):
+                    os.remove(filename)
+                    logger.warning("delete_logic: Logic file '{}' deleted".format(filename))
+            else:
+                logger.warning("delete_logic: Skipped deletion of logic file '{}' because it is used by {} other logic(s)".format(filename, count-1))
         
         del conf[name]
-        logger.warning("delete_logic: Section '{}' from configurtion deleted".format(name))
+        logger.warning("delete_logic: Section '{}' from configuration deleted".format(name))
         
         # save /etc/logic.yaml
         shyaml.yaml_save_roundtrip(conf_filename, conf, True)

@@ -250,7 +250,7 @@ def yaml_load_roundtrip(filename):
         sdata = sdata.replace('\n', '\n\n')
         y = yaml.load(sdata, yaml.RoundTripLoader)
     except Exception as e:
-        logger.error("yaml_load_roundtrip: YAML-file load error:  \n'%s'" % (e))
+        logger.error("yaml_load_roundtrip: YAML-file load error: '%s'" % (e))
         y = {} 
     return y
 
@@ -285,7 +285,8 @@ def yaml_save_roundtrip(filename, data, create_backup=False):
 #        outfile.write( sdata )
     
     if create_backup:
-        shutil.copy2(filename+YAML_FILE, filename+'.bak')
+        if os.path.isfile(filename+YAML_FILE):
+            shutil.copy2(filename+YAML_FILE, filename+'.bak')
         
     sdata = _format_yaml_dump2( sdata )
     with open(filename+YAML_FILE, 'w') as outfile:
