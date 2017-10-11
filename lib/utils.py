@@ -31,6 +31,7 @@ import logging
 import re
 import hashlib
 import ipaddress
+import socket
 
 logger = logging.getLogger(__name__)
 
@@ -141,6 +142,44 @@ class Utils(object):
             return bool(re.match("^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$", string))
         except TypeError:
             return False
+
+    @staticmethod
+    def get_local_ipv4_address():
+        """
+        Get's local ipv4 address
+        TODO: What if more than one interface present ?
+
+        :return: IPv4 address as a string
+        :rtype: string
+        """
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            s.connect(('10.255.255.255', 1))
+            IP = s.getsockname()[0]
+        except:
+            IP = '127.0.0.1'
+        finally:
+            s.close()
+        return IP
+
+    @staticmethod
+    def get_local_ipv6_address():
+        """
+        Get's local ipv6 address
+        TODO: What if more than one interface present ?
+
+        :return: IPv6 address as a string
+        :rtype: string
+        """
+        s = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
+        try:
+            s.connect(('2001:4860:4860::8888', 1))
+            IP = s.getsockname()[0]
+        except:
+            IP = '::1'
+        finally:
+            s.close()
+        return IP
 
     @staticmethod
     def is_timeframe(string):
