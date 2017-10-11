@@ -642,7 +642,10 @@ class Logics():
         conf = shyaml.yaml_load_roundtrip(conf_filename)
 
         # empty section
-        keep_enabled = conf[section].get('enabled', None)
+        try:
+            keep_enabled = conf[section].get('enabled', None)
+        except:
+            keep_enabled = None
         conf[section] = shyaml.get_emptynode()
 
         # add entries to section
