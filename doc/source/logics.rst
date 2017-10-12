@@ -61,7 +61,7 @@ to guess where the forth script resides in and when it is called by SmartHomeNG.
        usage_warning: 500
 
 
-Within the ``etc/logic.conf``(deprecated) / ``etc/logic.conf`` the following attributes control the execution of a logic:
+Within the ``etc/logic.conf`` (deprecated) / ``etc/logic.conf`` the following attributes control the execution of a logic:
 
 watch_item
 ~~~~~~~~~~
@@ -72,10 +72,13 @@ The list of items will be monitored for changes.
 
    #conf
    watch_item = house.alarm | garage.alarm
+   
+.. code-block:: yaml
+
    #yaml
    watch_item:
-  - house.alarm
-  - garage.alarm
+   - house.alarm
+   - garage.alarm
 
 
 Any change of the item **house.alarm** and **garage.alarm** triggers the execution of the given logic.
@@ -84,6 +87,9 @@ It is possible to use an asterisk * for any path part (like a regular expression
 .. code-block:: text
 
    watch_item = *.door  #conf
+
+.. code-block:: yaml
+
    watch_item: '*.door' #yaml
 
 this will trigger **garage.door** and also **house.door** but *not* **house.hallway.door**
@@ -142,7 +148,7 @@ CONF (deprecated):
 
 YAML:
 
-.. code-block:: text
+.. code-block:: yaml
 
     crontab: 17:00<sunset        # sunset, but not bevor 17:00 (locale time)
     crontab: sunset<20:00        # sunset, but not after 20:00 (locale time)
@@ -161,12 +167,18 @@ CONF (deprecated):
 
 YAML:
 
-.. code-block:: text
+.. code-block:: yaml
 
    crontab:
      - init = 'start'
      - sunrise-2
      - 0 5 * *
+
+enabled
+~~~~~~~
+
+``enabled``can be set to False to disable the execution of the logic after loading. The status 
+of the logic (enabled/disabled) can be controlled via the plugins ``backend`` or ``cli``   
 
 prio
 ~~~~

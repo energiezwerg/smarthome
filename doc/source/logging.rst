@@ -9,6 +9,10 @@ The way to configure logging within Python is described `here`_.
 
 .. _`here`: https://docs.python.org/3/howto/logging.html
 
+A `Best Practices` description for logging in SmartHomeNG can be found `here`_ (in German).
+
+.. _`here`: https://github.com/smarthomeNG/smarthome/wiki/Logging----Best-Practices
+
 .. code-block:: YAML
    :caption: Example for `etc/logging.yaml`
 
@@ -69,7 +73,8 @@ Logging of single plugins
 -------------------------
 Within the logging the configuration can be set seperately for single plugins, logics and libs.
 
-Sample for knx plugin::
+.. code-block:: YAML
+   :caption: Sample for knx plugin
 
    loggers:
        plugins.knx:
