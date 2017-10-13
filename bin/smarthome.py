@@ -520,13 +520,19 @@ class SmartHome():
                 except Exception as e:
                     pass
     
-#        time.sleep(5)
         if threading.active_count() > 1:
+            header_logged = False
             for thread in threading.enumerate():
-                if thread.name != 'Main' and thread.name != '_TimeoutMonitor':
-                    self._logger.info("Thread: {}, still alive".format(thread.name))
+                if thread.name != 'Main' and thread.name[0] !=  '_':
+                    if not header_logged:
+                        self._logger.warning("The following threads have not been terminated propperly by their plugins (please report to the plugin's author):")
+                        header_logged = True
+                    self._logger.warning("-Thread: {}, still alive".format(thread.name))
+            if header_logged:
+                self._logger.warning("SmartHomeNG stopped")
+        else:
+            self._logger.info("SmartHomeNG stopped")
 
-        self._logger.info("SmartHomeNG stopped")
         lib.daemon.remove_pidfile(PIDFILE)
 
         logging.shutdown()
