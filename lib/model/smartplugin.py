@@ -44,6 +44,21 @@ class SmartPlugin(SmartObject, Utils):
     logger = logging.getLogger(__name__)
     
     
+    def get_fullname(self):
+        """
+        return the full name of the plugin (instancename & shortname)
+        
+        :note: Only available in SmartHomeNG versions v1.3c and up
+        
+        :return: full name of the plugin
+        :rtype: str
+        """
+        if self.get_instance_name() == '':
+            return self.get_shortname()
+        else:
+            return self.get_instance_name() + '@' + self.get_shortname()
+                
+        
     def get_shortname(self):
         """
         return the shortname of the plugin (name of it's directory)

@@ -722,6 +722,10 @@ class Logics():
         The python code and the section from the configuration file /etc/logic.yaml are
         removed. If it is a blockly logic, the blockly code is removed too.
         
+        If a code file is references by more than the logic that is being deleted, the code
+        file will not be deleted. It will only be deleted when the last logic referencing
+        this code file is being deleted.
+        
         :param name: name of the logic
         :type name: str
         

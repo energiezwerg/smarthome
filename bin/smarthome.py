@@ -93,7 +93,7 @@ from lib.constants import (YAML_FILE, CONF_FILE, DEFAULT_FILE)
 # Globals
 #####################################################################
 MODE = 'default'
-VERSION = '1.3b.'
+VERSION = '1.3c.'
 TZ = gettz('UTC')
 try:
     os.chdir(BASE)
@@ -488,18 +488,20 @@ class SmartHome():
         """
         
         self.alive = False
-        self._logger.info("Number of Threads: {0}".format(threading.activeCount()))
+        self._logger.info("stop: Number of Threads: {}".format(threading.activeCount()))
+
         for item in self.__items:
             self.__item_dict[item]._fading = False
         try:
             self.scheduler.stop()
         except:
             pass
+
         try:
             self._plugins.stop()
         except:
             pass
-            
+
         if not(lib.utils.Utils.to_bool(self._use_modules) == False):
             try:
                 self._modules.stop()
@@ -510,21 +512,44 @@ class SmartHome():
             self.connections.close()
         except:
             pass
+
         for thread in threading.enumerate():
-            try:
-                thread.join(1)
-            except:
-                pass
+            if thread.name != 'Main':
+                try:
+                    thread.join(1)
+                except Exception as e:
+                    pass
+    
+#        time.sleep(5)
         if threading.active_count() > 1:
             for thread in threading.enumerate():
-                self._logger.info("Thread: {}, still alive".format(thread.name))
-        else:
-            self._logger.info("SmartHomeNG stopped")
+                if thread.name != 'Main' and thread.name != '_TimeoutMonitor':
+                    self._logger.info("Thread: {}, still alive".format(thread.name))
+
+        self._logger.info("SmartHomeNG stopped")
         lib.daemon.remove_pidfile(PIDFILE)
 
         logging.shutdown()
         exit()
 
+
+    def list_threads(self, txt):
+    
+        cp_threads = 0
+        http_threads = 0
+        for thread in threading.enumerate():
+            if thread.name.find("CP Server") == 0:
+                cp_threads += 1
+            if thread.name.find("HTTPServer") == 0:
+                http_threads +=1
+
+        self._logger.info("list_threads: {} - Number of Threads: {} (CP Server={}, HTTPServer={}".format(txt, threading.activeCount(), cp_threads, http_threads))
+        for thread in threading.enumerate():
+            if thread.name.find("CP Server") != 0 and thread.name.find("HTTPServer") != 0:
+                self._logger.info("list_threads: {} - Thread {}".format(txt, thread.name))
+        return
+        
+        
     #################################################################
     # Item Methods
     #################################################################
@@ -981,7 +1006,7 @@ if __name__ == '__main__':
         print("{0}".format(VERSION))
         exit(0)
     elif args.stop:
-        lib.daemon.kill(PIDFILE)
+        lib.daemon.kill(PIDFILE, 30)
         exit(0)
     elif args.debug:
         MODE = 'debug'

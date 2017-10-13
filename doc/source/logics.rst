@@ -37,7 +37,8 @@ to guess where the forth script resides in and when it is called by SmartHomeNG.
         crontab = init | 0,5,10,15,20,25,30,35,40,45,50,55 * * * # run at start and every 5 minutes
         usage_warning = 500
 
-.. code-block:: text
+
+.. code-block:: yaml
    :caption:  /usr/local/smarthome/etc/logic.yaml
    
    InitSmarthomeNG:
@@ -69,16 +70,17 @@ watch_item
 The list of items will be monitored for changes.
 
 .. code-block:: text
+   :caption: conf format
 
-   #conf
    watch_item = house.alarm | garage.alarm
    
-.. code-block:: yaml
 
-   #yaml
+.. code-block:: yaml
+   :caption: yaml format
+
    watch_item:
-   - house.alarm
-   - garage.alarm
+    - house.alarm
+    - garage.alarm
 
 
 Any change of the item **house.alarm** and **garage.alarm** triggers the execution of the given logic.
