@@ -184,6 +184,9 @@ class SmartHome():
         self.version = VERSION
         self.connections = []
 
+        # check config files
+        self.checkConfigFiles()
+        
         # setup logging
         self.initLogging()
 
@@ -196,9 +199,6 @@ class SmartHome():
         signal.signal(signal.SIGINT, self.stop)
         signal.signal(signal.SIGTERM, self.stop)
 
-        # check config files
-        self.checkConfigFiles()
-        
         #############################################################
         # Check Time
         while datetime.date.today().isoformat() < '2016-03-16':  # XXX update date
@@ -312,7 +312,7 @@ class SmartHome():
         The check is done for the files that have to exist (with some content) or SmartHomeNG won't start:
         
         - smarthome.yaml / smarthome.conf
-        - logging.yaml / logging.conf
+        - logging.yaml
         - plugin.yaml / plugin.conf
         
         """
