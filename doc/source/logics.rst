@@ -58,7 +58,7 @@ to guess where the forth script resides in and when it is called by SmartHomeNG.
        # 'crontab: run at start and every 5 minutes'
        crontab:
          - init
-         - 0,5,10,15,20,25,30,35,40,45,50,55 * * *
+         - '0,5,10,15,20,25,30,35,40,45,50,55 * * *'
        usage_warning: 500
 
 
@@ -70,13 +70,13 @@ watch_item
 The list of items will be monitored for changes.
 
 .. code-block:: text
-   :caption: conf format
+   :caption:  Configuration in CONF syntax (deprecated)
 
    watch_item = house.alarm | garage.alarm
    
 
 .. code-block:: yaml
-   :caption: yaml format
+   :caption:  Configuration in YAML syntax
 
    watch_item:
     - house.alarm
@@ -87,12 +87,15 @@ Any change of the item **house.alarm** and **garage.alarm** triggers the executi
 It is possible to use an asterisk * for any path part (like a regular expression):
 
 .. code-block:: text
+   :caption:  Configuration in CONF syntax (deprecated)
 
-   watch_item = *.door  #conf
+   watch_item = *.door
+
 
 .. code-block:: yaml
+   :caption:  Configuration in YAML syntax
 
-   watch_item: '*.door' #yaml
+   watch_item: '*.door'
 
 this will trigger **garage.door** and also **house.door** but *not* **house.hallway.door**
 
@@ -102,16 +105,30 @@ cycle
 This will trigger the given logic in a recurring way
 
 .. code-block:: text
+   :caption:  Configuration in CONF syntax (deprecated)
 
-   cycle = 60 #conf
-   cycle: 60  #yaml
+   cycle = 60
+
+
+.. code-block:: yaml
+   :caption:  Configuration in YAML syntax
+
+   cycle: 60
+
 
 Optional use a parameter
 
 .. code-block:: text
+   :caption:  Configuration in CONF syntax (deprecated)
 
-   cycle = 60 = 100 #conf
-   cycle: 60 = 100  #yaml
+   cycle = 60 = 100
+
+
+.. code-block:: yaml
+   :caption:  Configuration in YAML syntax
+
+   cycle: 60 = 100
+   
 
 This triggers the logic every 60 minutes and passes the values 100 to the logic.
 The object trigger['value'] can be queried and will here result in '100'
@@ -139,42 +156,42 @@ at sunset. For sunset / sunrise you could provide:
 -  an offset in minutes specified by a 'm' e.g. crontab = sunset-10m
 -  a boundary for the execution
 
-CONF (deprecated):
 
 .. code-block:: text
+   :caption:  Configuration in CONF syntax (deprecated)
 
     crontab = 17:00<sunset        # sunset, but not bevor 17:00 (locale time)
     crontab = sunset<20:00        # sunset, but not after 20:00 (locale time)
     crontab = 17:00<sunset<20:00  # sunset, beetween 17:00 and 20:00
     crontab = 15 * * * = 50       # Calls the logic with trigger['value'] # == 50
 
-YAML:
 
 .. code-block:: yaml
+   :caption:  Configuration in YAML syntax
 
-    crontab: 17:00<sunset        # sunset, but not bevor 17:00 (locale time)
-    crontab: sunset<20:00        # sunset, but not after 20:00 (locale time)
-    crontab: 17:00<sunset<20:00  # sunset, beetween 17:00 and 20:00
-    crontab: 15 * * * = 50       # Calls the logic with trigger['value'] # == 50
+    crontab: '17:00<sunset'        # sunset, but not bevor 17:00 (locale time)
+    crontab: sunset<20:00          # sunset, but not after 20:00 (locale time)
+    crontab: '17:00<sunset<20:00'  # sunset, beetween 17:00 and 20:00
+    crontab: '15 * * * = 50'       # Calls the logic with trigger['value'] # == 50
 	
 
 
 Combine several options with ``|``:
 
-CONF (deprecated):
 
 .. code-block:: text
+   :caption:  Configuration in CONF syntax (deprecated)
 
    crontab = init = 'start' | sunrise-2 | 0 5 * *
 
-YAML:
 
 .. code-block:: yaml
+   :caption:  Configuration in YAML syntax
 
    crontab:
-     - init = 'start'
+     - init = start
      - sunrise-2
-     - 0 5 * *
+     - '0 5 * *'
 
 enabled
 ~~~~~~~
