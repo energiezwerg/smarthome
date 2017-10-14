@@ -460,7 +460,7 @@ class SmartHome():
         #############################################################
         # Start Connections
         #############################################################
-        self.scheduler.add('Connections', self.connections.check, cycle=10, offset=0)
+        self.scheduler.add('sh.connections', self.connections.check, cycle=10, offset=0)
 
         #############################################################
         # Start Plugins
@@ -471,7 +471,7 @@ class SmartHome():
         #############################################################
         # Execute Maintenance Method
         #############################################################
-        self.scheduler.add('sh.gc', self._maintenance, prio=8, cron=['init', '4 2 * *'], offset=0)
+        self.scheduler.add('sh.garbage_collection', self._maintenance, prio=8, cron=['init', '4 2 * *'], offset=0)
 
         #############################################################
         # Main Loop

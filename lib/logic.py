@@ -72,6 +72,9 @@ class Logics():
     """
     
     _config_type = None
+    _logicname_prefix = 'logics.'
+#    _logicname_prefix = ''
+
 
     def __init__(self, smarthome, userlogicconf, envlogicconf):
         logger.info('Start Logics')
@@ -131,7 +134,7 @@ class Logics():
         logic = Logic(self._sh, name, config[name])
         if hasattr(logic, 'bytecode'):
             self._logics[name] = logic
-            self._sh.scheduler.add(name, logic, logic.prio, logic.crontab, logic.cycle)
+            self._sh.scheduler.add(self._logicname_prefix+name, logic, logic.prio, logic.crontab, logic.cycle)
         else:
             return False
         # plugin hook
@@ -289,8 +292,8 @@ class Logics():
         info['name'] = logic.name
         info['enabled'] = logic.enabled
 
-        if self._sh.scheduler.return_next(logic.name):
-            info['next_exec'] = self._sh.scheduler.return_next(logic.name).strftime('%Y-%m-%d %H:%M:%S%z')
+        if self._sh.scheduler.return_next(self._logicname_prefix+logic.name):
+            info['next_exec'] = self._sh.scheduler.return_next(self._logicname_prefix+logic.name).strftime('%Y-%m-%d %H:%M:%S%z')
 
         info['cycle'] = logic.cycle
         info['crontab'] = logic.crontab
@@ -419,7 +422,7 @@ class Logics():
         mylogic.crontab = None
 
         # Scheduler entfernen
-        self._sh.scheduler.remove(name)
+        self._sh.scheduler.remove(self._logicname_prefix+name)
     
         # watch_items entfernen
         if hasattr(mylogic, 'watch_item'):
@@ -781,6 +784,9 @@ class Logic():
     """
     Class for the representation of a loaded logic
     """
+
+    _logicname_prefix = 'logics.'
+
     def __init__(self, smarthome, name, attributes):
         self._sh = smarthome
         self.name = name
@@ -812,7 +818,7 @@ class Logic():
 
     def __call__(self, caller='Logic', source=None, value=None, dest=None, dt=None):
         if self.enabled:
-            self._sh.scheduler.trigger(self.name, self, prio=self.prio, by=caller, source=source, dest=dest, value=value, dt=dt)
+            self._sh.scheduler.trigger(self._logicname_prefix+self.name, self, prio=self.prio, by=caller, source=source, dest=dest, value=value, dt=dt)
 
     def enable(self):
         """
@@ -835,7 +841,7 @@ class Logic():
 
     def trigger(self, by='Logic', source=None, value=None, dest=None, dt=None):
         if self.enabled:
-            self._sh.scheduler.trigger(self.name, self, prio=self.prio, by=by, source=source, dest=dest, value=value, dt=dt)
+            self._sh.scheduler.trigger(self._logicname_prefix+self.name, self, prio=self.prio, by=by, source=source, dest=dest, value=value, dt=dt)
 
     def _generate_bytecode(self):
         if hasattr(self, 'pathname'):

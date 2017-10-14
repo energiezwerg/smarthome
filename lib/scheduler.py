@@ -186,7 +186,6 @@ class Scheduler(threading.Thread):
         the instance name is added to the name
         
         :param name: scheduler entry name to remove
-        :return:
         """
         self._lock.acquire()
         name = self.check_caller(name)
