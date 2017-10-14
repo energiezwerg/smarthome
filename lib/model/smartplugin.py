@@ -21,6 +21,8 @@
 #  along with SmartHomeNG  If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
+#import lib.scheduler
+
 from lib.model.smartobject import SmartObject
 from lib.utils import Utils
 
@@ -379,6 +381,32 @@ class SmartPlugin(SmartObject, Utils):
         :note: This method should to be overwritten by the plugin implementation.
         """
         pass
+
+
+    def scheduler_add(self, name, obj, prio=3, cron=None, cycle=None, value=None, offset=None, next=None):
+        """
+        This methods adds a scheduler entry
+        
+        A plugin identifiction is added to the scheduler name
+         
+        The parameters are identical to the scheduler.add method from lib.scheduler
+        """
+        name = 'plugins.'+self.get_fullname()+'.'+name
+        self.logger.warning("scheduler_add: name = {}".format(name))
+        self._sh.scheduler.add(name, obj, prio, cron, cycle, value, offset, next)
+
+
+    def scheduler_remove(self, name):
+        """
+        This methods rmoves a scheduler entry
+        
+        A plugin identifiction is added to the scheduler name
+         
+        The parameters are identical to the scheduler.remove method from lib.scheduler
+        """
+        name = 'plugins.'+self.get_fullname()+'.'+name
+        self.logger.warning("scheduler_add: name = {}".format(name))
+        self._sh.scheduler.remove(name)
 
 
     def run(self):

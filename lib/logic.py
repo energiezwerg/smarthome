@@ -72,8 +72,7 @@ class Logics():
     """
     
     _config_type = None
-    _logicname_prefix = 'logics.'
-#    _logicname_prefix = ''
+    _logicname_prefix = 'logics.'     # prefix for scheduler names
 
 
     def __init__(self, smarthome, userlogicconf, envlogicconf):
