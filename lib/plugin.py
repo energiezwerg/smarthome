@@ -389,7 +389,7 @@ class PluginWrapper(threading.Thread):
         if params_ok == True:
             if plugin_params != {}:
                 # initialize parameters the old way
-                argstring = ",".join(["{}={}".format(name, "'"+str(plugin_params.get(name,''))+"'") for name in arglist])
+                argstring = ",".join(["{}={}".format(name, '"'+str(plugin_params.get(name,''))+'"') for name in arglist])
             # initialize parameters the new way: Define a dict within the instance
             self.get_implementation()._parameters = plugin_params
             self.get_implementation()._metadata = self.meta
