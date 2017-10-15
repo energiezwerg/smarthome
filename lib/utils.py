@@ -28,7 +28,6 @@ New helper-functions are going to be implemented in this library.
 """
 
 import logging
-logger = logging.getLogger(__name__)
 
 import re
 import hashlib

@@ -874,6 +874,7 @@ class Item():
                  "type": self._type,
                  "attributes": self.conf,
                  "children": self.get_children_path() }
+                 
 # alternative method to get all class members
 #    @staticmethod
 #    def get_members(instance):

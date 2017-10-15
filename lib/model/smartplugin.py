@@ -43,6 +43,8 @@ class SmartPlugin(SmartObject, Utils):
     _shortname = ''     #: Shortname of the plugin; is initialized during loading of the plugin; :Warning: Don't change it
     _classname = ''     #: Classname of the plugin; is initialized during loading of the plugin; :Warning: Don't change it
 
+    _pluginname_prefix = 'plugins.'
+
     logger = logging.getLogger(__name__)
     
     
@@ -58,7 +60,8 @@ class SmartPlugin(SmartObject, Utils):
         if self.get_instance_name() == '':
             return self.get_shortname()
         else:
-            return self.get_instance_name() + '@' + self.get_shortname()
+#            return self.get_instance_name() + '@' + self.get_shortname()
+            return  self.get_shortname() + '_' + self.get_instance_name()
                 
         
     def get_shortname(self):
@@ -391,9 +394,11 @@ class SmartPlugin(SmartObject, Utils):
          
         The parameters are identical to the scheduler.add method from lib.scheduler
         """
-        name = 'plugins.'+self.get_fullname()+'.'+name
-        self.logger.warning("scheduler_add: name = {}".format(name))
-        self._sh.scheduler.add(name, obj, prio, cron, cycle, value, offset, next)
+        if name != '':
+            name = '.'+name
+        name = self._pluginname_prefix+self.get_fullname()+name
+        self.logger.debug("scheduler_add: name = {}".format(name))
+        self._sh.scheduler.add(name, obj, prio, cron, cycle, value, offset, next, from_smartplugin=True)
 
 
     def scheduler_remove(self, name):
@@ -404,9 +409,11 @@ class SmartPlugin(SmartObject, Utils):
          
         The parameters are identical to the scheduler.remove method from lib.scheduler
         """
-        name = 'plugins.'+self.get_fullname()+'.'+name
-        self.logger.warning("scheduler_add: name = {}".format(name))
-        self._sh.scheduler.remove(name)
+        if name != '':
+            name = '.'+name
+        name = self._pluginname_prefix+self.get_fullname()+name
+        self.logger.debug("scheduler_add: name = {}".format(name))
+        self._sh.scheduler.remove(name, from_smartplugin=True)
 
 
     def run(self):
