@@ -92,19 +92,11 @@ from lib.constants import (YAML_FILE, CONF_FILE, DEFAULT_FILE)
 #####################################################################
 # Globals
 #####################################################################
+import bin.shngversion
+
 MODE = 'default'
-VERSION = '1.3c.'
 TZ = gettz('UTC')
-try:
-    os.chdir(BASE)
-    commit = subprocess.check_output(['git', 'describe', '--always'], stderr=subprocess.STDOUT).decode().strip('\n')
-    VERSION += commit
-    branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], stderr=subprocess.STDOUT).decode().strip('\n')
-    if branch != 'master':
-        VERSION += ".dev"
-except Exception as e:
-    print(e)
-    VERSION += '0.man'
+VERSION = bin.shngversion.get_shng_version()
 
 
 #####################################################################
@@ -1046,3 +1038,4 @@ if __name__ == '__main__':
     # Starting SmartHomeNG
     sh = SmartHome(extern_conf_dir=extern_conf_dir)
     sh.start()
+    
