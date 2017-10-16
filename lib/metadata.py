@@ -315,7 +315,9 @@ class Metadata():
         if param in self._paramlist:
             typ = self.get_parameter_type(param)
             if (typ == 'list') and (not isinstance(value, list)):
-                result = [value]
+                result = Utils.string_to_list(value)
+#            if (typ == 'list'):
+#                logger.warning("_expand_listvalues: value = >{}<, type(value) = >{}<, result = >{}<, type(result) = >{}<".format(value, type(value), result, type(result)))
         return result
 
 
@@ -591,7 +593,7 @@ class Metadata():
         for param in self._paramlist:
             value = Utils.strip_quotes(args.get(param))
             if value == None:
-                if self.parameters[param].get('mandatory'):
+                if (self.parameters[param] is not None) and self.parameters[param].get('mandatory'):
                     logger.error(self._log_premsg+"'{}' is mandatory, but was not found in /etc/{}".format(param, self._addon_type+YAML_FILE))
                     allparams_ok = False
                 else:

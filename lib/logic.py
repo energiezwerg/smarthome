@@ -578,7 +578,7 @@ class Logics():
         conf = shyaml.yaml_load_roundtrip(conf_filename)
 
         config_list = []
-        if config is not None:
+        if conf is not None:
             section_dict = conf.get(section, {})
 #            logger.warning("read_config_section: read_config_section('{}') = {}".format(section, str(section_dict) ))
             for key in section_dict:

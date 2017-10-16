@@ -419,6 +419,28 @@ class Utils(object):
                             string = string[1:-1]  # remove them
         return string
 
+
+    @staticmethod
+    def string_to_list(string):
+        """
+        """
+        if isinstance(string, list):
+            return string
+        hl = Utils.strip_square_brackets(string).split(',')
+        rl = []
+        for e in hl:
+            er = e.strip()
+            if Utils.strip_quotes(er) != er:
+                er = Utils.strip_quotes(er)
+            else:
+                if er.find('.') != -1:
+                    er=float(er)
+                else:
+                    er=int(er)
+            rl.append(er)
+        return rl
+
+
     @staticmethod
     def strip_square_brackets(string):
         """
