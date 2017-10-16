@@ -60,7 +60,7 @@ class MockSmartHome():
 
 
     def __init__(self):
-        VERSION = '1.3a.'
+        VERSION = '1.3c.'
         VERSION += '0.man'
         self.version = VERSION
         self.__logs = {}
