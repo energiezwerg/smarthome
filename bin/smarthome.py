@@ -334,8 +334,9 @@ class SmartHome():
         The check is done for the files that have to exist (with some content) or SmartHomeNG won't start:
         
         - smarthome.yaml / smarthome.conf
-        - logging.yaml / logging.conf
+        - logging.yaml
         - plugin.yaml / plugin.conf
+        - module.yaml / module.conf
         
         """
         configs = ['logging', 'smarthome', 'module', 'plugin']
@@ -343,8 +344,8 @@ class SmartHome():
         for c in configs:
             default = os.path.join(self._base_dir, 'etc', c + YAML_FILE + DEFAULT_FILE)
             conf_basename = os.path.join(self._etc_dir, c)
-            if not (os.path.isfile(conf_basename + YAML_FILE)) and not (
-                    os.path.isfile(conf_basename + CONF_FILE)):
+            if((c == 'logging' and not (os.path.isfile(conf_basename + YAML_FILE))) or
+               (c != 'logging' and not (os.path.isfile(conf_basename + YAML_FILE)) and not (os.path.isfile(conf_basename + CONF_FILE)))):
                 if os.path.isfile(default):
                     shutil.copy2(default, conf_basename + YAML_FILE)
 
