@@ -108,7 +108,7 @@ class Plugins():
                     instance = self._get_instancename(_conf[plugin])
                     dummy = self._test_duplicate_pluginconfiguration(plugin, classname, instance)
                     try:
-                        plugin_thread = PluginWrapper(smarthome, plugin, classname, classpath, args, instance, self.meta)
+                        plugin_thread = PluginWrapper(smarthome, plugin, classname, classpath, args, instance, self.meta, plugin_name)
                         if plugin_thread._init_complete == True:
                             try:
                                 self._plugins.append(plugin_thread.plugin)
@@ -137,18 +137,23 @@ class Plugins():
         :rtype: string, object
         """
         plugin_name = plg_conf.get('plugin_name','').lower()
+        plugin_version = plg_conf.get('plugin_version','').lower()
+        if plugin_version != '':
+            plugin_version = '._pv_' + plugin_version.replace('.','_')
         if plugin_name != '':
-            meta = Metadata(self._sh, plugin_name, 'plugin')
+            meta = Metadata(self._sh, (plugin_name+plugin_version).replace('.',os.sep), 'plugin')
         else:
             classpath = plg_conf.get(KEY_CLASS_PATH,'')
             if classpath != '':
                 plugin_name = classpath.split('.')[len(classpath.split('.'))-1].lower()
+                if plugin_name.startswith('_pv'):
+                    plugin_name = classpath.split('.')[len(classpath.split('.'))-2].lower()
                 logger.debug("Plugins __init__: pluginname = '{}', classpath '{}'".format(plugin_name, classpath))
-                meta = Metadata(self._sh, plugin_name, 'plugin', classpath)
+                meta = Metadata(self._sh, plugin_name, 'plugin', (classpath+plugin_version).replace('.',os.sep))
             else:
                 logger.error("Plugin configuration section '{}': Neither 'plugin_name' nor '{}' are defined.".format( plg_section, KEY_CLASS_PATH ))
                 meta = Metadata(self._sh, plugin_name, 'plugin', classpath)
-        return (plugin_name, meta)
+        return (plugin_name+plugin_version, meta)
         
 
     def _get_conf_args(self, plg_conf):
@@ -184,6 +189,10 @@ class Plugins():
         :rtype: str, str
         """
         classname = plg_conf.get(KEY_CLASS_NAME,'')
+        plugin_version = plg_conf.get('plugin_version','').lower()
+        if plugin_version != '':
+            plugin_version = '._pv_' + plugin_version.replace('.','_')
+
         if classname == '':
             classname = self.meta.get_string('classname')
         try:
@@ -193,8 +202,9 @@ class Plugins():
                 classpath = ''
             else:
                 classpath = 'plugins.' + plugin_name
-        return (classname, classpath)
-        
+        logger.warning("_get_classname_and_classpath: plugin_name = {}, classpath = {}, classname = {}".format(plugin_name, classpath, classname))
+        return (classname, classpath+plugin_version)
+
 
     def _get_instancename(self, plg_conf):
         """
@@ -329,6 +339,8 @@ class PluginWrapper(threading.Thread):
     :param classpath: Path to the Python file containing the class
     :param args: Parameter as specified in the configuration file (etc/plugin.yaml)
     :param instance: Name of the instance of the plugin
+    :param meta:
+    :param plugin_name:
     :type samrthome: object
     :type name: str
     :type classname: str
@@ -337,7 +349,7 @@ class PluginWrapper(threading.Thread):
     :type instance: str
     """
     
-    def __init__(self, smarthome, name, classname, classpath, args, instance, meta):
+    def __init__(self, smarthome, name, classname, classpath, args, instance, meta, plugin_name):
         """
         Initialization of wrapper class
         """
@@ -363,6 +375,7 @@ class PluginWrapper(threading.Thread):
             self.get_implementation()._set_shortname(str(classpath).split('.')[1])
             self.get_implementation()._classpath = classpath
             self.get_implementation()._set_classname(classname)
+            self.get_implementation()._plugin_name = plugin_name
             if instance != '':
                 logger.debug("set plugin {0} instance to {1}".format(name, instance ))
                 self.get_implementation()._set_instance_name(instance)
@@ -374,6 +387,7 @@ class PluginWrapper(threading.Thread):
             self.get_implementation()._shortname = str(classpath).split('.')[1]
             self.get_implementation()._classpath = classpath
             self.get_implementation()._classname = classname
+            self.get_implementation()._plugin_name = plugin_name
 
         # get arguments defined in __init__ of plugin's class to self.args
         exec("self.args = inspect.getargspec({0}.{1}.__init__)[0][1:]".format(classpath, classname))

@@ -423,9 +423,23 @@ class Utils(object):
     @staticmethod
     def string_to_list(string):
         """
+        Convert a string to a list
+        
+        If the parameter is not of type str, the parameter gest returned unchanged
+        
+        :param string: string to convert
+        :type string: str
+        
+        :return: list of unchanged value
         """
         if isinstance(string, list):
             return string
+        if not isinstance(string, str):
+            return string
+        if len(string) == 0:
+            return string
+        if string[0] != '[':
+            return
         hl = Utils.strip_square_brackets(string).split(',')
         rl = []
         for e in hl:

@@ -274,11 +274,12 @@ class Metadata():
         elif typ == 'list':
             if subtype != '' and subtype != FOO:
                 result = True
-                for val in value:
-                    if not self._test_valuetype(subtype, '', val):
-                        result = False
-#                        logger.warning("_test_valuetype: val = {}, result = False".format(val))
-#                logger.warning("_test_valuetype: value = {}, type(value) = {}, typ = {}, subtype = {}".format(value, type(value), typ, subtype))
+                if isinstance(value, list):
+                    for val in value:
+                        if not self._test_valuetype(subtype, '', val):
+                            result = False
+#                            logger.warning("_test_valuetype: val = {}, result = False".format(val))
+#                    logger.warning("_test_valuetype: value = {}, type(value) = {}, typ = {}, subtype = {}".format(value, type(value), typ, subtype))
                 return result
             return (type(value) is list)
         elif typ == 'dict':
