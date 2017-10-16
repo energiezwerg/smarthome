@@ -46,7 +46,7 @@ class Metadata():
         self._addon_type = addon_type
         self._paramlist = []
 
-        self._log_premsg = "Metadata {} '{}': ".format(addon_type, self._addon_name)
+        self._log_premsg = "{} '{}': ".format(addon_type, self._addon_name)
 
 #        logger.warning(self._log_premsg+"classpath = '{}'".format( classpath ) )
         if classpath == '':
@@ -360,9 +360,15 @@ class Metadata():
             result = self._test_validity(param, result, is_default)
             if result != orig:
                 # Für non-default Prüfung nur Warning
-                logger.error(self._log_premsg+"Invalid default '{}' in metadata file '{}' for parameter '{}' -> using '{}' instead".format( orig, self.relative_filename, param, result ) )
+                if is_default:
+                    logger.error(self._log_premsg+"Invalid default '{}' in metadata file '{}' for parameter '{}' -> using '{}' instead".format( orig, self.relative_filename, param, result ) )
+                else:
+                    logger.warning(self._log_premsg+"Invalid value '{}' in plugin configuration file for parameter '{}' -> using '{}' instead".format( orig, param, result ) )
         return result
     
+#  plugin 'hue': Invalid default '2' in metadata file 'plugins/hue/plugin.yaml' for parameter 'cycle_lamps' -> using '10' instead
+
+
 
     def _test_validity(self, param, value, is_default=False):
         """
@@ -378,7 +384,8 @@ class Metadata():
                     if self._test_value(param, valid_min):
                         if result < self._convert_valuetotype(self.get_parameter_type(param), valid_min):
                             if is_default == False:
-                                result = self.get_parameter_defaultvalue(param)   # instead of valid_min
+#                                result = self.get_parameter_defaultvalue(param)   # instead of valid_min
+                                result = valid_min
                             else:
                                 result = valid_min
                 valid_max = self.parameters[param].get('valid_max')
@@ -386,7 +393,8 @@ class Metadata():
                     if self._test_value(param, valid_max):
                         if result > self._convert_valuetotype(self.get_parameter_type(param), valid_max):
                             if is_default == False:
-                                result = self.get_parameter_defaultvalue(param)   # instead of valid_max
+#                                result = self.get_parameter_defaultvalue(param)   # instead of valid_max
+                                result = valid_max
                             else:
                                 result = valid_max
         
@@ -526,7 +534,6 @@ class Metadata():
                 if value == None:
                     value = self._get_default_if_none(typ)
 
-#                self._convert_value(param, value, is_default=True)
                 value = self._convert_value(param, value, is_default=True)
 
                 orig_value = value
@@ -584,8 +591,13 @@ class Metadata():
         for param in self._paramlist:
             value = Utils.strip_quotes(args.get(param))
             if value == None:
-                addon_params[param] = self.get_parameter_defaultvalue(param)
-                logger.debug(self._log_premsg+"'{}' not found in /etc/{}, using default value '{}'".format(param, self._addon_type+YAML_FILE, addon_params[param]))
+                if self.parameters[param].get('mandatory'):
+                    logger.error(self._log_premsg+"'{}' is mandatory, but was not found in /etc/{}".format(param, self._addon_type+YAML_FILE))
+                    allparams_ok = False
+                else:
+                    addon_params[param] = self.get_parameter_defaultvalue(param)
+                    logger.info(self._log_premsg+"value not found in plugin configuration file for parameter '{}' -> using default value '{}' instead".format(param, addon_params[param] ) )
+#                    logger.warning(self._log_premsg+"'{}' not found in /etc/{}, using default value '{}'".format(param, self._addon_type+YAML_FILE, addon_params[param]))
             else:
                 value = self._expand_listvalues(param, value)
                 if self._test_value(param, value):
@@ -593,7 +605,7 @@ class Metadata():
                     logger.debug(self._log_premsg+"Found '{}' with value '{}' in /etc/{}".format(param, value, self._addon_type+YAML_FILE))
                 else:
                     if self.parameters[param].get('mandatory') == True:
-                        logger.error(self._log_premsg+"'{}' is mandatory, but was not found in /etc/{}".format(param, self._addon_type+YAML_FILE))
+                        logger.error(self._log_premsg+"'{}' is mandatory, but no valid value was found in /etc/{}".format(param, self._addon_type+YAML_FILE))
                         allparams_ok = False
                     else:
                         addon_params[param] = self.get_parameter_defaultvalue(param)
