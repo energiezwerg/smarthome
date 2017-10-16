@@ -649,11 +649,15 @@ class Logics():
             conf = shyaml.get_emptynode()
             
         # empty section
-        try:
-            keep_enabled = conf[section].get('enabled', None)
-        except:
-            keep_enabled = None
-        conf[section] = shyaml.get_emptynode()
+#        try:
+#            keep_enabled = conf[section].get('enabled', None)
+#        except:
+#            keep_enabled = None
+#        conf[section] = shyaml.get_emptynode()
+        del conf[section]['filename']
+        del conf[section]['cycle']
+        del conf[section]['crontab']
+        del conf[section]['watch_item']
 
         # add entries to section
         logger.info("update_config_section: section {}".format(section))
@@ -697,8 +701,8 @@ class Logics():
                             if comment[i] != '':
                                 conf[section][key].yaml_add_eol_comment(comment[i], i, column=50)
 
-        if keep_enabled != None:
-            conf[section]['enabled'] = keep_enabled
+#        if keep_enabled != None:
+#            conf[section]['enabled'] = keep_enabled
             
         if conf[section] == shyaml.get_emptynode():
             conf[section] = None
@@ -716,7 +720,8 @@ class Logics():
             if fn.lower() == filename.lower():
                 count += 1
         return count
-    
+
+
     def delete_logic(self, name):
         """
         Deletes a complete logic
