@@ -25,6 +25,3 @@ tz: 'Europe/Berlin'
 # New for develop (1.3x)
 #
 #use_modules: False
-#debug_modules: True
-#debug_plugins: True
-

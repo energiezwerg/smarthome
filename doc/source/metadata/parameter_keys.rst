@@ -9,7 +9,8 @@ Description of the keys in the section of a parameter/attribute:
     - *num* - an equivalent to float
     - *scene* - a positive integer in the range between 0 and 255
     - *str* - a string
-    - *list* - a list
+    - *list* - a list 
+    - *list(subtype)* - a list with each entry of a specified type (e.g: *list(int)* or 'list(ipv4)*)
     - *dict* - a dictionary
     - *ip* - a string, representing a hostname or an ipv4-address
     - *ipv4* - a string, representing strictly an ipv4-address

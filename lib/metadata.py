@@ -46,7 +46,7 @@ class Metadata():
         self._addon_type = addon_type
         self._paramlist = []
 
-        self._log_premsg = "Metadata {} '{}': ".format(addon_type, self._addon_name)
+        self._log_premsg = "{} '{}': ".format(addon_type, self._addon_name)
 
 #        logger.warning(self._log_premsg+"classpath = '{}'".format( classpath ) )
         if classpath == '':
@@ -79,9 +79,20 @@ class Metadata():
             if self.parameters[param] != None:
                 typ = str(self.parameters[param].get('type', FOO)).lower()
                 # to be implemented: timeframe
+                self.parameters[param]['listtype'] = ''
                 if not (typ in META_DATA_TYPES):
-                    logger.error(self._log_premsg+"Invalid definition in metadata file '{}': type '{}' for parameter '{}' -> using type '{}' instead".format( self.relative_filename, typ, param, FOO ) )
-                    self.parameters[param]['type'] = FOO
+                    # test for list with specified datatype
+                    if typ.startswith('list(') and typ.endswith(')'):
+                        self.parameters[param]['type'] = 'list'
+                        subtyp = typ[5:]
+                        subtyp = subtyp[:-1].strip()
+                        if subtyp in META_DATA_TYPES:
+                            self.parameters[param]['listtype'] = subtyp
+                        else:
+                            self.parameters[param]['listtype'] = FOO
+                    else:
+                        logger.error(self._log_premsg+"Invalid definition in metadata file '{}': type '{}' for parameter '{}' -> using type '{}' instead".format( self.relative_filename, typ, param, FOO ) )
+                        self.parameters[param]['type'] = FOO
             else:
 #                self.parameters[param]['type'] = FOO
                 pass
@@ -243,7 +254,7 @@ class Metadata():
     # Methods for parameter checking
     #
 
-    def _test_valuetype(self, typ, value):
+    def _test_valuetype(self, typ, subtype, value):
         """
         Returns True, if the value can be converted to the specified type
         """
@@ -259,9 +270,16 @@ class Metadata():
             else:
                 return False
         elif typ == 'str':
-#            return (type(value) is str)
             return True     # Everything can be converted to a string
         elif typ == 'list':
+            if subtype != '' and subtype != FOO:
+                result = True
+                for val in value:
+                    if not self._test_valuetype(subtype, '', val):
+                        result = False
+#                        logger.warning("_test_valuetype: val = {}, result = False".format(val))
+#                logger.warning("_test_valuetype: value = {}, type(value) = {}, typ = {}, subtype = {}".format(value, type(value), typ, subtype))
+                return result
             return (type(value) is list)
         elif typ == 'dict':
             return (type(value) is dict)
@@ -283,9 +301,25 @@ class Metadata():
         """
         if param in self._paramlist:
             typ = self.get_parameter_type(param)
-            return self._test_valuetype(typ, value)
+            subtype = self.get_parameter_subtype(param)
+            return self._test_valuetype(typ, subtype, value)
         return False
     
+
+    def _expand_listvalues(self, param, value):
+        """
+        If a parameter is defined as a list, but the value is of a bsic datatype,
+        value is expanded to a list. In all other cases, the value is returned nuchanged
+        """
+        result = value
+        if param in self._paramlist:
+            typ = self.get_parameter_type(param)
+            if (typ == 'list') and (not isinstance(value, list)):
+                result = Utils.string_to_list(value)
+#            if (typ == 'list'):
+#                logger.warning("_expand_listvalues: value = >{}<, type(value) = >{}<, result = >{}<, type(result) = >{}<".format(value, type(value), result, type(result)))
+        return result
+
 
     def _convert_valuetotype(self, typ, value):
         """
@@ -300,7 +334,10 @@ class Metadata():
         elif typ == 'str':
             result = str(value)
         elif typ == 'list':
-            result = list(value)
+            if isinstance(value, list):
+                result = value
+            else:
+                result = [value]
         elif typ == 'dict':
             result = dict(value)
         elif typ in ['ip', 'ipv4', 'mac']:
@@ -325,9 +362,15 @@ class Metadata():
             result = self._test_validity(param, result, is_default)
             if result != orig:
                 # Für non-default Prüfung nur Warning
-                logger.error(self._log_premsg+"Invalid default '{}' in metadata file '{}' for parameter '{}' -> using '{}' instead".format( orig, self.relative_filename, param, result ) )
+                if is_default:
+                    logger.error(self._log_premsg+"Invalid default '{}' in metadata file '{}' for parameter '{}' -> using '{}' instead".format( orig, self.relative_filename, param, result ) )
+                else:
+                    logger.warning(self._log_premsg+"Invalid value '{}' in plugin configuration file for parameter '{}' -> using '{}' instead".format( orig, param, result ) )
         return result
     
+#  plugin 'hue': Invalid default '2' in metadata file 'plugins/hue/plugin.yaml' for parameter 'cycle_lamps' -> using '10' instead
+
+
 
     def _test_validity(self, param, value, is_default=False):
         """
@@ -343,7 +386,8 @@ class Metadata():
                     if self._test_value(param, valid_min):
                         if result < self._convert_valuetotype(self.get_parameter_type(param), valid_min):
                             if is_default == False:
-                                result = self.get_parameter_defaultvalue(param)   # instead of valid_min
+#                                result = self.get_parameter_defaultvalue(param)   # instead of valid_min
+                                result = valid_min
                             else:
                                 result = valid_min
                 valid_max = self.parameters[param].get('valid_max')
@@ -351,7 +395,8 @@ class Metadata():
                     if self._test_value(param, valid_max):
                         if result > self._convert_valuetotype(self.get_parameter_type(param), valid_max):
                             if is_default == False:
-                                result = self.get_parameter_defaultvalue(param)   # instead of valid_max
+#                                result = self.get_parameter_defaultvalue(param)   # instead of valid_max
+                                result = valid_max
                             else:
                                 result = valid_max
         
@@ -408,6 +453,54 @@ class Metadata():
         return str(self.parameters[param].get('type', FOO)).lower()
         
         
+    def get_parameter_subtype(self, param):
+        """
+        Returns the subtype of a parameter
+        
+        If the defined datatype is 'foo', None is returned
+        If no subtype is defined (or definable), an empty string is returned
+
+        :param param: Name of the parameter
+        :type param: str
+        
+        :return: subtype of the parameter
+        :rtype: str or None
+        """
+        if self.parameters == None:
+            return FOO
+        if self.parameters[param] == None:
+            return FOO
+        result = str(self.parameters[param].get('type', FOO)).lower()
+        sub = ''
+        if result == 'list':
+            sub =  self.parameters[param].get('listtype', '?')
+        return sub
+        
+        
+    def get_parameter_type_with_subtype(self, param):
+        """
+        Returns the datatype of a parameter with subtype (if subtype exists)
+        
+        If the defined datatype is 'foo', None is returned
+        
+        Subtypes are returnd for parameter type 'list'
+
+        :param param: Name of the parameter
+        :type param: str
+        
+        :return: datatype with subtype of the parameter
+        :rtype: str or None
+        """
+        if self.parameters == None:
+            return FOO
+        if self.parameters[param] == None:
+            return FOO
+        result = str(self.parameters[param].get('type', FOO)).lower()
+        sub = self.get_parameter_subtype(param)
+        if sub != '':
+            result = result+'(' + sub + ')'
+        return result
+        
     def get_parameter_defaultvalue(self, param):
         """
         Returns the default value for the parameter
@@ -435,6 +528,7 @@ class Metadata():
                 if value == None:
                     value = self._get_default_if_none(typ)
                     
+                value = self._expand_listvalues(param, value)
                 if not self._test_value(param, value):
                     # Für non-default Prüfung nur Warning
                     logger.error(self._log_premsg+"Invalid data for type '{}' in metadata file '{}': default '{}' for parameter '{}' -> using '{}' instead".format( self.parameters[param].get('type'), self.relative_filename, value, param, self._get_default_if_none(typ) ) )
@@ -442,7 +536,7 @@ class Metadata():
                 if value == None:
                     value = self._get_default_if_none(typ)
 
-                self._convert_value(param, value, is_default=True)
+                value = self._convert_value(param, value, is_default=True)
 
                 orig_value = value
                 value = self._test_validity(param, value, is_default=True)
@@ -499,15 +593,21 @@ class Metadata():
         for param in self._paramlist:
             value = Utils.strip_quotes(args.get(param))
             if value == None:
-                addon_params[param] = self.get_parameter_defaultvalue(param)
-                logger.debug(self._log_premsg+"'{}' not found in /etc/{}, using default value '{}'".format(param, self._addon_type+YAML_FILE, addon_params[param]))
+                if (self.parameters[param] is not None) and self.parameters[param].get('mandatory'):
+                    logger.error(self._log_premsg+"'{}' is mandatory, but was not found in /etc/{}".format(param, self._addon_type+YAML_FILE))
+                    allparams_ok = False
+                else:
+                    addon_params[param] = self.get_parameter_defaultvalue(param)
+                    logger.info(self._log_premsg+"value not found in plugin configuration file for parameter '{}' -> using default value '{}' instead".format(param, addon_params[param] ) )
+#                    logger.warning(self._log_premsg+"'{}' not found in /etc/{}, using default value '{}'".format(param, self._addon_type+YAML_FILE, addon_params[param]))
             else:
+                value = self._expand_listvalues(param, value)
                 if self._test_value(param, value):
                     addon_params[param] = self._convert_value(param, value)
                     logger.debug(self._log_premsg+"Found '{}' with value '{}' in /etc/{}".format(param, value, self._addon_type+YAML_FILE))
                 else:
                     if self.parameters[param].get('mandatory') == True:
-                        logger.error(self._log_premsg+"'{}' is mandatory, but was not found in /etc/{}".format(param, self._addon_type+YAML_FILE))
+                        logger.error(self._log_premsg+"'{}' is mandatory, but no valid value was found in /etc/{}".format(param, self._addon_type+YAML_FILE))
                         allparams_ok = False
                     else:
                         addon_params[param] = self.get_parameter_defaultvalue(param)

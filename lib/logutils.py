@@ -19,7 +19,14 @@
 #  along with SmartHomeNG. If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
+"""
+This module contains utilis to be used in logging
+"""
+
 class Filter(object):
+    """
+    This class builds a filter to be used in logging.yaml to configure logging
+    """
     def __init__(self, name=''):
         self.name = name
         self.nlen = len(name)

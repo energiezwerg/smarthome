@@ -29,13 +29,14 @@ are implemented in this library.
 
 :Warning: This library is part of the core of SmartHomeNG. It **should not be called directly** from plugins!
 
-:Note: This version does not yet implement the possibility to write back changes from the running configuration (it still relies on pyyaml)
-
 """
 
 import logging
 import os
+import shutil
+
 from collections import OrderedDict
+
 from lib.constants import (YAML_FILE)
 
 
@@ -44,14 +45,19 @@ logger = logging.getLogger(__name__)
 try:
     import ruamel.yaml as yaml
     EDITING_ENABLED = True
+    # check to be enabled after migrating to the new ruamel.yaml api
+#    if str(yaml.__version__) < '0.15.0':
+#        logger.critical("shyaml: Loaded version of ruamel.yaml ({}) is too old".format(yaml.__version__))
+#        exit(1)
+    
 except:
     EDITING_ENABLED = False
-    import yaml
-
-
+    logger.critical("shyaml: ruamel.yaml is not installed")
+    exit(1)
+    
 yaml_version = '1.1'
 indent_spaces = 4
-
+block_seq_indent = 0
   
 def editing_is_enabled():
     return(EDITING_ENABLED == True)
@@ -244,14 +250,26 @@ def yaml_load_roundtrip(filename):
         sdata = sdata.replace('\n', '\n\n')
         y = yaml.load(sdata, yaml.RoundTripLoader)
     except Exception as e:
-        logger.error("yaml_load_roundtrip: YAML-file load error:  \n'%s'" % (e))
+        logger.error("yaml_load_roundtrip: YAML-file load error: '%s'" % (e))
         y = {} 
     return y
 
 
+def get_emptynode():
+   """
+   Return an empty node
+   """
+   return yaml.comments.CommentedMap([])
+       
 
+def get_commentedseq(l):
+   """
+   Convert a list to a commented sequence
+   """
+   return yaml.comments.CommentedSeq( l )
+       
 
-def yaml_save_roundtrip(filename, data):
+def yaml_save_roundtrip(filename, data, create_backup=False):
     """
     Dump yaml using the RoundtripDumper and correct linespacing in output file
 
@@ -261,11 +279,15 @@ def yaml_save_roundtrip(filename, data):
 
     if not EDITING_ENABLED:
         return
-    sdata = yaml.dump(data, Dumper=yaml.RoundTripDumper, version=yaml_version, indent=indent_spaces, block_seq_indent=2, width=12288, allow_unicode=True)
+    sdata = yaml.dump(data, Dumper=yaml.RoundTripDumper, version=yaml_version, indent=indent_spaces, block_seq_indent=block_seq_indent, width=12288, allow_unicode=True)
 
 #    with open(filename+'_raw'+YAML_FILE, 'w') as outfile:
 #        outfile.write( sdata )
     
+    if create_backup:
+        if os.path.isfile(filename+YAML_FILE):
+            shutil.copy2(filename+YAML_FILE, filename+'.bak')
+        
     sdata = _format_yaml_dump2( sdata )
     with open(filename+YAML_FILE, 'w') as outfile:
         outfile.write( sdata )
@@ -289,7 +311,7 @@ def _strip_empty_lines(data):
 
 def _format_yaml_dump2(sdata):
     """
-    Format yaml-dump to make file more readable
+    Format yaml-dump to make file more readable, used by yaml_save_roundtrip()
     (yaml structure must be dumped to a stream before using this function)
     | Currently does the following:
     | - Insert empty line after section w/o a value
@@ -309,7 +331,7 @@ def _format_yaml_dump2(sdata):
     sdata = _strip_empty_lines(sdata)
     sdata = sdata.replace('\n\n\n', '\n')
     sdata = sdata.replace('\n\n', '\n')
-    sdata = sdata.replace(': |4\n', ': |\n')    # Multiline strings: remove '4' inserted by ruyaml 
+#    sdata = sdata.replace(': |4\n', ': |\n')    # Multiline strings: remove '4' inserted by ruyaml 
 
     ldata = sdata.split('\n')
     rdata = []
@@ -325,9 +347,15 @@ def _format_yaml_dump2(sdata):
             if indentnextline != indentprevline + indent_spaces:
                 rdata.append(line)
         # Insert empty line after section w/o a value
-        elif len(line.lstrip()) > 0 and  line.lstrip()[0] == '#' and ldata[index+1][-1:] == ':':
+        elif len(line.lstrip()) > 0 and  line.lstrip()[0] == '#':
+            if line.lstrip()[-1:] == ':':
+                rdata.append('')
+            # only insert empty line, if last line was not a comment
+            elif len(ldata[index-1].strip()) > 0 and ldata[index-1][0] != '#':
+                # Only insert empty line, if next line is not commented out
+                if len(ldata[index+1].strip()) > 0 and ldata[index+1][-1:] == ':' and ldata[index+1][0] != '#':
+                    rdata.append('')
             rdata.append(line)
-            rdata.append('')
 
         # Insert empty line before section (key w/o a value)
         elif line[-1:] == ':':
@@ -343,13 +371,7 @@ def _format_yaml_dump2(sdata):
             else:
                 rdata.append(line)
         else:
-            # Adjust indentation of list entries
-            if len(line.lstrip()) > 0 and line.lstrip()[0] == '-' and line.lstrip() != '---':
-                indentprevline = len(ldata[index-1]) - len(ldata[index-1].lstrip(' '))
-                indentthisline = len(line) - len(line.lstrip(' '))
-                if indentprevline - indentthisline <= 1*indent_spaces:
-                    line = line[indent_spaces:]
-            rdata.append(line)
+             rdata.append(line)
 
     sdata = '\n'.join(rdata)
 

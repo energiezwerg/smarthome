@@ -92,7 +92,7 @@ class LibMetadataTest(unittest.TestCase):
             'foo_nodefault': [4, 2], 
             'notype_default1': '24', 'notype_default2': 24, 'bool_default': True, 'int_default': '-x', 'pint_default': -24, 
             'float_default': '-x', 'pfloat_default': -24.2, 'str_default': 25,
-            'list_default': '[24,42]', 'dict_default': {24, '42'}, 
+            'list_default': "[24,'42', 4.2, '4.2']", 'dict_default': {24, '42'}, 
             'ip_default': '1.2.3.256', 'mac_default': 'aa:ab:ac:ad:ae:ag',
             'foo_default': ['4', 2, [4, '2']] 
         }
@@ -119,13 +119,13 @@ class LibMetadataTest(unittest.TestCase):
         self.assertEqual(24, processed_args['notype_default2'])
         self.assertTrue(processed_args['bool_default'])
         self.assertEqual(42, processed_args['int_default'])               # default value taken (42 instead of '-x')
-        self.assertEqual(42, processed_args['pint_default'])              # default value taken (42 instead of -24)
+        self.assertEqual(0, processed_args['pint_default'])               # valid_min value taken, not default value (0 instead of -24)
         self.assertEqual(4.2, processed_args['float_default'])            # default value taken (42 instead of '-x')
-        self.assertEqual(4.2, processed_args['pfloat_default'])           # default value taken (42 instead of -24)
+        self.assertEqual(0, processed_args['pfloat_default'])             # valid_min value taken, not default value (0 instead of -24)
         self.assertEqual('25', processed_args['str_default'])             # default value not taken, because 25 can be converted to '25'
         self.assertEqual('string1', processed_args['str_validlist_default'])  # default value taken ('string1' instead of 'x')
         self.assertEqual('string2', processed_args['str_validlist_invalid_default'])
-        self.assertEqual([4,2], processed_args['list_default'])           # default value taken ([4,2] instead of string '[24,42]')
+        self.assertEqual([24,'42', 4.2, '4.2'], processed_args['list_default'])       # Test list with mixed datatypes
         self.assertEqual({'answer': 42}, processed_args['dict_default'])  # default value taken ({'answer': 42} instead of invalid dict {24, '42'})
         self.assertEqual('127.0.0.1', processed_args['ip_default'])       # default value taken ('127.0.0.1' instead of invalid ip '1.2.3.256')
         self.assertEqual('01:23:45:67:89:ab', processed_args['mac_default'])  # default value taken (instead of invalid mac 'aa:ab:ac:ad:ae:ag')

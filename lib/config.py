@@ -84,11 +84,14 @@ def parse_itemsdir(itemsdir, item_conf):
     '''
     for item_file in sorted(os.listdir(itemsdir)):
         if item_file.endswith(CONF_FILE) or item_file.endswith(YAML_FILE):
-            try:
-                item_conf = parse(itemsdir + item_file, item_conf)
-            except Exception as e:
-                logger.exception("Problem reading {0}: {1}".format(item_file, e))
-                continue
+            if item_file == 'logic'+YAML_FILE and itemsdir.find('lib/env/') > -1:
+                logger.info("config.parse_itemsdir: skipping logic definition file = {}".format( itemsdir+item_file ))
+            else:
+                try:
+                    item_conf = parse(itemsdir + item_file, item_conf)
+                except Exception as e:
+                    logger.exception("Problem reading {0}: {1}".format(item_file, e))
+                    continue
     return item_conf
 
 

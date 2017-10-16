@@ -23,9 +23,13 @@
 This file contains the functions needed to run SmartHomeNG as a deamon
 """
 
+import logging
 import os
 import sys
 import psutil
+
+logger = logging.getLogger(__name__)
+
 
 def daemonize(pidfile,stdin='/dev/null', stdout='/dev/null', stderr=None):
     """
@@ -143,7 +147,7 @@ def check_sh_is_running(pidfile):
     return psutil.pid_exists(read_pidfile(pidfile))
 
 
-def kill(pidfile, waittime=10):
+def kill(pidfile, waittime=15):
     """
     This method kills the process identified by pidfile.
     
@@ -158,6 +162,10 @@ def kill(pidfile, waittime=10):
         p = psutil.Process(pid)
         if p is not None:
             p.terminate()
-            p.wait(timeout=waittime)
+            try:
+                p.wait(timeout=waittime)
+            except Exception as e:
+                pass
             if p.is_running():
-               p.kill()
+                logger.warning("Killing process")
+                p.kill()

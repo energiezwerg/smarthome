@@ -93,7 +93,7 @@ from lib.constants import (YAML_FILE, CONF_FILE, DEFAULT_FILE)
 # Globals
 #####################################################################
 MODE = 'default'
-VERSION = '1.3a.'
+VERSION = '1.3c.'
 TZ = gettz('UTC')
 try:
     os.chdir(BASE)
@@ -198,6 +198,7 @@ class SmartHome():
 
         if MODE == 'unittest':
             return
+
         # setup logging
         self.initLogging()
         self._logger.info("Using config dir: {}".format(self._extern_conf_dir))
@@ -469,7 +470,7 @@ class SmartHome():
         #############################################################
         # Start Connections
         #############################################################
-        self.scheduler.add('Connections', self.connections.check, cycle=10, offset=0)
+        self.scheduler.add('sh.connections', self.connections.check, cycle=10, offset=0)
 
         #############################################################
         # Start Plugins
@@ -480,7 +481,7 @@ class SmartHome():
         #############################################################
         # Execute Maintenance Method
         #############################################################
-        self.scheduler.add('sh.gc', self._maintenance, prio=8, cron=['init', '4 2 * *'], offset=0)
+        self.scheduler.add('sh.garbage_collection', self._maintenance, prio=8, cron=['init', '4 2 * *'], offset=0)
 
         #############################################################
         # Main Loop
@@ -497,18 +498,20 @@ class SmartHome():
         """
         
         self.alive = False
-        self._logger.info("Number of Threads: {0}".format(threading.activeCount()))
+        self._logger.info("stop: Number of Threads: {}".format(threading.activeCount()))
+
         for item in self.__items:
             self.__item_dict[item]._fading = False
         try:
             self.scheduler.stop()
         except:
             pass
+
         try:
             self._plugins.stop()
         except:
             pass
-            
+
         if not(lib.utils.Utils.to_bool(self._use_modules) == False):
             try:
                 self._modules.stop()
@@ -519,21 +522,50 @@ class SmartHome():
             self.connections.close()
         except:
             pass
+
         for thread in threading.enumerate():
-            try:
-                thread.join(1)
-            except:
-                pass
+            if thread.name != 'Main':
+                try:
+                    thread.join(1)
+                except Exception as e:
+                    pass
+    
         if threading.active_count() > 1:
+            header_logged = False
             for thread in threading.enumerate():
-                self._logger.info("Thread: {}, still alive".format(thread.name))
+                if thread.name != 'Main' and thread.name[0] !=  '_':
+                    if not header_logged:
+                        self._logger.warning("The following threads have not been terminated propperly by their plugins (please report to the plugin's author):")
+                        header_logged = True
+                    self._logger.warning("-Thread: {}, still alive".format(thread.name))
+            if header_logged:
+                self._logger.warning("SmartHomeNG stopped")
         else:
             self._logger.info("SmartHomeNG stopped")
+
         lib.daemon.remove_pidfile(PIDFILE)
 
         logging.shutdown()
         exit()
 
+
+    def list_threads(self, txt):
+    
+        cp_threads = 0
+        http_threads = 0
+        for thread in threading.enumerate():
+            if thread.name.find("CP Server") == 0:
+                cp_threads += 1
+            if thread.name.find("HTTPServer") == 0:
+                http_threads +=1
+
+        self._logger.info("list_threads: {} - Number of Threads: {} (CP Server={}, HTTPServer={}".format(txt, threading.activeCount(), cp_threads, http_threads))
+        for thread in threading.enumerate():
+            if thread.name.find("CP Server") != 0 and thread.name.find("HTTPServer") != 0:
+                self._logger.info("list_threads: {} - Thread {}".format(txt, thread.name))
+        return
+        
+        
     #################################################################
     # Item Methods
     #################################################################
@@ -683,7 +715,7 @@ class SmartHome():
     #################################################################
     def return_plugins(self):
         """
-        Returns a list with the names of all loaded plugins
+        Returns a list with the instances of all loaded plugins
 
         :return: list of plugin names
         :rtype: list
@@ -698,23 +730,27 @@ class SmartHome():
     def reload_logics(self, signum=None, frame=None):
         """
         Function to reload all logics
+
+        DEPRECATED - Use Logics.reload_logics() instead
         """
-        
+        self._logger.warning("Using deprecated function 'smarthome.reload_logics()', called by {} in class {} - use 'Logics.reload_logics()' instead".format(sys._getframe(1).f_code.co_name, sys._getframe(1).f_locals['self'].__class__.__name__))
         for logic in self._logics:
-            self._logics[logic].generate_bytecode()
+            self._logics[logic]._generate_bytecode()
 
 
     def return_logic(self, name):
         """
         Returns (the object of) one loaded logic with given name 
 
+        DEPRECATED - Use Logics.return_logic() instead
+        
         :param name: name of the logic to get
         :type name: str
 
         :return: object of the logic
         :rtype: object
         """
-        
+        self._logger.warning("Using deprecated function 'smarthome.return_logic()', called by {} in class {} - use 'Logics.return_logic()' instead".format(sys._getframe(1).f_code.co_name, sys._getframe(1).f_locals['self'].__class__.__name__))
         return self._logics[name]
 
 
@@ -722,12 +758,15 @@ class SmartHome():
         """
         Returns a list with the names of all loaded logics
 
+        DEPRECATED - Use Logics.return_loaded_logics() instead
+
         :return: list of logic names
         :rtype: list
         """
-
+        self._logger.warning("Using deprecated function 'smarthome.return_logics()', called by {} in class {} - use 'Logics.return_loaded_logics()' instead".format(sys._getframe(1).f_code.co_name, sys._getframe(1).f_locals['self'].__class__.__name__))
         for logic in self._logics:
             yield logic
+
 
     #################################################################
     # Log Methods
@@ -860,9 +899,10 @@ class SmartHome():
     # Helper Methods
     #################################################################
     def _maintenance(self):
+        self._logger.debug("_maintenace: Started")
         self._garbage_collection()
         references = sum(self._object_refcount().values())
-        self._logger.debug("Object references: {}".format(references))
+        self._logger.debug("_maintenace: Object references: {}".format(references))
 
     def _excepthook(self, typ, value, tb):
         mytb = "".join(traceback.format_tb(tb))
@@ -987,7 +1027,7 @@ if __name__ == '__main__':
         print("{0}".format(VERSION))
         exit(0)
     elif args.stop:
-        lib.daemon.kill(PIDFILE)
+        lib.daemon.kill(PIDFILE, 30)
         exit(0)
     elif args.debug:
         MODE = 'debug'

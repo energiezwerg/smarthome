@@ -27,6 +27,9 @@ import logging
 import os.path
 import csv
 
+from lib.logic import Logics
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -60,7 +63,8 @@ class Scenes():
                                 continue
                             ditem = smarthome.return_item(row[1])
                             if ditem is None:
-                                ditem = smarthome.return_logic(row[1])
+#                                ditem = smarthome.return_logic(row[1])
+                                ditem = Logics.return_logic(row[1])
                                 if ditem is None:
                                     logger.warning("Could not find item or logic '{0}' specified in {1}".format(row[1], scene_file))
                                     continue

@@ -1,4 +1,6 @@
 
+import os
+
 import datetime
 import dateutil.tz
 import logging
@@ -9,6 +11,7 @@ import lib.config
 import lib.connection
 
 from lib.model.smartplugin import SmartPlugin
+from lib.constants import (YAML_FILE, CONF_FILE, DEFAULT_FILE)
 
 from tests.common import BASE
 
@@ -19,12 +22,15 @@ logger = logging.getLogger('Mockup')
 class MockScheduler():
 
     def add(self, name, obj, prio=3, cron=None, cycle=None, value=None, offset=None, next=None):
-        logger.warning('')
-        logger.warning('MockScheduler / add: {}'.format(name))
-        if isinstance(obj.__self__, SmartPlugin):
-            name = name +'_'+ obj.__self__.get_instance_name()
-        logger.warning('MockScheduler / add: {}'.format(name))
-        logger.warning('MockScheduler / add: {}'.format(str(obj)))
+        logger.warning('MockScheduler (add): {}, cron={}, cycle={}, value={}, offset={}'.format( name, str(cron), str(cycle), str(value), str(offset) ))
+        try:
+            if isinstance(obj.__self__, SmartPlugin):
+                name = name +'_'+ obj.__self__.get_instance_name()
+        except:
+            pass
+
+    def remove(self, name):
+        logger.warning('MockScheduler (remove): {}'.format( name ))
 
 
 class MockSmartHome():
@@ -33,9 +39,28 @@ class MockSmartHome():
     base_dir = _base_dir     # for external modules using that var (backend, ...?)
     _default_language = 'de'
 
+    _etc_dir = os.path.join(_base_dir, 'tests', 'resources', 'etc')
+#    _var_dir = os.path.join(_base_dir, 'var')
+    _lib_dir = os.path.join(_base_dir, 'lib')
+    _env_dir = os.path.join(_lib_dir, 'env' + os.path.sep)
+
+    _module_conf_basename = os.path.join(_etc_dir,'module')
+    _module_conf = ''	# is filled by module.py while reading the configuration file, needed by Backend plugin
+
+    _plugin_conf_basename = os.path.join(_etc_dir,'plugin')
+    _plugin_conf = ''	# is filled by plugin.py while reading the configuration file, needed by Backend plugin
+
+    _env_logic_conf_basename = os.path.join( _env_dir ,'logic')
+#    _items_dir = os.path.join(_base_dir, 'items'+os.path.sep)
+    _logic_conf_basename = os.path.join(_etc_dir, 'logic')
+    _logic_dir = os.path.join(_base_dir, 'tests', 'resources', 'logics'+os.path.sep)
+#    _cache_dir = os.path.join(_var_dir,'cache'+os.path.sep)
+#    _log_config = os.path.join(_etc_dir,'logging'+YAML_FILE)
+#    _smarthome_conf_basename = None
+
 
     def __init__(self):
-        VERSION = '1.3a.'
+        VERSION = '1.3c.'
         VERSION += '0.man'
         self.version = VERSION
         self.__logs = {}
@@ -64,7 +89,7 @@ class MockSmartHome():
         return self._base_dir
 
     def trigger(self, name, obj=None, by='Logic', source=None, value=None, dest=None, prio=3, dt=None):
-        logger.warning('MockSmartHome / trigger: {}'.format(str(obj)))
+        logger.warning('MockSmartHome (trigger): {}'.format(str(obj)))
 
     def with_plugins_from(self, conf):
         lib.plugin.Plugins._plugins = []

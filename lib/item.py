@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2016-       Christian Straßburg           c.strassburg@gmx.de
 # Copyright 2016-2017   Martin Sinn                         m.sinn@gmx.de
+# Copyright 2016-       Christian Straßburg           c.strassburg@gmx.de
 # Copyright 2012-2013   Marcus Popp                        marcus@popp.mx
 #########################################################################
 #  This file is part of SmartHomeNG.
@@ -261,6 +261,8 @@ def _fadejob(item, dest, step, delta):
 
 class Item():
 
+    _itemname_prefix = 'items.'     # prefix for scheduler names
+
     def __init__(self, smarthome, parent, path, config):
         self._autotimer = False
         self._cache = False
@@ -430,7 +432,7 @@ class Item():
             cycle = self._cycle
             if cycle is not None:
                 cycle = self._build_cycledict(cycle)
-            self._sh.scheduler.add(self._path, self, cron=self._crontab, cycle=cycle)
+            self._sh.scheduler.add(self._itemname_prefix+self._path, self, cron=self._crontab, cycle=cycle)
         #############################################################
         # Plugins
         #############################################################
@@ -748,7 +750,7 @@ class Item():
             self._autotimer[0] = (_time, _value)     # for display of active/last timer configuration in backend
 
             next = self._sh.now() + datetime.timedelta(seconds=_time)
-            self._sh.scheduler.add(self.id() + '-Timer', self.__call__, value={'value': _value, 'caller': 'Autotimer'}, next=next)
+            self._sh.scheduler.add(self._itemname_prefix+self.id() + '-Timer', self.__call__, value={'value': _value, 'caller': 'Autotimer'}, next=next)
 
 
     def add_logic_trigger(self, logic):
@@ -811,7 +813,7 @@ class Item():
         return self.__prev_value
 
     def remove_timer(self):
-        self._sh.scheduler.remove(self.id() + '-Timer')
+        self._sh.scheduler.remove(self._itemname_prefix+self.id() + '-Timer')
 
     def return_children(self):
         for child in self.__children:
@@ -852,7 +854,7 @@ class Item():
         else:
             caller = 'Timer'
         next = self._sh.now() + datetime.timedelta(seconds=time)
-        self._sh.scheduler.add(self.id() + '-Timer', self.__call__, value={'value': value, 'caller': caller}, next=next)
+        self._sh.scheduler.add(self._itemname_prefix+self.id() + '-Timer', self.__call__, value={'value': value, 'caller': caller}, next=next)
 
     def type(self):
         return self._type
@@ -872,6 +874,7 @@ class Item():
                  "type": self._type,
                  "attributes": self.conf,
                  "children": self.get_children_path() }
+                 
 # alternative method to get all class members
 #    @staticmethod
 #    def get_members(instance):

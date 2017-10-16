@@ -84,6 +84,8 @@ class Scheduler(threading.Thread):
     _runq = PriorityQueue()
     _triggerq = PriorityQueue()
 
+    _pluginname_prefix = 'plugins.'     # prefix for scheduler names
+
     def __init__(self, smarthome):
         threading.Thread.__init__(self, name='Scheduler')
         logger.info('Init Scheduler')
@@ -180,36 +182,40 @@ class Scheduler(threading.Thread):
             logger.debug("Triggering {0} - by: {1} source: {2} dest: {3} value: {4} at: {5}".format(name, by, source, dest, str(value)[:40], dt))
             self._triggerq.insert((dt, prio), (name, obj, by, source, dest, value))
 
-    def remove(self, name):
+    def remove(self, name, from_smartplugin=False):
         """
         remove a scheduler entry with given name. If a call is made from a SmartPlugin with a instance configuration
         the instance name is added to the name
         
         :param name: scheduler entry name to remove
-        :return:
         """
         self._lock.acquire()
-        name = self.check_caller(name)
+        name = self.check_caller(name, from_smartplugin)
         logger.debug("remove scheduler entry with name:{0}".format(name))
         if name in self._scheduler:
             del(self._scheduler[name])
         self._lock.release()
 
-    def check_caller(self, name):
+    def check_caller(self, name, from_smartplugin=False):
         stack = inspect.stack()
-        obj = stack[2][0].f_locals["self"]
-        if isinstance(obj, SmartPlugin):
-            iname = obj.get_instance_name()
-            if iname != '':
-                if not str(name).endswith('_' + iname):
-                    name = name + '_' + obj.get_instance_name()
+        try:
+            obj = stack[2][0].f_locals["self"]
+            if isinstance(obj, SmartPlugin):
+                iname = obj.get_instance_name()
+                if iname != '':
+#                    if not (iname).startswith(self._pluginname_prefix):
+                    if not from_smartplugin:
+                        if not str(name).endswith('_' + iname):
+                            name = name + '_' + obj.get_instance_name()
+        except:
+            pass
         return name
 
     def return_next(self, name):
         if name in self._scheduler:
             return self._scheduler[name]['next']
 
-    def add(self, name, obj, prio=3, cron=None, cycle=None, value=None, offset=None, next=None):
+    def add(self, name, obj, prio=3, cron=None, cycle=None, value=None, offset=None, next=None, from_smartplugin=False):
         self._lock.acquire()
         if isinstance(cron, str):
             cron = [cron, ]
@@ -259,7 +265,9 @@ class Scheduler(threading.Thread):
         if obj.__class__.__name__ == 'method':
             if isinstance(obj.__self__, SmartPlugin):
                 if obj.__self__.get_instance_name() != '':
-                    name = name +'_'+ obj.__self__.get_instance_name()
+#                    if not (name).startswith(self._pluginname_prefix):
+                    if not from_smartplugin:
+                        name = name +'_'+ obj.__self__.get_instance_name()
                     logger.debug("Scheduler: Name changed by adding plugin instance name to: " + name)
         self._scheduler[name] = {'prio': prio, 'obj': obj, 'cron': cron, 'cycle': cycle, 'value': value, 'next': next, 'active': True}
         if next is None:

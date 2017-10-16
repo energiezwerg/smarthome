@@ -27,6 +27,16 @@
 """
 This library implements loading and starting of core modules of SmartHomeNG.
 
+The methods of the class Modules implement the API for modules. 
+They can be used the following way: To call eg. **xxx()**, use the following syntax:
+
+.. code-block:: python
+
+        from lib.module import Modules
+        modules = Modules.get_instance()
+        
+        # to access a method (eg. enable_logic()):
+        moddules.xxx()
 
 :Warning: This library is part of the core of SmartHomeNG. It **should not be called directly** from plugins!
 
@@ -43,6 +53,9 @@ from lib.constants import (KEY_CLASS_NAME, KEY_CLASS_PATH, KEY_INSTANCE,CONF_FIL
 from lib.metadata import Metadata
 
 logger = logging.getLogger(__name__)
+
+
+_modules_instance = None    # Pointer to the initialized instance of the Modules class (for use by static methods)
 
 
 class Modules():
@@ -62,6 +75,8 @@ class Modules():
     def __init__(self, smarthome, configfile):
         self._sh = smarthome
         self._sh._moduledict = {}
+        global _modules_instance
+        _modules_instance = self
 
         # read module configuration (from etc/module.yaml)
         _conf = lib.config.parse_basename(configfile, configtype='module')
@@ -240,6 +255,62 @@ class Modules():
             return None
 
         
+    # ------------------------------------------------------------------------------------
+    #   Following (static) methods of the class Modules implement the API for modules in shNG
+    # ------------------------------------------------------------------------------------
+
+    @staticmethod
+    def get_instance():
+        """
+        Returns the instance of the Modules class, to be used to access the modules-api
+        
+        Use it the following way to access the api:
+        
+        .. code-block:: python
+
+            from lib.module import Modules
+            modules = Modules.get_instance()
+            
+            # to access a method (eg. xxx()):
+            modules.xxx()
+
+        
+        :return: logics instance
+        :rtype: object of None
+        """
+        if _modules_instance == None:
+            return None
+        else:
+            return _modules_instance
+
+
+    def return_modules(self):
+        """
+        Returns a list with the names of all loaded modules
+
+        :return: list of module names
+        :rtype: list
+        """
+        l = []
+        for module_key in self._moduledict.keys():
+            l.append(module_key)
+        return l
+
+
+    def get_module(self, name):
+        """
+        Returns the module object for the module named by the parameter
+        or None, if the named module is not loaded
+
+        :param name: Name of the module to return
+        :type name: str
+        
+        :return: list of module names
+        :rtype: object
+        """
+        return self._moduledict.get(name)
+
+
     def start(self):
         """
         Start all modules

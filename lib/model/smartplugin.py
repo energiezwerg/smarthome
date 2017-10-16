@@ -21,6 +21,8 @@
 #  along with SmartHomeNG  If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
+#import lib.scheduler
+
 from lib.model.smartobject import SmartObject
 from lib.utils import Utils
 
@@ -41,6 +43,10 @@ class SmartPlugin(SmartObject, Utils):
     _shortname = ''     #: Shortname of the plugin; is initialized during loading of the plugin; :Warning: Don't change it
     _classname = ''     #: Classname of the plugin; is initialized during loading of the plugin; :Warning: Don't change it
 
+    _pluginname_prefix = 'plugins.'
+
+    _parameters = {}    # Dict for storing the configuration parameters read from /etc/plugin.yaml
+    
     logger = logging.getLogger(__name__)
     
     
@@ -68,6 +74,48 @@ class SmartPlugin(SmartObject, Utils):
         :type shortname: str
         """
         self._shortname = shortname
+        
+
+    def get_instance_name(self):
+        """
+        Returns the name of this instance of the plugin
+        
+        :return: instance name
+        :rtype: str
+        """
+        return self.__instance
+
+
+    def _set_instance_name(self, instance):
+        """
+        set instance name of the plugin
+        
+        :Note: Usually **you don't need to call this method**, since the instance name is set during startup from the plugin configuration in etc/plugin.yaml
+        
+        :param instance: Name of this instance of the plugin
+        :type instance: str
+        """
+        if self.ALLOW_MULTIINSTANCE:
+            self.__instance = instance
+        else: 
+            self.logger.warning("Plugin '{}': Only multi-instance capable plugins allow setting a name for an instance".format(self.get_shortname()))
+
+
+    def get_fullname(self):
+        """
+        return the full name of the plugin (shortname & instancename)
+        
+        :note: Only available in SmartHomeNG versions v1.3c and up
+        
+        :return: full name of the plugin
+        :rtype: str
+        """
+        if self.get_instance_name() == '':
+            return self.get_shortname()
+        else:
+#            return self.get_instance_name() + '@' + self.get_shortname()
+            return  self.get_shortname() + '_' + self.get_instance_name()
+                
         
     def get_classname(self):
         """
@@ -105,53 +153,6 @@ class SmartPlugin(SmartObject, Utils):
         return self.PLUGIN_VERSION
         
     
-    def _set_instance_name(self, instance):
-        """
-        set instance name of the plugin
-        
-        :Note: Usually **you don't need to call this method**, since the instance name is set during startup from the plugin configuration in etc/plugin.yaml
-        
-        :param instance: Name of this instance of the plugin
-        :type instance: str
-        """
-        if self.ALLOW_MULTIINSTANCE:
-            self.__instance = instance
-        else: 
-            self.logger.warning("Plugin '{}': Only multi-instance capable plugins allow setting a name for an instance".format(self.get_shortname()))
-
-
-    def get_instance_name(self):
-        """
-        Returns the name of this instance of the plugin
-        
-        :return: instance name
-        :rtype: str
-        """
-        return self.__instance
-
-
-    def get_loginstance(self):
-        """
-        Returns a prefix for logmessages of multi instance capable plugins.
-        
-        The result is an empty string, if the instancename is empty. Otherwise the result
-        is a string containing the instance name preseeded by a '@' and traild by ': '.
-        
-        This way it is easy to show the instance name in log messages. Just write
-        
-        self.logger.info(self.get_loginstance()+"Your text")
-        
-        and the logmessage is preseeded by the instance name, if needed.
-        
-        :return: instance name for logstring
-        :rtype: str
-        """
-        if self.__instance == '':
-            return ''
-        else:
-            return self.__instance+'@: '
-
-
     def is_multi_instance_capable(self):
         """
         Returns information if plugin is capable of multi instance handling
@@ -200,6 +201,56 @@ class SmartPlugin(SmartObject, Utils):
         :rtype: str
         """
         return "Plugin: '{0}.{1}', Version: '{2}', Instance: '{3}'".format(self.__module__, self.__class__.__name__,  self.get_version(),self.get_instance_name())
+
+
+    def get_parameter_value(self, parameter_name):
+        """
+        Returns the configured value for the given parameter name
+        
+        If the parameter is not defined, None is returned
+        
+        :param parameter_name: Name of the parameter for which the value should be retrieved
+        :type parameter_name: str
+        
+        :return: Configured value
+        :rtype: depends on the type of the parameter definition
+        """
+        return self._parameters.get(parameter_name, None)
+        
+    
+#    def has_parameter_value(self, key):
+#        """
+#        Returns True, if a value is configured for the given parameter name
+#        
+#        :param parameter_name: Name of the parameter for which the value should be retrieved
+#        :type parameter_name: str
+#        
+#        :return: True, if a value is configured for the given parameter name
+#        :rtype: bool
+#        """
+#        return (self.get_parameter_value(key) is not None)
+        
+
+    def get_loginstance(self):
+        """
+        Returns a prefix for logmessages of multi instance capable plugins.
+        
+        The result is an empty string, if the instancename is empty. Otherwise the result
+        is a string containing the instance name preseeded by a '@' and traild by ': '.
+        
+        This way it is easy to show the instance name in log messages. Just write
+        
+        self.logger.info(self.get_loginstance()+"Your text")
+        
+        and the logmessage is preseeded by the instance name, if needed.
+        
+        :return: instance name for logstring
+        :rtype: str
+        """
+        if self.__instance == '':
+            return ''
+        else:
+            return self.__instance+'@: '
 
 
     def __get_iattr(self, attr):
@@ -364,6 +415,36 @@ class SmartPlugin(SmartObject, Utils):
         :note: This method should to be overwritten by the plugin implementation.
         """
         pass
+
+
+    def scheduler_add(self, name, obj, prio=3, cron=None, cycle=None, value=None, offset=None, next=None):
+        """
+        This methods adds a scheduler entry
+        
+        A plugin identifiction is added to the scheduler name
+         
+        The parameters are identical to the scheduler.add method from lib.scheduler
+        """
+        if name != '':
+            name = '.'+name
+        name = self._pluginname_prefix+self.get_fullname()+name
+        self.logger.debug("scheduler_add: name = {}".format(name))
+        self._sh.scheduler.add(name, obj, prio, cron, cycle, value, offset, next, from_smartplugin=True)
+
+
+    def scheduler_remove(self, name):
+        """
+        This methods rmoves a scheduler entry
+        
+        A plugin identifiction is added to the scheduler name
+         
+        The parameters are identical to the scheduler.remove method from lib.scheduler
+        """
+        if name != '':
+            name = '.'+name
+        name = self._pluginname_prefix+self.get_fullname()+name
+        self.logger.debug("scheduler_add: name = {}".format(name))
+        self._sh.scheduler.remove(name, from_smartplugin=True)
 
 
     def run(self):
