@@ -202,7 +202,7 @@ class Plugins():
                 classpath = ''
             else:
                 classpath = 'plugins.' + plugin_name
-        logger.warning("_get_classname_and_classpath: plugin_name = {}, classpath = {}, classname = {}".format(plugin_name, classpath, classname))
+#        logger.warning("_get_classname_and_classpath: plugin_name = {}, classpath = {}, classname = {}".format(plugin_name, classpath, classname))
         return (classname, classpath+plugin_version)
 
 
