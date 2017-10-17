@@ -159,8 +159,9 @@ The object name can be any valid Python name, the class name and class path need
    :caption: plugin.yaml
    
    knx:
-       class_name: KNX
-       class_path: plugins.knx
+       plugin_name: knx
+       # class_name: KNX           # old way of configuration
+       # class_path: plugins.knx   # old way of configuration
        host: 127.0.0.1
        port: 6720
        # send_time; 600 # update date/time every 600 seconds, default none
@@ -171,6 +172,21 @@ There is a `README.md` for every plugin that gives the necessary configuration i
 To continue reading follow the :doc:`plugin <plugins_all>` page.
 
 
+**Referencing a plugin in the configuration**
+
+Up to SmartHomeNG v1.3 a plugin had to be referenced by the parameters ``class_name`` and ``class_path``.
+Now it is possible to reference it alone by specifing the parameter ``plugin_name``, where
+the value would be the former class_path without the `plugins.` prefix. Since all plugins are
+located in the ``/plugins`` folder, the `plugins.` is redundant information. 
+
+If the plugin comes with a metadata definition (what allmost all plugins do), there is no need so specify
+the ``class_name`` parameter. This information is retrieved from the metadata.
+
+.. Note:: 
+
+    Should the need arise to configure a plugin that is located outside the ``/plugins`` folder, ``class_path`` can be used. 
+
+
 **Using an older version of a plugin**
 
 If you are not using the newest version of the SmartHomeNG core, if may be necessary to use an
@@ -179,10 +195,10 @@ version of the plugin, you have to specify the parameter `plugin_version` in the
 section of the plugin. 
 
 To find out, if a plugin comes with an older version (or versions), take a look at the plugin's
-directory. if you find a subdirectory with the name starting with `_pv_` the plugin comes with
+directory. if you find a subdirectory with the name starting with ``_pv_`` the plugin comes with
 an older (previous) version. The rest of the folder name specifies the version number. If you
-find a subfolder `_pv_1_3_0`, it contains the v1.3.0 of the plugin. To load that version, just
-add `plugin_version: 1.3.0` to the plugin configuration. 
+find a subfolder ``_pv_1_3_0``, it contains the v1.3.0 of the plugin. To load that version, just
+add ``plugin_version: 1.3.0`` to the plugin configuration. 
 
 
 

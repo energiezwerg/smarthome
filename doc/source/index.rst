@@ -22,7 +22,6 @@ Feel free to contribute in any way you want and can.
 
 .. toctree::
    :maxdepth: 2
-   :titlesonly:
    :hidden:
 
    requirements.rst
