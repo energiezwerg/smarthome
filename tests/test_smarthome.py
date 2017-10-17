@@ -22,11 +22,15 @@
 #########################################################################
 import common
 import unittest
-import bin.smarthome
+import logging
 import os
 import tempfile
+
+import bin.smarthome
 from lib.constants import YAML_FILE
 
+
+logger = logging.getLogger(__name__)
 
 class SmarthomeTest(unittest.TestCase):
     def test_to_bool(self):
@@ -54,7 +58,9 @@ class SmarthomeTest(unittest.TestCase):
         # self.assertTrue(bin.smarthome.SmartHome.string2bool(self,1))
 
     def testConfigInit(self):
-        print("=== testConfigInit begin")
+        logger.warning('')
+        logger.warning('=== Begin Smarthome Tests: testConfigInit')
+        
         bin.smarthome.MODE = 'unittest'		# do not daemonize, do not log
         with tempfile.TemporaryDirectory(prefix='SHNG_config.') as ext_conf:
             os.mkdir(os.path.join(ext_conf, 'etc'))
@@ -68,10 +74,10 @@ class SmarthomeTest(unittest.TestCase):
                 else:
                     sh = bin.smarthome.SmartHome(extern_conf_dir=sh_config)
                     conf_dir = sh_config
-                print("    test with conf in {}".format(conf_dir))
+                logger.warning("    test with config files in folder {}".format(conf_dir))
                 base_dir = sh.base_dir
                 sh.alive = False
-                print("        check paths & basenames")
+                logger.warning("        check paths & basenames")
                 _etc_dir = os.path.join(conf_dir, 'etc')
                 self.assertEqual(sh._etc_dir, _etc_dir)
                 _items_dir = os.path.join(conf_dir, 'items' + os.path.sep)
@@ -95,11 +101,14 @@ class SmarthomeTest(unittest.TestCase):
                 _env_logic_conf_basename = os.path.join(_env_dir, 'logic')
                 self.assertEqual(sh._env_logic_conf_basename, _env_logic_conf_basename)
 
-                print("        check if .default files are installed")
+                logger.warning("        check if .default files are installed")
                 configs = ['logging', 'smarthome', 'module', 'plugin']
+                
                 for c in configs:
                     self.assertTrue(os.path.isfile(os.path.join(_etc_dir, c + YAML_FILE)))
-            print("=== testConfigInit end")
+
+        logger.warning('=== End Smarthome Tests: testConfigInit')
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
