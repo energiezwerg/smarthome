@@ -114,7 +114,7 @@ class TestLogics(unittest.TestCase):
         logger.warning('----- Logic Test: test_06_update_and_read_section')
         fn = ['filename','logic_up.py','Test for section update']
         ct = ['crontab','init = Init','Execute at initialization']
-        wi = ['watchitem', ['beleuchtung.automatik_wuerfel.onoff', 'fenster.bad.fenster_nord'], ['Ausführen wenn sich der Würfel ändert', 'Ausführen wenn das Fenster sich ändert']] 
+        wi = ['watch_item', ['beleuchtung.automatik_wuerfel.onoff', 'fenster.bad.fenster_nord'], ['Ausführen wenn sich der Würfel ändert', 'Ausführen wenn das Fenster sich ändert']] 
         self.logics.update_config_section(True, 'logic_up', [ fn, ct, wi ])
         readback = self.logics.read_config_section('logic_up')
         fnb = readback[0]
