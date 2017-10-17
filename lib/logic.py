@@ -653,7 +653,8 @@ class Logics():
 #            keep_enabled = conf[section].get('enabled', None)
 #        except:
 #            keep_enabled = None
-#        conf[section] = shyaml.get_emptynode()
+        if conf.get(section, None) == None:
+            conf[section] = shyaml.get_emptynode()
         del conf[section]['filename']
         del conf[section]['cycle']
         del conf[section]['crontab']
