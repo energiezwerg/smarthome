@@ -5,13 +5,9 @@ Configuration
 -------------
 
 Logging for SmartHomeNG is configured in ``etc/logging.yaml``. This file is in YAML format.
-The way to configure logging within Python is described here_.
+The way to configure logging within Python is described `here <https://docs.python.org/3/howto/logging.html>`_.
 
-.. _here: https://docs.python.org/3/howto/logging.html
-
-A `Best Practices` description for logging in SmartHomeNG can be found here_ (in German).
-
-.. _here: https://github.com/smarthomeNG/smarthome/wiki/Logging----Best-Practices
+A `Best Practices` description for logging in SmartHomeNG can be found `in the Wiki <https://github.com/smarthomeNG/smarthome/wiki/Logging----Best-Practices>`_ (in German).
 
 
 .. code-block:: YAML

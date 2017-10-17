@@ -1,4 +1,4 @@
-:tocdepth: 3
+:tocdepth: 5
 
 ###########
 SmartHomeNG
@@ -21,16 +21,30 @@ Feel free to contribute in any way you want and can.
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :hidden:
-
+   :titlesonly:
+   
    requirements.rst
    install
+
+
+.. toctree::
+   :maxdepth: 5
+   :hidden:
+
    config
    items
    logics
-   logging
    plugins_all
+
+
+.. toctree::
+   :maxdepth: 4
+   :hidden:
+   :titlesonly:
+   
+   logging
    tools
    development_plugins
    development_core

@@ -3,8 +3,9 @@
 Configuration
 =============
 
-Filesystem Structure of SmartHomeNG
-===================================
+------------------------
+Structure of SmartHomeNG
+------------------------
 
 After the base system is installed a closer look at the SmartHomeNG directory 
 (e.g. ``/usr/local/smarthome/``) is advised to learn something about its content:
@@ -47,8 +48,9 @@ Those are the locations were configuration is stored and maintained.
 The following discusses how these directories are populated.
 
 
-directory *etc*: Config files
-=============================
+---------------------------------
+Config files in directory **etc**
+---------------------------------
 
 The configuration is done by the widespread `yaml <https://en.wikipedia.org/wiki/YAML>`_ format. 
 Older versions used `configobj <http://www.voidspace.org.uk/python/articles/configobj.shtml>`_ file format which is like a well-known `ini-file <https://en.wikipedia.org/wiki/INI_file>`_ but with the ability to create multilevel sub-sections.
@@ -62,7 +64,7 @@ There is however a service tool at ``tools/conf_to_yaml_converter.py`` that can 
 .. _`smarthome.yaml`:
 
 smarthome.yaml
---------------
+==============
 
 To calculate sunrise, sunset, azimuth and elevation of the sun for a given time the coordinates of the physical location
 of the SmartHomeNG installation is needed.
@@ -94,40 +96,10 @@ The coordinates can be found out by using GPS of a mobile or via an adequate web
 
 
    
-.. _`logic.yaml`:
-
-logic.yaml
-----------
-
-Logics within SmartHomeNG are just Python scripts like the core, too. These scripts will be
-placed in `/usr/local/smarthome/logics/`. To let SmartHomeNG know about when to start a script and which script to use then
-it is needed to configure every logic script in `logic.yaml`:
-
-.. sidebar:: logic.conf
-   :class: deprecated
-   
-   .. code-block:: ini
-   
-      [MyLogic]
-          filename = logic.py
-          crontab = init
-
-.. code-block:: yaml
-   :caption: logic.yaml
-   
-   MyLogic:
-       filename: logic.py
-       crontab: init
-
-With the example above SmartHomeNG would look in ``/usr/local/smarthome/logics/`` for the file
-``logic.py``. The logic would be started - once - when SmartHomeNG starts.
-
-
-
 .. _`plugin.yaml`:
 
 plugin.yaml
------------
+===========
 
 Plugins extend the core functionality of SmartHomeNG. 
 The ``plugins`` directory contains a subdirectory for every available plugin.
@@ -172,7 +144,8 @@ There is a `README.md` for every plugin that gives the necessary configuration i
 To continue reading follow the :doc:`plugin <plugins_all>` page.
 
 
-**Referencing a plugin in the configuration**
+Referencing a plugin in the configuration
+-----------------------------------------
 
 Up to SmartHomeNG v1.3 a plugin had to be referenced by the parameters ``class_name`` and ``class_path``.
 Now it is possible to reference it alone by specifing the parameter ``plugin_name``, where
@@ -187,7 +160,8 @@ the ``class_name`` parameter. This information is retrieved from the metadata.
     Should the need arise to configure a plugin that is located outside the ``/plugins`` folder, ``class_path`` can be used. 
 
 
-**Using an older version of a plugin**
+Using an older version of a plugin
+----------------------------------
 
 If you are not using the newest version of the SmartHomeNG core, if may be necessary to use an
 older version of a plugin. Some plugins come with embedded older versions. To load an older 
@@ -202,10 +176,40 @@ add ``plugin_version: 1.3.0`` to the plugin configuration.
 
 
 
+.. _`logic.yaml`:
+
+logic.yaml
+==========
+
+Logics within SmartHomeNG are just Python scripts like the core, too. These scripts will be
+placed in `/usr/local/smarthome/logics/`. To let SmartHomeNG know about when to start a script and which script to use then
+it is needed to configure every logic script in `logic.yaml`:
+
+.. sidebar:: logic.conf
+   :class: deprecated
+   
+   .. code-block:: ini
+   
+      [MyLogic]
+          filename = logic.py
+          crontab = init
+
+.. code-block:: yaml
+   :caption: logic.yaml
+   
+   MyLogic:
+       filename: logic.py
+       crontab: init
+
+With the example above SmartHomeNG would look in ``/usr/local/smarthome/logics/`` for the file
+``logic.py``. The logic would be started - once - when SmartHomeNG starts.
+
+
+
 .. _`logging.yaml`:
 
 logging.yaml
-------------
+============
 
 The core and also every module is able to output logging information. 
 The logging can be configured to be rich in detail for debugging purposes or rather smart with warning or general info.
@@ -222,8 +226,10 @@ See further details at :doc:`logging <logging>`.
 .. _`item configuration files`:
 
 
-directory *items*: Config files containing item definitions
-===========================================================
+---------------------------------------
+Item definitions in directory **items**
+---------------------------------------
+
 
 The items represent the heart of the configuration. An item can be accessed from any logic, plugin or eval.
 Any number of item configuration files may be used and any number of items may be defined (depends on your memory) in one of these files.
@@ -234,14 +240,23 @@ the way you want.
 To find out more details about items and scenes configuration continue reading the :doc:`items <items>` page.
 
 
-directory *logics*: Config files containing item definitions
-============================================================
+-----------------------------------------
+Logic definitions in directory **logics**
+-----------------------------------------
 
-This directory contains logics you write, which are used by SmartHomeNG.
+This directory contains logics you write, which are used by SmartHomeNG. A logic is basically a file
+of Python code. It has some additional conventions. When and how the logic is executed is configured
+in the file `etc/logics.yaml`.
+
+When using the Blockly Plugin to write a logic, the logic has two files. One is the Blockly code with the 
+extension `.blockly` and one file with the Python code. That file has the extension `.py`.
+
+To find out more details about logics continue reading the :doc:`logics <logics>` page.
 
 
+-------------------------
 SmartHomeNG start options
-=========================
+-------------------------
 
 SmartHomeNG can be executed with the following options:
 

@@ -1,6 +1,6 @@
-=====================
-Development - Plugins
-=====================
+======================
+Development of Plugins
+======================
 
 
 Information about writing a plugin and getting it included in SmartHomeNG can be found here: 

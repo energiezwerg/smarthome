@@ -64,6 +64,11 @@ to guess where the forth script resides in and when it is called by SmartHomeNG.
 
 Within the ``etc/logic.conf`` (deprecated) / ``etc/logic.conf`` the following attributes control the execution of a logic:
 
+Configuration parameters
+------------------------
+
+The following parameters can be used in `etc/logic.yaml` to configure the logic and it's behaviour.
+
 watch_item
 ~~~~~~~~~~
 
@@ -196,20 +201,21 @@ Combine several options with ``|``:
 enabled
 ~~~~~~~
 
-``enabled``can be set to False to disable the execution of the logic after loading. The status 
+``enabled`` can be set to False to disable the execution of the logic after loading. The status 
 of the logic (enabled/disabled) can be controlled via the plugins ``backend`` or ``cli``   
 
 prio
 ~~~~
 
 Sets the priority of the logic script within the execution context of the scheduler. 
-Any value between 0 to 10 is allowed where 1 has the highest priority and 10 the lowest.
+Any value between 1 to 10 is allowed where 1 has the highest priority and 10 the lowest.
+Usually you don't need to specify a priority. The default priority is 5.
 
-Other attributes
+Other parameters
 ~~~~~~~~~~~~~~~~
 
-Other attributes could be accessed from the the logic with self.attribute_name.
-Like in the first example script for the fourth logic the attribute ``usage_warning = 500``
+Other parameters could be accessed from the the logic with self.parameter_name.
+Like in the first example script for the fourth logic the attribute ``usage_warning: 500``
 
 
 Basic Structure of a logic script
@@ -237,6 +243,23 @@ Items need to be accessed with parentheses, otherwise an exception will be raise
        print item
        for child_item in item:
            print child_item
+
+
+Loaded Python modules
+---------------------
+
+In the logic environment are several python modules already loaded:
+
+-  sys
+-  os
+-  time
+-  datetime
+-  ephem
+-  random
+-  Queue
+-  subprocess
+
+you could however import more modules as needed with the import statement.
 
 
 Available Objects/Methods
@@ -291,15 +314,19 @@ localtime.
    for entry in sh.log:
        print(entry) # remark: if SmartHomeNG is run in daemon mode output by 'print' is not visible.
 
+
+SmartHomeNG methods to use
+--------------------------
+
 sh.now and sh.utcnow
---------------------
+~~~~~~~~~~~~~~~~~~~~
 
 These two functions return a timezone-aware datetime object. Its
 possible to compute with different timezones. sh.tzinfo() and
 sh.utcinfo() address a local and the UTC timezone.
 
 sh.sun
-------
+~~~~~~
 
 This module provides access to parameters of the sun. In order to use
 this module, it is required to specify the latitude (e.g. lat = 51.1633)
@@ -324,7 +351,7 @@ and longitude (e.g. lon = 10.4476) in the smarthome.conf file!
    sunrise_tw = sh.sun.rise(-6) # Would return the start of the twilight.
 
 sh.moon
--------
+~~~~~~~
 
 Besides the three functions (pos, set, rise) it provides two more.
 ``sh.moon.light(offset)`` provides a value from 0 - 100 of the
@@ -332,7 +359,72 @@ illuminated surface at the current time + offset.
 ``sh.moon.phase(offset)`` returns the lunar phase as an integer [0-7]: 0
 = new moon, 4 = full moon, 7 = waning crescent moon
 
-sh item methods
+Scheduling
+----------
+
+sh.scheduler.trigger() / sh.trigger()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This global function triggers any specified logic by its name.
+``sh.trigger(name [, by] [, source] [, value] [, dt])`` ``name``
+(mandatory) defines the logic to trigger. ``by`` a name of the calling
+logic. By default its set to 'Logic'. ``source`` the reason for
+triggering. ``value`` a variable. ``dt`` timezone aware datetime object,
+which specifies the triggering time.
+
+sh.scheduler.change()
+~~~~~~~~~~~~~~~~~~~~~
+
+This method changes some runtime options of the logics.
+``sh.scheduler.change('alarmclock', active=False)`` disables the logic
+'alarmclock'. Besides the ``active`` flag, it is possible to change:
+``cron`` and ``cycle``.
+
+sh.tools object
+---------------
+
+The ``sh.tools`` object provide some useful functions:
+
+sh.tools.ping()
+~~~~~~~~~~~~~~~
+
+Pings a computer and returns True if the computer responds, otherwise
+False. ``sh.office.laptop(sh.tools.ping('hostname'))``
+
+sh.tools.dewpoint()
+~~~~~~~~~~~~~~~~~~~
+
+Calculate the dewpoint for the provided temperature and humidity.
+``sh.office.dew(sh.tools.dewpoint(sh.office.temp(), sh.office.hum())``
+
+sh.tools.fetch\_url()
+~~~~~~~~~~~~~~~~~~~~~
+
+Return a website as a String or 'False' if it fails.
+``sh.tools.fetch_url('https://www.regular.com')`` Its possible to use
+'username' and 'password' to authenticate against a website.
+``sh.tools.fetch_url('https://www.special.com', 'username', 'password')``
+Or change the default 'timeout' of two seconds.
+``sh.tools.fetch_url('https://www.regular.com', timeout=4)``
+
+sh.tools.dt2ts(dt)
+~~~~~~~~~~~~~~~~~~
+
+Converts an datetime object to a unix timestamp.
+
+sh.tools.dt2js(dt)
+~~~~~~~~~~~~~~~~~~
+
+Converts an datetime object to a json timestamp.
+
+
+sh.tools.rel2abs(temp, hum)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Converts the relative humidity to the absolute humidity.
+
+
+Accessing items
 ---------------
 
 sh.return_item(path)
@@ -377,84 +469,4 @@ find\_children(parentitem, configattribute):
 
 Returns all children items with the specified config attribute.
 
-sh.scheduler
-------------
 
-sh.scheduler.trigger() / sh.trigger()
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-This global function triggers any specified logic by its name.
-``sh.trigger(name [, by] [, source] [, value] [, dt])`` ``name``
-(mandatory) defines the logic to trigger. ``by`` a name of the calling
-logic. By default its set to 'Logic'. ``source`` the reason for
-triggering. ``value`` a variable. ``dt`` timezone aware datetime object,
-which specifies the triggering time.
-
-sh.scheduler.change()
-~~~~~~~~~~~~~~~~~~~~~
-
-This method changes some runtime options of the logics.
-``sh.scheduler.change('alarmclock', active=False)`` disables the logic
-'alarmclock'. Besides the ``active`` flag, it is possible to change:
-``cron`` and ``cycle``.
-
-sh.tools
---------
-
-The ``sh.tools`` object provide some useful functions:
-
-sh.tools.ping()
-~~~~~~~~~~~~~~~
-
-Pings a computer and returns True if the computer responds, otherwise
-False. ``sh.office.laptop(sh.tools.ping('hostname'))``
-
-sh.tools.dewpoint()
-~~~~~~~~~~~~~~~~~~~
-
-Calculate the dewpoint for the provided temperature and humidity.
-``sh.office.dew(sh.tools.dewpoint(sh.office.temp(), sh.office.hum())``
-
-sh.tools.fetch\_url()
-~~~~~~~~~~~~~~~~~~~~~
-
-Return a website as a String or 'False' if it fails.
-``sh.tools.fetch_url('https://www.regular.com')`` Its possible to use
-'username' and 'password' to authenticate against a website.
-``sh.tools.fetch_url('https://www.special.com', 'username', 'password')``
-Or change the default 'timeout' of two seconds.
-``sh.tools.fetch_url('https://www.regular.com', timeout=4)``
-
-sh.tools.dt2ts(dt)
-~~~~~~~~~~~~~~~~~~
-
-Converts an datetime object to a unix timestamp.
-
-sh.tools.dt2js(dt)
-~~~~~~~~~~~~~~~~~~
-
-Converts an datetime object to a json timestamp.
-
-
-sh.tools.rel2abs(temp, hum)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Converts the relative humidity to the absolute humidity.
-
-
-
-Loaded modules
---------------
-
-In the logic environment are several python modules already loaded:
-
--  sys
--  os
--  time
--  datetime
--  ephem
--  random
--  Queue
--  subprocess
-
-you could however import more modules as needed with the import statement.
