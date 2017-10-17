@@ -5,6 +5,7 @@ There are a lot of plugins to extend the functionality of SmartHomeNG. The infor
 pages are gathered from the metadata file of the plugins. The entries in the navigation pane
 link to the README of the corresponding plugin.
 
+
 The plugins are subclassed to the following categories:
 
 .. toctree::

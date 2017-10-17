@@ -91,6 +91,8 @@ to ``smarthome.yaml`` and edit it to your needs. It should look like the followi
    default_language: de # default language for use with the backend plugin and multi-language entries in metadata
 
 The coordinates can be found out by using GPS of a mobile or via an adequate website (e.g. http://www.mapcoordinates.net/)
+
+
    
 .. _`logic.yaml`:
 
@@ -119,6 +121,7 @@ it is needed to configure every logic script in `logic.yaml`:
 
 With the example above SmartHomeNG would look in ``/usr/local/smarthome/logics/`` for the file
 ``logic.py``. The logic would be started - once - when SmartHomeNG starts.
+
 
 
 .. _`plugin.yaml`:
@@ -166,6 +169,24 @@ The object name can be any valid Python name, the class name and class path need
 
 There is a `README.md` for every plugin that gives the necessary configuration information.
 To continue reading follow the :doc:`plugin <plugins_all>` page.
+
+
+**Using an older version of a plugin**
+
+If you are not using the newest version of the SmartHomeNG core, if may be necessary to use an
+older version of a plugin. Some plugins come with embedded older versions. To load an older 
+version of the plugin, you have to specify the parameter `plugin_version` in the configuration 
+section of the plugin. 
+
+To find out, if a plugin comes with an older version (or versions), take a look at the plugin's
+directory. if you find a subdirectory with the name starting with `_pv_` the plugin comes with
+an older (previous) version. The rest of the folder name specifies the version number. If you
+find a subfolder `_pv_1_3_0`, it contains the v1.3.0 of the plugin. To load that version, just
+add `plugin_version: 1.3.0` to the plugin configuration. 
+
+
+
+.. _`logging.yaml`:
 
 logging.yaml
 ------------
