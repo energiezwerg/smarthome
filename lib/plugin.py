@@ -108,7 +108,7 @@ class Plugins():
                     instance = self._get_instancename(_conf[plugin])
                     dummy = self._test_duplicate_pluginconfiguration(plugin, classname, instance)
                     try:
-                        plugin_thread = PluginWrapper(smarthome, plugin, classname, classpath, args, instance, self.meta, plugin_name)
+                        plugin_thread = PluginWrapper(smarthome, plugin, classname, classpath, args, instance, self.meta)
                         if plugin_thread._init_complete == True:
                             try:
                                 self._plugins.append(plugin_thread.plugin)
@@ -340,16 +340,16 @@ class PluginWrapper(threading.Thread):
     :param args: Parameter as specified in the configuration file (etc/plugin.yaml)
     :param instance: Name of the instance of the plugin
     :param meta:
-    :param plugin_name:
     :type samrthome: object
     :type name: str
     :type classname: str
     :type classpath: str
     :type args: dict
     :type instance: str
+    :type meta: object
     """
     
-    def __init__(self, smarthome, name, classname, classpath, args, instance, meta, plugin_name):
+    def __init__(self, smarthome, name, classname, classpath, args, instance, meta):
         """
         Initialization of wrapper class
         """
@@ -375,7 +375,6 @@ class PluginWrapper(threading.Thread):
             self.get_implementation()._set_shortname(str(classpath).split('.')[1])
             self.get_implementation()._classpath = classpath
             self.get_implementation()._set_classname(classname)
-            self.get_implementation()._plugin_name = plugin_name
             if instance != '':
                 logger.debug("set plugin {0} instance to {1}".format(name, instance ))
                 self.get_implementation()._set_instance_name(instance)
@@ -387,7 +386,6 @@ class PluginWrapper(threading.Thread):
             self.get_implementation()._shortname = str(classpath).split('.')[1]
             self.get_implementation()._classpath = classpath
             self.get_implementation()._classname = classname
-            self.get_implementation()._plugin_name = plugin_name
 
         # get arguments defined in __init__ of plugin's class to self.args
         exec("self.args = inspect.getargspec({0}.{1}.__init__)[0][1:]".format(classpath, classname))
