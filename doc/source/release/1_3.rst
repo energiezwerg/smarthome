@@ -1,5 +1,6 @@
-Release 1.3 - August 2017
-============================
+==============================
+Release 1.3 - August 5th, 2017
+==============================
 
 There are a lot of new features for the core of SmartHomeNG anf the plugins.
 
