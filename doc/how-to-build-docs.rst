@@ -5,6 +5,9 @@ This directory contains the developer and the user documentation. The developer 
 in English. The user documentation is in German and will be multilingual. It will be translated
 into English.
 
+The developer documantation (master language 'en') is stored in dec/developer
+The user documantation (master language 'de') is going to be stored in dec/user
+
 
 How to build the doc
 ====================
