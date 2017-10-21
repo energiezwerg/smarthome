@@ -270,12 +270,12 @@ def write_rstfile(plgtype='All', heading=''):
             for l in range(1, len(plg['desc'])):
                 fh.write('   | {plg:<17.17} | {desc:<140.140} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['desc'][l], maint=plg['maint'][l], test=plg['test'][l]))
             if plg['doc'] != '':
-                plg['doc'] = "`"+plg+" additional info <"+plg['doc']+">`_"
+                plg['doc'] = "`"+str(plg)+" additional info <"+plg['doc']+">`_"
                 fh.write('   | {plg:<17.17} |     {desc:<136.136} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['doc'], maint='', test=''))
             if plg['sup'] != '':
                 if plg['doc'] != '':
                     fh.write('   | {plg:<17.17} |     {desc:<136.136} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc='', maint='', test=''))
-                plg['sup'] = "`"+plg+" support <"+plg['sup']+">`_"
+                plg['sup'] = "`"+str(plg)+" support <"+plg['sup']+">`_"
                 fh.write('   | {plg:<17.17} |     {desc:<136.136} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['sup'], maint='', test=''))
             fh.write('   +-------------------+----------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+\n')
         fh.write('\n')
