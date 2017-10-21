@@ -42,6 +42,9 @@ from dateutil.tz import tzutc
 
 logger = logging.getLogger(__name__)
 
+_scheduler_instance = None    # Pointer to the initialized instance of the scheduler class (for use by static methods)
+
+
 class PriorityQueue:
 
     def __init__(self):
@@ -92,6 +95,37 @@ class Scheduler(threading.Thread):
         self._sh = smarthome
         self._lock = threading.Lock()
         self._runc = threading.Condition()
+        global _scheduler_instance
+        _scheduler_instance = self
+
+    # ---------------------------------------------------------------------------------------
+    #   Following (static) method of the class Scheduler implement the API for logics in shNG
+    # ---------------------------------------------------------------------------------------
+
+    @staticmethod
+    def get_instance():
+        """
+        Returns the instance of the scheduler class, to be used to access the scheduler-api
+        
+        Use it the following way to access the api:
+        
+        .. code-block:: python
+
+            from lib.scheduler import Scheduler
+            scheduler = Scheduler.get_instance()
+            
+            # to access a method (eg. to trigger a logic):
+            scheduler.trigger(...)
+
+        
+        :return: scheduler instance
+        :rtype: object or None
+        """
+        if _scheduler_instance == None:
+            return None
+        else:
+            return _scheduler_instance
+
 
     def run(self):
         self.alive = True

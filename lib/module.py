@@ -85,7 +85,7 @@ class Modules():
             
         for module in _conf:
             logger.debug("Modules, section: {}".format(module))
-            module_name, self.meta = self._get_modulename_and_metadata(_conf[module])
+            module_name, self.meta = self._get_modulename_and_metadata(module, _conf[module])
             if self.meta.test_shngcompatibility():
                 args = self._get_conf_args(_conf[module])
                 classname, classpath = self._get_classname_and_classpath(_conf[module], module_name)
@@ -104,7 +104,7 @@ class Modules():
         return
 
 
-    def _get_modulename_and_metadata(self, mod_conf):
+    def _get_modulename_and_metadata(self, module, mod_conf):
         """
         Return the actual module name and the metadata instance
         
@@ -121,7 +121,9 @@ class Modules():
             classpath = mod_conf.get(KEY_CLASS_PATH,'')
             if classpath != '':
                 module_name = classpath.split('.')[len(classpath.split('.'))-1].lower()
-            logger.info("Modules: module_name '{}' was extracted from classpath '{}'".format(module_name, classpath))
+                logger.info("Module '{}': module_name '{}' was extracted from classpath '{}'".format(module, module_name, classpath))
+            else:
+                logger.error("Module '{}': No module_name found in configuration".format(module))
             meta = Metadata(self._sh, module_name, 'module', classpath)
         return (module_name, meta)
         
@@ -212,7 +214,7 @@ class Modules():
         try:
             exec("import {0}".format(classpath))
         except Exception as e:
-            logger.exception("Module '{0}' exception during import of __init__.py: {1}".format(name, e))
+            logger.error("Module '{}' ({}) exception during import of __init__.py: {}".format(name, classpath, e))
             return None
         exec("self.loadedmodule = {0}.{1}.__new__({0}.{1})".format(classpath, classname))
                 

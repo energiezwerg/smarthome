@@ -59,6 +59,8 @@ from lib.utils import Utils
 from lib.constants import PLUGIN_PARSE_LOGIC
 from lib.constants import (YAML_FILE, CONF_FILE)
 
+from lib.scheduler import Scheduler
+
 logger = logging.getLogger(__name__)
 
 
@@ -89,6 +91,7 @@ class Logics():
         self.alive = True
         global _logics_instance
         _logics_instance = self
+        self.scheduler = Scheduler.get_instance()
         
         _config = {}
         self._systemlogics = self._read_logics(envlogicconf, self._env_dir)
@@ -133,7 +136,7 @@ class Logics():
         logic = Logic(self._sh, name, config[name])
         if hasattr(logic, 'bytecode'):
             self._logics[name] = logic
-            self._sh.scheduler.add(self._logicname_prefix+name, logic, logic.prio, logic.crontab, logic.cycle)
+            self.scheduler.add(self._logicname_prefix+name, logic, logic.prio, logic.crontab, logic.cycle)
         else:
             return False
         # plugin hook
@@ -196,7 +199,7 @@ class Logics():
 
         
         :return: logics instance
-        :rtype: object of None
+        :rtype: object or None
         """
         if _logics_instance == None:
             return None
@@ -291,8 +294,8 @@ class Logics():
         info['name'] = logic.name
         info['enabled'] = logic.enabled
 
-        if self._sh.scheduler.return_next(self._logicname_prefix+logic.name):
-            info['next_exec'] = self._sh.scheduler.return_next(self._logicname_prefix+logic.name).strftime('%Y-%m-%d %H:%M:%S%z')
+        if self.scheduler.return_next(self._logicname_prefix+logic.name):
+            info['next_exec'] = self.scheduler.return_next(self._logicname_prefix+logic.name).strftime('%Y-%m-%d %H:%M:%S%z')
 
         info['cycle'] = logic.cycle
         info['crontab'] = logic.crontab
@@ -357,7 +360,7 @@ class Logics():
         logger.debug("trigger_logic: Trigger logic = '{}'".format(name))
         if name in self.return_loaded_logics():
             if self.is_logic_enabled(name):
-                self._sh.trigger(name, by='Backend')
+                self.scheduler.trigger(self._logicname_prefix+name, by='Backend')
             else:
                 logger.warning("trigger_logic: Logic '{}' not triggered because it is disabled".format(name))
         else:
@@ -421,7 +424,7 @@ class Logics():
         mylogic.crontab = None
 
         # Scheduler entfernen
-        self._sh.scheduler.remove(self._logicname_prefix+name)
+        self.scheduler.remove(self._logicname_prefix+name)
     
         # watch_items entfernen
         if hasattr(mylogic, 'watch_item'):
@@ -801,6 +804,7 @@ class Logic():
         self.prio = 3
         self.last = None
         self.conf = attributes
+        self.scheduler = Logics.get_instance().scheduler
         self.__methods_to_trigger = []
         if attributes != 'None':
             for attribute in attributes:
@@ -823,7 +827,7 @@ class Logic():
 
     def __call__(self, caller='Logic', source=None, value=None, dest=None, dt=None):
         if self.enabled:
-            self._sh.scheduler.trigger(self._logicname_prefix+self.name, self, prio=self.prio, by=caller, source=source, dest=dest, value=value, dt=dt)
+            self.scheduler.trigger(self._logicname_prefix+self.name, self, prio=self.prio, by=caller, source=source, dest=dest, value=value, dt=dt)
 
     def enable(self):
         """
@@ -846,7 +850,7 @@ class Logic():
 
     def trigger(self, by='Logic', source=None, value=None, dest=None, dt=None):
         if self.enabled:
-            self._sh.scheduler.trigger(self._logicname_prefix+self.name, self, prio=self.prio, by=by, source=source, dest=dest, value=value, dt=dt)
+            self.scheduler.trigger(self._logicname_prefix+self.name, self, prio=self.prio, by=by, source=source, dest=dest, value=value, dt=dt)
 
     def _generate_bytecode(self):
         if hasattr(self, 'pathname'):
