@@ -559,9 +559,9 @@ class Logics():
         
         This funtion returns the data from one section of the configuration file as a list of
         configuration entries. A configuration entry is a list with three items:
-          - key      configuration key
-          - value    configuration value (string or list)
-          - comment  comment for the value (string or list)
+        - key      configuration key
+        - value    configuration value (string or list)
+        - comment  comment for the value (string or list)
           
         :param section: Name of the logic (section)
         :type section: str
