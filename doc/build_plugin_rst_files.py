@@ -26,6 +26,7 @@ import os
 print('')
 print(os.path.basename(__file__) + ' - Builds the .rst files for the documentation')
 print('')
+start_dir = os.getcwd()
 
 import sys
 # find lib directory and import lib/item_conversion
@@ -299,7 +300,14 @@ def write_rstfile(plgtype='All', heading=''):
 #
 
 if __name__ == '__main__':
-    program_dir = os.getcwd()
+    
+    
+    global docu_type
+    docu_type = start_dir.split('/')[-1:][0]     # developer / user
+
+    print('Start directory    = '+start_dir)
+    print('Documentation type = '+docu_type)
+    print('')
 
     # change the working diractory to the directory from which the converter is loaded (../tools)
     os.chdir(os.path.dirname(os.path.abspath(os.path.basename(__file__))))
@@ -324,8 +332,7 @@ if __name__ == '__main__':
     
     
 
-
-    plugin_rst_dir = program_dir+'/source'
+    plugin_rst_dir = start_dir+'/source'
     print('zu schreiben in: '+plugin_rst_dir)
 
     plugin_types = []
