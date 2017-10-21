@@ -153,7 +153,7 @@ def html_escape(str):
 #    str = str.rstrip().replace('<', '&lt;').replace('>', '&gt;')
 #    str = str.rstrip().replace('(', '&#40;').replace(')', '&#41;')
 #    str = str.rstrip().replace("'", '&#39;').replace('"', '&quot;')
-    html = str.rstrip().replace("a", '&auml;').replace("o", '&ouml;').replace("u", '&uuml;')
+    html = str.rstrip().replace("ä", '&auml;').replace("ö", '&ouml;').replace("ü", '&uuml;')
     return html
 
 
