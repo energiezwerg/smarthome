@@ -149,6 +149,14 @@ def get_supurl(section_dict, maxlen=70):
     return lines
 
 
+def html_escape(str):
+#    str = str.rstrip().replace('<', '&lt;').replace('>', '&gt;')
+#    str = str.rstrip().replace('(', '&#40;').replace(')', '&#41;')
+#    str = str.rstrip().replace("'", '&#39;').replace('"', '&quot;')
+    html = str.rstrip().replace("a", '&auml;').replace("o", '&ouml;').replace("u", '&uuml;')
+    return html
+
+
 def build_pluginlist( plugin_type='all' ):
     """
     Return a list of dicts with a dict for each plugin of the requested type
@@ -174,8 +182,8 @@ def build_pluginlist( plugin_type='all' ):
                         plg_dict['desc'] = get_description(section_dict, 85)
                         plg_dict['maint'] = get_maintainer(section_dict, 15)
                         plg_dict['test'] = get_tester(section_dict, 15)
-                        plg_dict['doc'] = section_dict.get('documentation', '')
-                        plg_dict['sup'] = section_dict.get('support', '')
+                        plg_dict['doc'] = html_escape(section_dict.get('documentation', ''))
+                        plg_dict['sup'] = html_escape(section_dict.get('support', ''))
                     else:
                         plgtype = type_unclassified
                         if plugin_type == type_unclassified:
@@ -189,8 +197,8 @@ def build_pluginlist( plugin_type='all' ):
                     plg_dict['desc'] = get_description(section_dict, 85)
                     plg_dict['maint'] = get_maintainer(section_dict, 15)
                     plg_dict['test'] = get_tester(section_dict, 15)
-                    plg_dict['doc'] = section_dict.get('documentation', '')
-                    plg_dict['sup'] = section_dict.get('support', '')
+                    plg_dict['doc'] = html_escape(section_dict.get('documentation', ''))
+                    plg_dict['sup'] = html_escape(section_dict.get('support', ''))
                     print("unclassified: metafile = {}, plg_dict = {}".format(metafile, str(plg_dict)))
                     
                 plg_dict['desc'].append('')
@@ -262,22 +270,22 @@ def write_rstfile(plgtype='All', heading=''):
         fh.write('.. table:: \n')
         fh.write('   :widths: grid\n')
         fh.write('\n')
-        fh.write('   +-------------------+----------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+\n')
-        fh.write('   | Plugin            | Description                                                                                                                                  | Maintainer      | Tester          |\n')
-        fh.write('   +===================+============================================================================================================================+=================+=================+=================+\n')
+        fh.write('   +-------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+\n')
+        fh.write('   | Plugin            | Description                                                                                                                                       | Maintainer      | Tester          |\n')
+        fh.write('   +===================+=================================================================================================================================+=================+=================+=================+\n')
         for plg in plglist:
-            fh.write('   | {plg:<17.17} | {desc:<140.140} | {maint:<15.15} | {test:<15.15} |\n'.format(plg=plg['name'], desc=plg['desc'][0], maint=plg['maint'][0], test=plg['test'][0]))
+            fh.write('   | {plg:<17.17} | {desc:<145.145} | {maint:<15.15} | {test:<15.15} |\n'.format(plg=plg['name'], desc=plg['desc'][0], maint=plg['maint'][0], test=plg['test'][0]))
             for l in range(1, len(plg['desc'])):
-                fh.write('   | {plg:<17.17} | {desc:<140.140} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['desc'][l], maint=plg['maint'][l], test=plg['test'][l]))
+                fh.write('   | {plg:<17.17} | {desc:<145.145} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['desc'][l], maint=plg['maint'][l], test=plg['test'][l]))
             if plg['doc'] != '':
                 plg['doc'] = "`"+plg['name']+" additional info <"+plg['doc']+">`_"
-                fh.write('   | {plg:<17.17} |     {desc:<136.136} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['doc'], maint='', test=''))
+                fh.write('   | {plg:<17.17} |     {desc:<141.141} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['doc'], maint='', test=''))
             if plg['sup'] != '':
                 if plg['doc'] != '':
-                    fh.write('   | {plg:<17.17} |     {desc:<136.136} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc='', maint='', test=''))
+                    fh.write('   | {plg:<17.17} |     {desc:<141.141} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc='', maint='', test=''))
                 plg['sup'] = "`"+plg['name']+" support <"+plg['sup']+">`_"
-                fh.write('   | {plg:<17.17} |     {desc:<136.136} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['sup'], maint='', test=''))
-            fh.write('   +-------------------+----------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+\n')
+                fh.write('   | {plg:<17.17} |     {desc:<141.141} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['sup'], maint='', test=''))
+            fh.write('   +-------------------+---------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+\n')
         fh.write('\n')
         fh.write('\n')
         
