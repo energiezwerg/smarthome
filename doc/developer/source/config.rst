@@ -217,7 +217,7 @@ There is a seperate document to explain how to configure :doc:`logging <logging>
 To get started, simply copy the given ``logging.yaml.default`` 
 to ``logging.yaml`` and edit it to your needs. It should look like the following:
 
-.. literalinclude:: ../../etc/logging.yaml.default
+.. literalinclude:: ../../../etc/logging.yaml.default
    :caption: logging.yaml
    :language: yaml
 

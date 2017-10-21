@@ -30,8 +30,14 @@ cd $DIR
 
 echo
 echo
-echo Erzeugen der Entwicklerdokumentation für SmartHomeNG
-echo ====================================================
+if [ "${DOC,,}" == "developer" ]; then
+  echo Erzeugen der Entwicklerdokumentation für SmartHomeNG
+  echo ====================================================
+fi
+if [ "${DOC,,}" == "user" ]; then
+  echo Erzeugen der Anwenderdokumentation für SmartHomeNG
+  echo ==================================================
+fi
 echo
 python3 -c "import sphinx" 2> /dev/null
 if [ "$?" == "1" ]; then

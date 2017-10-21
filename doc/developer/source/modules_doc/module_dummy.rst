@@ -29,7 +29,7 @@ The meta data file:
 
 
 
-.. literalinclude:: ../../../modules/dummy/README.md
+.. literalinclude:: ../../../../modules/dummy/README.md
     :caption: README.md
 
 

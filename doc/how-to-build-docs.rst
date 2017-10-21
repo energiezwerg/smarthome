@@ -28,7 +28,8 @@ sudo pip3 install sphinx sphinx_rtd_theme recommonmark
 If you are using virtualenv or pyenv you might first checkout your environment and choose a different way
 
 
-Then you simply start the shell script build_doc by typing './build_doc.sh
+Then you simply copy the file build_doc.sh from the doc directory to an empty directory on your system and start 
+the shell script build_doc by typing './build_doc.sh
 
 You will find your newly created files in doc/developer/build/html or doc/user/build/html. 
 Your starting point is index.html
