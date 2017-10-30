@@ -32,15 +32,25 @@ class SamplePlugin(SmartPlugin):
     the update functions for the items
     """
     
-    ALLOW_MULTIINSTANCE = False
-    PLUGIN_VERSION='1.3a.0'
+    PLUGIN_VERSION='1.3c.0'
 
 
     def __init__(self, sh, *args, **kwargs):
         """
         Initalizes the plugin. The parameters describe for this method are pulled from the entry in plugin.conf.
 
-        :param sh:  **Deprecated**: The instance of the smarthome object. For SmartHomeNG versions **beyond** 1.3: **Don't use it**! Use the method self.get_sh() instead
+        :param sh:  **Deprecated**: The instance of the smarthome object. For SmartHomeNG versions **beyond** 1.3: **Don't use it**! 
+        :param *args: **Deprecated**: Old way of passing parameter values. For SmartHomeNG versions **beyond** 1.3: **Don't use it**!
+        :param **kwargs:**Deprecated**: Old way of passing parameter values. For SmartHomeNG versions **beyond** 1.3: **Don't use it**!
+        
+        If you need the sh object at all, use the method self.get_sh() to get it. There should be almost no need for
+        a reference to the sh object any more.
+        
+        The parameters *args and **kwargs are the old way of passing parameters. They are deprecated. They are implemented
+        to support oder plugins. Plugins for SmartHomeNG v1.4 and beyond should use the new way of getting parameter values:
+        use the SmartPlugin method `get_parameter_value(parameter_name)` instead. Anywhere within the Plugin you can get
+        the configured (and checked) value for a parameter by calling `self.get_parameter_value(parameter_name)`. It
+        returns the value in the datatype that is defined in the metadata.
         """
         # attention:
         # if your plugin runs standalone, sh will likely be None so do not rely on it later or check it within your code
