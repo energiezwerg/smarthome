@@ -42,6 +42,14 @@ print('')
 print(os.path.basename(__file__) + ' - tool to convert shng .conf files to yaml')
 print('')
 
+#####################################################################
+# Check Python Version
+#####################################################################
+if sys.hexversion < 0x03030000:
+    print("Sorry your python interpreter ({0}.{1}) is too old. Please update to 3.3 or newer.".format(sys.version_info[0], sys.version_info[1]))
+    print("")
+    exit()
+
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, '../lib')
 
