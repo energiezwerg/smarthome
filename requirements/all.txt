@@ -89,6 +89,9 @@ sleekxmpp >= 1.3.1
 # telegram_1_1_3
 telepot>=8.3
 
+# sonos
+tinytag>=0.18.0
+
 # telegram
 # telegram_1_1_3
 urllib3>=1.9.1
