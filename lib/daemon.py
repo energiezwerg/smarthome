@@ -144,7 +144,8 @@ def check_sh_is_running(pidfile):
     :rtype: bool
     """
     
-    return psutil.pid_exists(read_pidfile(pidfile))
+    pid = read_pidfile(pidfile)
+    return psutil.pid_exists(pid) if pid > 0 else False
 
 
 def kill(pidfile, waittime=15):
