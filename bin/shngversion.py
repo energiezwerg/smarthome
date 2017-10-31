@@ -23,7 +23,9 @@
 import os
 import subprocess
 
-shNG_version = '1.3c'
+# Update auf 1.3d wg. neuer item features on_update, on_change
+
+shNG_version = '1.3d'
 
 # ---------------------------------------------------------------------------------
 FileBASE = None

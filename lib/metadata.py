@@ -156,7 +156,10 @@ class Metadata():
         key_dict = self.addon_metadata.get(mlkey)
         if key_dict == None:
             return ''
-        result = key_dict.get(self._sh.get_defaultlanguage(), '')
+        try:
+            result = key_dict.get(self._sh.get_defaultlanguage(), '')
+        except:
+            return ''
         if result == '':
             result = key_dict.get('en','')
             if result == '':
