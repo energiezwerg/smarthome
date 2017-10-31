@@ -223,7 +223,6 @@ class Http(object):
     """
     def __init__(self, baseurl=None):
         self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.DEBUG)  # TODO: Remove this in production
 
         self.baseurl = baseurl
         self._response = None
@@ -754,7 +753,6 @@ class Tcp_server(object):
 
     def __init__(self, port, interface='::', name=None):
         self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.DEBUG)  # TODO: Remove this in production
 
         # Public properties
         self.name = name
