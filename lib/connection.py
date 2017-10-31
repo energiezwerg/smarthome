@@ -21,7 +21,7 @@
 """
 
 This library is softly on it's way out. In the future network classes for SmartHomeNG
-will be implemented trough the netwokr library lib.network, which is still in development.
+will be implemented trough the network library lib.network, which is still in development.
 
 """
 import logging
