@@ -9,13 +9,17 @@ PyMVGLive>=1.1.4
 # SmartHomeNG Core
 astral==1.0
 
+# _pv_1_3_5
 # backend
+# blockly
 cherrypy>=8.1.2
 
 # SmartHomeNG Core
 ephem>=3.7
 
+# _pv_1_3_5
 # backend
+# blockly
 jinja2>=2.8
 
 # xiaomi
@@ -23,6 +27,9 @@ miflora >=  0.1.13
 
 # systemair
 minimalmodbus>=0.7
+
+# mqtt
+paho-mqtt>=1.2.2
 
 # SmartHomeNG Core
 psutil
@@ -32,23 +39,24 @@ psutil
 pyserial>=3.2.1
 
 # SmartHomeNG Core
+# _pv_1_3_5
 # backend
+# blockly
 # dwd
 python-dateutil>=2.5.3
 
 # pushbullet
 python-magic>=0.4.12
 
-# SmartHomeNG Core
-pyyaml==3.11
-
 # avm
 # enigma2
 # intercom_2n
 # join
+# nokia_health
 # nuki
 # odlinfo
 # pushbullet
+# pushover
 # sonos
 # tankerkoenig
 # traffic
@@ -58,13 +66,18 @@ requests==2.5.1;python_version=='3.2'
 # enigma2
 # intercom_2n
 # join
+# nokia_health
 # nuki
 # odlinfo
 # pushbullet
+# pushover
 # sonos
 # tankerkoenig
 # traffic
 requests>=2.9.1;python_version>'3.2'
+
+# SmartHomeNG Core
+ruamel.yaml>=0.13.7,<=0.15
 
 # dashbutton
 scapy-python3 >= 0.18
@@ -73,9 +86,11 @@ scapy-python3 >= 0.18
 sleekxmpp >= 1.3.1
 
 # telegram
+# telegram_1_1_3
 telepot>=8.3
 
 # telegram
+# telegram_1_1_3
 urllib3>=1.9.1
 
 # smarttv
