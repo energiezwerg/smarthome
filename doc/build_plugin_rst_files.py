@@ -244,6 +244,7 @@ def write_rstfile(plgtype='All', heading=''):
     
     plglist = build_pluginlist(plgtype)
     
+#    print("> Opening file "+plugin_rst_dir+'/'+rst_filename)
     fh = open(plugin_rst_dir+'/'+rst_filename, "w")
 #    fh.write(title+'\n')
 #    fh.write('-'*len(title)+'\n')

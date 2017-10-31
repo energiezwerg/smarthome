@@ -12,6 +12,7 @@ The description of their functions is shown here:
    /lib/connection  
    /lib/db               
    /lib/logutils 
+   /lib/network
    /lib/orb     
    /lib/scheduler  
    /lib/tools

@@ -28,10 +28,19 @@ The following libraries are more public. They can be used for plugin development
 .. toctree::
    :maxdepth: 2
    :titlesonly:
+   :hidden:
+      
+   -----
 
+
+.. toctree::
+   :maxdepth: 2
+   :titlesonly:
+   
    /lib/connection  
    /lib/db               
    /lib/logutils 
+   /lib/network
    /lib/orb     
    /lib/scheduler  
    /lib/tools
