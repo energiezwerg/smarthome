@@ -21,6 +21,12 @@ logger = logging.getLogger('Mockup')
 
 class MockScheduler():
 
+    def __init__(self):
+        # set scheduler_instance to MockScheduler instance
+        import lib.scheduler
+        lib.scheduler._scheduler_instance = self
+
+
     def add(self, name, obj, prio=3, cron=None, cycle=None, value=None, offset=None, next=None):
         logger.warning('MockScheduler (add): {}, cron={}, cycle={}, value={}, offset={}'.format( name, str(cron), str(cycle), str(value), str(offset) ))
         try:
