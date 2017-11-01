@@ -3,3 +3,4 @@ python-dateutil>=2.5.3
 astral==1.0
 psutil
 ruamel.yaml>=0.13.7,<=0.15
+uptime

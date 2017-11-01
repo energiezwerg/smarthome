@@ -92,6 +92,9 @@ telepot>=8.3
 # sonos
 tinytag>=0.18.0
 
+# SmartHomeNG Core
+uptime
+
 # telegram
 # telegram_1_1_3
 urllib3>=1.9.1
