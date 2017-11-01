@@ -1,0 +1,416 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>System Plugins &mdash; Anwenderdokumentation 1.3c develop (as of 1. November 2017, commit 34c17bf) Dokumentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Stichwortverzeichnis"
+              href="../genindex.html"/>
+        <link rel="search" title="Suche" href="../search.html"/>
+    <link rel="top" title="Anwenderdokumentation 1.3c develop (as of 1. November 2017, commit 34c17bf) Dokumentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Anwenderdokumentation
+          
+
+          
+            
+            <img src="../_static/logo_long_inverse3.png" class="logo" />
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../einleitung.html">Einleitung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../installation/anforderungen.html">Hard- u. Software Anforderungen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/komplettanleitung.html">Komplettanleitung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/docker.html">Installation über Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../installation/update_upgrade.html">Update von einer älteren Version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../konfiguration/konfiguration.html">Konfiguration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../konfiguration/konfigurationsdateien.html">Konfigurationsdateien</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../konfiguration/itemkonfiguration.html">Initiale Item Konfiguration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../konfiguration/items.html">Items</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../konfiguration/items_systemitems.html">Systemitems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../konfiguration/items_astronomie.html">Beispiele: Astronomie</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../konfiguration/items_tipps.html">Tipps &amp; Tricks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../konfiguration/plugins.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../konfiguration/logiken.html">Logiken</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../konfiguration/logging.html">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../konfiguration/logging_best_practices.html">Logging - Best Practices</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../visualisierung/visualisierung.html">Visualisierung mit smartVISU</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../visualisierung/reverse_proxy.html">NGINX als ReverseProxy</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../backend/backend.html">Administrations GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fehlersuche.html">Fehlersuche</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ - Häufig gestellte Fragen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../entwickler_doku.html">Entwickler Dokumentation (Englisch)</a></li>
+</ul>
+
+            
+          
+    <a href="genindex.html">Stichwort-Verzeichnis</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Anwenderdokumentation</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>System Plugins</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/plugins_doc/plugins_system.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="system-plugins">
+<h1>System Plugins</h1>
+<a class="reference internal image-reference" href="../_images/system.svg"><div align="left" class="align-left"><img alt="protocol plugin" height="200px" src="../_images/system.svg" width="200px" /></div>
+</a>
+<p>System plugins extend the generell functionallity of SmartHomeNG.</p>
+<p><br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br /></p>
+<div class="toctree-wrapper compound">
+</div>
+<table border="1" class="colwidths-given docutils">
+<colgroup>
+<col width="9%" />
+<col width="67%" />
+<col width="8%" />
+<col width="8%" />
+<col width="8%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Plugin</th>
+<th class="head" colspan="2">Description</th>
+<th class="head">Maintainer</th>
+<th class="head">Tester</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>backend</td>
+<td colspan="2"><p class="first">webinterface for displaying system information and SmartHomeNG backend data</p>
+<ul class="last simple">
+<li><a class="reference external" href="https://knx-user-forum.de/forum/supportforen/smarthome-py/959964-support-thread-f&amp;uuml;r-das-backend-plugin">backend support</a></li>
+</ul>
+</td>
+<td>psilo909,
+msinn, bmxp</td>
+<td>Sandman60</td>
+</tr>
+<tr class="row-odd"><td>blockly</td>
+<td colspan="2">Blockly - graphical editor for logics - Still in development, not for use</td>
+<td>msinn, psilo909</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>cli</td>
+<td colspan="2"><p class="first">Commandline interface for SmartHomeNG - Works with SmartHomeNG v1.4 and up</p>
+<ul class="last simple">
+<li><a class="reference external" href="https://github.com/smarthomeNG/smarthome/wiki/CLI-Plugin">cli additional info</a></li>
+</ul>
+</td>
+<td>msinn</td>
+<td>onkelandy,
+Sandman60,
+ohinckel</td>
+</tr>
+<tr class="row-odd"><td>database</td>
+<td colspan="2">Database plugin, <strong>since SmartHomeNG v1.3</strong></td>
+<td>ohinckel</td>
+<td>psilo909,
+onkelandy,
+brandst</td>
+</tr>
+<tr class="row-even"><td>datalog</td>
+<td colspan="2">Loggen von Daten in ein anderes Logfile als das Standard Log</td>
+<td>ohinckel</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>influxdata</td>
+<td colspan="2"><p class="first">Ermöglicht Speicherung von Daten in InfluxData TSDB z.B. zur Erzeugung von Graphen
+mit Grafana oder Chronograf (Plugin aus 2016)</p>
+<ul class="last simple">
+<li><a class="reference external" href="https://github.com/smarthomeNG/smarthome/wiki/Installation-Influx-Grafana">influxdata additional info</a></li>
+</ul>
+</td>
+<td>rthill</td>
+<td>brandst</td>
+</tr>
+<tr class="row-even"><td>influxdb</td>
+<td colspan="2"><p class="first">Ermöglicht Speicherung von Item Werten in einer InfluxData time-series Datenbank
+(Plugin aus 2017)</p>
+<ul class="last simple">
+<li><a class="reference external" href="https://github.com/smarthomeNG/smarthome/wiki/Installation-Influx-Grafana">influxdb additional info</a></li>
+</ul>
+</td>
+<td>Kai Meder</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>memlog</td>
+<td colspan="2">Speicher Logeinträge im Speicher zur Anzeige in der VISU</td>
+<td>ohinckel</td>
+<td>cmalo</td>
+</tr>
+<tr class="row-even"><td>operationlog</td>
+<td colspan="2">Implementierung seperater Logs</td>
+<td>? (JanT112)</td>
+<td>Sandman60,
+onkelandy</td>
+</tr>
+<tr class="row-odd"><td>rrd</td>
+<td colspan="2">Unterstützung für RRD. Kann nicht zusammen mit dem sqlite Plugin genutzt werden.</td>
+<td>? (mknx)</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>rtr</td>
+<td colspan="2">Raum Temperatur Regler</td>
+<td>bmxp (TCr82)</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>simulation</td>
+<td colspan="2">Aufnahme und Abspielen von Aktionsreihenfolgen</td>
+<td>ggf. cmalo (?)</td>
+<td>psilo909,
+Sandman60,
+cmalo</td>
+</tr>
+<tr class="row-even"><td>sqlite</td>
+<td colspan="2">Integration einer SQLite Datenbank - kompatibel mit smartVISU 2.7</td>
+<td>?</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>sqlite_visu2_8</td>
+<td colspan="2">Integration einer SQLite Datenbank - zu verwenden für smartVISU 2.8</td>
+<td>?</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>uzsu</td>
+<td colspan="2"><p class="first">Universal time switch</p>
+<ul class="last simple">
+<li><a class="reference external" href="https://github.com/smarthomeNG/smarthome/wiki/UZSU-%28Universelle-Zeitschaltuhr%29">uzsu additional info</a></li>
+</ul>
+</td>
+<td>cmalo (Niko
+Will)</td>
+<td>Sandman60,
+cmalo</td>
+</tr>
+<tr class="row-odd"><td>visu_smartvisu</td>
+<td colspan="2"><p class="first">Support for smartVISU: Automatic generation of pages; widget handling</p>
+<ul class="last simple">
+<li><a class="reference external" href="https://github.com/smarthomeNG/smarthome/wiki/Visu_Unterstuetzung">visu_smartvisu additional info</a></li>
+</ul>
+</td>
+<td>msinn</td>
+<td>psilo909</td>
+</tr>
+<tr class="row-even"><td>visu_websocket</td>
+<td colspan="2"><p class="first">Support for a websocket protocol (for smartVISU, etc.)</p>
+<ul class="last simple">
+<li><a class="reference external" href="https://github.com/smarthomeNG/smarthome/wiki/Visu_Unterstuetzung">visu_websocket additional info</a></li>
+</ul>
+</td>
+<td>msinn</td>
+<td>psilo909</td>
+</tr>
+</tbody>
+</table>
+<p>Notes for the list above:</p>
+<p>1 Description: Links in the description column refer to (mostly german) user-documentation in the SmartHomeNG wiki</p>
+<p>2 Maintainer: If the mainenance state of a plugin is unknown, the column contains a <code class="docutils literal"><span class="pre">?</span></code>.  The <code class="docutils literal"><span class="pre">?</span></code> may be followed by the name of the original author (in brackets). For plugins with an unknown maintainer it is not known at the moment, if those plugins are functional.</p>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2017 SmartHomeNG Team, based on smarthome.py © 2011-2014 Marcus Popp.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.3c develop (as of 1. November 2017, commit 34c17bf)',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/translations.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

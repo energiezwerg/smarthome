@@ -59,7 +59,8 @@ master_doc = 'index'
 html_add_permalinks = ""
 
 # General information about the project.
-project = u'SmartHomeNG'
+#project = u'SmartHomeNG'
+project = u'Developer Documentation'
 #copyright = u'2011-2013, Marcus Popp; since 2016 SmartHomeNG Team'
 copyright = u'2016-2017 SmartHomeNG Team, based on smarthome.py © 2011-2014 Marcus Popp'
 

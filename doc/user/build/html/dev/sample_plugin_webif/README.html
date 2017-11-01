@@ -1,0 +1,356 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Sample Plugin &lt;- put the name of your plugin here &mdash; Anwenderdokumentation 1.3c develop (as of 1. November 2017, commit 34c17bf) Dokumentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Stichwortverzeichnis"
+              href="../../genindex.html"/>
+        <link rel="search" title="Suche" href="../../search.html"/>
+    <link rel="top" title="Anwenderdokumentation 1.3c develop (as of 1. November 2017, commit 34c17bf) Dokumentation" href="../../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Anwenderdokumentation
+          
+
+          
+            
+            <img src="../../_static/logo_long_inverse3.png" class="logo" />
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../einleitung.html">Einleitung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation/installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation/anforderungen.html">Hard- u. Software Anforderungen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation/komplettanleitung.html">Komplettanleitung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation/docker.html">Installation über Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation/update_upgrade.html">Update von einer älteren Version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../konfiguration/konfiguration.html">Konfiguration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../konfiguration/konfigurationsdateien.html">Konfigurationsdateien</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../konfiguration/itemkonfiguration.html">Initiale Item Konfiguration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../konfiguration/items.html">Items</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../konfiguration/items_systemitems.html">Systemitems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../konfiguration/items_astronomie.html">Beispiele: Astronomie</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../konfiguration/items_tipps.html">Tipps &amp; Tricks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../konfiguration/plugins.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../konfiguration/logiken.html">Logiken</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../konfiguration/logging.html">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../konfiguration/logging_best_practices.html">Logging - Best Practices</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualisierung/visualisierung.html">Visualisierung mit smartVISU</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../visualisierung/reverse_proxy.html">NGINX als ReverseProxy</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../backend/backend.html">Administrations GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fehlersuche.html">Fehlersuche</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQ - Häufig gestellte Fragen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../entwickler_doku.html">Entwickler Dokumentation (Englisch)</a></li>
+</ul>
+
+            
+          
+    <a href="genindex.html">Stichwort-Verzeichnis</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Anwenderdokumentation</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Sample Plugin &lt;- put the name of your plugin here</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/dev/sample_plugin_webif/README.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="sample-plugin-put-the-name-of-your-plugin-here">
+<span id="sample-plugin-put-the-name-of-your-plugin-here"></span><h1>Sample Plugin &lt;- put the name of your plugin here</h1>
+<div class="section" id="version-1-x-y">
+<span id="version-1-x-y"></span><h2>Version 1.x.y</h2>
+<p>Describe the purpose of the plugin right here. (What is the plugin good for?)</p>
+</div>
+<div class="section" id="change-history">
+<span id="change-history"></span><h2>Change history</h2>
+<p>If you want, you can add a change history here:</p>
+<div class="section" id="changes-since-version-1-x-x">
+<span id="changes-since-version-1-x-x"></span><h3>Changes Since version 1.x.x</h3>
+<ul class="simple">
+<li>Fixed this</li>
+</ul>
+</div>
+<div class="section" id="changes-since-version-1-x-w">
+<span id="changes-since-version-1-x-w"></span><h3>Changes Since version 1.x.w</h3>
+<ul class="simple">
+<li>Added that feature</li>
+</ul>
+</div>
+</div>
+<div class="section" id="requirements">
+<span id="requirements"></span><h2>Requirements</h2>
+<p>List the requirements of your plugin. Does it need special software or hardware?</p>
+<div class="section" id="needed-software">
+<span id="needed-software"></span><h3>Needed software</h3>
+<ul class="simple">
+<li>list</li>
+<li>the</li>
+<li>needed</li>
+<li>software</li>
+</ul>
+<p>Including Python modules and SmartHomeNG modules</p>
+</div>
+<div class="section" id="supported-hardware">
+<span id="supported-hardware"></span><h3>Supported Hardware</h3>
+<ul class="simple">
+<li>list</li>
+<li>the</li>
+<li>supported</li>
+<li>hardware</li>
+</ul>
+</div>
+</div>
+<div class="section" id="configuration">
+<span id="configuration"></span><h2>Configuration</h2>
+<div class="section" id="plugin-yaml">
+<span id="plugin-yaml"></span><h3>plugin.yaml</h3>
+<p>Please provide a plugin.yaml snippet for your plugin with ever option your plugin supports. Optional attributes should be commented out.</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">My</span><span class="p p-Indicator">:</span>
+   <span class="l l-Scalar l-Scalar-Plain">class_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">MyPlugin</span>
+   <span class="l l-Scalar l-Scalar-Plain">class_path</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">plugins.myplugin</span>
+   <span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">10.10.10.10</span>
+<span class="c1">#   port: 1010</span>
+</pre></div>
+</div>
+<p>Please provide a description of the attributes.
+This plugin needs an host attribute and you could specify a port attribute which differs from the default '1010'.</p>
+</div>
+<div class="section" id="items-yaml">
+<span id="items-yaml"></span><h3>items.yaml</h3>
+<p>List and describe the possible item attributes.</p>
+<div class="section" id="my-attr">
+<span id="my-attr"></span><h4>my_attr</h4>
+<p>Description of the attribute(s)...</p>
+</div>
+<div class="section" id="my-attr2">
+<span id="my-attr2"></span><h4>my_attr2</h4>
+</div>
+<div class="section" id="example">
+<span id="example"></span><h4>Example</h4>
+<p>Please provide an item configuration with every attribute and usefull settings.</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="c1"># items/my.yaml</span>
+
+<span class="l l-Scalar l-Scalar-Plain">someroom</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">mydevice</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">type</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">bool</span>
+        <span class="l l-Scalar l-Scalar-Plain">my_attr</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">setting</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="logic-yaml">
+<span id="logic-yaml"></span><h3>logic.yaml</h3>
+<p>If your plugin support item triggers as well, please describe the attributes like the item attributes.</p>
+</div>
+</div>
+<div class="section" id="methods">
+<span id="methods"></span><h2>Methods</h2>
+<p>If your plugin provides methods for logics. List and describe them here...</p>
+<div class="section" id="method1-param1-param2">
+<span id="method1-param1-param2"></span><h3>method1(param1, param2)</h3>
+<p>This method enables the logic to send param1 and param2 to the device. You could call it with <code class="docutils literal"><span class="pre">sh.my.method1('String',</span> <span class="pre">2)</span></code>.</p>
+</div>
+<div class="section" id="method2">
+<span id="method2"></span><h3>method2()</h3>
+<p>This method does nothing.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2017 SmartHomeNG Team, based on smarthome.py © 2011-2014 Marcus Popp.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.3c develop (as of 1. November 2017, commit 34c17bf)',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/translations.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

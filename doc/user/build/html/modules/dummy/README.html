@@ -1,0 +1,305 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Module dummy &mdash; Anwenderdokumentation 1.3c develop (as of 1. November 2017, commit 34c17bf) Dokumentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Stichwortverzeichnis"
+              href="../../genindex.html"/>
+        <link rel="search" title="Suche" href="../../search.html"/>
+    <link rel="top" title="Anwenderdokumentation 1.3c develop (as of 1. November 2017, commit 34c17bf) Dokumentation" href="../../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Anwenderdokumentation
+          
+
+          
+            
+            <img src="../../_static/logo_long_inverse3.png" class="logo" />
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../einleitung.html">Einleitung</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation/installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../installation/anforderungen.html">Hard- u. Software Anforderungen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation/komplettanleitung.html">Komplettanleitung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation/docker.html">Installation über Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../installation/update_upgrade.html">Update von einer älteren Version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../konfiguration/konfiguration.html">Konfiguration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../konfiguration/konfigurationsdateien.html">Konfigurationsdateien</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../konfiguration/itemkonfiguration.html">Initiale Item Konfiguration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../konfiguration/items.html">Items</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../konfiguration/items_systemitems.html">Systemitems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../konfiguration/items_astronomie.html">Beispiele: Astronomie</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../konfiguration/items_tipps.html">Tipps &amp; Tricks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../konfiguration/plugins.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../konfiguration/logiken.html">Logiken</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../konfiguration/logging.html">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../konfiguration/logging_best_practices.html">Logging - Best Practices</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualisierung/visualisierung.html">Visualisierung mit smartVISU</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../visualisierung/reverse_proxy.html">NGINX als ReverseProxy</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../backend/backend.html">Administrations GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fehlersuche.html">Fehlersuche</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">FAQ - Häufig gestellte Fragen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../entwickler_doku.html">Entwickler Dokumentation (Englisch)</a></li>
+</ul>
+
+            
+          
+    <a href="genindex.html">Stichwort-Verzeichnis</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Anwenderdokumentation</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Module dummy</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/modules/dummy/README.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-dummy">
+<span id="module-dummy"></span><h1>Module dummy</h1>
+<p>This module allows plugins to implement nothing.</p>
+<blockquote>
+<div>Note: To write a plugin that utilizes this module, you have to be familiar with CherryPy.</div></blockquote>
+<div class="section" id="requirements">
+<span id="requirements"></span><h2>Requirements</h2>
+<p>This module is running under SmmartHomeNG versions beyond v1.3. It requires Python &gt;= 3.4 as well as ... . You can install the libraries (python modules) with:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="o">...</span><span class="p">)</span>
+<span class="n">sudo</span> <span class="n">pip3</span> <span class="n">install</span> <span class="o">...</span>
+</pre></div>
+</div>
+<p>And please pay attention that the lib(s) are installed for Python3 and not an older Python 2.7 that is probably installed on your system. Be carefull to use <code class="docutils literal"><span class="pre">pip3</span></code> and nor <code class="docutils literal"><span class="pre">pip</span></code>.</p>
+<blockquote>
+<div>Note: This module needs the module handling in SmartHomeNG to be activated. Make sure, that <code class="docutils literal"><span class="pre">use_modules</span></code>in <code class="docutils literal"><span class="pre">etc/smarthome.yaml</span></code> is <strong>not</strong> set to False!</div></blockquote>
+</div>
+<div class="section" id="configuration">
+<span id="configuration"></span><h2>Configuration</h2>
+<div class="section" id="etc-module-yaml">
+<span id="etc-module-yaml"></span><h3>etc/module.yaml</h3>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="c1"># etc/module.yaml</span>
+<span class="l l-Scalar l-Scalar-Plain">dummy</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">class_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Dummy</span>
+    <span class="l l-Scalar l-Scalar-Plain">class_path</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">modules.dummy</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="api-of-module-dummy">
+<span id="api-of-module-dummy"></span><h2>API of module dummy</h2>
+<div class="section" id="test-if-module-dummy-is-loaded">
+<span id="test-if-module-dummy-is-loaded"></span><h3>Test if module dummy is loaded</h3>
+<p><code class="docutils literal"><span class="pre">dummy</span></code> is a loadlable module. Therefore there is no guarantiee that it is present in every system. Before you can use this module, you have to make sure ist is loaded. You can do it by calling a method of the main smarthome object. Do it like this:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">classname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">mod_dummy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sh</span><span class="o">.</span><span class="n">get_module</span><span class="p">(</span><span class="s1">&#39;dummy&#39;</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">mod_dummy</span> <span class="o">=</span> <span class="kc">None</span>
+    
+<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod_dummy</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># Do what is necessary if you can&#39;t start a web interface</span>
+    <span class="c1"># for your plugin. For example:</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">: Module &#39;&#39;dummy&#39;&#39; not loaded - Abort loading of plugin </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">classname</span><span class="p">))</span>
+    <span class="k">return</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2017 SmartHomeNG Team, based on smarthome.py © 2011-2014 Marcus Popp.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.3c develop (as of 1. November 2017, commit 34c17bf)',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="../../_static/translations.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

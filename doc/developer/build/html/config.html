@@ -1,0 +1,805 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Configuration &mdash; Developer Documentation 1.3c develop (as of 31. October 2017, commit 34c17bf) documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Developer Documentation 1.3c develop (as of 31. October 2017, commit 34c17bf) documentation" href="index.html"/>
+        <link rel="next" title="Items" href="items.html"/>
+        <link rel="prev" title="Installation" href="install.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Developer Documentation
+          
+
+          
+            
+            <img src="_static/logo_long_inverse3.png" class="logo" />
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="user_doc.html">User Documentation (German)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#structure-of-smarthomeng">Structure of SmartHomeNG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#config-files-in-directory-etc">Config files in directory <strong>etc</strong></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#smarthome-yaml">smarthome.yaml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#plugin-yaml">plugin.yaml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logic-yaml">logic.yaml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logging-yaml">logging.yaml</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#item-definitions-in-directory-items">Item definitions in directory <strong>items</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#logic-definitions-in-directory-logics">Logic definitions in directory <strong>logics</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#smarthomeng-start-options">SmartHomeNG start options</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="items.html">Items</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="items.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="items.html#item-attributes">Item Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="items.html#item-functions">Item functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="items.html#example-logic-with-uses-of-above-functions">Example logic with uses of above functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="logics.html">Logics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="logics.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logics.html#configuration-parameters">Configuration parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#watch-item">watch_item</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#cycle">cycle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#crontab">crontab</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#enabled">enabled</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#prio">prio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#other-parameters">Other parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="logics.html#basic-structure-of-a-logic-script">Basic Structure of a logic script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logics.html#loaded-python-modules">Loaded Python modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logics.html#available-objects-methods">Available Objects/Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#logic">logic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#logic-trigger">logic.trigger()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#trigger">trigger</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="logics.html#logger-and-sh-log">logger and sh.log</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logics.html#smarthomeng-methods-to-use">SmartHomeNG methods to use</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#sh-now-and-sh-utcnow">sh.now and sh.utcnow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#sh-sun">sh.sun</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#sh-moon">sh.moon</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="logics.html#scheduling">Scheduling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#sh-scheduler-trigger-sh-trigger">sh.scheduler.trigger() / sh.trigger()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#sh-scheduler-change">sh.scheduler.change()</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="logics.html#sh-tools-object">sh.tools object</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#sh-tools-ping">sh.tools.ping()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#sh-tools-dewpoint">sh.tools.dewpoint()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#sh-tools-fetch-url">sh.tools.fetch_url()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#sh-tools-dt2ts-dt">sh.tools.dt2ts(dt)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#sh-tools-dt2js-dt">sh.tools.dt2js(dt)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#sh-tools-rel2abs-temp-hum">sh.tools.rel2abs(temp, hum)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="logics.html#accessing-items">Accessing items</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#sh-return-item-path">sh.return_item(path)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#sh-return-items">sh.return_items()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#sh-match-items-regex">sh.match_items(regex)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#sh-find-items-configattribute">sh.find_items(configattribute)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logics.html#find-children-parentitem-configattribute">find_children(parentitem, configattribute):</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plugins_all.html">Plugins</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plugins_doc/plugins_system.html">System Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins/backend/README.html">Backend GUI (beyond shNG v1.3)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/blockly/README.html">Blockly Logic Editor (beyond shNG v1.3)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/cli/README.html">CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/database/README.html">Database</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/datalog/README.html">DataLog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/influxdata/README.html">influxdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/influxdb/README.html">Influxdb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/memlog/README.html">MemLog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/operationlog/README.html">OperationLog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/rrd/README.html">RRDTool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/rtr/README.html">RTR plug-in</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/simulation/README.html">Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/sqlite/README.html">SQLite (for SmartVisu &lt; 2.8)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/sqlite_visu2_8/README.html">SQLite (for SmartVisu &gt;= 2.8)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/uzsu/README.html">UZSU</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/visu_smartvisu/README.html">Visualisation (smartVISU support)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/visu_websocket/README.html">Visualisation (Websocket Protocol)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins_doc/plugins_gateway.html">Gateway Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins/artnet/README.html">Artnet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/dashbutton/README.html">Amazon Dashbutton Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/dmx/README.html">DMX</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/ecmd/README.html">ECMD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/elro/README.html">Elro</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/enocean/README.html">EnOcean</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/hue/README.html">Phillips HUE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/iaqstick/README.html">iAQ Stick</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/knx/README.html">KNX</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/lirc/README.html">lirc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/milight/README.html">miLight</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/mlgw/README.html">Bang &amp; Olufsen Masterlink Gateway</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/mpd/README.html">MPD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/onewire/README.html">Onewire</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/raumfeld/README.html">Raumfeld</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/rcswitch/README.html">RCswitch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/smawb/README.html">SMA-WebBox (smawb)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/snom/README.html">snom</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/sonos/README.html">Sonos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/squeezebox/README.html">Squeezebox</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/tellstick/README.html">Tellstick</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins_doc/plugins_interface.html">Interface Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins/apcups/README.html">APC UPS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/asterisk/README.html">Asterisk</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/avdevice/README.html">AV Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/avm/README.html">AVM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/buderus/README.html">buderus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/comfoair/README.html">ComfoAir</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/dlms/README.html">DLMS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/drexelundweiss/README.html">Drexel &amp; Weiss</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/easymeter/README.html">Easymeter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/ebus/README.html">eBus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/enigma2/README.html">Enigma2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/eta_pu/README.html">ETA Pellet Unit PU</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/gpio/README.html">GPIO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/harmony/README.html">Harmony Hub Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/helios/README.html">Helios ECx00Pro / Vallox xx SE Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/homematic/README.html">homematic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/intercom_2n/README.html">2N-Intercom Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/kathrein/README.html">Kathrein</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/kostal/README.html">KOSTAL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/logo/README.html">logo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/luxtronic2/README.html">Luxtronic2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/netio230b/README.html">NetIO230B</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/nuki/README.html">Nuki</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/nut/README.html">NUT - Network UPS Tools plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/plex/README.html">plex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/pluggit/README.html">PLUGGIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/roomba/README.html">Roomba</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/russound/README.html">Russound</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/sma/README.html">SMA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/sma_em/README.html">SMA-EM Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/smarttv/README.html">SmartTV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/sml/README.html">Sml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/solarlog/README.html">Solarlog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/systemair/README.html">Systemair</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/volkszaehler/README.html">Volkszaehler Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/vr100/README.html">VR100</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/xbmc/README.html">XBMC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/xiaomi/README.html">Xiaomi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/yamaha/README.html">Yamaha</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins_doc/plugins_protocol.html">Protocol Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins/mqtt/README.html">MQTT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/mqtt_1_0/README.html">MQTT 1.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/network/README.html">Network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/wol/README.html">WakeOnLan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/xmpp/README.html">XMPP</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins_doc/plugins_web.html">Web/Cloud Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins/alexa/README.html">Alexa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/boxcar/README.html">Boxcar Notification Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/dwd/README.html">DWD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/ical/README.html">iCal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/join/README.html">Join</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/mail/README.html">Mail</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/mvg_live/README.html">MVG Live</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/nma/README.html">nma - Notify My Android</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/nokia_health/README.html">Nokia Health</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/odlinfo/README.html">ODLInfo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/openenergymonitor/README.html">OpenEnergyMonitor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/prowl/README.html">Prowl</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/pushbullet/README.html">Pushbullet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/speech/README.html">Speech Parser</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/tankerkoenig/README.html">TankerKoenig</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/telegram/README.html">Telegram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/traffic/README.html">Traffic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/webservices/README.html">WebServices plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/wettercom/README.html">wetter.com</a></li>
+<li class="toctree-l3"><a class="reference internal" href="plugins/wunderground/README.html">Wunderground</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins_doc/plugins_unclassified.html">Unclassified Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="plugins/pushover/README.html">Pushover</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules.html">Modules for use with plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/dummy/README.html">Module dummy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/http/README.html">Module http</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules_doc/module_metadata.html">Module Metadata</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tools/backup_restore.html">tools.backup_restore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools/build_requirements.html">tools.build_requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tools/conf_to_yaml_converter.html">tools.conf_to_yaml_converter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="development_plugins.html">Development of Plugins</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dev/README.html">Plugin development guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development_plugin/plugin_in5minutes.html">How to write a Plugin in 5 min.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development_plugin/smartplugin.html">Class SmartPlugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development_plugin/plugin_metadata.html">Plugin Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development_plugin/sampleplugins.html">Sample Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="development_plugin/sampleplugin.html">Sample Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="development_plugin/sampleplugin_webif.html">Sample Plugin with web interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="development_plugin/sampleplugin_1_1.html">Sample Plugin (old v1.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules_doc/modules_plugins.html">Modules for use with plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules_doc/module_dummy.html">Module dummy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules_doc/module_http.html">Module http</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="modules_doc/modules_readmes.html">READMEs for Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules/dummy/README.html">Module dummy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules/http/README.html">Module http</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="development_plugin/libraries_plugins.html">Libraries for use in plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lib/connection.html">lib.connection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/db.html">lib.db</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/logutils.html">lib.logutils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/network.html">lib.network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/orb.html">lib.orb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/scheduler.html">lib.scheduler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/tools.html">lib.tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/utils.html">lib.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plugins/visu_smartvisu/README_for_developers.html">Visualisation plugin (smartVISU support) - for developers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins/visu_websocket/README_for_visu_developers.html">Visualisation plugin (Websocket Protocol) - for developers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="development_core.html">Development - Core</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core.html">Core of SmartHomeNG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core_libraries.html">Libraries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lib/config.html">lib.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/constants.html">lib.constants</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/daemon.html">lib.daemon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/item.html">lib.item</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/item_conversion.html">lib.item_conversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/log.html">lib.log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/logic.html">lib.logic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/metadata.html">lib.metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/module.html">lib.module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/plugin.html">lib.plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/scene.html">lib.scene</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/shyaml.html">lib.shyaml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="-----.html">&gt;———-&lt;</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/connection.html">lib.connection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/db.html">lib.db</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/logutils.html">lib.logutils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/network.html">lib.network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/orb.html">lib.orb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/scheduler.html">lib.scheduler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/tools.html">lib.tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/utils.html">lib.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core_modules.html">Core modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modules_doc/modules_readmes.html">READMEs for Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modules_doc/module_metadata.html">Module Metadata</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="release.html">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="release/1_3.html">Release 1.3 - August 5th, 2017</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release/1_2.html">Release 1.2 - May 16th, 2016</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release/1_1.html">Release 1.1 - April 13th, 2016</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release/1_0.html">Release 1.0 - November 14th, 2013</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release/0_9.html">Release 0.9 - June 6th 2013</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release/0_8.html">Release 0.8 - January 31st, 2013</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release/0_7.html">Release 0.7 - September 27th 2012</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release/0_6.html">Release 0.6 - June 21th, 2012</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release/0_5.html">Release 0.5 - July 12th, 2012</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release/0_4.html">Release 0.4 - October 10th, 2011</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release/0_3.html">Release 0.3 - August 14th, 2011</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release/0_2.html">Release 0.2 - June 21st, 2011</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release/0_1.html">Release 0.1 - April 09th, 2011</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+    <a href="genindex.html">Index</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Developer Documentation</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Configuration</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/config.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="configuration">
+<h1>Configuration</h1>
+<div class="section" id="structure-of-smarthomeng">
+<h2>Structure of SmartHomeNG</h2>
+<p>After the base system is installed a closer look at the SmartHomeNG directory
+(e.g. <code class="docutils literal"><span class="pre">/usr/local/smarthome/</span></code>) is advised to learn something about its content:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1"># directories</span>
+bin            contains smarthome.py, the main application
+deprecated     contains deprecated tools, which will be removed in an upcoming release of SmartHomeNG
+dev            development files like a sample plugin
+doc            the documentation of the project resides here
+<span class="hll">etc            should contain the basic configuration files <span class="o">(</span>smarthome.yaml, plugin.yaml, logic.yaml<span class="o">)</span>
+</span>examples       contains some example files <span class="k">for</span> the configuration and the visu plugin
+<span class="hll">items          should contain one or more item configuration files.
+</span>lib            contains the core libraries of SmartHomeNG
+<span class="hll">logics         should contain the logic scripts
+</span>media          contains logos of SmartHomeNG
+modules        loadable core modules. These modules extend the functionality of the core
+plugins        contains the available plugins
+requirements   you will find the requirements file here <span class="k">for</span> the core and all plugins
+scenes         scene files
+tests          contains the <span class="nb">test</span> environment with tests and testdata
+tools          contains little programs helping to maintain SmartHomeNG
+var            its subdirectories contain various collected data
+var/cache      contains cached item values
+var/db         may contain a SQLite3 database
+var/log        contains the logfiles
+var/rrd        may contain a Round Robin Databases <span class="k">if</span> rrd plugin is used <span class="o">(</span>deprecated<span class="o">)</span>
+
+<span class="c1"># files</span>
+CHANGELOG.md   changes of this project. <span class="o">(</span>deprecated, should be documented in doc<span class="o">)</span>
+LICENSE        GNU GENERAL PUBLIC LICENSE <span class="o">(</span>Version <span class="m">3</span>, <span class="m">29</span> June <span class="m">2007</span><span class="o">)</span>
+README.md      a general information
+setup.py       not functional right now
+tox.ini        used <span class="k">for</span> software testing
+</pre></div>
+</div>
+<p>Important for configuration are the directories <code class="docutils literal"><span class="pre">etc</span></code>, <code class="docutils literal"><span class="pre">items</span></code> and <code class="docutils literal"><span class="pre">logics</span></code>.
+Those are the locations were configuration is stored and maintained.
+The following discusses how these directories are populated.</p>
+</div>
+<div class="section" id="config-files-in-directory-etc">
+<h2>Config files in directory <strong>etc</strong></h2>
+<p>The configuration is done by the widespread <a class="reference external" href="https://en.wikipedia.org/wiki/YAML">yaml</a> format.
+Older versions used <a class="reference external" href="http://www.voidspace.org.uk/python/articles/configobj.shtml">configobj</a> file format which is like a well-known <a class="reference external" href="https://en.wikipedia.org/wiki/INI_file">ini-file</a> but with the ability to create multilevel sub-sections.
+It is still supported in SmartHomeNG but it is deprecated now and only displayed here for informational purposes.</p>
+<p>If <code class="docutils literal"><span class="pre">ruamel.yaml</span></code> is installed and the backend-plugin is configured then a service can be used to convert the old <code class="docutils literal"><span class="pre">*.conf</span></code> format into <code class="docutils literal"><span class="pre">*.yaml</span></code> format for code snippets.</p>
+<p>There is however a service tool at <code class="docutils literal"><span class="pre">tools/conf_to_yaml_converter.py</span></code> that can be used to convert your whole configuration. Please have a look at <a class="reference internal" href="tools.html"><span class="doc">Tools</span></a>.</p>
+<div class="section" id="smarthome-yaml">
+<span id="id1"></span><h3>smarthome.yaml</h3>
+<p>To calculate sunrise, sunset, azimuth and elevation of the sun for a given time the coordinates of the physical location
+of the SmartHomeNG installation is needed.</p>
+<div class="deprecated sidebar">
+<p class="first sidebar-title">smarthome.conf</p>
+<div class="last highlight-ini"><div class="highlight"><pre><span></span><span class="c1"># /usr/local/smarthome/etc/smarthome.conf</span>
+<span class="na">lat</span> <span class="o">=</span> <span class="s">51.1633        # latitude</span>
+<span class="na">lon</span> <span class="o">=</span> <span class="s">10.4476        # longitude</span>
+<span class="na">elev</span> <span class="o">=</span> <span class="s">500           # elevation</span>
+<span class="na">tz</span> <span class="o">=</span> <span class="s">&#39;Europe/Berlin&#39; # timezone, the example will be fine for most parts of central Europe</span>
+</pre></div>
+</div>
+</div>
+<p>Create a new <code class="docutils literal"><span class="pre">smarthome.yaml</span></code> within <code class="docutils literal"><span class="pre">etc/</span></code> or copy the given <code class="docutils literal"><span class="pre">smarthome.yaml.default</span></code>
+to <code class="docutils literal"><span class="pre">smarthome.yaml</span></code> and edit it to your needs. It should look like the following:</p>
+<div class="literal-block-wrapper docutils container" id="id5">
+<div class="code-block-caption"><span class="caption-text">smarthome.yaml</span></div>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">lat</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">51.1633</span>         <span class="c1"># latitude</span>
+<span class="l l-Scalar l-Scalar-Plain">lon</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">10.4476</span>         <span class="c1"># longitude</span>
+<span class="l l-Scalar l-Scalar-Plain">elev</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">500</span>            <span class="c1"># elevation</span>
+<span class="l l-Scalar l-Scalar-Plain">tz</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Europe/Berlin</span>    <span class="c1"># timezone, the example will be fine for most parts of central Europe</span>
+<span class="l l-Scalar l-Scalar-Plain">default_language</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">de</span> <span class="c1"># default language for use with the backend plugin and multi-language entries in metadata</span>
+</pre></div>
+</div>
+</div>
+<p>The coordinates can be found out by using GPS of a mobile or via an adequate website (e.g. <a class="reference external" href="http://www.mapcoordinates.net/">http://www.mapcoordinates.net/</a>)</p>
+</div>
+<div class="section" id="plugin-yaml">
+<span id="id2"></span><h3>plugin.yaml</h3>
+<p>Plugins extend the core functionality of SmartHomeNG.
+The <code class="docutils literal"><span class="pre">plugins</span></code> directory contains a subdirectory for every available plugin.
+The file <code class="docutils literal"><span class="pre">etc/plugin.yaml</span></code> holds the configuration for every plugin to be used during runtime.</p>
+<p>For each plugin at least the plugin object name is needed and the
+attributes where to find the plugin and how to expect the classname to be.</p>
+<p>The example below configures a plugin for the KNX bus to send and receive telegrams from and to eibd or knxd (both a software gateway to the KNX hardware bus).
+In this case the object name is <code class="docutils literal"><span class="pre">knx</span></code>, the place to look for the module is within subdirectory <code class="docutils literal"><span class="pre">plugins/knx/</span></code> and the class of the plugin is <code class="docutils literal"><span class="pre">KNX</span></code>.
+The object name can be any valid Python name, the class name and class path need to match those of the plugin.</p>
+<div class="deprecated sidebar">
+<p class="first sidebar-title">plugin.conf</p>
+<div class="last highlight-ini"><div class="highlight"><pre><span></span><span class="k">[knx]</span>
+   <span class="na">class_name</span> <span class="o">=</span> <span class="s">KNX</span>
+<span class="s">   class_path = plugins.knx</span>
+<span class="s">   host = 127.0.0.1</span>
+<span class="s">   port = 6720</span>
+<span class="c1">#   send_time = 600 # update date/time every 600 seconds, default none</span>
+<span class="c1">#   time_ga = 1/1/1 # default none</span>
+<span class="c1">#   date_ga = 1/1/2 # default none</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id6">
+<div class="code-block-caption"><span class="caption-text">plugin.yaml</span></div>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">knx</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">plugin_name</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">knx</span>
+    <span class="c1"># class_name: KNX           # old way of configuration</span>
+    <span class="c1"># class_path: plugins.knx   # old way of configuration</span>
+    <span class="l l-Scalar l-Scalar-Plain">host</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">127.0.0.1</span>
+    <span class="l l-Scalar l-Scalar-Plain">port</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">6720</span>
+    <span class="c1"># send_time; 600 # update date/time every 600 seconds, default none</span>
+    <span class="c1"># time_ga: 1/1/1 # default none</span>
+    <span class="c1"># date_ga: 1/1/2 # default none</span>
+</pre></div>
+</div>
+</div>
+<p>There is a <cite>README.md</cite> for every plugin that gives the necessary configuration information.
+To continue reading follow the <a class="reference internal" href="plugins_all.html"><span class="doc">plugin</span></a> page.</p>
+<div class="section" id="referencing-a-plugin-in-the-configuration">
+<h4>Referencing a plugin in the configuration</h4>
+<p>Up to SmartHomeNG v1.3 a plugin had to be referenced by the parameters <code class="docutils literal"><span class="pre">class_name</span></code> and <code class="docutils literal"><span class="pre">class_path</span></code>.
+Now it is possible to reference it alone by specifing the parameter <code class="docutils literal"><span class="pre">plugin_name</span></code>, where
+the value would be the former class_path without the <cite>plugins.</cite> prefix. Since all plugins are
+located in the <code class="docutils literal"><span class="pre">/plugins</span></code> folder, the <cite>plugins.</cite> is redundant information.</p>
+<p>If the plugin comes with a metadata definition (what allmost all plugins do), there is no need so specify
+the <code class="docutils literal"><span class="pre">class_name</span></code> parameter. This information is retrieved from the metadata.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Should the need arise to configure a plugin that is located outside the <code class="docutils literal"><span class="pre">/plugins</span></code> folder, <code class="docutils literal"><span class="pre">class_path</span></code> can be used.</p>
+</div>
+</div>
+<div class="section" id="using-an-older-version-of-a-plugin">
+<h4>Using an older version of a plugin</h4>
+<p>If you are not using the newest version of the SmartHomeNG core, if may be necessary to use an
+older version of a plugin. Some plugins come with embedded older versions. To load an older
+version of the plugin, you have to specify the parameter <cite>plugin_version</cite> in the configuration
+section of the plugin.</p>
+<p>To find out, if a plugin comes with an older version (or versions), take a look at the plugin’s
+directory. if you find a subdirectory with the name starting with <code class="docutils literal"><span class="pre">_pv_</span></code> the plugin comes with
+an older (previous) version. The rest of the folder name specifies the version number. If you
+find a subfolder <code class="docutils literal"><span class="pre">_pv_1_3_0</span></code>, it contains the v1.3.0 of the plugin. To load that version, just
+add <code class="docutils literal"><span class="pre">plugin_version:</span> <span class="pre">1.3.0</span></code> to the plugin configuration.</p>
+</div>
+</div>
+<div class="section" id="logic-yaml">
+<span id="id3"></span><h3>logic.yaml</h3>
+<p>Logics within SmartHomeNG are just Python scripts like the core, too. These scripts will be
+placed in <cite>/usr/local/smarthome/logics/</cite>. To let SmartHomeNG know about when to start a script and which script to use then
+it is needed to configure every logic script in <cite>logic.yaml</cite>:</p>
+<div class="deprecated sidebar">
+<p class="first sidebar-title">logic.conf</p>
+<div class="last highlight-ini"><div class="highlight"><pre><span></span><span class="k">[MyLogic]</span>
+    <span class="na">filename</span> <span class="o">=</span> <span class="s">logic.py</span>
+<span class="s">    crontab = init</span>
+</pre></div>
+</div>
+</div>
+<div class="literal-block-wrapper docutils container" id="id7">
+<div class="code-block-caption"><span class="caption-text">logic.yaml</span></div>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">MyLogic</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">filename</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">logic.py</span>
+    <span class="l l-Scalar l-Scalar-Plain">crontab</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">init</span>
+</pre></div>
+</div>
+</div>
+<p>With the example above SmartHomeNG would look in <code class="docutils literal"><span class="pre">/usr/local/smarthome/logics/</span></code> for the file
+<code class="docutils literal"><span class="pre">logic.py</span></code>. The logic would be started - once - when SmartHomeNG starts.</p>
+</div>
+<div class="section" id="logging-yaml">
+<span id="id4"></span><h3>logging.yaml</h3>
+<p>The core and also every module is able to output logging information.
+The logging can be configured to be rich in detail for debugging purposes or rather smart with warning or general info.
+There is a seperate document to explain how to configure <a class="reference internal" href="logging.html"><span class="doc">logging</span></a>.
+To get started, simply copy the given <code class="docutils literal"><span class="pre">logging.yaml.default</span></code>
+to <code class="docutils literal"><span class="pre">logging.yaml</span></code> and edit it to your needs. It should look like the following:</p>
+<div class="literal-block-wrapper docutils container" id="id8">
+<div class="code-block-caption"><span class="caption-text">logging.yaml</span></div>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">version</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="l l-Scalar l-Scalar-Plain">disable_existing_loggers</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="l l-Scalar l-Scalar-Plain">formatters</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">busmonitor_format</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">format</span><span class="p p-Indicator">:</span> <span class="s">&#39;%(asctime)s;%(message)s;&#39;</span>
+    <span class="l l-Scalar l-Scalar-Plain">datefmt</span><span class="p p-Indicator">:</span> <span class="s">&#39;%Y-%m-%d;%H:%M:%S&#39;</span>
+  <span class="l l-Scalar l-Scalar-Plain">simple</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">format</span><span class="p p-Indicator">:</span> <span class="s">&#39;%(asctime)s</span><span class="nv"> </span><span class="s">%(levelname)-8s</span><span class="nv"> </span><span class="s">%(threadName)-12s</span><span class="nv"> </span><span class="s">%(message)s&#39;</span>
+    <span class="l l-Scalar l-Scalar-Plain">datefmt</span><span class="p p-Indicator">:</span> <span class="s">&#39;%Y-%m-%d</span><span class="nv">  </span><span class="s">%H:%M:%S&#39;</span>
+  <span class="l l-Scalar l-Scalar-Plain">detail</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">format</span><span class="p p-Indicator">:</span> <span class="s">&#39;%(asctime)s</span><span class="nv"> </span><span class="s">%(levelname)-8s</span><span class="nv"> </span><span class="s">%(module)-12s</span><span class="nv"> </span><span class="s">%(threadName)-12s</span><span class="nv"> </span><span class="s">%(message)s</span><span class="nv"> </span><span class="s">--</span><span class="nv"> </span><span class="s">%(filename)s:%(funcName)s:%(lineno)d&#39;</span>
+    <span class="l l-Scalar l-Scalar-Plain">datefmt</span><span class="p p-Indicator">:</span> <span class="s">&#39;%Y-%m-%d</span><span class="nv"> </span><span class="s">%H:%M:%S&#39;</span>
+<span class="l l-Scalar l-Scalar-Plain">filters</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">loggerfilter</span><span class="p p-Indicator">:</span>
+    <span class="s">&#39;()&#39;</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">lib.logutils.Filter</span>
+    <span class="l l-Scalar l-Scalar-Plain">name</span><span class="p p-Indicator">:</span> <span class="s">&#39;knx_busmonitor&#39;</span>
+<span class="l l-Scalar l-Scalar-Plain">handlers</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">console</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">class</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">logging.StreamHandler</span>
+    <span class="l l-Scalar l-Scalar-Plain">formatter</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">detail</span>
+    <span class="l l-Scalar l-Scalar-Plain">stream</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ext://sys.stdout</span>
+  <span class="l l-Scalar l-Scalar-Plain">file</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">class</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">logging.handlers.TimedRotatingFileHandler</span>
+    <span class="l l-Scalar l-Scalar-Plain">formatter</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">simple</span>
+    <span class="l l-Scalar l-Scalar-Plain">filters</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="nv">loggerfilter</span><span class="p p-Indicator">]</span>
+    <span class="l l-Scalar l-Scalar-Plain">when</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">midnight</span>
+    <span class="l l-Scalar l-Scalar-Plain">backupCount</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">7</span>
+    <span class="l l-Scalar l-Scalar-Plain">encoding</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">utf8</span>
+    <span class="l l-Scalar l-Scalar-Plain">filename</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">./var/log/smarthome.log</span>
+  <span class="l l-Scalar l-Scalar-Plain">busmonitor_file</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">class</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">logging.handlers.TimedRotatingFileHandler</span>
+    <span class="l l-Scalar l-Scalar-Plain">formatter</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">busmonitor_format</span>
+    <span class="l l-Scalar l-Scalar-Plain">when</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">midnight</span>
+    <span class="l l-Scalar l-Scalar-Plain">backupCount</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">7</span>
+    <span class="l l-Scalar l-Scalar-Plain">encoding</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">utf8</span>
+    <span class="l l-Scalar l-Scalar-Plain">filename</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">./var/log/knx_busmonitor.log</span>
+<span class="l l-Scalar l-Scalar-Plain">loggers</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">knx_busmonitor</span><span class="p p-Indicator">:</span>
+       <span class="l l-Scalar l-Scalar-Plain">level</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">INFO</span>
+       <span class="l l-Scalar l-Scalar-Plain">handlers</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="nv">busmonitor_file</span> <span class="p p-Indicator">]</span>
+<span class="c1">#  plugins.knx:</span>
+<span class="c1">#    level: INFO</span>
+<span class="c1">#  lib.scheduler:</span>
+<span class="c1">#    level: DEBUG</span>
+<span class="c1">#  plugins.cli:</span>
+<span class="c1">#    level: DEBUG</span>
+
+<span class="l l-Scalar l-Scalar-Plain">root</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">level</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">INFO</span>
+    <span class="l l-Scalar l-Scalar-Plain">handlers</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="nv">file</span><span class="p p-Indicator">,</span> <span class="nv">console</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</div>
+<p>See further details at <a class="reference internal" href="logging.html"><span class="doc">logging</span></a>.</p>
+</div>
+</div>
+<div class="section" id="item-definitions-in-directory-items">
+<span id="item-configuration-files"></span><h2>Item definitions in directory <strong>items</strong></h2>
+<p>The items represent the heart of the configuration. An item can be accessed from any logic, plugin or eval.
+Any number of item configuration files may be used and any number of items may be defined (depends on your memory) in one of these files.</p>
+<p>This directory contains yaml files with the definitions of the items SmartHomeNG can use. The yaml files can be named
+the way you want.</p>
+<p>To find out more details about items and scenes configuration continue reading the <a class="reference internal" href="items.html"><span class="doc">items</span></a> page.</p>
+</div>
+<div class="section" id="logic-definitions-in-directory-logics">
+<h2>Logic definitions in directory <strong>logics</strong></h2>
+<p>This directory contains logics you write, which are used by SmartHomeNG. A logic is basically a file
+of Python code. It has some additional conventions. When and how the logic is executed is configured
+in the file <cite>etc/logics.yaml</cite>.</p>
+<p>When using the Blockly Plugin to write a logic, the logic has two files. One is the Blockly code with the
+extension <cite>.blockly</cite> and one file with the Python code. That file has the extension <cite>.py</cite>.</p>
+<p>To find out more details about logics continue reading the <a class="reference internal" href="logics.html"><span class="doc">logics</span></a> page.</p>
+</div>
+<div class="section" id="smarthomeng-start-options">
+<h2>SmartHomeNG start options</h2>
+<p>SmartHomeNG can be executed with the following options:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>usage: smarthome.py <span class="o">[</span>-h<span class="o">]</span> <span class="o">[</span>-v <span class="p">|</span> -d <span class="p">|</span> -i <span class="p">|</span> -l <span class="p">|</span> -s <span class="p">|</span> -q <span class="p">|</span> -V <span class="p">|</span> --start<span class="o">]</span>
+optional arguments:
+  -h, --help         show this <span class="nb">help</span> message and <span class="nb">exit</span>
+  -v, --verbose      DEPRECATED use logging.config <span class="o">(</span>verbose <span class="o">(</span>debug output<span class="o">)</span>
+                     logging to the logfile<span class="o">)</span>
+  -d, --debug        stay in the foreground with verbose output
+  -i, --interactive  open an interactive shell with tab completion and with
+                     verbose logging to the logfile
+  -l, --logics       reload all logics
+  -s, --stop         stop SmartHomeNG
+  -q, --quiet        DEPRECATED use logging config <span class="o">(</span>reduce logging to the
+                     logfile<span class="o">)</span>
+  -V, --version      show SmartHomeNG version
+  --start            start SmartHomeNG and detach from console <span class="o">(</span>default<span class="o">)</span>
+</pre></div>
+</div>
+<p>If you start SmartHomeNG without any option, then SmartHomeNG will return the PID if already running.</p>
+<p>Please be noted that due to the changed nature of logging the -v and -q options are deprecated and will be removed
+in a later release.</p>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="items.html" class="btn btn-neutral float-right" title="Items" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="install.html" class="btn btn-neutral" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2017 SmartHomeNG Team, based on smarthome.py © 2011-2014 Marcus Popp.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.3c develop (as of 31. October 2017, commit 34c17bf)',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

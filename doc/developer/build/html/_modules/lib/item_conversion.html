@@ -1,0 +1,955 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>lib.item_conversion &mdash; Developer Documentation 1.3c develop (as of 31. October 2017, commit 34c17bf) documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="Developer Documentation 1.3c develop (as of 31. October 2017, commit 34c17bf) documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Developer Documentation
+          
+
+          
+            
+            <img src="../../_static/logo_long_inverse3.png" class="logo" />
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../user_doc.html">User Documentation (German)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../config.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../config.html#structure-of-smarthomeng">Structure of SmartHomeNG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../config.html#config-files-in-directory-etc">Config files in directory <strong>etc</strong></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../config.html#smarthome-yaml">smarthome.yaml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config.html#plugin-yaml">plugin.yaml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config.html#logic-yaml">logic.yaml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../config.html#logging-yaml">logging.yaml</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../config.html#item-definitions-in-directory-items">Item definitions in directory <strong>items</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../config.html#logic-definitions-in-directory-logics">Logic definitions in directory <strong>logics</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../config.html#smarthomeng-start-options">SmartHomeNG start options</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../items.html">Items</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../items.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../items.html#item-attributes">Item Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../items.html#item-functions">Item functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../items.html#example-logic-with-uses-of-above-functions">Example logic with uses of above functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../logics.html">Logics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../logics.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../logics.html#configuration-parameters">Configuration parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#watch-item">watch_item</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#cycle">cycle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#crontab">crontab</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#enabled">enabled</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#prio">prio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#other-parameters">Other parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../logics.html#basic-structure-of-a-logic-script">Basic Structure of a logic script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../logics.html#loaded-python-modules">Loaded Python modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../logics.html#available-objects-methods">Available Objects/Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#logic">logic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#logic-trigger">logic.trigger()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#trigger">trigger</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../logics.html#logger-and-sh-log">logger and sh.log</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../logics.html#smarthomeng-methods-to-use">SmartHomeNG methods to use</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#sh-now-and-sh-utcnow">sh.now and sh.utcnow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#sh-sun">sh.sun</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#sh-moon">sh.moon</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../logics.html#scheduling">Scheduling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#sh-scheduler-trigger-sh-trigger">sh.scheduler.trigger() / sh.trigger()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#sh-scheduler-change">sh.scheduler.change()</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../logics.html#sh-tools-object">sh.tools object</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#sh-tools-ping">sh.tools.ping()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#sh-tools-dewpoint">sh.tools.dewpoint()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#sh-tools-fetch-url">sh.tools.fetch_url()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#sh-tools-dt2ts-dt">sh.tools.dt2ts(dt)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#sh-tools-dt2js-dt">sh.tools.dt2js(dt)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#sh-tools-rel2abs-temp-hum">sh.tools.rel2abs(temp, hum)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../logics.html#accessing-items">Accessing items</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#sh-return-item-path">sh.return_item(path)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#sh-return-items">sh.return_items()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#sh-match-items-regex">sh.match_items(regex)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#sh-find-items-configattribute">sh.find_items(configattribute)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../logics.html#find-children-parentitem-configattribute">find_children(parentitem, configattribute):</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../plugins_all.html">Plugins</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../plugins_doc/plugins_system.html">System Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/backend/README.html">Backend GUI (beyond shNG v1.3)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/blockly/README.html">Blockly Logic Editor (beyond shNG v1.3)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/cli/README.html">CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/database/README.html">Database</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/datalog/README.html">DataLog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/influxdata/README.html">influxdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/influxdb/README.html">Influxdb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/memlog/README.html">MemLog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/operationlog/README.html">OperationLog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/rrd/README.html">RRDTool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/rtr/README.html">RTR plug-in</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/simulation/README.html">Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/sqlite/README.html">SQLite (for SmartVisu &lt; 2.8)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/sqlite_visu2_8/README.html">SQLite (for SmartVisu &gt;= 2.8)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/uzsu/README.html">UZSU</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/visu_smartvisu/README.html">Visualisation (smartVISU support)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/visu_websocket/README.html">Visualisation (Websocket Protocol)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../plugins_doc/plugins_gateway.html">Gateway Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/artnet/README.html">Artnet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/dashbutton/README.html">Amazon Dashbutton Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/dmx/README.html">DMX</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/ecmd/README.html">ECMD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/elro/README.html">Elro</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/enocean/README.html">EnOcean</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/hue/README.html">Phillips HUE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/iaqstick/README.html">iAQ Stick</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/knx/README.html">KNX</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/lirc/README.html">lirc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/milight/README.html">miLight</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/mlgw/README.html">Bang &amp; Olufsen Masterlink Gateway</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/mpd/README.html">MPD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/onewire/README.html">Onewire</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/raumfeld/README.html">Raumfeld</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/rcswitch/README.html">RCswitch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/smawb/README.html">SMA-WebBox (smawb)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/snom/README.html">snom</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/sonos/README.html">Sonos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/squeezebox/README.html">Squeezebox</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/tellstick/README.html">Tellstick</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../plugins_doc/plugins_interface.html">Interface Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/apcups/README.html">APC UPS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/asterisk/README.html">Asterisk</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/avdevice/README.html">AV Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/avm/README.html">AVM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/buderus/README.html">buderus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/comfoair/README.html">ComfoAir</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/dlms/README.html">DLMS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/drexelundweiss/README.html">Drexel &amp; Weiss</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/easymeter/README.html">Easymeter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/ebus/README.html">eBus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/enigma2/README.html">Enigma2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/eta_pu/README.html">ETA Pellet Unit PU</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/gpio/README.html">GPIO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/harmony/README.html">Harmony Hub Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/helios/README.html">Helios ECx00Pro / Vallox xx SE Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/homematic/README.html">homematic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/intercom_2n/README.html">2N-Intercom Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/kathrein/README.html">Kathrein</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/kostal/README.html">KOSTAL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/logo/README.html">logo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/luxtronic2/README.html">Luxtronic2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/netio230b/README.html">NetIO230B</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/nuki/README.html">Nuki</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/nut/README.html">NUT - Network UPS Tools plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/plex/README.html">plex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/pluggit/README.html">PLUGGIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/roomba/README.html">Roomba</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/russound/README.html">Russound</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/sma/README.html">SMA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/sma_em/README.html">SMA-EM Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/smarttv/README.html">SmartTV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/sml/README.html">Sml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/solarlog/README.html">Solarlog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/systemair/README.html">Systemair</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/volkszaehler/README.html">Volkszaehler Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/vr100/README.html">VR100</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/xbmc/README.html">XBMC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/xiaomi/README.html">Xiaomi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/yamaha/README.html">Yamaha</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../plugins_doc/plugins_protocol.html">Protocol Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/mqtt/README.html">MQTT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/mqtt_1_0/README.html">MQTT 1.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/network/README.html">Network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/wol/README.html">WakeOnLan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/xmpp/README.html">XMPP</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../plugins_doc/plugins_web.html">Web/Cloud Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/alexa/README.html">Alexa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/boxcar/README.html">Boxcar Notification Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/dwd/README.html">DWD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/ical/README.html">iCal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/join/README.html">Join</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/mail/README.html">Mail</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/mvg_live/README.html">MVG Live</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/nma/README.html">nma - Notify My Android</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/nokia_health/README.html">Nokia Health</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/odlinfo/README.html">ODLInfo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/openenergymonitor/README.html">OpenEnergyMonitor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/prowl/README.html">Prowl</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/pushbullet/README.html">Pushbullet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/speech/README.html">Speech Parser</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/tankerkoenig/README.html">TankerKoenig</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/telegram/README.html">Telegram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/traffic/README.html">Traffic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/webservices/README.html">WebServices plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/wettercom/README.html">wetter.com</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/wunderground/README.html">Wunderground</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../plugins_doc/plugins_unclassified.html">Unclassified Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../plugins/pushover/README.html">Pushover</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules.html">Modules for use with plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../modules/dummy/README.html">Module dummy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../modules/http/README.html">Module http</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../modules_doc/module_metadata.html">Module Metadata</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tools.html">Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/backup_restore.html">tools.backup_restore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/build_requirements.html">tools.build_requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tools/conf_to_yaml_converter.html">tools.conf_to_yaml_converter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../development_plugins.html">Development of Plugins</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../dev/README.html">Plugin development guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../development_plugin/plugin_in5minutes.html">How to write a Plugin in 5 min.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../development_plugin/smartplugin.html">Class SmartPlugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../development_plugin/plugin_metadata.html">Plugin Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../development_plugin/sampleplugins.html">Sample Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../development_plugin/sampleplugin.html">Sample Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../development_plugin/sampleplugin_webif.html">Sample Plugin with web interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../development_plugin/sampleplugin_1_1.html">Sample Plugin (old v1.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules_doc/modules_plugins.html">Modules for use with plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../modules_doc/module_dummy.html">Module dummy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../modules_doc/module_http.html">Module http</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../modules_doc/modules_readmes.html">READMEs for Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../modules/dummy/README.html">Module dummy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../modules/http/README.html">Module http</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../development_plugin/libraries_plugins.html">Libraries for use in plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/connection.html">lib.connection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/db.html">lib.db</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/logutils.html">lib.logutils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/network.html">lib.network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/orb.html">lib.orb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/scheduler.html">lib.scheduler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/tools.html">lib.tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/utils.html">lib.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../plugins/visu_smartvisu/README_for_developers.html">Visualisation plugin (smartVISU support) - for developers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../plugins/visu_websocket/README_for_visu_developers.html">Visualisation plugin (Websocket Protocol) - for developers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../development_core.html">Development - Core</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../core.html">Core of SmartHomeNG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../core_libraries.html">Libraries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/config.html">lib.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/constants.html">lib.constants</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/daemon.html">lib.daemon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/item.html">lib.item</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/item_conversion.html">lib.item_conversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/log.html">lib.log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/logic.html">lib.logic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/metadata.html">lib.metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/module.html">lib.module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/plugin.html">lib.plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/scene.html">lib.scene</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/shyaml.html">lib.shyaml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../-----.html">&gt;———-&lt;</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/connection.html">lib.connection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/db.html">lib.db</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/logutils.html">lib.logutils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/network.html">lib.network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/orb.html">lib.orb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/scheduler.html">lib.scheduler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/tools.html">lib.tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../lib/utils.html">lib.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../core_modules.html">Core modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../modules_doc/modules_readmes.html">READMEs for Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../modules_doc/module_metadata.html">Module Metadata</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../release.html">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../release/1_3.html">Release 1.3 - August 5th, 2017</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../release/1_2.html">Release 1.2 - May 16th, 2016</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../release/1_1.html">Release 1.1 - April 13th, 2016</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../release/1_0.html">Release 1.0 - November 14th, 2013</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../release/0_9.html">Release 0.9 - June 6th 2013</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../release/0_8.html">Release 0.8 - January 31st, 2013</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../release/0_7.html">Release 0.7 - September 27th 2012</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../release/0_6.html">Release 0.6 - June 21th, 2012</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../release/0_5.html">Release 0.5 - July 12th, 2012</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../release/0_4.html">Release 0.4 - October 10th, 2011</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../release/0_3.html">Release 0.3 - August 14th, 2011</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../release/0_2.html">Release 0.2 - June 21st, 2011</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../release/0_1.html">Release 0.1 - April 09th, 2011</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+    <a href="genindex.html">Index</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Developer Documentation</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>lib.item_conversion</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for lib.item_conversion</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab</span>
+<span class="c1">#########################################################################</span>
+<span class="c1"># Copyright 2016-2017   Martin Sinn                         m.sinn@gmx.de</span>
+<span class="c1"># -Parts (from the parser) Copyright 2013 Marcus Pop       marcus@popp.mx</span>
+<span class="c1">#########################################################################</span>
+<span class="c1">#  This file is part of SmartHomeNG</span>
+<span class="c1">#  https://github.com/smarthomeNG/smarthome</span>
+<span class="c1">#  http://knx-user-forum.de/</span>
+<span class="c1">#</span>
+<span class="c1">#  SmartHomeNG is free software: you can redistribute it and/or modify</span>
+<span class="c1">#  it under the terms of the GNU General Public License as published by</span>
+<span class="c1">#  the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1">#  (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1">#  SmartHomeNG is distributed in the hope that it will be useful,</span>
+<span class="c1">#  but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">#  GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1">#  You should have received a copy of the GNU General Public License</span>
+<span class="c1">#  along with SmartHomeNG. If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span class="c1">#########################################################################</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This file is a special version of the configuration loader. It has been modified to</span>
+<span class="sd">support the conversion from CONF to YAML format. This configuration loader is only called</span>
+<span class="sd">by the converter tools/conf_to_yaml_converter.py.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">RUAMEL_YAML_INSTALLED</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">ruamel.yaml</span> <span class="k">as</span> <span class="nn">yaml</span>
+    <span class="n">RUAMEL_YAML_INSTALLED</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ERROR: module ruamel.yaml not found&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please install ruamel.yaml using the command:&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;sudo pip3 install ruamel.yaml&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">RUAMEL_YAML_INSTALLED</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="kn">import</span> <span class="nn">yaml</span>
+
+
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+
+
+<span class="n">yaml_version</span> <span class="o">=</span> <span class="s1">&#39;1.1&#39;</span>
+<span class="n">indent_spaces</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">store_raw_output</span> <span class="o">=</span> <span class="kc">False</span>			<span class="c1"># Only for testing, otherwise False</span>
+
+
+<div class="viewcode-block" id="is_ruamelyaml_installed"><a class="viewcode-back" href="../../lib/item_conversion.html#lib.item_conversion.is_ruamelyaml_installed">[docs]</a><span class="k">def</span> <span class="nf">is_ruamelyaml_installed</span><span class="p">():</span>
+
+    <span class="k">return</span> <span class="n">RUAMEL_YAML_INSTALLED</span></div>
+    
+
+<span class="c1"># ==================================================================================</span>
+<span class="c1">#   config loader from config.py modified for parsing to yaml</span>
+<span class="c1">#</span>
+
+
+<span class="k">def</span> <span class="nf">_strip_quotes</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+    <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">string</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;&quot;&#39;</span><span class="p">,</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">]:</span>  <span class="c1"># check if string starts with &#39; or &quot;</span>
+            <span class="k">if</span> <span class="n">string</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">string</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>  <span class="c1"># and end with it</span>
+                <span class="k">if</span> <span class="n">string</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">string</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># if they are the only one</span>
+                    <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># remove them</span>
+    <span class="k">return</span> <span class="n">string</span>
+
+
+<span class="k">def</span> <span class="nf">_handle_multiline_string</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">string</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">string</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;|&#39;</span><span class="p">:</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="s1">&#39;|</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">string</span>
+    <span class="k">return</span> <span class="n">string</span>
+
+
+<div class="viewcode-block" id="parse_for_convert"><a class="viewcode-back" href="../../lib/item_conversion.html#lib.item_conversion.parse_for_convert">[docs]</a><span class="k">def</span> <span class="nf">parse_for_convert</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">conf_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">valid_chars</span> <span class="o">=</span> <span class="s1">&#39;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_@*&#39;</span>
+    <span class="n">valid_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">valid_chars</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">config</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">config</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">lastline_was_comment</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">last_comment_nr</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">if</span> <span class="n">filename</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;- parsing &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">)),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;UTF-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">conf_code</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">conf_code</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">config</span>
+    
+    <span class="n">linenu</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">parents</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="k">if</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>    
+        <span class="k">for</span> <span class="n">raw</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="n">linenu</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\ufeff</span><span class="s1">&#39;</span><span class="p">)</span>  <span class="c1"># remove BOM</span>
+            
+            <span class="n">multiline</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">):</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">while</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">):</span>
+                    <span class="n">multiline</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="p">)</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">linenu</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">multiline</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">+</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">lastline_was_comment</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">multiline</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">multiline</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">comment_in_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)</span>
+                    <span class="n">comment</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">comment_in_line</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">comment</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                        <span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;&gt;**&lt;&#39;</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="c1"># inline comment</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">line</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">comment</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                        <span class="n">attr</span><span class="p">,</span> <span class="n">__</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;&#39;&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s2">&quot;|&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">):</span>
+                            <span class="n">comment</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="n">comment</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span> <span class="o">+</span> <span class="s1">&#39;    ## &#39;</span> <span class="o">+</span> <span class="n">comment</span>
+                            <span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">comment</span> <span class="o">=</span> <span class="n">line</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">if</span> <span class="n">comment</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                    <span class="k">while</span> <span class="p">(</span><span class="n">comment</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">comment</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span><span class="p">):</span>
+                        <span class="n">comment</span> <span class="o">=</span> <span class="n">comment</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">comment</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                    <span class="n">comment</span> <span class="o">=</span> <span class="n">comment</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="s1">&#39;comment&#39;</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">lastline_was_comment</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">last_comment_nr</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="n">item</span><span class="p">[</span><span class="s1">&#39;comment&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">last_comment_nr</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_handle_multiline_string</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;comment&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">last_comment_nr</span><span class="p">)]</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">_strip_quotes</span><span class="p">(</span><span class="n">comment</span><span class="p">))</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">item</span><span class="p">[</span><span class="s1">&#39;comment&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_handle_multiline_string</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s1">&#39;comment&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">_strip_quotes</span><span class="p">(</span><span class="n">comment</span><span class="p">))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+                            <span class="k">while</span> <span class="s1">&#39;comment&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="n">item</span><span class="p">[</span><span class="s1">&#39;comment&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="n">_handle_multiline_string</span><span class="p">(</span><span class="n">_strip_quotes</span><span class="p">(</span><span class="n">comment</span><span class="p">))</span>
+                            <span class="n">last_comment_nr</span> <span class="o">=</span> <span class="n">i</span>
+                    <span class="k">else</span><span class="p">:</span>
+<span class="c1">#                        logger.info(&quot;comment: &#39;{}&#39;&quot;.format(comment))</span>
+                        <span class="n">item</span><span class="p">[</span><span class="s1">&#39;comment&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_handle_multiline_string</span><span class="p">(</span><span class="n">_strip_quotes</span><span class="p">(</span><span class="n">comment</span><span class="p">))</span>
+                        <span class="n">last_comment_nr</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">lastline_was_comment</span> <span class="o">=</span> <span class="kc">True</span>
+                
+            <span class="k">if</span> <span class="n">line</span> <span class="ow">is</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;[&#39;</span><span class="p">:</span>  <span class="c1"># item</span>
+                <span class="n">lastline_was_comment</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="c1">#</span>
+                <span class="n">comment_in_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)</span>
+                <span class="n">comment</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">comment_in_line</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">comment</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                    <span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;&gt;**&lt;&#39;</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="c1">#</span>
+                <span class="n">brackets</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">level</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">closing</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;[&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">closing</span><span class="p">:</span>
+                        <span class="n">brackets</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="n">level</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">elif</span> <span class="n">line</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;]&#39;</span><span class="p">:</span>
+                        <span class="n">closing</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="n">brackets</span> <span class="o">-=</span> <span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">closing</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_chars</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">()</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: Problem (1) parsing &#39;</span><span class="si">{}</span><span class="s2">&#39; invalid character in </span><span class="se">\n</span><span class="s2">line </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">. </span><span class="se">\n</span><span class="s2">Valid chars: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span> <span class="n">linenu</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">valid_chars</span><span class="p">))</span>
+                            <span class="k">return</span> <span class="n">config</span>
+                <span class="k">if</span> <span class="n">brackets</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">()</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: Problem parsing &#39;</span><span class="si">{}</span><span class="s2">&#39; unbalanced brackets in line </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">linenu</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span>
+                    <span class="k">return</span> <span class="n">config</span>
+                <span class="c1">#</span>
+                <span class="k">if</span> <span class="n">comment_in_line</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">()</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: Problem parsing &#39;</span><span class="si">{}</span><span class="s2">&#39; </span><span class="se">\n</span><span class="s2">unhandled comment </span><span class="si">{}</span><span class="s2"> in </span><span class="se">\n</span><span class="s2">line </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">. </span><span class="se">\n</span><span class="s2">Valid chars: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">),</span> <span class="n">comment</span><span class="p">,</span> <span class="n">linenu</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">valid_chars</span><span class="p">))</span>
+                <span class="c1">#</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;[]&quot;</span><span class="p">)</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">_strip_quotes</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">level</span> <span class="o">-</span> <span class="n">offset</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+                        <span class="n">config</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+                    <span class="n">item</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                    <span class="n">parents</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+                    <span class="n">parents</span><span class="p">[</span><span class="n">level</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">level</span> <span class="o">-</span> <span class="mi">1</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parents</span><span class="p">:</span>
+                        <span class="n">offset</span> <span class="o">=</span> <span class="n">level</span> <span class="o">-</span> <span class="mi">1</span>
+                        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+                            <span class="n">config</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+                        <span class="n">item</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                        <span class="n">parents</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+                        <span class="n">parents</span><span class="p">[</span><span class="n">level</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">parent</span> <span class="o">=</span> <span class="n">parents</span><span class="p">[</span><span class="n">level</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parent</span><span class="p">:</span>
+                            <span class="n">parent</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+                        <span class="n">item</span> <span class="o">=</span> <span class="n">parent</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                        <span class="n">parents</span><span class="p">[</span><span class="n">level</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
+
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># attribute</span>
+                <span class="n">lastline_was_comment</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">attr</span><span class="p">,</span> <span class="n">__</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)</span>
+                <span class="n">comm</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+                <span class="k">if</span> <span class="s1">&#39;##&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="n">value</span><span class="p">,</span> <span class="n">__</span><span class="p">,</span> <span class="n">comm</span>  <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">partition</span><span class="p">(</span><span class="s1">&#39;##&#39;</span><span class="p">)</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">_strip_quotes</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">+</span> <span class="s1">&#39;    ## &#39;</span> <span class="o">+</span> <span class="n">comm</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+<span class="c1">#                print(&quot;= attr &gt;{}&lt;, value &gt;{}&lt;, comment &gt;{}&lt;&quot;.format(attr, value, comm))</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">attr</span> <span class="o">=</span> <span class="n">attr</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">valid_set</span><span class="p">):</span>
+                    <span class="nb">print</span><span class="p">()</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;line: &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: Problem (2) parsing &#39;</span><span class="si">{}</span><span class="s2">&#39; invalid character in line </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">. Valid characters are: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">linenu</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">valid_chars</span><span class="p">))</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="s1">&#39;|&#39;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="n">item</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">_strip_quotes</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">)]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">svalue</span> <span class="o">=</span> <span class="n">_handle_multiline_string</span><span class="p">(</span><span class="n">_strip_quotes</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">ivalue</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">svalue</span><span class="p">)</span>
+                        <span class="n">item</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivalue</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="n">item</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">svalue</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">config</span></div>
+
+
+<span class="c1"># ##################################################################################</span>
+<span class="c1">#   YAML handling routines</span>
+<span class="c1">#</span>
+
+<span class="k">def</span> <span class="nf">_yaml_save_roundtrip</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Dump yaml using the RoundtripDumper and correct linespacing in output file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">sdata</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Dumper</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">RoundTripDumper</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">yaml_version</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent_spaces</span><span class="p">,</span> <span class="n">block_seq_indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">12288</span><span class="p">,</span> <span class="n">allow_unicode</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">ldata</span> <span class="o">=</span> <span class="n">sdata</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">rdata</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ldata</span><span class="p">):</span>
+        <span class="c1"># Fix for ruamel.yaml handling: Reinsert empty line before comment of next section</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span><span class="p">:</span>
+            <span class="n">indentcomment</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+            <span class="n">indentprevline</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ldata</span><span class="p">[</span><span class="n">index</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">ldata</span><span class="p">[</span><span class="n">index</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">indentprevline</span> <span class="o">-</span> <span class="n">indentcomment</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="o">*</span><span class="n">indent_spaces</span><span class="p">:</span>
+                <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="c1"># Fix for ruamel.yaml handling: Remove empty line with spaces that have been inserted</span>
+        <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">and</span> <span class="n">line</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ldata</span><span class="p">[</span><span class="n">index</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+    <span class="n">sdata</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rdata</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">sdata</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">:</span>
+        <span class="n">sdata</span> <span class="o">=</span><span class="n">sdata</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="o">+</span><span class="s1">&#39;.yaml&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
+        <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span> <span class="n">sdata</span> <span class="p">)</span>
+
+
+
+<div class="viewcode-block" id="yaml_save"><a class="viewcode-back" href="../../lib/item_conversion.html#lib.item_conversion.yaml_save">[docs]</a><span class="k">def</span> <span class="nf">yaml_save</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ***Converter Special ***</span>
+<span class="sd">    </span>
+<span class="sd">    Save contents of an OrderedDict structure to a yaml file</span>
+
+<span class="sd">    :param filename: name of the yaml file to save to</span>
+<span class="sd">    :param data: OrderedDict to save</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">sdata</span> <span class="o">=</span> <span class="n">convert_yaml</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;, saving to &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;.yaml&#39;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">store_raw_output</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="o">+</span><span class="s1">&#39;_raw.yaml&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
+            <span class="n">outfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span> <span class="n">sdata</span> <span class="p">)</span>
+
+    <span class="c1"># Test if roundtrip gives the same result</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">sdata</span><span class="p">,</span> <span class="n">yaml</span><span class="o">.</span><span class="n">RoundTripLoader</span><span class="p">)</span>
+    <span class="n">_yaml_save_roundtrip</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="convert_yaml"><a class="viewcode-back" href="../../lib/item_conversion.html#lib.item_conversion.convert_yaml">[docs]</a><span class="k">def</span> <span class="nf">convert_yaml</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ***Converter Special ***</span>
+<span class="sd">    </span>
+<span class="sd">    Convert data structure to yaml format</span>
+
+<span class="sd">    :param data: OrderedDict to convert</span>
+<span class="sd">    :return: yaml formated data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ordered</span> <span class="o">=</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;OrderedDict&#39;</span><span class="p">)</span>
+    <span class="n">dict_type</span> <span class="o">=</span> <span class="s1">&#39;dict&#39;</span>
+    <span class="k">if</span> <span class="n">ordered</span><span class="p">:</span>
+        <span class="n">dict_type</span> <span class="o">=</span> <span class="s1">&#39;OrderedDict&#39;</span>
+        <span class="n">sdata</span> <span class="o">=</span> <span class="n">_ordered_dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Dumper</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">SafeDumper</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent_spaces</span><span class="p">,</span> <span class="n">block_seq_indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">12288</span><span class="p">,</span> <span class="n">allow_unicode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sdata</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Dumper</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">SafeDumper</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent_spaces</span><span class="p">,</span> <span class="n">block_seq_indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">12288</span><span class="p">,</span> <span class="n">allow_unicode</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">sdata</span> <span class="o">=</span> <span class="n">_format_yaml_dump</span><span class="p">(</span><span class="n">sdata</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sdata</span></div>
+
+
+<span class="k">def</span> <span class="nf">_format_yaml_dump</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ***Converter Special ***</span>
+<span class="sd">    </span>
+<span class="sd">    Format yaml-dump to make file more readable</span>
+<span class="sd">    (yaml structure must be dumped to a stream before using this function)</span>
+<span class="sd">    | Currently does the following:</span>
+<span class="sd">    | - Add an empty line before a new item</span>
+
+<span class="sd">    :param data: string to format</span>
+<span class="sd">    </span>
+<span class="sd">    :return: formatted string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">ldata</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">rdata</span> <span class="o">=</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ldata</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span> 
+            <span class="c1"># Handle inline-comments from converter</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;##&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;: &#39;&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;##&#39;</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;: &#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;: &quot;</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            
+            <span class="c1"># Handle comments from converter</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;comment&#39;</span><span class="p">):</span>
+<span class="c1">#                print(&#39;comment-line&gt;&#39;, line, &#39;&lt;&#39;)</span>
+                <span class="n">indent</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">ldata</span><span class="p">[</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="s1">&#39;:&#39;</span><span class="p">:</span>
+                    <span class="n">indent</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ldata</span><span class="p">[</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">ldata</span><span class="p">[</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;: &quot;|&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;: &quot;|&#39;</span><span class="p">,</span> <span class="s1">&#39;: |&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;: &#39;</span><span class="p">,</span> <span class="s1">&#39;: |</span><span class="se">\\</span><span class="s1">n&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="c1">#                print(&#39;# &#39; + line[line.find(&quot;|\\n&quot;)+3:])</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">*</span><span class="n">indent</span> <span class="o">+</span> <span class="s1">&#39;# &#39;</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;|</span><span class="se">\\</span><span class="s2">n&quot;</span><span class="p">)</span><span class="o">+</span><span class="mi">3</span><span class="p">:]</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;&gt;**&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">n&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">*</span><span class="n">indent</span> <span class="o">+</span> <span class="s1">&#39;# &#39;</span><span class="p">)</span>
+                
+            <span class="c1"># Handle newlines for multiline string-attributes ruamel.yaml</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;: &quot;|&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="s1">&#39;&quot;&#39;</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">n&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">indent</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">))</span> <span class="o">+</span> <span class="n">indent_spaces</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;: &quot;|&#39;</span><span class="p">,</span> <span class="s1">&#39;: |&#39;</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">n&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">+</span><span class="s2">&quot; &quot;</span><span class="o">*</span><span class="n">indent</span><span class="p">)</span>
+                
+        <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+    
+    <span class="n">ldata</span> <span class="o">=</span> <span class="n">rdata</span>
+    <span class="n">rdata</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ldata</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span>  <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span> <span class="ow">and</span> <span class="n">ldata</span><span class="p">[</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="s1">&#39;:&#39;</span><span class="p">:</span>
+            <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        
+        <span class="c1"># Insert empty line before section (key w/o a value)</span>
+        <span class="k">elif</span> <span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="s1">&#39;:&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ldata</span><span class="p">[</span><span class="n">index</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">ldata</span><span class="p">[</span><span class="n">index</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span><span class="p">):</span>
+                <span class="c1"># no empty line before list attributes</span>
+                <span class="k">if</span> <span class="n">ldata</span><span class="p">[</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+                    <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rdata</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+    <span class="n">fdata</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">rdata</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fdata</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">:</span>
+        <span class="n">fdata</span> <span class="o">=</span> <span class="n">fdata</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">fdata</span>
+        
+
+<span class="k">def</span> <span class="nf">_ordered_dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Dumper</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">Dumper</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Ordered yaml dumper</span>
+<span class="sd">    Use this instead ot yaml.Dumper/yaml.SaveDumper to get an Ordereddict</span>
+
+<span class="sd">    :param stream: stream to write to</span>
+<span class="sd">    :param Dumper: yaml-dumper to use</span>
+<span class="sd">    :**kwds: Additional keywords</span>
+<span class="sd">    </span>
+<span class="sd">    :return: OrderedDict structure</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># usage example: ordered_dump(data, Dumper=yaml.SafeDumper)</span>
+    <span class="k">class</span> <span class="nc">OrderedDumper</span><span class="p">(</span><span class="n">Dumper</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">_dict_representer</span><span class="p">(</span><span class="n">dumper</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">dumper</span><span class="o">.</span><span class="n">represent_mapping</span><span class="p">(</span>
+            <span class="n">yaml</span><span class="o">.</span><span class="n">resolver</span><span class="o">.</span><span class="n">BaseResolver</span><span class="o">.</span><span class="n">DEFAULT_MAPPING_TAG</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+    <span class="n">OrderedDumper</span><span class="o">.</span><span class="n">add_representer</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">,</span> <span class="n">_dict_representer</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">stream</span><span class="p">,</span> <span class="n">OrderedDumper</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+
+
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2017 SmartHomeNG Team, based on smarthome.py © 2011-2014 Marcus Popp.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.3c develop (as of 31. October 2017, commit 34c17bf)',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

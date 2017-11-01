@@ -1,0 +1,572 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Release 0.7 - September 27th 2012 &mdash; Developer Documentation 1.3c develop (as of 31. October 2017, commit 34c17bf) documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Developer Documentation 1.3c develop (as of 31. October 2017, commit 34c17bf) documentation" href="../index.html"/>
+        <link rel="up" title="Release Notes" href="../release.html"/>
+        <link rel="next" title="Release 0.6 - June 21th, 2012" href="0_6.html"/>
+        <link rel="prev" title="Release 0.8 - January 31st, 2013" href="0_8.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Developer Documentation
+          
+
+          
+            
+            <img src="../_static/logo_long_inverse3.png" class="logo" />
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../user_doc.html">User Documentation (German)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../requirements.html">Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../config.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../config.html#structure-of-smarthomeng">Structure of SmartHomeNG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config.html#config-files-in-directory-etc">Config files in directory <strong>etc</strong></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../config.html#smarthome-yaml">smarthome.yaml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config.html#plugin-yaml">plugin.yaml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config.html#logic-yaml">logic.yaml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../config.html#logging-yaml">logging.yaml</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../config.html#item-definitions-in-directory-items">Item definitions in directory <strong>items</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config.html#logic-definitions-in-directory-logics">Logic definitions in directory <strong>logics</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config.html#smarthomeng-start-options">SmartHomeNG start options</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../items.html">Items</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../items.html#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../items.html#item-attributes">Item Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../items.html#item-functions">Item functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../items.html#example-logic-with-uses-of-above-functions">Example logic with uses of above functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../logics.html">Logics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../logics.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logics.html#configuration-parameters">Configuration parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#watch-item">watch_item</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#cycle">cycle</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#crontab">crontab</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#enabled">enabled</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#prio">prio</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#other-parameters">Other parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../logics.html#basic-structure-of-a-logic-script">Basic Structure of a logic script</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logics.html#loaded-python-modules">Loaded Python modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logics.html#available-objects-methods">Available Objects/Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#logic">logic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#logic-trigger">logic.trigger()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#trigger">trigger</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../logics.html#logger-and-sh-log">logger and sh.log</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logics.html#smarthomeng-methods-to-use">SmartHomeNG methods to use</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#sh-now-and-sh-utcnow">sh.now and sh.utcnow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#sh-sun">sh.sun</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#sh-moon">sh.moon</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../logics.html#scheduling">Scheduling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#sh-scheduler-trigger-sh-trigger">sh.scheduler.trigger() / sh.trigger()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#sh-scheduler-change">sh.scheduler.change()</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../logics.html#sh-tools-object">sh.tools object</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#sh-tools-ping">sh.tools.ping()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#sh-tools-dewpoint">sh.tools.dewpoint()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#sh-tools-fetch-url">sh.tools.fetch_url()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#sh-tools-dt2ts-dt">sh.tools.dt2ts(dt)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#sh-tools-dt2js-dt">sh.tools.dt2js(dt)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#sh-tools-rel2abs-temp-hum">sh.tools.rel2abs(temp, hum)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../logics.html#accessing-items">Accessing items</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#sh-return-item-path">sh.return_item(path)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#sh-return-items">sh.return_items()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#sh-match-items-regex">sh.match_items(regex)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#sh-find-items-configattribute">sh.find_items(configattribute)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../logics.html#find-children-parentitem-configattribute">find_children(parentitem, configattribute):</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../plugins_all.html">Plugins</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../plugins_doc/plugins_system.html">System Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/backend/README.html">Backend GUI (beyond shNG v1.3)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/blockly/README.html">Blockly Logic Editor (beyond shNG v1.3)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/cli/README.html">CLI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/database/README.html">Database</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/datalog/README.html">DataLog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/influxdata/README.html">influxdata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/influxdb/README.html">Influxdb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/memlog/README.html">MemLog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/operationlog/README.html">OperationLog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/rrd/README.html">RRDTool</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/rtr/README.html">RTR plug-in</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/simulation/README.html">Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/sqlite/README.html">SQLite (for SmartVisu &lt; 2.8)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/sqlite_visu2_8/README.html">SQLite (for SmartVisu &gt;= 2.8)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/uzsu/README.html">UZSU</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/visu_smartvisu/README.html">Visualisation (smartVISU support)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/visu_websocket/README.html">Visualisation (Websocket Protocol)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../plugins_doc/plugins_gateway.html">Gateway Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/artnet/README.html">Artnet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/dashbutton/README.html">Amazon Dashbutton Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/dmx/README.html">DMX</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/ecmd/README.html">ECMD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/elro/README.html">Elro</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/enocean/README.html">EnOcean</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/hue/README.html">Phillips HUE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/iaqstick/README.html">iAQ Stick</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/knx/README.html">KNX</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/lirc/README.html">lirc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/milight/README.html">miLight</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/mlgw/README.html">Bang &amp; Olufsen Masterlink Gateway</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/mpd/README.html">MPD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/onewire/README.html">Onewire</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/raumfeld/README.html">Raumfeld</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/rcswitch/README.html">RCswitch</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/smawb/README.html">SMA-WebBox (smawb)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/snom/README.html">snom</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/sonos/README.html">Sonos</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/squeezebox/README.html">Squeezebox</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/tellstick/README.html">Tellstick</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../plugins_doc/plugins_interface.html">Interface Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/apcups/README.html">APC UPS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/asterisk/README.html">Asterisk</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/avdevice/README.html">AV Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/avm/README.html">AVM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/buderus/README.html">buderus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/comfoair/README.html">ComfoAir</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/dlms/README.html">DLMS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/drexelundweiss/README.html">Drexel &amp; Weiss</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/easymeter/README.html">Easymeter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/ebus/README.html">eBus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/enigma2/README.html">Enigma2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/eta_pu/README.html">ETA Pellet Unit PU</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/gpio/README.html">GPIO</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/harmony/README.html">Harmony Hub Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/helios/README.html">Helios ECx00Pro / Vallox xx SE Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/homematic/README.html">homematic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/intercom_2n/README.html">2N-Intercom Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/kathrein/README.html">Kathrein</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/kostal/README.html">KOSTAL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/logo/README.html">logo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/luxtronic2/README.html">Luxtronic2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/netio230b/README.html">NetIO230B</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/nuki/README.html">Nuki</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/nut/README.html">NUT - Network UPS Tools plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/plex/README.html">plex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/pluggit/README.html">PLUGGIT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/roomba/README.html">Roomba</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/russound/README.html">Russound</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/sma/README.html">SMA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/sma_em/README.html">SMA-EM Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/smarttv/README.html">SmartTV</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/sml/README.html">Sml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/solarlog/README.html">Solarlog</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/systemair/README.html">Systemair</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/volkszaehler/README.html">Volkszaehler Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/vr100/README.html">VR100</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/xbmc/README.html">XBMC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/xiaomi/README.html">Xiaomi</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/yamaha/README.html">Yamaha</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../plugins_doc/plugins_protocol.html">Protocol Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/mqtt/README.html">MQTT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/mqtt_1_0/README.html">MQTT 1.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/network/README.html">Network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/wol/README.html">WakeOnLan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/xmpp/README.html">XMPP</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../plugins_doc/plugins_web.html">Web/Cloud Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/alexa/README.html">Alexa</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/boxcar/README.html">Boxcar Notification Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/dwd/README.html">DWD</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/ical/README.html">iCal</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/join/README.html">Join</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/mail/README.html">Mail</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/mvg_live/README.html">MVG Live</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/nma/README.html">nma - Notify My Android</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/nokia_health/README.html">Nokia Health</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/odlinfo/README.html">ODLInfo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/openenergymonitor/README.html">OpenEnergyMonitor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/prowl/README.html">Prowl</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/pushbullet/README.html">Pushbullet</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/speech/README.html">Speech Parser</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/tankerkoenig/README.html">TankerKoenig</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/telegram/README.html">Telegram</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/traffic/README.html">Traffic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/webservices/README.html">WebServices plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/wettercom/README.html">wetter.com</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/wunderground/README.html">Wunderground</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../plugins_doc/plugins_unclassified.html">Unclassified Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../plugins/pushover/README.html">Pushover</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../modules.html">Modules for use with plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../modules/dummy/README.html">Module dummy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/http/README.html">Module http</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules_doc/module_metadata.html">Module Metadata</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../logging.html">Logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools.html">Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tools/backup_restore.html">tools.backup_restore</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools/build_requirements.html">tools.build_requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tools/conf_to_yaml_converter.html">tools.conf_to_yaml_converter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../development_plugins.html">Development of Plugins</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../dev/README.html">Plugin development guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development_plugin/plugin_in5minutes.html">How to write a Plugin in 5 min.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development_plugin/smartplugin.html">Class SmartPlugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development_plugin/plugin_metadata.html">Plugin Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../development_plugin/sampleplugins.html">Sample Plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../development_plugin/sampleplugin.html">Sample Plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_plugin/sampleplugin_webif.html">Sample Plugin with web interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../development_plugin/sampleplugin_1_1.html">Sample Plugin (old v1.1)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../modules_doc/modules_plugins.html">Modules for use with plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../modules_doc/module_dummy.html">Module dummy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules_doc/module_http.html">Module http</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../modules_doc/modules_readmes.html">READMEs for Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../modules/dummy/README.html">Module dummy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules/http/README.html">Module http</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../development_plugin/libraries_plugins.html">Libraries for use in plugins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../lib/connection.html">lib.connection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/db.html">lib.db</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/logutils.html">lib.logutils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/network.html">lib.network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/orb.html">lib.orb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/scheduler.html">lib.scheduler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/tools.html">lib.tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/utils.html">lib.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../plugins/visu_smartvisu/README_for_developers.html">Visualisation plugin (smartVISU support) - for developers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../plugins/visu_websocket/README_for_visu_developers.html">Visualisation plugin (Websocket Protocol) - for developers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../development_core.html">Development - Core</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../core.html">Core of SmartHomeNG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_libraries.html">Libraries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../lib/config.html">lib.config</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/constants.html">lib.constants</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/daemon.html">lib.daemon</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/item.html">lib.item</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/item_conversion.html">lib.item_conversion</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/log.html">lib.log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/logic.html">lib.logic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/metadata.html">lib.metadata</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/module.html">lib.module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/plugin.html">lib.plugin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/scene.html">lib.scene</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/shyaml.html">lib.shyaml</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../-----.html">&gt;———-&lt;</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/connection.html">lib.connection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/db.html">lib.db</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/logutils.html">lib.logutils</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/network.html">lib.network</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/orb.html">lib.orb</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/scheduler.html">lib.scheduler</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/tools.html">lib.tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../lib/utils.html">lib.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html">Core modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../modules_doc/modules_readmes.html">READMEs for Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../modules_doc/module_metadata.html">Module Metadata</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../release.html">Release Notes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="1_3.html">Release 1.3 - August 5th, 2017</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_2.html">Release 1.2 - May 16th, 2016</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_1.html">Release 1.1 - April 13th, 2016</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1_0.html">Release 1.0 - November 14th, 2013</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0_9.html">Release 0.9 - June 6th 2013</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0_8.html">Release 0.8 - January 31st, 2013</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Release 0.7 - September 27th 2012</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0_6.html">Release 0.6 - June 21th, 2012</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0_5.html">Release 0.5 - July 12th, 2012</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0_4.html">Release 0.4 - October 10th, 2011</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0_3.html">Release 0.3 - August 14th, 2011</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0_2.html">Release 0.2 - June 21st, 2011</a></li>
+<li class="toctree-l2"><a class="reference internal" href="0_1.html">Release 0.1 - April 09th, 2011</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+    <a href="genindex.html">Index</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Developer Documentation</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../release.html">Release Notes</a> &raquo;</li>
+        
+      <li>Release 0.7 - September 27th 2012</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/release/0_7.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="release-0-7-september-27th-2012">
+<h1>Release 0.7 - September 27th 2012</h1>
+<div class="section" id="features">
+<h2>Features</h2>
+<ul class="simple">
+<li>Items<ul>
+<li>Trees: You could now build unlimited item trees.</li>
+<li>id(): function to return the item id (path).</li>
+<li>eval: see the item configuration page for an explanation for
+‘eval’ and ‘eval_trigger’.</li>
+</ul>
+</li>
+<li><a class="reference internal" href="../plugins/asterisk/README.html"><span class="doc">Asterisk plugin</span></a>: new function hangup(channel)</li>
+<li><a class="reference internal" href="../plugins/ical/README.html"><span class="doc">iCal plugin</span></a>: to parse iCal files</li>
+<li>Visu Plugin:
+-  autogenerate visu pages
+-  new input type ‘time’</li>
+<li>SmartHome.py:<ul>
+<li>sh.scheduler.change</li>
+<li>directory structure cleanup: logic =&gt; logics</li>
+<li>items directory: to put multiple item configuration files in</li>
+<li>sh.tools.dewpoint(): new function to calculate the dewpoint</li>
+<li>sh.tools.ping(): moved ping to the tools object.</li>
+<li>sh.tz =&gt; sh.tzinfo(): new function tzinfo().</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="bug-fixes">
+<h2>Bug Fixes</h2>
+<ul class="simple">
+<li>CLI Plugin: update attribute negated</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="0_6.html" class="btn btn-neutral float-right" title="Release 0.6 - June 21th, 2012" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="0_8.html" class="btn btn-neutral" title="Release 0.8 - January 31st, 2013" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2017 SmartHomeNG Team, based on smarthome.py © 2011-2014 Marcus Popp.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.3c develop (as of 31. October 2017, commit 34c17bf)',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

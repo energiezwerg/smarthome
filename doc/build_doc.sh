@@ -7,6 +7,17 @@
 #
 
 KEEP_REPO=True
+if [ "$1" == "-f" [ || ] "$2" == "-f" ]; then
+  FORCE_CHECKOUT=True
+fi
+
+DOC=all
+if [ "$1" == "-u" ] || [ "$2" == "-u" ]; then
+  DOC=user
+fi
+if [ "$1" == "-d" ] || [ "$2" == "-d" ]; then
+  DOC=developer
+fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
@@ -17,18 +28,26 @@ REPO=smarthome
 LOCALREPO=work
 DESTBRANCH=develop
 
-DOC=developer
+DEVELOPDOC=developer
+USERDOC=user
 
 
 GIT_CHECKOUT=True
 echo $DIR/$LOCALREPO/doc
 if [ -d "$DIR/$LOCALREPO/doc" ]; then
-  GIT_CHECKOUT=False
+  if [ "${FORCE_CHECKOUT,,}" != "true" ]; then
+    GIT_CHECKOUT=False
+  fi
 fi
 
 cd $DIR
 
 echo
+echo
+if [ "${DOC,,}" == "all" ]; then
+  echo Erzeugen der vollständigen Dokumentation für SmartHomeNG
+  echo ========================================================
+fi
 echo
 if [ "${DOC,,}" == "developer" ]; then
   echo Erzeugen der Entwicklerdokumentation für SmartHomeNG
@@ -63,8 +82,12 @@ echo
 if [ "${GIT_CHECKOUT,,}" == "true" ]; then
   echo Das Skript clont von github den aktuellen Stand des Branches \'$DESTBRANCH\' aus den
   echo Repositories \'smarthome\' und \'plugins\'.
-  echo
+else
+  echo ACHTUNG: Das Skript verwendet einen bereits bestehenden lokalen Clone
+  echo der Repositories.
+
 fi
+echo
 echo Während des Laufes erfolgt die Ausgabe einer Reihe von Warnungen. Das ist
 echo normal. Es wurden markdown \(.md\) Dateien gefunden, die bewusst nicht in die
 echo Dokumentation aufgenommen wurden. Darauf weisen diese Warnungen hin. 
@@ -106,16 +129,33 @@ if [ "${GIT_CHECKOUT,,}" == "true" ]; then
   git status
 fi
 
-cd $DIR/
-cd $LOCALREPO
-echo
-echo Bau der Dokumentation:
-cd doc
-cd $DOC
-make clean
-make html
-echo
-echo Bau der Dokumentation ist abgeschlossen!
+
+if [ "${DOC,,}" == "developer" ] || [ "${DOC,,}" == "all" ]; then
+  cd $DIR/
+  cd $LOCALREPO
+  cd doc
+  echo
+  echo Bau der Entwickler-Dokumentation:
+  cd $DEVELOPDOC
+  make clean
+  make html
+  echo
+  echo Bau der Entwickler-Dokumentation ist abgeschlossen!
+fi
+
+if [ "${DOC,,}" == "user" ] || [ "${DOC,,}" == "all" ]; then
+  cd $DIR/
+  cd $LOCALREPO
+  cd doc
+  echo
+  echo Bau der Anwender-Dokumentation:
+  cd $USERDOC
+  make clean
+  make html
+  echo
+  echo Bau der Anwender-Dokumentation ist abgeschlossen!
+fi
+
 
 cd $DIR
   echo

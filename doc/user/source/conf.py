@@ -44,6 +44,10 @@ templates_path = ['_templates']
 
 from recommonmark.parser import CommonMarkParser
 
+# for autostructify
+#import recommonmark
+#from recommonmark.transform import AutoStructify
+
 source_parsers = { '.md': CommonMarkParser }
 
 # The suffix of source filenames.
@@ -59,7 +63,8 @@ master_doc = 'index'
 html_add_permalinks = ""
 
 # General information about the project.
-project = u'SmartHomeNG'
+#project = u'SmartHomeNG'
+project = u'Anwenderdokumentation'
 #copyright = u'2011-2013, Marcus Popp; since 2016 SmartHomeNG Team'
 copyright = u'2016-2017 SmartHomeNG Team, based on smarthome.py © 2011-2014 Marcus Popp'
 
@@ -216,3 +221,11 @@ htmlhelp_basename = 'SmartHomeNGDoc'
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'http://docs.python.org/': None}
+
+# for autostructify
+#def setup(app):
+#    app.add_config_value('recommonmark_config', {
+#            'url_resolver': lambda url: github_doc_root + url,
+#            'auto_toc_tree_section': 'Contents',
+#            }, True)
+#    app.add_transform(AutoStructify)

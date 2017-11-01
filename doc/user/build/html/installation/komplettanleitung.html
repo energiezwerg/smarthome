@@ -1,0 +1,1119 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Komplettanleitung &mdash; Anwenderdokumentation 1.3c develop (as of 1. November 2017, commit 34c17bf) Dokumentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Stichwortverzeichnis"
+              href="../genindex.html"/>
+        <link rel="search" title="Suche" href="../search.html"/>
+    <link rel="top" title="Anwenderdokumentation 1.3c develop (as of 1. November 2017, commit 34c17bf) Dokumentation" href="../index.html"/>
+        <link rel="up" title="Installation" href="installation.html"/>
+        <link rel="next" title="Installation über Docker" href="docker.html"/>
+        <link rel="prev" title="Hard- u. Software Anforderungen" href="anforderungen.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Anwenderdokumentation
+          
+
+          
+            
+            <img src="../_static/logo_long_inverse3.png" class="logo" />
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../einleitung.html">Einleitung</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="installation.html">Installation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="anforderungen.html">Hard- u. Software Anforderungen</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Komplettanleitung</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docker.html">Installation über Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="update_upgrade.html">Update von einer älteren Version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../konfiguration/konfiguration.html">Konfiguration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../konfiguration/konfigurationsdateien.html">Konfigurationsdateien</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../konfiguration/itemkonfiguration.html">Initiale Item Konfiguration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../konfiguration/items.html">Items</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../konfiguration/items_systemitems.html">Systemitems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../konfiguration/items_astronomie.html">Beispiele: Astronomie</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../konfiguration/items_tipps.html">Tipps &amp; Tricks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../konfiguration/plugins.html">Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../konfiguration/logiken.html">Logiken</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../konfiguration/logging.html">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../konfiguration/logging_best_practices.html">Logging - Best Practices</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../visualisierung/visualisierung.html">Visualisierung mit smartVISU</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../visualisierung/reverse_proxy.html">NGINX als ReverseProxy</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../backend/backend.html">Administrations GUI</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../fehlersuche.html">Fehlersuche</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">FAQ - Häufig gestellte Fragen</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../entwickler_doku.html">Entwickler Dokumentation (Englisch)</a></li>
+</ul>
+
+            
+          
+    <a href="genindex.html">Stichwort-Verzeichnis</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Anwenderdokumentation</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="installation.html">Installation</a> &raquo;</li>
+        
+      <li>Komplettanleitung</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/installation/komplettanleitung.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="komplettanleitung">
+<span id="komplettanleitung"></span><h1>Komplettanleitung</h1>
+<div class="section" id="ziel-dieser-anleitung">
+<span id="ziel-dieser-anleitung"></span><h2>Ziel dieser Anleitung</h2>
+<p>Diese Anleitung beschreibt ein komplettes Installieren von <strong>SmartHomeNG 1.3</strong> inklusive knxd, 1-Wire und SmartVISU auf einem Debian 8.x (Jessie) oder Debian 9.x (Stretch).
+Debian &gt; 8.x nutzt als init System den Systemd. Das hat den Effekt, das die Scripte zum Start der Services wegfallen und stattdessen nur Konfig-Dateien genutzt werden.
+Für einige optionale Module wie den knxd, ofws sind bereits entsprechende config-Dateien in den Paketen enthalten.
+Es bietet sich an die allererste Installation einfach in einer virtuellen Maschine (VirtualBox, VMWare, etc.) durchzuführen um den Ablauf einmal gesehen und erlebt zu haben.
+Beim Installieren als VM solltet Ihr darauf achten, das die neue VM auch eine IP aus dem internen Netzwerk bekommt.
+Bei VirtualBox geht das z.B. über den Verbindungsmodus &quot;bridged&quot;.</p>
+<ul class="simple">
+<li><a class="reference external" href="#debian">Debian</a><ul>
+<li><a class="reference external" href="#softwareauswahl">Softwareauswahl</a></li>
+<li><a class="reference external" href="#einloggen-via-ssh--oder-an-der-konsole">Einloggen via SSH  oder an der Konsole</a></li>
+<li><a class="reference external" href="#systemaktualisierung">Systemaktualisierung</a></li>
+<li><a class="reference external" href="#restarbeiten-am-system">Restarbeiten am System</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#knxd-installieren">knxd installieren</a><ul>
+<li><a class="reference external" href="#zusätzliche-pakete-installieren">zusätzliche Pakete installieren</a></li>
+<li><a class="reference external" href="#quellcode-laden-compilieren-und-ein-paket-schnüren">Quellcode laden, compilieren und ein Paket schnüren</a></li>
+<li><a class="reference external" href="#knxd-konfigurieren">knxd konfigurieren</a></li>
+<li><a class="reference external" href="#knxd-und-systemd">knxd und systemd</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#smarthomeng-installieren">SmartHomeNG installieren</a><ul>
+<li><a class="reference external" href="#zusätzliche-pakete-installieren-1">zusätzliche Pakete installieren</a></li>
+<li><a class="reference external" href="#quellcode-laden">Quellcode laden</a></li>
+<li><a class="reference external" href="#erstmalige-konfiguration-erstellen">Erstmalige Konfiguration erstellen</a></li>
+<li><a class="reference external" href="#zusätzliche-python-module">Zusätzliche Python Module</a></li>
+<li><a class="reference external" href="#smarthomeng-starten">SmartHomeNG starten</a></li>
+<li><a class="reference external" href="#backend-plugin-nutzen">Backend Plugin nutzen</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#smartvisu-installieren">SmartVISU installieren</a><ul>
+<li><a class="reference external" href="#zusätzliche-pakete-installieren-2">zusätzliche Pakete installieren</a></li>
+<li><a class="reference external" href="#smartvisu-quellcode-laden">SmartVISU Quellcode laden</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#onewire-installieren">Onewire installieren</a><ul>
+<li><a class="reference external" href="#zusätzliche-pakete-installieren-3">zusätzliche Pakete installieren</a></li>
+<li><a class="reference external" href="#owfs-konfigurieren">owfs konfigurieren</a></li>
+</ul>
+</li>
+<li><a class="reference external" href="#samba-installieren">Samba installieren</a></li>
+<li><a class="reference external" href="#abschlussarbeiten">Abschlussarbeiten</a><ul>
+<li><a class="reference external" href="#weitere-konfiguration">Weitere Konfiguration</a></li>
+<li><a class="reference external" href="#mehr-komfort-via-ssh-zugriff">Mehr Komfort via SSH Zugriff</a></li>
+<li><a class="reference external" href="#smarthomeng-als-dienst-einrichten">SmartHomeNG als Dienst einrichten</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="debian">
+<span id="debian"></span><h2>Debian</h2>
+<p>Die genaue Step-by-Step Installation des Betriebsystemes wird hier nicht beschrieben, das hier ist der falsche Ort dafür.
+Jedoch werden als Referenz die Paketauswahlen während der Installation hier beschrieben.
+Am kompaktesten ist die Netinstall ISO-Datei. Wenn ihr auf einem externen Rechner (z.B. NUC o.ä.) installiert,
+kann die ISO-Datei mit Tools wie z.B. <a class="reference external" href="http://www.linuxliveusb.com/">Linux Live USB Creator</a>, <a class="reference external" href="http://www.pendrivelinux.com/universal-usb-installer-easy-as-1-2-3/">Universal-USB-Installer</a>
+oder <a class="reference external" href="https://unetbootin.github.io/">UNetbootin</a> auf einen USB Stick übertragen werden.</p>
+<p>Wer SmarthomeNG auf einem Raspberry Pi betreiben möchte, startet am besten mit dem aktuellsten <a class="reference external" href="https://www.raspberrypi.org/downloads/raspbian/">Raspbian Image</a> von der raspberrypi.org Seite. Dieses Image kann mittels <a class="reference external" href="https://etcher.io/">Etcher</a> oder <a class="reference external" href="https://sourceforge.net/projects/win32diskimager/">Win32Diskimager</a> auf eine SD-Karte &quot;gebrannt&quot; werden. Die unten stehenden Schritte bis &quot;Einloggen via SSH&quot; entfallen. Es ist allerdings notwendig, sich beim ersten Start direkt am Raspberry Pi einzuloggen (User: pi, Passwort: raspberry - Achtung, englische Tastatur!) und mittels</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">start</span> <span class="n">ssh</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">enable</span> <span class="n">ssh</span>
+</pre></div>
+</div>
+<p>das SSH Service zu starten und für zukünftige Neustarts automatisch zu aktivieren.</p>
+<p>Im allgemeinen braucht ein Server keine grafische Benutzeroberfläche, also ganz normale Installation wählen. Einige Einstellungen die jetzt vorgenommen werden sind</p>
+<ul class="simple">
+<li>Sprache, Tastaturlayout</li>
+<li>Rechnername z.B. sh</li>
+<li>Das root Passwort bitte leer lassen.</li>
+<li>Benutzer &quot;smarthome&quot; anlegen</li>
+<li>Zeitzone (z.B. Berlin)</li>
+<li>Festplatte geführt partitionieren und alles verwenden, Änderungen auf Platten schreiben</li>
+</ul>
+<p>Jetzt erfolgt die Grundinstallation des Systems aus dem Netinst Basispaket. Anschließend wird aufgrund der Landesvorwahl der Spiegelserver für die weiteren Dateien festgelegt.
+Nach der Festlegung konfiguriert das System apt und lädt Pakete aus dem Spiegelserver nach. Das ist die Gelegenheit sich ein Heiß- oder Kaltgetränk nach Wahl zu holen da der Vorgang je nach Hardware und Netzwerkgeschwindigkeit  zwischen 4 und 8 Minuten dauert.
+Die Rückmeldung des Systems an die Entwicklung darf abgelehnt werden.</p>
+<div class="section" id="softwareauswahl">
+<span id="softwareauswahl"></span><h3>Softwareauswahl</h3>
+<p>Wenn ihre keine grafische Benutzeroberfläche braucht, dann bitte <strong>abwählen</strong>:</p>
+<ul class="simple">
+<li>Debian Desktop Environment</li>
+</ul>
+<p><strong>abwählen</strong>:</p>
+<ul class="simple">
+<li>Druckserver</li>
+</ul>
+<p><strong>auswählen</strong>:</p>
+<ul class="simple">
+<li>Web Server</li>
+<li>SSH Server (wird für SSH z.B. via PuTTY oder Bitvise SSH client benötigt)</li>
+<li>Standard-Systemwerkzeuge</li>
+</ul>
+<p>Nun ist es Zeit für das nächste Getränk, das nachladen der zu installierenden Pakete dauert jetzt wiederum 5 bis 20 Minuten.
+Die angebotene  Installation von GRUB wird akzeptiert und anschließend neu gestartet.</p>
+</div>
+<div class="section" id="einloggen-via-ssh-oder-an-der-konsole">
+<span id="einloggen-via-ssh-oder-an-der-konsole"></span><h3>Einloggen via SSH  oder an der Konsole</h3>
+<p>Mit einem <strong>SSH Client</strong> jetzt auf den frisch installierten smarthome Server einloggen:
+Unter OSX dazu einfach eine Kommandozeile öffnen und folgendes eintippen: <code class="docutils literal"><span class="pre">ssh</span> <span class="pre">&lt;ip_des_servers&gt;</span></code>.Unter Linux genau das gleiche, Kommandozeile öffnen und folgendes eintippen: <code class="docutils literal"><span class="pre">ssh</span> <span class="pre">&lt;ip_des_servers&gt;</span></code>.Unter Windows gibt es Putty als SSH Client, <a class="reference external" href="http://the.earth.li/~sgtatham/putty/latest/x86/putty.exe">download hier</a>.
+Noch komfortabler ist <a class="reference external" href="http://www.9bis.net/kitty/?page=Download">Kitty</a>.
+Einfach zunächst Putty installieren und umbenennen in Putty.exe.bak. Dann Kitty ins Verzeichnis vom Putty schreiben und umbenennen als Putty.exe.
+Natürlich <code class="docutils literal"><span class="pre">&lt;ip_des_servers&gt;</span></code> ersetzen durch die IP Adresse oder den Namen des neuen smarthome Servers.</p>
+<p>Oder alternativ direkt an der <strong>Konsole</strong> anmelden.</p>
+<p>Benutzer zum Anmelden ist &quot;smarthome&quot; und das weiter oben erstellte Passwort für diesen User. Wurde kein Passwort angegeben und möchte man SSH so konfigurieren, dass man sich mit einem leeren Passwort einloggen kann, sind folgende Operationen notwendig:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">e</span> <span class="s1">&#39;s/#PermitEmptyPasswords no/PermitEmptyPasswords yes/g&#39;</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">ssh</span><span class="o">/</span><span class="n">sshd_config</span>
+<span class="n">sudo</span> <span class="n">sed</span> <span class="o">-</span><span class="n">i</span> <span class="o">-</span><span class="n">e</span> <span class="s1">&#39;/console/s/.*/&amp;</span><span class="se">\n</span><span class="s1">ssh/&#39;</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">securetty</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">restart</span> <span class="n">sshd</span>
+</pre></div>
+</div>
+<p>Generell wird aber empfohlen, den SSH-Zugang mit Zertifikaten abzusichern und ein Einloggen mittels Username/Passwort zu unterbinden. Informationen zum <a class="reference external" href="https://www.thomas-krenn.com/de/wiki/SSH_Key_Login">Erstellen von Zertifikaten</a> gibt es zB bei Thomas Krenn.</p>
+</div>
+<div class="section" id="systemaktualisierung">
+<span id="systemaktualisierung"></span><h3>Systemaktualisierung</h3>
+<p>Nach der Anmeldung ist zunächst mit</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">upgrade</span>
+</pre></div>
+</div>
+<p>das frisch installierte System mit den neuesten Systemupdates zu versorgen. Eigentlich sollte dabei nix zu installieren sein aber sicher ist sicher.</p>
+<p>Für den Fall einer virtuellen Maschine ist jetzt eine gute Gelegenheit einen Snapshot zu erstellen um einen definierten Punkt
+zur Rückkehr zu haben falls im weiteren etwas schiefläuft. Alternativ kann der Snapshot auch nach Abschluß der Restarbeiten weiter unten ausgeführt werden.</p>
+<div class="section" id="optional-einstellen-von-tastaturlayout-sprache-etc">
+<span id="optional-einstellen-von-tastaturlayout-sprache-etc"></span><h4>Optional: Einstellen von Tastaturlayout, Sprache, etc.</h4>
+<p>Hat man das Image auf einem Raspberry Pi installiert, können nach dem ersten Start sämtliche Einstellungen über ein übersichtliches Menü getätigt werden. Es empfiehlt sich, die Sprache auf de_DE.UTF-8 und das Tastaturlayout auf Deutsch umzustellen. Außerdem können hier diverse Services aktiviert und das Filesystem auf die Größe der SD-Karte erweitert werden.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">raspi</span><span class="o">-</span><span class="n">config</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="optional-system-herunterfahren-fur-snapshop">
+<span id="optional-system-herunterfahren-fur-snapshop"></span><h4>Optional: System herunterfahren für Snapshop</h4>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">poweroff</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="optional-alternative-netzwerk-konfiguration-fur-feste-ip">
+<span id="optional-alternative-netzwerk-konfiguration-fur-feste-ip"></span><h4>Optional: alternative Netzwerk Konfiguration für feste IP</h4>
+<p>Hierfür sei <a class="reference external" href="https://wiki.debian.org/NetworkConfiguration">auf diese Seite verwiesen</a></p>
+</div>
+<div class="section" id="optional-installation-der-open-vm-tools-bei-verwendung-als-virtuelle-maschine-unter-vmware-workstation-oder-esxi">
+<span id="optional-installation-der-open-vm-tools-bei-verwendung-als-virtuelle-maschine-unter-vmware-workstation-oder-esxi"></span><h4>Optional: Installation der Open VM Tools bei Verwendung als virtuelle Maschine unter VMWare Workstation oder ESXi</h4>
+<p>Wenn die Installation virtuelle Maschine erfolgt ist, wird von <a class="reference external" href="https://kb.vmware.com/kb/2073803">VMWare empfohlen</a> die Open VM Tools zu installieren:</p>
+<p>Für die reine Servervariante vom Debian geht das über</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="nb">open</span><span class="o">-</span><span class="n">vm</span><span class="o">-</span><span class="n">tools</span>
+</pre></div>
+</div>
+<p>bei Vorhandensein einer GUI dann alternativ mit</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="nb">open</span><span class="o">-</span><span class="n">vm</span><span class="o">-</span><span class="n">tools</span><span class="o">-</span><span class="n">desktop</span>
+</pre></div>
+</div>
+<p>Die automatische Anpassung der Bildschirmgröße funktioniert erst nach einem Neustart.</p>
+</div>
+<div class="section" id="optional-installation-der-gasteerweiterungen-bei-verwendung-als-virtuelle-maschine-unter-oracle-vm-virtualbox">
+<span id="optional-installation-der-gasteerweiterungen-bei-verwendung-als-virtuelle-maschine-unter-oracle-vm-virtualbox"></span><h4>Optional: Installation der Gästeerweiterungen bei Verwendung als virtuelle Maschine unter Oracle VM VirtualBox</h4>
+<p>Um die Gästeerweiterungen zu installieren zuerst unter <strong>Geräte</strong> -&gt; <strong>Gästeerweiterungen einlegen</strong> anklicken. Diese nun via Terminal/Shell ausführen und den Anweisungen folgen:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">sh</span> <span class="o">/</span><span class="n">media</span><span class="o">/</span><span class="n">cdrom</span><span class="o">/</span><span class="n">VBoxLinuxAdditions</span><span class="o">.</span><span class="n">run</span>
+</pre></div>
+</div>
+<p>Nach einem Neustart passt sich nun bspw. bei Verwendung einer GUI die Auflösung dynamisch an.</p>
+</div>
+</div>
+<div class="section" id="restarbeiten-am-system">
+<span id="restarbeiten-am-system"></span><h3>Restarbeiten am System</h3>
+<p>Wenn kein Passwort für root vergeben wurde, dann wird der bei der Installation erstellte User (hier: smarthome) automatisch in die Gruppe für sudo aufgenommen.</p>
+<p>Falls man einen anderen Benutzernamen bei der Installation gewählt hat, muss man den User smarthome zunächst erstellen:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span>  <span class="n">adduser</span> <span class="n">smarthome</span> <span class="o">--</span><span class="n">disabled</span><span class="o">-</span><span class="n">password</span> <span class="o">--</span><span class="n">gecos</span> <span class="s2">&quot;First Last,RoomNumber,WorkPhone,HomePhone&quot;</span> 
+</pre></div>
+</div>
+<p>Den Benutzer <strong>smarthome</strong> in die <strong>www-data</strong> und <strong>sudo</strong> Gruppe hinzufügen:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">usermod</span> <span class="o">-</span><span class="n">aG</span> <span class="n">www</span><span class="o">-</span><span class="n">data</span><span class="p">,</span><span class="n">sudo</span> <span class="n">smarthome</span>
+</pre></div>
+</div>
+<p>Auch wenn der Benutzer smarthome schon existiert muss er in die Gruppe www-data mit folgendem Befehl eingetragen werden.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">usermod</span> <span class="o">-</span><span class="n">aG</span> <span class="n">www</span><span class="o">-</span><span class="n">data</span> <span class="n">smarthome</span>
+</pre></div>
+</div>
+<p>Der Benutzer <strong>smarthome</strong> muß nun abgemeldet und neu angemeldet werden, damit die Rechte neu eingelesen werden. Dies ist eine gute Gelegenheit
+um einen alternativen Snapshop zu erstellen. Dazu dann wiederum das System ausschalten mit:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">poweroff</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="knxd-installieren">
+<span id="knxd-installieren"></span><h2>knxd installieren</h2>
+<p>Der knxd implementiert Zugriffe auf verschiedenste Schnittstellen zum KNX Bus (z.B. IP-Router, IP-Schnittstelle, USB-Schnittstelle, etc.) und bietet dafür eine dokumentierte Softwareschnittstelle für Programme an.
+SmartHomeNG nutzt den knxd über seine tcp Schnittstelle um Daten auf den KNX Bus zu schreiben oder zu lesen.</p>
+<p>Wer keinen KNX-Bus einsetzt, kann diesen Installationsschritt überspringen. Für den Fall, das die knxd Installation ausgelassen wird, kann es sein, das für weitere Module wie SmartHomeNG einige Pakete fehlen. Diese müßten dann per <strong>sudo apt-get install paketname</strong> nachinstalliert werden.</p>
+<p>Grundsätzlich findet sich auf der <a class="reference external" href="https://github.com/knxd/knxd">knxd-Seite</a> die Anleitung für die Installation.
+Auf der Github Seite kann unter <strong>Code</strong> immer der Branch ausgewählt werden. Jeder Branch hat sein eigenes Read.me.</p>
+<blockquote>
+<div><p><strong>Wichtig:</strong>
+Der knxd wird derzeit aktiv weiterentwickelt. Ab Version 0.12.x ist pthsem nicht mehr notwendig und es wird libev eingesetzt.
+Wer genügend Wissen zum Testen hat ist herzlich eingeladen hier mitzuhelfen oder zu spenden.
+Auch bitte <strong>vor</strong> der Installation hier noch einen Blick auf <a class="reference external" href="https://github.com/knxd/knxd">knxd-Seite</a>
+werfen um aktuelles nicht zu verpassen.</p>
+<p>Diese Anleitung wird zwar in regelmäßigen Abständen aktualisiert aber eben nicht unbedingt wöchentlich oder gar täglich.</p>
+</div></blockquote>
+<p>Die folgenden Installationsschritte beziehen sich auf Version <strong>0.14</strong>.</p>
+<div class="section" id="zusatzliche-pakete-installieren">
+<span id="zusatzliche-pakete-installieren"></span><h3>zusätzliche Pakete installieren</h3>
+<p>Zunächst müssen für den Bau einige grundlegende Tools installiert werden:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">git</span><span class="o">-</span><span class="n">core</span> <span class="n">build</span><span class="o">-</span><span class="n">essential</span>
+</pre></div>
+</div>
+<!-- Die Installation auf einem frischen Jessie zeigt 
+folgende nicht erfüllte Bauabhängigkeiten:
+debhelper (>= 7.0.0)
+autotools-dev
+autoconf
+automake
+libtool
+libusb-1.0-0-dev (>= 1.0.9) pkg-config
+libsystemd-dev (>= 228) | libsystemd-daemon-dev (>= 200) | base-files (<< 8)
+dh-systemd | base-files (<< 8) libev-dev<p>Diese Abhängigkeiten werden mit den nachfolgenden Paketinstallationen aufgelöst.
+Wenn sich <strong>dpkg-buildpackage</strong> über weitere fehlende Pakete beschweren sollte,
+(&quot;Unmet build dependencies&quot;): dann sollten sie nachinstalliert
+(<code class="docutils literal"><span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">…</span></code>) und ein neuer Versuch gestartet werden.<br>
+Wenn <strong>x | y</strong> gefordert wird, erstmal nur <strong>x</strong> installieren.
+Wenn das nicht funktioniert, kann auch <strong>y</strong> installiert werden<br>
+Bei Beschwerden über inkompatible Pakete können diese ggf. entfernt werden.
+Bitte in obigem Fall die Komplettanleitung anpassen !!!
+--&gt;</p>
+<p>debhelper-Erweiterung zur Behandlung von systemd-Dateien</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">dh</span><span class="o">-</span><span class="n">systemd</span>
+</pre></div>
+</div>
+<p>Erstellt automatisch configure-Skripte</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">autoconf</span>
+</pre></div>
+</div>
+<p>Generisches Skript zur Unterstützung von Bibliotheken</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">libtool</span>
+</pre></div>
+</div>
+<p>Bibliothek zum Programmieren von USB-Anwendungen ohne Kenntnis der Linux-Kernel-Interna</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">libusb</span><span class="o">-</span><span class="mf">1.0</span><span class="o">-</span><span class="mi">0</span><span class="o">-</span><span class="n">dev</span>
+</pre></div>
+</div>
+<p>Pkg-config ist ein System zur Verwaltung von Schaltern für die Übersetzung und Verknüpfung von Bibliotheken,
+das mit automake und autoconf arbeitet.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">pkg</span><span class="o">-</span><span class="n">config</span>
+</pre></div>
+</div>
+<p>Die Bibliothek sd-daemon stellt eine Referenzimplementierung mehrerer APIs für neuartige Daemons bereit,
+wie sie vom Initialisierungssystem systemd implementiert werden</p>
+<p>Für Debian Jessie wird benötigt:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">libsystemd</span><span class="o">-</span><span class="n">daemon</span><span class="o">-</span><span class="n">dev</span>
+</pre></div>
+</div>
+<p>Für Debian Stretch wird benötigt:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">libsystemd</span><span class="o">-</span><span class="n">dev</span>
+</pre></div>
+</div>
+<p>Nun noch libev-dev installieren</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">libev</span><span class="o">-</span><span class="n">dev</span>
+</pre></div>
+</div>
+<p>Und es wird noch das cmake tool benötigt</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">cmake</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="quellcode-laden-compilieren-und-ein-paket-schnuren">
+<span id="quellcode-laden-compilieren-und-ein-paket-schnuren"></span><h3>Quellcode laden, compilieren und ein Paket schnüren</h3>
+<p>Zunächst den Quellcode für den knxd vom github laden und sicherstellen, das der 0.14 branch gewählt wird:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">knxd</span><span class="o">/</span><span class="n">knxd</span><span class="o">.</span><span class="n">git</span>
+<span class="n">cd</span> <span class="n">knxd</span>
+<span class="n">git</span> <span class="n">checkout</span> <span class="n">v0</span><span class="o">.</span><span class="mi">14</span>
+</pre></div>
+</div>
+<p>Im Unterverzeichnis <code class="docutils literal"><span class="pre">tools</span></code>findet sich ein Skript was benötigt wird um libfmt herunterzuladen und zu bauen</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">tools</span><span class="o">/</span><span class="n">get_libfmt</span>
+</pre></div>
+</div>
+<p>Dann übersetzen und das Paket schnüren:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">dpkg</span><span class="o">-</span><span class="n">buildpackage</span> <span class="o">-</span><span class="n">b</span> <span class="o">-</span><span class="n">uc</span>
+</pre></div>
+</div>
+<p>Wichtig ist, das am Ende der Paketerstellung keine Fehler gemeldet wurden.</p>
+<p>Sollte die Paketerstellung fehlerfrei ablaufen, dann kann das Paket nun noch installiert werden mit:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">..</span>
+<span class="n">sudo</span> <span class="n">dpkg</span> <span class="o">-</span><span class="n">i</span> <span class="n">knxd_</span><span class="o">*.</span><span class="n">deb</span> <span class="n">knxd</span><span class="o">-</span><span class="n">tools_</span><span class="o">*.</span><span class="n">deb</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="knxd-konfigurieren">
+<span id="knxd-konfigurieren"></span><h3>knxd konfigurieren</h3>
+<p>Als nächstes muß die Konfiguration des knxd für die zu verwendende Schnittstelle angepasst werden.
+Dazu muß bei Systemen mit systemd die Datei <strong>/etc/knxd.conf</strong> bearbeitet werden:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">nano</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">knxd</span><span class="o">.</span><span class="n">conf</span>
+</pre></div>
+</div>
+<p>Die Originalzeile <strong>KNXD_OPTS=&quot;-e 0.0.1 -E 0.0.2:8 -u /tmp/eib -b ip:&quot;</strong> am besten auskommentieren und in der Zeile
+darunter dann die gewählten Parameter eintragen.</p>
+<p>Details zu Schnittstellen finden sich auf der <a class="reference external" href="https://github.com/knxd/knxd">Github-Seite vom knxd</a>.
+Das <strong>-c</strong> ist für den knxd eigenen Cache. Danach folgen die Optionen für die Verwendung der Schnittstelle:</p>
+<ul class="simple">
+<li>IP Schnittstelle: <strong>KNXD_OPTS=&quot;-e 0.0.1 -E 0.0.2:8 -c -b ipt:<em>IP der knx Schnittstelle</em>&quot;</strong></li>
+<li>IP Router: <strong>KNXD_OPTS=&quot;-e 0.0.1 -E 0.0.2:8 -c -b ip:<em>IP des knx Routers</em>&quot;</strong></li>
+<li>USB-Interface: Bitte <a class="reference external" href="https://github.com/knxd/knxd/tree/v0.14">Wiki zum knxd</a> konsultieren.</li>
+</ul>
+<p>Es kann sein, das bei KNXD_OPTS hinter dem <strong>-c</strong> bei einigen Interfaces noch ein <strong>--send-delay=30</strong>
+eingefügt werden muß um Telegrammverlust bei hohen Lasten zu minimieren.
+Die 30 bedeutet dabei eine zusätzliche Wartezeit von 30msec.
+Es wird damit zwischen den Paketen eine kleine Pause eingelegt um ein überfahren der Schnittstelle zu vermeiden.
+Der Parameter <strong>--no-tunnel-client-queuing</strong> ist obsolet und sollte nicht mehr eingesetzt werden.</p>
+</div>
+<div class="section" id="knxd-und-systemd">
+<span id="knxd-und-systemd"></span><h3>knxd und systemd</h3>
+<p>Um die Änderungen wirksam werden zu lassen, muß der knxd die neue Konfiguration noch berücksichtigen dazu muß er ggf. beendet und neu gestartet werden. Der knxd hat dazu zwei Einträge, zum einen <code class="docutils literal"><span class="pre">knxd.socket</span></code> der die normalerweise die Kommunikation über der Port 6720 übernimmt und der <code class="docutils literal"><span class="pre">knxd.service</span></code> der die restlichen Aufgaben übernimmt.</p>
+<p>Zunächst beenden des knxd:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">stop</span> <span class="n">knxd</span><span class="o">.</span><span class="n">socket</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">stop</span> <span class="n">knxd</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<p>Die Reihenfolge ist wichtig: beenden wir erst den knxd, kann ein Prozess genau dann einen Socket öffnen und der systemd startet ihn sofort wieder.</p>
+<p>Um sicher zu gehen, das der knxd mit dem Systemstart auch gestartet wird muß dem systemd mitgeteilt werden das diese beiden Einträge auch eingeschaltet also <code class="docutils literal"><span class="pre">enabled</span></code> sind.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">enable</span> <span class="n">knxd</span><span class="o">.</span><span class="n">service</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">enable</span> <span class="n">knxd</span><span class="o">.</span><span class="n">socket</span>
+</pre></div>
+</div>
+<p>Jetzt können wir den knxd starten mit</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">start</span> <span class="n">knxd</span><span class="o">.</span><span class="n">socket</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">start</span> <span class="n">knxd</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<p>Auch hier ist die Reihenfolge wichtig: Starten wir erst den Service, werden dem knxd die Sockets nicht vom systemd übergeben.</p>
+<p>Mit den folgenden Kommandos kann geprüft werden, ob die beiden Einträge ordnungsgemäßt funktionieren:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">status</span> <span class="n">knxd</span><span class="o">.</span><span class="n">socket</span>
+<span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">status</span> <span class="n">knxd</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<p>Wenn alles ok ist, dann sieht das etwa so aus:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ sudo systemctl status knxd.service
+● knxd.service - KNX Daemon
+   Loaded: loaded (/lib/systemd/system/knxd.service; enabled)
+   Active: active (running) since Sa 2016-08-13 10:03:27 CEST; 5 days ago
+ Main PID: 30769 (knxd)
+   CGroup: /system.slice/knxd.service
+           └─30769 /usr/bin/knxd -c -b ipt:192.168.10.38
+
+$ sudo systemctl status knxd.socket
+● knxd.socket - KNX Daemon (socket)
+   Loaded: loaded (/lib/systemd/system/knxd.socket; enabled)
+   Active: active (running) since Sa 2016-08-13 10:03:23 CEST; 5 days ago
+   Listen: /var/run/knx (Stream)
+           [::]:6720 (Stream)
+</pre></div>
+</div>
+<p>Die Funktion des knxd läßt sich z.B. testen mit einer Gruppenadresse (hier: 1/0/170) für einen Schaltaktor mit 1 oder 0.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">knxtool</span> <span class="n">groupswrite</span> <span class="n">ip</span><span class="p">:</span><span class="n">localhost</span> <span class="mi">1</span><span class="o">/</span><span class="mi">0</span><span class="o">/</span><span class="mi">170</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>Sollte sich jetzt nichts tun, dann gibt es irgendwo einen Fehler und alles muß noch einmal geprüft werden. Vielleicht ist der Neustart des knxd vergessen oder ein Build-Fehler übersehen worden.</p>
+<!--- Für Systeme ohne systemd würde gelten:
+Damit knxd beim Start ausgeführt wird, ist noch eine Anpassung notwendig:<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">nano</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">default</span><span class="o">/</span><span class="n">knxd</span>
+</pre></div>
+</div>
+<p>dann folgende Einträge anpassen:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">START_KNXD</span><span class="o">=</span><span class="n">YES</span> 
+</pre></div>
+</div>
+<p>--&gt;</p>
+</div>
+</div>
+<div class="section" id="smarthomeng-installieren">
+<span id="smarthomeng-installieren"></span><h2>SmartHomeNG installieren</h2>
+<div class="section" id="zusatzliche-pakete-installieren">
+<span id="id1"></span><h3>zusätzliche Pakete installieren</h3>
+<p>Zunächst müssen einige zusätzlichen Pakete erfüllt werden:</p>
+<!---
+apt-get update nicht notwendig
+openssh-server apache2  git-core wget bereits installiert
+---><!---
+```
+sudo apt-get -y install dialog openntpd python3 python3-dev python3-setuptools unzip build-essential
+sudo easy_install3 pip
+```
+---><div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">dialog</span> <span class="n">python3</span> <span class="n">python3</span><span class="o">-</span><span class="n">dev</span> <span class="n">python3</span><span class="o">-</span><span class="n">setuptools</span> <span class="n">unzip</span> <span class="n">build</span><span class="o">-</span><span class="n">essential</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python3</span><span class="o">-</span><span class="n">pip</span>
+</pre></div>
+</div>
+<p>Dann noch Pythons Paketmanager PIP auf den neuesten Stand bringen:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pip</span>
+</pre></div>
+</div>
+<!--
+Alternativ sollte auch ein<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">easy_install3</span> <span class="o">-</span><span class="n">U</span> <span class="n">pip</span>
+</pre></div>
+</div>
+<p>zum Ergebnis führen.
+--&gt;</p>
+</div>
+<div class="section" id="quellcode-laden">
+<span id="quellcode-laden"></span><h3>Quellcode laden</h3>
+<p>SmartHomeNG Dateien vom github holen:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span>
+<span class="n">sudo</span> <span class="n">git</span> <span class="n">clone</span> <span class="o">--</span><span class="n">recursive</span> <span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">smarthomeNG</span><span class="o">/</span><span class="n">smarthome</span><span class="o">.</span><span class="n">git</span>
+<span class="n">sudo</span> <span class="n">chown</span> <span class="o">-</span><span class="n">R</span> <span class="n">smarthome</span><span class="p">:</span><span class="n">smarthome</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">smarthome</span>
+<span class="n">cd</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">smarthome</span><span class="o">/</span><span class="n">etc</span>
+<span class="n">touch</span> <span class="n">logic</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="erstmalige-konfiguration-erstellen">
+<span id="erstmalige-konfiguration-erstellen"></span><h3>Erstmalige Konfiguration erstellen</h3>
+<div class="section" id="smarthome-yaml">
+<span id="smarthome-yaml"></span><h4>smarthome.yaml</h4>
+<p>In der <strong>smarthome.yaml</strong> stehen die Koordinaten des Standortes der Installation. Die Koordinaten werden benötigt um unter anderem Sonnenaufgang / -untergang zu berechnen.
+Die Koordinaten für einen Standort kann man z.B. <a class="reference external" href="http://www.mapcoordinates.net/de">hier</a> ermitteln.</p>
+<p>Alternativ kann die mitgelieferte <strong>smarthome.yaml.default</strong> kopiert werden in <strong>smarthome.yaml</strong> mit <code class="docutils literal"><span class="pre">cp</span> <span class="pre">smarthome.yaml.default</span> <span class="pre">smarthome.yaml</span></code>
+oder das folgende Code snippet kann von der <strong>cat</strong> Zeile an bis zur Zeile unter <strong>EOL</strong> ausgewählt und ins ssh kopiert werden.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cat</span> <span class="o">&gt;</span><span class="n">smarthome</span><span class="o">.</span><span class="n">yaml</span> <span class="o">&lt;&lt;</span><span class="n">EOL</span>
+<span class="c1">## smarthome.yaml</span>
+<span class="n">lat</span><span class="p">:</span> <span class="s1">&#39;52.52&#39;</span>
+<span class="n">lon</span><span class="p">:</span> <span class="s1">&#39;13.40&#39;</span>
+<span class="n">elev</span><span class="p">:</span> <span class="mi">36</span>
+<span class="n">tz</span><span class="p">:</span> <span class="n">Europe</span><span class="o">/</span><span class="n">Berlin</span>
+<span class="n">EOL</span>
+</pre></div>
+</div>
+<p>In beiden Fällen sollte der Inhalt von <strong>smarthome.yaml</strong> nun mit einem Editor (z.B. <strong>nano</strong>) angepasst werden.</p>
+</div>
+<div class="section" id="plugin-yaml">
+<span id="plugin-yaml"></span><h4>plugin.yaml</h4>
+<p>Auch hier wird eine <strong>plugin.yaml.default</strong> mitgeliefert mit den meisten Voreinstellungen die per <code class="docutils literal"><span class="pre">cp</span> <span class="pre">plugin.yaml.default</span> <span class="pre">plugin.yaml</span></code>
+kopiert werden kann, allerdings sind in dieser Datei alle Einstellungen zunächst auskommentiert <strong>#</strong>.
+Alternativ dazu kann analog zur obigen <strong>smarthome.yaml</strong> das folgende Code snippet von der <strong>cat</strong> Zeile an bis zur Zeile unter <strong>EOL</strong> ausgewählt und ins ssh kopiert werden:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cat</span> <span class="o">&gt;</span><span class="n">plugin</span><span class="o">.</span><span class="n">yaml</span> <span class="o">&lt;&lt;</span><span class="n">EOL</span>
+<span class="c1"># plugin.yaml</span>
+
+<span class="c1"># Der BackendServer stellt eine Übersicht zur Laufzeit dar und liefert Informationen ähnlich wie das CLI Plugin</span>
+<span class="c1"># Der Zugriff erfolgt über http://&lt;IP oder Name des SmartHomeNG Servers bzw. ip&gt;:&lt;port&gt;</span>
+<span class="c1"># port wird als Attribut weiter unten definiert</span>
+<span class="c1"># das Passwort ist zunächst im Klartext anzugeben. In neueren Versionen wird es eine Funktion im Backend geben,</span>
+<span class="c1"># die aus einem gegebenen Passwort einen Hash erzeugt. Wenn user oder password fehlen gibt es keine Abfrage</span>
+<span class="n">BackendServer</span><span class="p">:</span>
+    <span class="n">class_name</span><span class="p">:</span> <span class="n">BackendServer</span>
+    <span class="n">class_path</span><span class="p">:</span> <span class="n">plugins</span><span class="o">.</span><span class="n">backend</span>
+    <span class="c1"># ip: xxx.xxx.xxx.xxx</span>
+    <span class="n">port</span><span class="p">:</span> <span class="mi">8383</span>
+    <span class="n">updates_allowed</span><span class="p">:</span> <span class="s1">&#39;True&#39;</span>
+    <span class="n">threads</span><span class="p">:</span> <span class="mi">8</span>
+    <span class="n">user</span><span class="p">:</span> <span class="n">admin</span>
+    <span class="n">password</span><span class="p">:</span> <span class="n">xxxx</span>
+    <span class="n">language</span><span class="p">:</span> <span class="n">de</span>
+
+<span class="c1"># KNX Verbindung via knxd</span>
+<span class="n">knx</span><span class="p">:</span>
+    <span class="n">class_name</span><span class="p">:</span> <span class="n">KNX</span>
+    <span class="n">class_path</span><span class="p">:</span> <span class="n">plugins</span><span class="o">.</span><span class="n">knx</span>
+    <span class="n">host</span><span class="p">:</span> <span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span>
+    <span class="n">port</span><span class="p">:</span> <span class="mi">6720</span>
+    <span class="c1"># send_time: 600 # update date/time every 600 seconds, default none</span>
+    <span class="c1"># time_ga: 1/1/1 # default none</span>
+    <span class="c1"># date_ga: 1/1/2 # default none</span>
+
+<span class="c1"># Bereitstellung eines Websockets zur Kommunikation zwischen SmartVISU und SmartHomeNG</span>
+<span class="n">visu</span><span class="p">:</span>
+    <span class="n">class_name</span><span class="p">:</span> <span class="n">WebSocket</span>
+    <span class="n">class_path</span><span class="p">:</span> <span class="n">plugins</span><span class="o">.</span><span class="n">visu_websocket</span>
+    <span class="c1"># ip: 0.0.0.0</span>
+    <span class="c1"># port: 2424</span>
+    <span class="c1"># tls: no</span>
+    <span class="n">wsproto</span><span class="p">:</span> <span class="mi">4</span>
+    <span class="n">acl</span><span class="p">:</span> <span class="n">rw</span>
+
+<span class="c1"># Autogenerierung von Webseiten für SmartVISU</span>
+<span class="n">smartvisu</span><span class="p">:</span>
+    <span class="n">class_name</span><span class="p">:</span> <span class="n">SmartVisu</span>
+    <span class="n">class_path</span><span class="p">:</span> <span class="n">plugins</span><span class="o">.</span><span class="n">visu_smartvisu</span>
+    <span class="c1"># &#39;&quot;neue&quot; Linux Versionen (z.B. Debian &gt; 8.x, Ubuntu &gt; 14.x)&#39;</span>
+    <span class="n">smartvisu_dir</span><span class="p">:</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span><span class="o">/</span><span class="n">smartVISU</span>
+
+    <span class="c1"># nur \&quot;alte\&quot; Linux-Variationen</span>
+    <span class="c1"># smartvisu_dir: /var/www/smartVISU</span>
+    <span class="c1"># generate_pages: True</span>
+    <span class="c1"># handle_widgets: True</span>
+    <span class="c1"># overwrite_templates: Yes</span>
+    <span class="c1"># visu_style: blk</span>
+
+<span class="c1"># Command Line Interface</span>
+<span class="c1"># wichtig für Funktionsprüfungen solange keine Visu zur Verfügung steht</span>
+<span class="n">cli</span><span class="p">:</span>
+    <span class="n">class_name</span><span class="p">:</span> <span class="n">CLI</span>
+    <span class="n">class_path</span><span class="p">:</span> <span class="n">plugins</span><span class="o">.</span><span class="n">cli</span>
+    <span class="n">ip</span><span class="p">:</span> <span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span>
+    <span class="n">update</span><span class="p">:</span> <span class="s1">&#39;True&#39;</span>
+
+<span class="c1"># alter SQL-Treiber</span>
+<span class="c1"># [sql]</span>
+<span class="c1"># class_name: SQL</span>
+<span class="c1"># class_path: plugins.sqlite</span>
+<span class="c1"># SQL-Treiber, unterstützt auch die SmartVISU 2.8/2.9</span>
+<span class="c1"># dazu muß im websocket plugin zwingend die Protokollversion 4 eingetragen sein</span>
+
+<span class="n">sql</span><span class="p">:</span>
+    <span class="n">class_name</span><span class="p">:</span> <span class="n">SQL</span>
+    <span class="n">class_path</span><span class="p">:</span> <span class="n">plugins</span><span class="o">.</span><span class="n">sqlite_visu2_8</span>
+
+<span class="c1"># Onewire Plugin</span>
+<span class="c1"># [ow]</span>
+<span class="c1"># class_name: OneWire</span>
+<span class="c1"># class_path: plugins.onewire</span>
+<span class="n">EOL</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="zusatzliche-python-module">
+<span id="zusatzliche-python-module"></span><h3>Zusätzliche Python Module</h3>
+<p>Wieder zurück nach <strong>/usr/local/smarthome</strong> mit <code class="docutils literal"><span class="pre">cd</span> <span class="pre">..</span></code> oder <code class="docutils literal"><span class="pre">cd</span> <span class="pre">/usr/local/smarthome</span></code></p>
+<p>Für den ersten Start müssen noch einige Module nachgeladen werden, dazu wird für den Core die mitgelieferte <strong>requirements/base.txt</strong> genutzt:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">pip3</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">/</span><span class="n">base</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>Jedes Plugin kann weitere Abhängigkeiten mit sich bringen. Diese sind einzeln zu installieren mit</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">pip3</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">plugins</span><span class="o">/&lt;</span><span class="n">plugin</span><span class="o">-</span><span class="n">name</span><span class="o">-</span><span class="n">hier</span><span class="o">-</span><span class="n">einsetzen</span><span class="o">&gt;/</span><span class="n">requirements</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+<p>oder aber alternativ kann man auch sämtliche von allen Plugins benötigten Module nachladen über</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">pip3</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="o">/</span><span class="nb">all</span><span class="o">.</span><span class="n">txt</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="smarthomeng-starten">
+<span id="smarthomeng-starten"></span><h3>SmartHomeNG starten</h3>
+<p>Erstmalig bietet es sich an, SmartHomeNG im Debugmodus zu starten um zu sehen was passiert und ob Fehler auftauchen.
+Dafür ausführen:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">smarthome</span><span class="o">/</span><span class="nb">bin</span>
+<span class="n">python3</span> <span class="o">./</span><span class="n">smarthome</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">d</span>
+</pre></div>
+</div>
+<p>Jetzt sollten jede Menge Logging-Meldungen über den Bildschirm laufen, die sehen in etwa so aus:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mi">2017</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">05</span>  <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">07</span> <span class="n">DEBUG</span>    <span class="n">M</span><span class="p">:</span><span class="n">lib</span><span class="o">.</span><span class="n">scheduler</span>  <span class="n">T</span><span class="p">:</span><span class="n">Scheduler</span>    <span class="n">IT</span><span class="o">.</span><span class="n">SwitchB</span> <span class="nb">next</span> <span class="n">time</span><span class="p">:</span> <span class="mi">2017</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">05</span> <span class="mi">00</span><span class="p">:</span><span class="mi">02</span><span class="p">:</span><span class="mi">07</span><span class="o">+</span><span class="mi">01</span><span class="p">:</span><span class="mi">00</span>
+<span class="mi">2017</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">05</span>  <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">14</span> <span class="n">WARNING</span>  <span class="n">M</span><span class="p">:</span><span class="n">plugins</span><span class="o">.</span><span class="n">dlms</span>   <span class="n">T</span><span class="p">:</span><span class="n">DLMS</span>         <span class="n">update</span> <span class="ow">is</span> <span class="n">alrady</span> <span class="n">running</span><span class="p">,</span> <span class="n">maybe</span> <span class="n">it</span> <span class="n">really</span> <span class="n">takes</span> <span class="n">very</span> <span class="n">long</span> <span class="ow">or</span> <span class="n">you</span> <span class="n">should</span> <span class="n">use</span> <span class="n">longer</span> <span class="n">query</span> <span class="n">interval</span> <span class="n">time</span>
+<span class="mi">2017</span><span class="o">-</span><span class="mi">08</span><span class="o">-</span><span class="mi">05</span>  <span class="mi">00</span><span class="p">:</span><span class="mi">00</span><span class="p">:</span><span class="mi">14</span> <span class="n">DEBUG</span>    <span class="n">M</span><span class="p">:</span><span class="n">lib</span><span class="o">.</span><span class="n">scheduler</span>  <span class="n">T</span><span class="p">:</span><span class="n">Scheduler</span>    <span class="n">DLMS</span> <span class="nb">next</span> <span class="n">time</span><span class="p">:</span> <span class="mi">2017</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">05</span> <span class="mi">00</span><span class="p">:</span><span class="mi">01</span><span class="p">:</span><span class="mi">44</span><span class="o">+</span><span class="mi">01</span><span class="p">:</span><span class="mi">00</span>
+</pre></div>
+</div>
+<p>Vorne steht Datum und Uhrzeit, dann der Loglevel (DEBUG, ERROR, WARNING, INFO), dann je nach Setup in der Datei logging.yaml noch Modul, Thread und ein Meldungstext der den Logeintrag beschreibt.</p>
+<p>Wir schauen nach ERROR und WARNING und versuchen diese zu vermeiden.
+ToDo: Erweitern.</p>
+</div>
+<div class="section" id="backend-plugin-nutzen">
+<span id="backend-plugin-nutzen"></span><h3>Backend Plugin nutzen</h3>
+<p>Wenn jetzt erstmal SmartHomeNG am Laufen ist, sollte auch das Backend funktionieren. Dazu prüfen wir im Browser unter der Adresse <strong>http:\<IP vom SmartHomeNG>:8383</strong> den Zugriff.
+Bei der Frage nach Benutzer und Passwort geben wir <strong>admin</strong> und <strong>xxxx</strong> ein. Jetzt ist erstmal die Spielwiese eröffnet. Der Backendserver ist unabhängig von der SmartVISU und funktioniert auch dann, wenn ihr kein visu Plugin geladen habt. Ein paar Bilder vom Backendserver:</p>
+<p><img alt="Backend Items" src="installation/assets/Backend_Items.png" /></p>
+<p><img alt="Backend Dienste" src="installation/assets/Backend_Dienste.png" /></p>
+<p><img alt="Backend Logiken" src="installation/assets/Backend_Logiken.png" /></p>
+</div>
+</div>
+<div class="section" id="smartvisu-installieren">
+<span id="smartvisu-installieren"></span><h2>SmartVISU installieren</h2>
+<p>Die SmartVISU ist eine Sammlung von HTML-Dateien und PHP Scripten die es ermöglicht
+Items vom SmartHomeNG anzuzeigen. Im wesentlichen wird dazu ein Webserver benötigt,
+hier der Apache2 und für die Variablen Daten des SmartHomeNG braucht die SmartVisu
+noch eine Websocket-Verbindung zum SmartHomeNG.</p>
+<div class="section" id="zusatzliche-pakete-installieren">
+<span id="id2"></span><h3>zusätzliche Pakete installieren</h3>
+<p>Der Apache2 braucht noch ein paar Pakete wie PHP um die Webseiten der SmartVISU
+liefern zu können:
+Bis einschließlich Debian 8.x (Jessie) mit folgendem Befehl:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">libawl</span><span class="o">-</span><span class="n">php</span> <span class="n">php5</span><span class="o">-</span><span class="n">curl</span> <span class="n">php5</span> <span class="n">php5</span><span class="o">-</span><span class="n">json</span> <span class="n">php</span><span class="o">-</span><span class="n">xml</span>
+</pre></div>
+</div>
+<p>Oder ab Debian 9.x (Stretch) mit folgendem Befehl:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">libawl</span><span class="o">-</span><span class="n">php</span> <span class="n">php</span><span class="o">-</span><span class="n">curl</span> <span class="n">php</span> <span class="n">php</span><span class="o">-</span><span class="n">json</span> <span class="n">php</span><span class="o">-</span><span class="n">xml</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="smartvisu-quellcode-laden">
+<span id="smartvisu-quellcode-laden"></span><h3>SmartVISU Quellcode laden</h3>
+<p>Stand 3. Oktober 2016 ist SmartVISU 2.8 die letzte verfügbare Master-Version.
+Da das Projekt fortgeführt wird,
+sollte vor dem Installieren <a class="reference external" href="http://www.smartvisu.de/">auf der Projektseite</a> nachschaut und der Pfad gegebenfalls angepasst werden.
+Die Dateien der SmartVISU werden in einem Unterverzeichnis ab, das für den Apache2 zugänglich ist:</p>
+<!--
+```
+cd /var/www/html
+sudo rm index.html
+sudo wget http://smartvisu.de/download/smartVISU_2.8.zip
+sudo unzip smartVISU_2.8.zip
+sudo rm smartVISU_2.8.zip
+```
+--><div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span>
+<span class="n">sudo</span> <span class="n">rm</span> <span class="n">index</span><span class="o">.</span><span class="n">html</span>
+<span class="n">sudo</span> <span class="n">git</span> <span class="n">clone</span> <span class="n">git</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">Martin</span><span class="o">-</span><span class="n">Gleiss</span><span class="o">/</span><span class="n">smartvisu</span><span class="o">.</span><span class="n">git</span>
+<span class="n">sudo</span> <span class="n">mv</span> <span class="n">smartvisu</span> <span class="n">smartVISU</span>
+</pre></div>
+</div>
+<p>Nun müssen die Zugriffsrechte und der Standardbenutzer richtig gesetzt werden:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">chown</span> <span class="o">-</span><span class="n">R</span> <span class="n">www</span><span class="o">-</span><span class="n">data</span><span class="p">:</span><span class="n">www</span><span class="o">-</span><span class="n">data</span> <span class="n">smartVISU</span>
+<span class="n">sudo</span> <span class="n">chmod</span> <span class="o">-</span><span class="n">R</span> <span class="mi">775</span> <span class="n">smartVISU</span>
+</pre></div>
+</div>
+<p>Dann versuchen, mit einem Browser von einem anderen Rechner aus auf SmartVISU zuzugreifen.
+&lt;ip-des-servers&gt; natürlich mit der IP oder dem Name deines SmartVISU Servers ersetzen:
+<code class="docutils literal"><span class="pre">http://&lt;ip-des-servers&gt;/smartVISU</span></code>
+Bei &quot;Checking your configuration&quot; sollte alles mit einem grünen Häckchen versehen sein.
+Jetzt auf den &quot;Config&quot; Knopf drücken. Damit müsstest du in das SmartVISU Interface gelangen, direkt auf die Config Seite.
+Bei I/O Connection &quot;Smarthome.py&quot; auswählen. ACHTUNG: Bei Adresse (URL / IP) die Interface Adresse des Servers eingeben oder den DNS Namen.
+Hier NICHT localhost oder 127.0.0.1 eingeben, denn diese Adresse wird vom Client Browser benutzt (Javascripts). Somit muss die Verbindung nicht nur vom SmartVISU Server funktionieren, sondern auch von all deinen Geräten, von denen aus du SmartVISU benutzen willst.
+Wenn du mit dem Autogenerator arbeiten willst, dann stelle noch im Tab &quot;Interfaces&quot; die Auswahl &quot;Pages&quot; auf &quot;Smarthome&quot;.
+Dann ganz unten auf &quot;Save&quot; drücken.</p>
+</div>
+</div>
+<div class="section" id="onewire-installieren">
+<span id="onewire-installieren"></span><h2>Onewire installieren</h2>
+<div class="section" id="zusatzliche-pakete-installieren">
+<span id="id3"></span><h3>zusätzliche Pakete installieren</h3>
+<p>Für den Zugriff von SmartHomeNG auf einen OneWire Bus kann das owserver Paket genutzt werden.
+Die dazu benötigten Komponenten werden installier mit:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="o">-</span><span class="n">y</span> <span class="n">install</span> <span class="n">owhttpd</span> <span class="n">owserver</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="owfs-konfigurieren">
+<span id="owfs-konfigurieren"></span><h2>owfs konfigurieren</h2>
+<p>Die owfs Konfigurationsdatei noch auf den verwendeten Adapter angepasst werden:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">nano</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">owfs</span><span class="o">.</span><span class="n">conf</span>
+</pre></div>
+</div>
+<p>Eine Beispieldatei für einen USB-Adapter wie den weit verbreiteten DS9490R kann z.B. so aussehen:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>######################## SOURCES ########################
+#
+# With this setup, any client (but owserver) uses owserver on the
+# local machine...
+! server: server = 127.0.0.1:4304
+#
+# ...and owserver uses the real hardware, by default fake devices
+# This part must be changed on real installation
+#server: FAKE = DS18S20,DS2405
+#
+# USB device: DS9490
+server: usb = all
+#
+# Serial port: DS9097
+#server: device = /dev/ttyS1
+#
+# owserver tcp address
+#server: server = 192.168.10.1:3131
+#
+# random simulated device
+#server: FAKE = DS18S20,DS2405
+#
+######################### OWFS ##########################
+#
+mountpoint = /mnt/1wire
+allow_other
+#
+####################### OWHTTPD #########################
+http: port = 2121
+####################### OWFTPD ##########################
+ftp: port = 2120
+####################### OWSERVER ########################
+server: port = 127.0.0.1:4304
+</pre></div>
+</div>
+<p>Wichtig dabei ist vor allem das in der Config nicht localhost steht sondern 127.0.0.1 explizit angegeben wird.
+Dadurch wird eine Bindung des Ports 4304 an eine normale IP erreicht und nicht an tcp6 wie es sonst der Fall wäre.
+Mit tcp6 wiederum könnte das Smarthome.py derzeit nichts anfangen.</p>
+<p>Bei der Installation werden owserver und owhttp automatisch gestartet.
+Nach der Konfigurationsänderung muß der owserver neu gestartet werden:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">restart</span> <span class="n">owserver</span>
+</pre></div>
+</div>
+<p>Damit das Onewire-Plugin von smartHomeNG genutzt werden kann, muß in der <strong>/etc/plugin.conf</strong>
+müssen beim <strong>[ow]</strong>-Teil und den direkt nachfolgenden Zeilen die führenden Kommentarzeichen <strong>#</strong>
+entfernt werden.</p>
+</div>
+<div class="section" id="samba-installieren">
+<span id="samba-installieren"></span><h2>Samba installieren</h2>
+<p>Wer mit einem Windows-Rechner auf die Dateien von SmartHomeNG und SmartVISU zugreifen möchte,
+<em>kann</em> dazu <strong>Samba</strong> installieren:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">samba</span>
+</pre></div>
+</div>
+<p>Dann die smb.conf sichern und editieren:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">mv</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">samba</span><span class="o">/</span><span class="n">smb</span><span class="o">.</span><span class="n">conf</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">samba</span><span class="o">/</span><span class="n">smb</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">bak</span>
+<span class="n">sudo</span> <span class="n">nano</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">samba</span><span class="o">/</span><span class="n">smb</span><span class="o">.</span><span class="n">conf</span>
+</pre></div>
+</div>
+<p>In die Datei folgendes einfügen:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="k">global</span><span class="p">]</span>
+    <span class="n">workgroup</span> <span class="o">=</span> <span class="n">WORKGROUP</span>
+    <span class="n">server</span> <span class="n">string</span> <span class="o">=</span> <span class="n">SmartHome</span>
+    <span class="n">domain</span> <span class="n">master</span> <span class="o">=</span> <span class="n">no</span>
+    <span class="n">syslog</span> <span class="n">only</span> <span class="o">=</span> <span class="n">no</span>
+    <span class="n">syslog</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">panic</span> <span class="n">action</span> <span class="o">=</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">share</span><span class="o">/</span><span class="n">samba</span><span class="o">/</span><span class="n">panic</span><span class="o">-</span><span class="n">action</span> <span class="o">%</span><span class="n">d</span>
+    <span class="n">encrypt</span> <span class="n">passwords</span> <span class="o">=</span> <span class="n">true</span>
+    <span class="n">passdb</span> <span class="n">backend</span> <span class="o">=</span> <span class="n">tdbsam</span>
+    <span class="n">obey</span> <span class="n">pam</span> <span class="n">restrictions</span> <span class="o">=</span> <span class="n">yes</span>
+    <span class="n">unix</span> <span class="n">password</span> <span class="n">sync</span> <span class="o">=</span> <span class="n">yes</span>
+    <span class="n">unix</span> <span class="n">extensions</span> <span class="o">=</span> <span class="n">no</span>
+    <span class="n">passwd</span> <span class="n">program</span> <span class="o">=</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">passwd</span> <span class="o">%</span><span class="n">u</span>
+    <span class="n">passwd</span> <span class="n">chat</span> <span class="o">=</span> <span class="o">*</span><span class="n">Enter</span>\<span class="n">snew</span>\<span class="n">s</span><span class="o">*</span>\<span class="n">spassword</span><span class="p">:</span><span class="o">*</span> <span class="o">%</span><span class="n">n</span>\<span class="n">n</span> <span class="o">*</span><span class="n">Retype</span>\<span class="n">snew</span>\<span class="n">s</span><span class="o">*</span>\<span class="n">spassword</span><span class="p">:</span><span class="o">*</span> <span class="o">%</span><span class="n">n</span>\<span class="n">n</span> <span class="o">*</span><span class="n">password</span>\<span class="n">supdated</span>\<span class="n">ssuccessfully</span><span class="o">*</span> <span class="o">.</span>
+    <span class="n">pam</span> <span class="n">password</span> <span class="n">change</span> <span class="o">=</span> <span class="n">yes</span>
+    <span class="nb">map</span> <span class="n">to</span> <span class="n">guest</span> <span class="o">=</span> <span class="n">bad</span> <span class="n">user</span>
+    <span class="n">invalid</span> <span class="n">users</span> <span class="o">=</span> <span class="n">root</span>
+    <span class="n">guest</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">no</span>
+    <span class="n">usershare</span> <span class="n">allow</span> <span class="n">guests</span> <span class="o">=</span> <span class="n">no</span>
+    <span class="c1"># disable printing</span>
+    <span class="n">load</span> <span class="n">printers</span> <span class="o">=</span> <span class="n">no</span>
+    <span class="n">printing</span> <span class="o">=</span> <span class="n">bsd</span>
+    <span class="n">printcap</span> <span class="n">name</span> <span class="o">=</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">null</span>
+    <span class="n">disable</span> <span class="n">spoolss</span> <span class="o">=</span> <span class="n">yes</span>
+
+<span class="p">[</span><span class="n">Logs</span><span class="p">]</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span>
+    <span class="n">comment</span> <span class="o">=</span> <span class="n">Logfiles</span>
+    <span class="n">available</span> <span class="o">=</span> <span class="n">yes</span>
+    <span class="n">browseable</span> <span class="o">=</span> <span class="n">yes</span>
+    <span class="n">writable</span> <span class="o">=</span> <span class="n">yes</span>
+    <span class="n">force</span> <span class="n">user</span> <span class="o">=</span> <span class="n">root</span>
+    <span class="n">force</span> <span class="n">group</span> <span class="o">=</span> <span class="n">root</span>
+    <span class="n">create</span> <span class="n">mask</span> <span class="o">=</span> <span class="mi">0755</span>
+    <span class="n">directory</span> <span class="n">mask</span> <span class="o">=</span> <span class="mi">0775</span>
+
+<span class="p">[</span><span class="n">SmartHome</span><span class="o">.</span><span class="n">py</span><span class="p">]</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">smarthome</span>
+    <span class="n">comment</span> <span class="o">=</span> <span class="n">SmartHome</span><span class="o">.</span><span class="n">py</span> <span class="n">Directories</span>
+    <span class="n">available</span> <span class="o">=</span> <span class="n">yes</span>
+    <span class="n">browseable</span> <span class="o">=</span> <span class="n">yes</span>
+    <span class="n">writable</span> <span class="o">=</span> <span class="n">yes</span>
+    <span class="n">force</span> <span class="n">user</span> <span class="o">=</span> <span class="n">smarthome</span>
+    <span class="n">force</span> <span class="n">group</span> <span class="o">=</span> <span class="n">smarthome</span>
+    <span class="n">create</span> <span class="n">mask</span> <span class="o">=</span> <span class="mi">0664</span>
+    <span class="n">directory</span> <span class="n">mask</span> <span class="o">=</span> <span class="mi">0775</span>
+
+<span class="p">[</span><span class="n">smartVISU</span><span class="p">]</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span><span class="o">/</span><span class="n">smartVISU</span>
+    <span class="n">comment</span> <span class="o">=</span> <span class="n">smartVISU</span> <span class="n">Directories</span>
+    <span class="n">available</span> <span class="o">=</span> <span class="n">yes</span>
+    <span class="n">browseable</span> <span class="o">=</span> <span class="n">yes</span>
+    <span class="n">writable</span> <span class="o">=</span> <span class="n">yes</span>
+    <span class="n">force</span> <span class="n">user</span> <span class="o">=</span> <span class="n">www</span><span class="o">-</span><span class="n">data</span>
+    <span class="n">force</span> <span class="n">group</span> <span class="o">=</span> <span class="n">www</span><span class="o">-</span><span class="n">data</span>
+    <span class="n">create</span> <span class="n">mask</span> <span class="o">=</span> <span class="mi">0775</span>
+    <span class="n">directory</span> <span class="n">mask</span> <span class="o">=</span> <span class="mi">0775</span>
+</pre></div>
+</div>
+<p>Nun muß der User smarthome noch bekannt gemacht werden mit <code class="docutils literal"><span class="pre">sudo</span> <span class="pre">smbpasswd</span> <span class="pre">-a</span> <span class="pre">smarthome</span></code>.</p>
+<p>Im Windows Explorer sollten nun via <strong>\<IP des Rechners oder hostname></strong> zwei Freigaben angezeigt werden.</p>
+<p>Da bei Samba immer wieder Sicherheitslöcher aufgedeckt werden, empfiehlt sich ein Ausschluß des SMB1 Protocols. Näheres dazu <a class="reference external" href="https://www.samba.org/samba/docs/man/manpages-3/smb.conf.5.html">hier</a></p>
+</div>
+<div class="section" id="abschlussarbeiten">
+<span id="abschlussarbeiten"></span><h2>Abschlussarbeiten</h2>
+<p>Jetzt müsste alles installiert sein und alles funktionieren. Wenn nicht, dann bitte prüfen,
+ob wirklich alles so durchgeführt wurde wie beschrieben.
+Ansonsten siehe <a class="reference external" href="https://github.com/smarthomeNG/smarthome/wiki/SolveProblems">Fehlersuche</a>.</p>
+<div class="section" id="weitere-konfiguration">
+<span id="weitere-konfiguration"></span><h3>Weitere Konfiguration</h3>
+<p>Wer noch keine Erfahrung mit dem Erstellen von Items und der Konfiguration hat, kann als weiteren Einstieg [[hier|Initiale_Item-Konfiguration]] weiterlesen.</p>
+</div>
+<div class="section" id="mehr-komfort-via-ssh-zugriff">
+<span id="mehr-komfort-via-ssh-zugriff"></span><h3>Mehr Komfort via SSH Zugriff</h3>
+<p>Manche Kommandos auf der Shell gehen einfacher von der Hand, wenn man Abkürzungen nutzen kann.
+Folgende Kommandos bieten sich an:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">alias</span> <span class="n">la</span><span class="o">=</span><span class="s1">&#39;ls -A&#39;</span>
+<span class="n">alias</span> <span class="n">ll</span><span class="o">=</span><span class="s1">&#39;ls -l&#39;</span>
+<span class="n">alias</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;ls --color=auto&#39;</span>
+<span class="n">alias</span> <span class="o">..=</span><span class="s1">&#39;cd ..&#39;</span>
+<span class="n">alias</span> <span class="n">cli</span><span class="o">=</span><span class="s1">&#39;rlwrap telnet $IP 2323&#39;</span>
+<span class="n">alias</span> <span class="n">e</span><span class="o">=</span><span class="s1">&#39;grep &quot;FATAL\|ERROR\|WARNING\|CRITICAL&quot;&#39;</span>
+<span class="n">alias</span> <span class="n">sh</span><span class="o">.</span><span class="n">error</span><span class="o">=</span><span class="s1">&#39;tail -f -n 500 /var/log/smarthome/smarthome.log | e | colorize yellow .*WARNING.* purple .*ERROR.* red .*CRITICAL.* red .*FATAL.* &#39;</span>
+<span class="n">alias</span> <span class="n">sh</span><span class="o">.</span><span class="n">log</span><span class="o">=</span><span class="s1">&#39;tail -f -n 50 /var/log/smarthome/smarthome.log | colorize green .*INFO.* yellow .*WARNING.* purple .*ERROR.* gray .*DEBUG.* red .*CRITICAL.* red .*FATAL.* &#39;</span>
+</pre></div>
+</div>
+<p>Ein guter Ort die einzufügen ist die <code class="docutils literal"><span class="pre">.bashrc</span></code> des Benutzers <strong>smarthome</strong>.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~</span>
+<span class="n">nano</span> <span class="o">.</span><span class="n">bashrc</span>
+</pre></div>
+</div>
+<p>Um das colorize-Skript einzusetzen, muss es zuerst heruntergeladen und korrekt verschoben werden:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~</span>
+<span class="n">wget</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">fam</span><span class="o">.</span><span class="n">tuwien</span><span class="o">.</span><span class="n">ac</span><span class="o">.</span><span class="n">at</span><span class="o">/~</span><span class="n">schamane</span><span class="o">/</span><span class="n">_</span><span class="o">/</span><span class="n">_media</span><span class="o">/</span><span class="n">bash</span><span class="p">:</span><span class="n">mycolorize</span><span class="o">-</span><span class="n">r</span><span class="o">.</span><span class="n">sh</span>
+<span class="n">mv</span> <span class="n">mycolorize</span><span class="o">.</span><span class="n">sh</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">colorize</span>
+<span class="n">chmod</span> <span class="n">u</span><span class="o">+</span><span class="n">x</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">colorize</span>
+</pre></div>
+</div>
+<p>rlwrap wird voraussichtlich noch zu installieren sein:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">rlwrap</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="smarthomeng-als-dienst-einrichten">
+<span id="smarthomeng-als-dienst-einrichten"></span><h3>SmartHomeNG als Dienst einrichten</h3>
+<p>Um SmartHomeNG als Dienst zu betreiben muß dazu noch eine Startup-Datei für systemd erstellt werden. Dazu den Texteditor anwerfen mit</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">nano</span> <span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">systemd</span><span class="o">/</span><span class="n">system</span><span class="o">/</span><span class="n">smarthome</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<p>und folgenden Text hineinkopieren:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">Unit</span><span class="p">]</span>
+<span class="n">Description</span><span class="o">=</span><span class="n">SmartHomeNG</span> <span class="n">daemon</span>
+<span class="n">After</span><span class="o">=</span><span class="n">network</span><span class="o">.</span><span class="n">target</span>
+<span class="n">After</span><span class="o">=</span><span class="n">knxd</span><span class="o">.</span><span class="n">service</span>
+<span class="n">After</span><span class="o">=</span><span class="n">knxd</span><span class="o">.</span><span class="n">socket</span>
+
+<span class="p">[</span><span class="n">Service</span><span class="p">]</span>
+<span class="n">Type</span><span class="o">=</span><span class="n">forking</span>
+<span class="n">ExecStart</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">python3</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">smarthome</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">smarthome</span><span class="o">.</span><span class="n">py</span>
+<span class="n">User</span><span class="o">=</span><span class="n">smarthome</span>
+<span class="n">PIDFile</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">smarthome</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">run</span><span class="o">/</span><span class="n">smarthome</span><span class="o">.</span><span class="n">pid</span>
+<span class="n">Restart</span><span class="o">=</span><span class="n">on</span><span class="o">-</span><span class="n">abort</span>
+
+<span class="p">[</span><span class="n">Install</span><span class="p">]</span>
+<span class="n">WantedBy</span><span class="o">=</span><span class="n">default</span><span class="o">.</span><span class="n">target</span>
+</pre></div>
+</div>
+<p>Der so vorbereitete Dienst kann über den systemctl Befehl gestartet werden.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">start</span> <span class="n">smarthome</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<p>Im Log schauen, ob keine Fehlermeldung beim Starten geschrieben wurde.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">tail</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">local</span><span class="o">/</span><span class="n">smarthome</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="o">/</span><span class="n">smarthome</span><span class="o">.</span><span class="n">log</span>
+</pre></div>
+</div>
+<p>Wenn alles ok ist, kann der Autostart aktiviert werden:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">enable</span> <span class="n">smarthome</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<p>Bei Systemstart wird nun SmartHomeNG automatisch gestartet.</p>
+<p>Um den Dienst wieder auszuschalten und den Neustart bei Systemstart zu verhindern nutzt man:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">disable</span> <span class="n">smarthome</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<p>Um zu sehen, ob SmartHomeNG läuft, genügt ein</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">status</span> <span class="n">smarthome</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<p>Läuft es noch nicht und man möchte sozusagen manuell starten reicht ein:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">start</span> <span class="n">smarthome</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<p>Ein Neustart von SmartHomeNG würde mit</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">restart</span> <span class="n">smarthome</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+<p>funktionieren, ein Stop von SmartHomeNG entsprechend</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">systemctl</span> <span class="n">stop</span> <span class="n">smarthome</span><span class="o">.</span><span class="n">service</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="docker.html" class="btn btn-neutral float-right" title="Installation über Docker" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="anforderungen.html" class="btn btn-neutral" title="Hard- u. Software Anforderungen" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016-2017 SmartHomeNG Team, based on smarthome.py © 2011-2014 Marcus Popp.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.3c develop (as of 1. November 2017, commit 34c17bf)',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="../_static/translations.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
