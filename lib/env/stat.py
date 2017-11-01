@@ -1,6 +1,7 @@
 import sys, os
 import shutil
 import ephem 
+import psutil
 
 if sh.env.system.libs.ephem_version is not None:
     sh.env.system.libs.ephem_version( ephem.__version__ )
@@ -20,16 +21,9 @@ if gc.garbage != []:
 sh.env.core.threads(threading.activeCount())
 
 # Memory
-statusfile = "/proc/{0}/status".format(os.getpid())
-units = {'kB': 1024, 'mB': 1048576}
-with open(statusfile, 'r') as f:
-    data = f.read()
-status = {}
-for line in data.splitlines():
-    key, sep, value = line.partition(':')
-    status[key] = value.strip()
-size, unit = status['VmRSS'].split(' ')
-mem = round(int(size) * units[unit])
+p = psutil.Process(os.getpid())
+mem_info = p.memory_info()
+mem = mem_info.rss
 sh.env.core.memory(mem)
 
 # Load
@@ -47,5 +41,3 @@ if sys.version_info > (3,3):
 
 if sh.moon:
     sh.env.location.moonlight(sh.moon.light())
-
-
