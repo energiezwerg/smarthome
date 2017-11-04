@@ -1,17 +1,16 @@
 sudo: false
 language: python
 python:
-#    - "3.2"
     - "3.3"
     - "3.4"
     - "3.5"
     - "3.6"
 
-before_install:
-    - git submodule update --init --remote --recursive
+env:
+    - REPOSITORY_ORIGIN=smarthome
 
 install:
     - pip install tox-travis "virtualenv<14.0.0"
 
 script:
-    - tox
+    - sh .travis.sh
