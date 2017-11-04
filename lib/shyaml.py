@@ -110,6 +110,45 @@ def yaml_load(filename, ordered=False):
     return y
 
 
+def yaml_load_fromstring(string, ordered=False):
+    """
+    Load contents of a string into an dict/OrderedDict structure. The string has to be valid yaml
+   
+    :param string: name of the yaml file to load
+    :type string: str
+    :param ordered: load to an OrderedDict? Default=False
+    :type ordered: bool
+    
+    :return: configuration data loaded from the file (or None if an error occured)
+    :rtype: Dict | OrderedDict | None
+    """
+
+    dict_type = 'dict'
+    if ordered:
+        dict_type = 'OrderedDict'
+    logger.info("Loading '{}' to '{}'".format(string, dict_type))
+    y = None
+
+    estr = ''
+    try:
+        sdata = string
+#        sdata = sdata.replace('\n', '\n\n')
+        if ordered:
+            y = _ordered_load(sdata, yaml.SafeLoader)
+        else:
+            y = yaml.load(sdata, yaml.SafeLoader)
+    except Exception as e:
+        estr = str(e)
+        if "found character '\\t'" in estr:
+            estr = estr[estr.find('line'):]
+            estr = 'TABs are not allowed in YAML files, use spaces for indentation instead!\nError in ' + estr
+        if ("while scanning a simple key" in estr) and ("could not found expected ':'" in estr):
+            estr = estr[estr.find('column'):estr.find('could not')]
+            estr = 'The colon (:) following a key has to be followed by a space. The space is missing!\nError in ' + estr
+
+    return y, estr
+
+
 def yaml_save(filename, data):
     """
     Save contents of an OrderedDict structure to a yaml file
