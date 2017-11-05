@@ -67,7 +67,7 @@ def editing_is_enabled():
 #   Routines to handle yaml files
 #
 
-def yaml_load(filename, ordered=False):
+def yaml_load(filename, ordered=False, ignore_notfound=False):
     """
     Load contents of a configuration file into an dict/OrderedDict structure. The configuration file has to be a valid yaml file
    
@@ -103,7 +103,8 @@ def yaml_load(filename, ordered=False):
             estr = estr[estr.find('column'):estr.find('could not')]
             estr = 'The colon (:) following a key has to be followed by a space. The space is missing!\nError in ' + estr
         if "[Errno 2]" in estr:
-            logger.warning("YAML-file not found: {}".format(filename))
+            if not ignore_notfound:
+                logger.warning("YAML-file not found: {}".format(filename))
         else:
             logger.error("YAML-file load error in {}:  \n{}".format(filename, estr))
 
