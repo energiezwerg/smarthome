@@ -1,6 +1,6 @@
 # lib/env/init.py
 
-import uptime
+import psutil
 import socket
 
 sh.env.core.version(sh.version)
@@ -11,6 +11,5 @@ hostname = socket.gethostname()
 sh.env.system.name(hostname)
 
 # system start
-uptime = uptime.uptime()
-start = sh.now() - datetime.timedelta(seconds=uptime)
+start = sh.now() - datetime.timedelta(seconds=psutil.boot_time())
 sh.env.system.start(start)
