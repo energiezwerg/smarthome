@@ -585,6 +585,7 @@ class Logics():
             section_dict = conf.get(section, {})
 #            logger.warning("read_config_section: read_config_section('{}') = {}".format(section, str(section_dict) ))
             for key in section_dict:
+                c = ''
                 if isinstance(section_dict[key], list):
                     value = section_dict[key]
                     comment = []            # 'Comment 6: ' + loaded['a']['c'].ca.items[0][0].value      'Comment 7: ' + loaded['a']['c'].ca.items[1][0].value
@@ -596,9 +597,10 @@ class Logics():
                         comment.append(c.strip())
                 else:
                     value = section_dict[key]
-                    c = section_dict.ca.items[key][2].value    # if not list: loaded['a'].ca.items['b'][2].value 
-                    if c[0] == '#':
-                        c = c[1:]
+                    if key in section_dict.ca.items:
+                        c = section_dict.ca.items[key][2].value    # if not list: loaded['a'].ca.items['b'][2].value
+                        if c[0] == '#':
+                            c = c[1:]
                     comment = c.strip()
             
 #                logger.warning("-> read_config_section: section_dict['{}'] = {}, comment = '{}'".format(key, str(section_dict[key]), comment ))
