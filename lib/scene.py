@@ -28,6 +28,7 @@ import logging
 import os.path
 import csv
 
+from lib.utils import Utils
 from lib.logic import Logics
 import lib.shyaml as yaml
 
@@ -53,6 +54,7 @@ class Scenes():
         global _scenes_instance
         _scenes_instance = self
         self._scenes = {}
+        self._learned_values = {}
         self._scenes_dir = smarthome.base_dir + '/scenes/'
         if not os.path.isdir(self._scenes_dir):
             logger.warning("Directory scenes not found. Ignoring scenes.".format(self._scenes_dir))
@@ -65,16 +67,21 @@ class Scenes():
                 scene_file_yaml = yaml.yaml_load(scene_file+'.yaml', ordered=False, ignore_notfound=True)
                 if scene_file_yaml is not None:
                     # Reading yaml file with scene definition
-                    for scene_no in scene_file_yaml:
-                        if isinstance(scene_file_yaml[scene_no], str):
-                            scene_file_yaml[scene_no] = [ scene_file_yaml[scene_no] ]
-                        for scene_lo_list in scene_file_yaml[scene_no]:
-                            scene_lo_list_out = scene_lo_list.split('=')
-                            scene_lo_list_out.insert(0, str(scene_no))
-                            scene_lo_list_out[1] = scene_lo_list_out[1].strip()
-                            scene_lo_list_out[2] = scene_lo_list_out[2].strip()
-                            self._add_scene_entry(item, scene_lo_list_out)
-                    logger.info("Loading scene definition from file = {}".format(scene_file+'.yaml'))
+                    for state in scene_file_yaml:
+                        actions = scene_file_yaml[state]['actions']
+                        if isinstance(actions, dict):
+                            actions = [ actions ]
+                        if isinstance( actions, list ):
+                            for action in actions:
+                                if isinstance(action, dict):
+                                    self._add_scene_entry(item, str(state), 
+                                                          action.get('item', ''), str(action.get('value', '')), 
+                                                          action.get('learn', ''), scene_file_yaml[state].get('name', ''))
+                                else:
+                                    logger.warning("Scene {}, state {}: action '{}' is not a dict".format(item, state, action))
+                        else:
+                            logger.warning("Scene {}, state {}: actions are not a list".format(item, state))
+                    self._load_learned_values(str(item.id()))
                 else:
                     # Trying to read conf file with scene definition
                     scene_conf_file = scene_file + '.conf'
@@ -86,13 +93,117 @@ class Scenes():
                                     continue
                                 if row[0][0] == '#':  # ignore comments
                                     continue
-                                self._add_scene_entry(item, row)
+                                self._add_scene_entry(item, row[0], row[1], row[2])
                     except Exception as e:
                         logger.warning("Problem reading scene file {0}: {1}".format(scene_file, e))
                         continue
-                    logger.info("Loading scene definition from file = {}".format(scene_conf_file))
                 item.add_method_trigger(self._trigger)
 
+
+    def _eval(self, value):
+        """
+        Evaluate a scene value
+        
+        :param value: value expression to evaluate
+        :type value: str
+        
+        :return: evaluated value or None
+        :rtype: type of evaluated expression or None
+        """
+        sh = self._sh  # noqa
+        try:
+            rvalue = eval(value)
+        except Exception as e:
+            logger.warning(" - Problem evaluating: {} - {}".format(value, e))
+            return value
+        return rvalue
+        
+    
+    def _get_learned_value(self, scene, state, ditem):
+        try:
+            lvalue = self._learned_values[scene +'#'+ str(state) +'#'+ ditem.id()]
+        except:
+            return None
+        logger.debug(" - Return learned value {} for scene/state/ditem {}".format(lvalue, scene +'#'+ str(state) +'#'+ ditem.id()))
+        return lvalue
+        
+    
+    def _set_learned_value(self, scene, state, ditem, lvalue):
+        self._learned_values[scene +'#'+ str(state) +'#'+ ditem.id()] = lvalue
+        logger.debug(" - Learned value {} for scene/state/ditem {}".format(lvalue, scene +'#'+ str(state) +'#'+ ditem.id()))
+
+
+    def _save_learned_values(self, scene):
+        """
+        Save learned values for the scene to a file to make them persistant
+        """
+        logger.info("Saving learned values for scene {}:".format(scene))
+        learned_dict = {}
+        for key in self._learned_values:
+            lvalue = self._learned_values[key]
+            kl = key.split('#')
+            fkey = kl[1]+'#'+kl[2]
+            learned_dict[fkey] = lvalue
+            logger.debug(" - Saving value {} for state/ditem {}".format(lvalue, fkey))
+        scene_learnfile = os.path.join(self._scenes_dir, scene+'_learned')
+        yaml.yaml_save(scene_learnfile+'.yaml', learned_dict)
+        return
+        
+
+    def _load_learned_values(self, scene):
+        """
+        Load learned values for the scene from a file
+        """
+        self._learned_values = {}
+        scene_learnfile = os.path.join(self._scenes_dir, scene+'_learned')
+        learned_dict = yaml.yaml_load(scene_learnfile+'.yaml', ordered=False, ignore_notfound=True)
+        if learned_dict != {}:
+            logger.info("Loading learned values for scene {}".format(scene))
+        for fkey in learned_dict:
+            key = scene + '#' + fkey
+            lvalue = learned_dict[fkey]
+            self._learned_values[key] = lvalue 
+            logger.debug(" - Loading value {} for state/ditem {}".format(lvalue, key))
+        return
+        
+
+    def _trigger_setstate(self, item, state, caller, source, dest):
+        """
+        Trigger: set values for a scene state
+        """
+        logger.info("Triggered scene {} ({}) with state {} ({}):".format(item.id(), str(item), state, self.get_scene_action_name(item.id(), state)))
+        for ditem, value, name, learn in self._scenes[item.id()][str(state)]:
+            if learn:
+                lvalue = self._get_learned_value(item.id(), state, ditem)
+                if lvalue is not None:
+                    rvalue = lvalue
+                else:
+                    rvalue = value
+            else:
+                rvalue = self._eval(value)
+            if rvalue is not None:
+                if str(rvalue) == str(value):
+                    logger.info(" - Item {} set to {}".format(ditem, rvalue))
+                else:
+                    logger.info(" - Item {} set to {} ( from {} )".format(ditem, rvalue, value))
+                try:
+                    ditem(value=rvalue, caller='Scene', source=item.id())
+                except Exception as e:
+                    logger.warning(" - ditem '{}', value '{}', exception {}".format(ditem, rvalue, e))
+        return
+        
+
+    def _trigger_learnstate(self, item, state, caller, source, dest):
+        """
+        Trigger: learn values for a scene state
+        """
+        logger.info("Triggered 'learn' for scene {} ({}), state {} ({}):".format(item.id(), str(item), state, self.get_scene_action_name(item.id(), state)))
+        for ditem, value, name, learn in self._scenes[item.id()][str(state)]:
+            if learn:
+                self._set_learned_value(item.id(), state, ditem, ditem())
+        self._save_learned_values(str(item.id()))
+        return
+        
 
     def _trigger(self, item, caller, source, dest):
         """
@@ -100,53 +211,58 @@ class Scenes():
         """
         if not item.id() in self._scenes:
             return
-        if str(item()) in self._scenes[item.id()]:
-            logger.info("Triggered scene {} with value {}:".format(item.id(), item()))
-            for ditem, value in self._scenes[item.id()][str(item())]:
-                sh = self._sh  # noqa
-                try:
-                    rvalue = eval(value)
-                except Exception as e:
-                    logger.warning(" - Problem evaluating: {} - {}".format(value, e))
-                else:
-                    if rvalue is not None:
-                        # set item
-                        if str(rvalue) == str(value):
-                            logger.info(" - Item {} set to {}".format(ditem, rvalue))
-                        else:
-                            logger.info(" - Item {} set to {} ( from {} )".format(ditem, rvalue, value))
-                        try:
-                            ditem(value=rvalue, caller='Scene', source=item.id())
-                        except Exception as e:
-                            logger.warning(" - ditem '{}', value '{}', exception {}".format(ditem, rvalue, e))
+        if str(item()&127) in self._scenes[item.id()]:
+            state = item()
+            if Utils.is_int(state):
+                state = int(state)
+            else:
+                logger.error("Invalid state '{}' for scene {}".format(state, item.id()))
+                return
+                
+            if (state >= 0) and (state < 64):
+                # set state
+                self._trigger_setstate(item, state, caller, source, dest)
+            elif (state >= 128) and (state < 128+64):
+                # learn state
+                self._trigger_learnstate(item, state&127, caller, source, dest)
+            else:
+                logger.error("Invalid state '{}' for scene {}".format(state, item.id()))
 
 
-    def _add_scene_entry(self, item, row):
+    def _add_scene_entry(self, item, state, ditemname, value, learn=False, name=''):
         """
         Adds a single assignement entry to the loaded scenes
         
-        :param item:
-        :param row: list of: scene number, item to assign to, value to assign to item 
+        :param item: item defing the scene (type: scene)
+        :param row: list of: state number, item to assign to, value to assign to item
+        :param name: name of the scene state
         :type item: item object
         :type row: list (with 3 entries)
+        :type name: str
         """
-        logger.debug("_add_scene_entry: item = {}, row = {}".format(item, row))
-        row[2] = item.get_stringwithabsolutepathes(row[2], 'sh.', '(', 'scene')
-        ditem = self._sh.return_item(row[1])
+        logger.debug("_add_scene_entry: item = {}, state = {}, ditem = {}, value = {}, learn = {}, name = {}".format(item.id(), state, ditemname, value, learn, name))
+        value = item.get_stringwithabsolutepathes(value, 'sh.', '(', 'scene')
+        ditem = self._sh.return_item(ditemname)
+
+        if learn:
+            rvalue = self._eval(value)
+            if str(rvalue) != value:
+                logger.warning("_add_scene_entry - Learn set to 'False', because '{}' != '{}'".format(rvalue, value))
+                learn = False
+        
         if ditem is None:
-#            ditem = smarthome.return_logic(row[1])
-            ditem = Logics.return_logic(row[1])
+            ditem = Logics.return_logic(ditemname)
             if ditem is None:
-                logger.warning("Could not find item or logic '{}' specified in {}".format(row[1], scene_file))
+                logger.warning("Could not find item or logic '{}' specified in {}".format(ditemname, scene_file))
                 return
 
         if item.id() in self._scenes:
-            if row[0] in self._scenes[item.id()]:
-                self._scenes[item.id()][row[0]].append([ditem, row[2]])
+            if state in self._scenes[item.id()]:
+                self._scenes[item.id()][state].append([ditem, value, name, learn])
             else:
-                self._scenes[item.id()][row[0]] = [[ditem, row[2]]]
+                self._scenes[item.id()][state] = [[ditem, value, name, learn]]
         else:
-            self._scenes[item.id()] = {row[0]: [[ditem, row[2]]]}
+            self._scenes[item.id()] = {state: [[ditem, value, name, learn]]}
         return
         
         
@@ -193,9 +309,9 @@ class Scenes():
         return sorted(scene_list)
 
 
-    def get_scene_values(self, name):
+    def get_scene_actions(self, name):
         """
-        Returns a list with the the defined values for a scene
+        Returns a list with the the defined actions for a scene
 
         :return: list of scene values
         :rtype: list
@@ -211,18 +327,31 @@ class Scenes():
         return value_list2
 
 
-    def return_scene_value_actions(self, name, value):
+    def get_scene_action_name(self, scenename, action):
         """
-        Returns a list with the the defined actions for value of a a scene
+        Returns the name of a scene-action
+        """
+        action = str(action)
+        try:
+            return self._scenes[scenename][action][0][2]
+        except:
+            logger.warning("get_scene_action_name: unable to get self._scenes['{}']['{}'][0][2] <- {}".format(scenename, action, self._scenes[scenename][action][0]))
+            return ''    
 
-        :return: list of value actions (item name, value to set)
+    def return_scene_value_actions(self, name, state):
+        """
+        Returns a list with the the defined actions for state of a scene
+
+        :return: list of value actions (destination item name, value to set)
         :rtype: list
         """
 
         action_list = []
-        for action in self._scenes[name][value]:
-            return_action = [ str(action[0]), action[1] ]
+        for action in self._scenes[name][state]:
+            lvalue = self._get_learned_value(name, state, action[0])
+            if lvalue is not None:
+                lvalue = str(lvalue)
+            return_action = [ str(action[0]), action[1], action[3], lvalue ]
             action_list.append(return_action)
-
         return action_list
 
