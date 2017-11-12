@@ -589,9 +589,14 @@ class Logics():
                     value = section_dict[key]
                     comment = []            # 'Comment 6: ' + loaded['a']['c'].ca.items[0][0].value      'Comment 7: ' + loaded['a']['c'].ca.items[1][0].value
                     for i in range(len(value)):
-                        c = section_dict[key].ca.items[i][0].value
-                        if c[0] == '#':
-                            c = c[1:]
+                        if i in section_dict[key].ca.items:
+                            c = section_dict[key].ca.items[i][0].value
+                            if c[0] == '#':
+                                c = c[1:]
+                            else:
+                                logger.warning("read_config_section: ???? i = {}, c.strip() = '{}'".format(i, c.strip()))
+                        else:
+                            c = ''
                     
                         comment.append(c.strip())
                 else:
