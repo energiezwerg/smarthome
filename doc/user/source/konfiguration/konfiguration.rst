@@ -3,16 +3,18 @@ Konfiguration
 #############
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 5
    :hidden:
    :titlesonly:
    
    konfigurationsdateien.rst
-   itemkonfiguration.rst
+   initiale_itemkonfiguration.md
    items.rst
+   module.rst
    plugins.rst
    logiken.rst
    logging.rst
+   szenen.rst
    
 
 =========

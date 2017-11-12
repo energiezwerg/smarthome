@@ -1,7 +1,7 @@
 
-================
-Protocol Plugins
-================
+=================
+Protokoll Plugins
+=================
 
 .. image:: /_static/img/protocol.svg
    :width: 200px
@@ -14,7 +14,8 @@ Protocol Plugins
 
    <br />
 
-A protocol plugin implements a communication protocol (without explicitly supporting individual devices).
+Ein Protokoll Plugin implementiert ein Kommunikationsprotokoll, ohne dabei explizit individuelle
+Devices zu unterstützen.
 
 |br|
 |br|

@@ -52,7 +52,7 @@
    :widths: grid
 
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
-   | Plugin            | Description                                                                                                                                                 | Maintainer      | Tester          |
+   | Plugin            | Beschreibung                                                                                                                                                | Maintainer      | Tester          |
    +===================+===========================================================================================================================================+=================+=================+=================+
    | apcups            | Unterstützung für smartUPS Geräte der Firma APC                                                                                                             | cmalo           | Sandman60       |
    |                   |                                                                                                                                                             |                 |                 |
@@ -60,13 +60,14 @@
    | asterisk          | Ansteuerung einer Asterisk Telefonanlage                                                                                                                    | ? (mknx)        |                 |
    |                   |                                                                                                                                                             |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
-   | avdevice          | Controlling AV devices via TCP/IP and RS232                                                                                                                 | onkelandy       | Foxi352         |
+   | avdevice          | Steuerung von diversen AV Geräten über TCP/IP und RS232 Schnittstelle, **seit                                                                               | onkelandy       | Foxi352         |
+   |                   | SmartHomeNG v1.3**                                                                                                                                          |                 |                 |
    |                   |                                                                                                                                                             |                 |                 |
-   |                   | - `avdevice support <https://knx-user-forum.de/forum/supportforen/smarthome-py/1097870-neues-plugin-av-device-f%C3%BCr-yamaha-pioneer-denon-etc>`_          |                 |                 |
+   |                   | - `avdevice Unterstützung <https://knx-user-forum.de/forum/supportforen/smarthome-py/1097870-neues-plugin-av-device-f%C3%BCr-yamaha-pioneer-denon-etc>`_    |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | avm               | Ansteuerung von AVM FRITZ!Boxen, WLAN-Repeatern, DECT Steckdosen, etc.                                                                                      | psilo909        | Sandman60,      |
    |                   |                                                                                                                                                             |                 | cmalo           |
-   |                   | - `avm support <https://knx-user-forum.de/forum/supportforen/smarthome-py/934835-avm-plugin>`_                                                              |                 |                 |
+   |                   | - `avm Unterstützung <https://knx-user-forum.de/forum/supportforen/smarthome-py/934835-avm-plugin>`_                                                        |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | buderus           | Steuerung von Buderus Heizkesseln über ein Logamatic web KM200 Modul (noch in der                                                                           | rthill          |                 |
    |                   | Entwicklung), **seit SmartHomeNG v1.3**                                                                                                                     |                 |                 |
@@ -74,16 +75,16 @@
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | comfoair          | Unterstützung für Zehnder ComfoAir 350 & 500 KWL                                                                                                            | ? (SvStefan)    | ohinckel        |
    |                   |                                                                                                                                                             |                 |                 |
-   |                   | - `comfoair additional info <https://github.com/smarthomeNG/smarthome/wiki/Comfoair-Plugin>`_                                                               |                 |                 |
-   |                   | - `comfoair support <https://knx-user-forum.de/forum/supportforen/smarthome-py/31291-neues-plugin-comfoair-kwl-wohnrauml&uuml;ftung-zehnder-paul-wernig>`_  |                 |                 |
+   |                   | - `comfoair zusätzliche Infos <https://github.com/smarthomeNG/smarthome/wiki/Comfoair-Plugin>`_                                                             |                 |                 |
+   |                   | - `comfoair Unterstützung <https://knx-user-forum.de/forum/supportforen/smarthome-py/31291-neues-plugin-comfoair-kwl-wohnrauml&uuml;ftung-zehnder-paul-wern |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
-   | dlms              | Support for smartmeter using DLMS (Device Language Message Specification, IEC                                                                               | bmxp (JuMi2006) |                 |
-   |                   | 62056-21) and delivering OBIS codes                                                                                                                         |                 |                 |
+   | dlms              | Unterstützung für Smartmeter, die DLMS (Device Language Message Specification, IEC                                                                          | bmxp (JuMi2006) |                 |
+   |                   | 62056-21) nutzen und OBIS codes liefern                                                                                                                     |                 |                 |
    |                   |                                                                                                                                                             |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | drexelundweiss    | Unterstützt Drexel & Weiss USB Devices                                                                                                                      | ?               | onkelandy,      |
    |                   |                                                                                                                                                             |                 | brandst         |
-   |                   | - `drexelundweiss support <https://knx-user-forum.de/forum/supportforen/smarthome-py/34582-drexel-weiss-plugin>`_                                           |                 |                 |
+   |                   | - `drexelundweiss Unterstützung <https://knx-user-forum.de/forum/supportforen/smarthome-py/34582-drexel-weiss-plugin>`_                                     |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | easymeter         | Easymeter Q3D Unterstützung                                                                                                                                 | ?               |                 |
    |                   |                                                                                                                                                             |                 |                 |
@@ -93,7 +94,7 @@
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | enigma2           | Plugin zur Einbindung von Enigma2 kompatiblen Sat-Receivern mit openwebif                                                                                   | psilo909        | Sandman60,      |
    |                   |                                                                                                                                                             |                 | cmalo           |
-   |                   | - `enigma2 support <https://knx-user-forum.de/forum/supportforen/smarthome-py/943871-enigma2-plugin>`_                                                      |                 |                 |
+   |                   | - `enigma2 Unterstützung <https://knx-user-forum.de/forum/supportforen/smarthome-py/943871-enigma2-plugin>`_                                                |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | eta_pu            | Anbindung der REST-Schnittstelle von ETA Heizungen                                                                                                          | ? (Brootux)     | psilo909, ?     |
    |                   |                                                                                                                                                             |                 |                 |
@@ -103,12 +104,12 @@
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | harmony           | Harmony Hub plugin, **seit SmartHomeNG v1.3**                                                                                                               | pfischi         |                 |
    |                   |                                                                                                                                                             |                 |                 |
-   |                   | - `harmony support <https://knx-user-forum.de/forum/supportforen/smarthome-py/1046500-harmony-hub-plugin>`_                                                 |                 |                 |
+   |                   | - `harmony Unterstützung <https://knx-user-forum.de/forum/supportforen/smarthome-py/1046500-harmony-hub-plugin>`_                                           |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | helios            | Helios EC x00 Pro / Vallox SE KWL Plugin (Modellserien bis 2014)                                                                                            | mtiews, Tom-    |                 |
    |                   |                                                                                                                                                             | Bom-badil       |                 |
-   |                   | - `helios additional info <https://github.com/Tom-Bom-badil/helios/wiki>`_                                                                                  |                 |                 |
-   |                   | - `helios support <https://knx-user-forum.de/forum/supportforen/smarthome-py/40092-erweiterung-helios-vallox-plugin>`_                                      |                 |                 |
+   |                   | - `helios zusätzliche Infos <https://github.com/Tom-Bom-badil/helios/wiki>`_                                                                                |                 |                 |
+   |                   | - `helios Unterstützung <https://knx-user-forum.de/forum/supportforen/smarthome-py/40092-erweiterung-helios-vallox-plugin>`_                                |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | homematic         | Steuerung von Buderus Heizkesseln über ein Logamatic web KM200 Modul (noch in der                                                                           | rthill          |                 |
    |                   | Entwicklung)                                                                                                                                                |                 |                 |
@@ -116,7 +117,7 @@
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | intercom_2n       | Integration von 2N SIP-Türsprechanlagen                                                                                                                     | pfischi         |                 |
    |                   |                                                                                                                                                             |                 |                 |
-   |                   | - `intercom_2n support <https://knx-user-forum.de/forum/supportforen/smarthome-py/1030539-plugin-2n-intercom>`_                                             |                 |                 |
+   |                   | - `intercom_2n Unterstützung <https://knx-user-forum.de/forum/supportforen/smarthome-py/1030539-plugin-2n-intercom>`_                                       |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | kathrein          | Kathrein Receiver                                                                                                                                           | ? (Johannes     |                 |
    |                   |                                                                                                                                                             | Mayr)           |                 |
@@ -136,7 +137,7 @@
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | nuki              | Unterstützung für ein Nuki Smart-Lock                                                                                                                       | fuppy, pfischi  |                 |
    |                   |                                                                                                                                                             |                 |                 |
-   |                   | - `nuki support <https://knx-user-forum.de/forum/supportforen/smarthome-py/1052437-nuki-smartlock-plugin-support-thread>`_                                  |                 |                 |
+   |                   | - `nuki Unterstützung <https://knx-user-forum.de/forum/supportforen/smarthome-py/1052437-nuki-smartlock-plugin-support-thread>`_                            |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | nut               | Anbindung an eine UPS über den NUT deamon                                                                                                                   | 4d4mu           |                 |
    |                   |                                                                                                                                                             |                 |                 |
@@ -159,7 +160,7 @@
    |                   | Tripower 12000TL-10                                                                                                                                         | Budde)          |                 |
    |                   |                                                                                                                                                             |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
-   | sma_em            | Access to data from SMA Energy Meter network multicast                                                                                                      | psilo909        | psilo909        |
+   | sma_em            | Auslesen des SMA Energy Meter Netzwerk Multicasts                                                                                                           | psilo909        | psilo909        |
    |                   |                                                                                                                                                             |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | smarttv           | Anbdindung (Remote Control) von SmartTV Geräten                                                                                                             | ? (2ndsky)      | psilo909        |
@@ -173,7 +174,7 @@
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | systemair         | Unterstützung für Systemair residential air units über Modbus.                                                                                              | pfischi         |                 |
    |                   |                                                                                                                                                             |                 |                 |
-   |                   | - `systemair support <https://knx-user-forum.de/forum/supportforen/smarthome-py/939623-systemair-modbus-plugin-zentrale-l&uuml;ftungsanlage>`_              |                 |                 |
+   |                   | - `systemair Unterstützung <https://knx-user-forum.de/forum/supportforen/smarthome-py/939623-systemair-modbus-plugin-zentrale-l&uuml;ftungsanlage>`_        |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | volkszaehler      | Auslesen von Energiemessern und Sensoren, die das S0 Protokoll unterstützen                                                                                 | ? (st0ne)       | brandst         |
    |                   |                                                                                                                                                             |                 |                 |
@@ -187,7 +188,7 @@
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | xiaomi            | Auslesen von Xiaomi Mi Flora Pflanzensensoren, **seit SmartHomeNG v1.3**                                                                                    | psilo909        | Sandman60       |
    |                   |                                                                                                                                                             |                 |                 |
-   |                   | - `xiaomi support <https://knx-user-forum.de/forum/supportforen/smarthome-py/1027133-plugin-xiaomi-mi-plant-flowers-tester-light-monitor>`_                 |                 |                 |
+   |                   | - `xiaomi Unterstützung <https://knx-user-forum.de/forum/supportforen/smarthome-py/1027133-plugin-xiaomi-mi-plant-flowers-tester-light-monitor>`_           |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | yamaha            | Plugin um Yamaha RX-V und RX-S Receiver zu kontrollieren, **seit SmartHomeNG v1.3**                                                                         | rthill          | Sandman60       |
    |                   |                                                                                                                                                             |                 |                 |

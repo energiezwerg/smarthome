@@ -34,14 +34,14 @@
    :widths: grid
 
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
-   | Plugin            | Description                                                                                                                                                 | Maintainer      | Tester          |
+   | Plugin            | Beschreibung                                                                                                                                                | Maintainer      | Tester          |
    +===================+===========================================================================================================================================+=================+=================+=================+
    | artnet            | Ansteuerung der meisten USB DMX Adapter                                                                                                                     | mode2k          | ohinckel        |
    |                   |                                                                                                                                                             |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | dashbutton        | Amazon Dashbutton plugin, **seit SmartHomeNG v1.3**                                                                                                         | pfischi         | psilo909        |
    |                   |                                                                                                                                                             |                 |                 |
-   |                   | - `dashbutton support <https://knx-user-forum.de/forum/supportforen/smarthome-py/1005266-plugin-amazon-dashbutton>`_                                        |                 |                 |
+   |                   | - `dashbutton Unterstützung <https://knx-user-forum.de/forum/supportforen/smarthome-py/1005266-plugin-amazon-dashbutton>`_                                  |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | dmx               | Unterstützt die DMX Interfaces NanoDMX und DMXking (RS-232)                                                                                                 | ? (mknx)        |                 |
    |                   |                                                                                                                                                             |                 |                 |
@@ -56,9 +56,9 @@
    | enocean           | Enocean Unterstützung                                                                                                                                       | ? (Robert Budde |                 |
    |                   |                                                                                                                                                             | / aschwith)     |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
-   | hue               | Gateway for connection to one or more Philips HUE bridges                                                                                                   | mworion, msinn  | Sandman60       |
+   | hue               | Anbindung einer oder mehrerer Philips HUE Bridges                                                                                                           | mworion, msinn  | Sandman60       |
    |                   |                                                                                                                                                             |                 |                 |
-   |                   | - `hue support <https://knx-user-forum.de/forum/supportforen/smarthome-py/41379-philips-hue-plugin-neu-v1-0-released>`_                                     |                 |                 |
+   |                   | - `hue Unterstützung <https://knx-user-forum.de/forum/supportforen/smarthome-py/41379-philips-hue-plugin-neu-v1-0-released>`_                               |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | iaqstick          | Unterstützung für Applied Sensor iAQ Stick und Voltcraft CO-20                                                                                              | ? (Robert Budde |                 |
    |                   |                                                                                                                                                             | )               |                 |
@@ -68,7 +68,8 @@
    |                   |                                                                                                                                                             |                 | Sandman60,      |
    |                   |                                                                                                                                                             |                 | brandst         |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
-   | lirc              | Sends commands to lircd that sends IR-signals to any device that has an IR-interface                                                                        | E3EAT           |                 |
+   | lirc              | Sendet Kommandos an lircd das wiederum IR-Signale an Geräte mit IR-Schnittstelle                                                                            | E3EAT           |                 |
+   |                   | versendet                                                                                                                                                   |                 |                 |
    |                   |                                                                                                                                                             |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | milight           | Unterstützung von MiLight Leuchtmitteln                                                                                                                     | ? (Stephan      |                 |
@@ -80,7 +81,7 @@
    | mpd               | Music Player Deamon (MPD) Unterstützung                                                                                                                     | ? (mknx)        |                 |
    |                   |                                                                                                                                                             |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
-   | onewire           | 1-Wire support via owserver                                                                                                                                 | cmalo (mknx)    |                 |
+   | onewire           | 1-Wire Unterstützung über owserver                                                                                                                          | cmalo (mknx)    |                 |
    |                   |                                                                                                                                                             |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | raumfeld          | Prototyp einer einfachen Anbindung von Teufel Raumfeld                                                                                                      | ? (hholle)      |                 |
@@ -88,7 +89,7 @@
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | rcswitch          | Schalten von 433 MHz Funksteckdosen **seit SmartHomeNG v1.3**                                                                                               | dafra           |                 |
    |                   |                                                                                                                                                             |                 |                 |
-   |                   | - `rcswitch support <https://knx-user-forum.de/forum/supportforen/smarthome-py/39094-logic-und-howto-f&uuml;r-433mhz-steckdosen>`_                          |                 |                 |
+   |                   | - `rcswitch Unterstützung <https://knx-user-forum.de/forum/supportforen/smarthome-py/39094-logic-und-howto-f&uuml;r-433mhz-steckdosen>`_                    |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | smawb             | Anbindung einer oder mehrerer SMA-Sunny-WebBox(en)                                                                                                          | ? (Brootux)     |                 |
    |                   |                                                                                                                                                             |                 |                 |
@@ -96,15 +97,15 @@
    | snom              | Telefonbuch Anbindung für Snom Telefone                                                                                                                     | ? (mknx)        |                 |
    |                   |                                                                                                                                                             |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
-   | sonos             | Anbindung von Sonos Geräten                                                                                                                                 | pfischi         |                 |
+   | sonos             | Anbindung von Sonos Lautsprechern                                                                                                                           | pfischi         | pfischi         |
    |                   |                                                                                                                                                             |                 |                 |
-   |                   | - `sonos additional info <https://knx-user-forum.de/forum/supportforen/smarthome-py/35587-immer-aktuell-sonos-broker-und-sonos-plugin-howto>`_              |                 |                 |
-   |                   | - `sonos support <https://knx-user-forum.de/forum/supportforen/smarthome-py/25151-sonos-anbindung>`_                                                        |                 |                 |
+   |                   | - `sonos zusätzliche Infos <https://knx-user-forum.de/forum/supportforen/smarthome-py/35587-immer-aktuell-sonos-broker-und-sonos-plugin-howto>`_            |                 |                 |
+   |                   | - `sonos Unterstützung <https://knx-user-forum.de/forum/supportforen/smarthome-py/25151-sonos-anbindung>`_                                                  |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | squeezebox        | Anbindung von Squeezebox Devices. Eine laufender Logitech Media Server wird benötigt.                                                                       | Robert          | onkelandy,      |
    |                   |                                                                                                                                                             |                 | Sandman60,      |
    |                   |                                                                                                                                                             |                 | cmalo, brandst  |
-   |                   | - `squeezebox support <https://knx-user-forum.de/forum/supportforen/smarthome-py/28692-√-neues-plugin-logitech-squeezebox-anregungen>`_                     |                 |                 |
+   |                   | - `squeezebox Unterstützung <https://knx-user-forum.de/forum/supportforen/smarthome-py/28692-√-neues-plugin-logitech-squeezebox-anregungen>`_               |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | tellstick         | Unterstützung für TellStick und TellStick Duo RF Transmitter                                                                                                | ? (Matthieu     |                 |
    |                   |                                                                                                                                                             | Gaigniere)      |                 |

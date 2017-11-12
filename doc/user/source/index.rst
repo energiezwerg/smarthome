@@ -1,4 +1,4 @@
-:tocdepth: 5
+:tocdepth: 6
 
 #####################
 Anwenderdokumentation
@@ -31,15 +31,18 @@ oder im Chat auf gitter.im (https://gitter.im/smarthomeNG/smarthome).
 
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 5
    :hidden:
    :titlesonly:
    
    einleitung.md
    installation/installation.rst
    konfiguration/konfiguration.rst
+   plugins_all.rst
+   logiken/logiken.rst
    visualisierung/visualisierung.rst
    backend/backend.rst
+   tools.rst
    fehlersuche.rst
    faq.md
    entwickler_doku.rst

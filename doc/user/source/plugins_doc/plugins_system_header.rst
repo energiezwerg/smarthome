@@ -14,7 +14,7 @@ System Plugins
 
    <br />
 
-System plugins extend the generell functionallity of SmartHomeNG.
+System Plugins erweitern die generrelle Funktionalität von SmartHomeNG.
 
 |br|
 |br|

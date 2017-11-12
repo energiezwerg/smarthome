@@ -1,7 +1,7 @@
 
-====================
-Unclassified Plugins
-====================
+============================
+Nicht klassifizierte Plugins
+============================
 
 .. image:: /_static/img/unclassified.svg
    :width: 200px
@@ -14,9 +14,9 @@ Unclassified Plugins
 
    <br />
 
-This section contains plugins, that have not been classified into one of the plugin categories
-of SmartHomeNG. Classification is done by creating/editing the metadata file ``plugin.yaml`` 
-within the plugin's directory.
+Dieser Abschnitt enthält Plugins, welche bisher nicht einer Klasse von SmartHomeNG Plugins 
+zugeordnet wurden. Die Klassifizierung erfolgt durch das Erstellen/Editieren der Metadaten
+Datei ``plugin.yaml`` im Verzeichnis des Plugins.
 
 |br|
 |br|

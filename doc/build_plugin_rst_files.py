@@ -41,6 +41,9 @@ import shyaml
 
 import subprocess
 
+global language
+language = 'en'
+
 
 type_unclassified = 'unclassified'
 plugin_sections = [ ['gateway', 'Gateway'],
@@ -180,7 +183,7 @@ def build_pluginlist( plugin_type='all' ):
                         plgtype = section_dict.get('type').lower()
                         plg_dict['name'] = metaplugin.lower()
                         plg_dict['type'] = plgtype
-                        plg_dict['desc'] = get_description(section_dict, 85)
+                        plg_dict['desc'] = get_description(section_dict, 85, language)
                         plg_dict['maint'] = get_maintainer(section_dict, 15)
                         plg_dict['test'] = get_tester(section_dict, 15)
                         plg_dict['doc'] = html_escape(section_dict.get('documentation', ''))
@@ -195,7 +198,7 @@ def build_pluginlist( plugin_type='all' ):
                 if (plgtype == type_unclassified) and (plugin_yaml != ''):
                     plg_dict['name'] = metaplugin.lower()
                     plg_dict['type'] = type_unclassified
-                    plg_dict['desc'] = get_description(section_dict, 85)
+                    plg_dict['desc'] = get_description(section_dict, 85, language)
                     plg_dict['maint'] = get_maintainer(section_dict, 15)
                     plg_dict['test'] = get_tester(section_dict, 15)
                     plg_dict['doc'] = html_escape(section_dict.get('documentation', ''))
@@ -273,19 +276,28 @@ def write_rstfile(plgtype='All', heading=''):
         fh.write('   :widths: grid\n')
         fh.write('\n')
         fh.write('   +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+\n')
-        fh.write('   | Plugin            | Description                                                                                                                                                 | Maintainer      | Tester          |\n')
+        if language == 'de':
+            fh.write('   | Plugin            | Beschreibung                                                                                                                                                | Maintainer      | Tester          |\n')
+        else:
+            fh.write('   | Plugin            | Description                                                                                                                                                 | Maintainer      | Tester          |\n')
         fh.write('   +===================+===========================================================================================================================================+=================+=================+=================+\n')
         for plg in plglist:
             fh.write('   | {plg:<17.17} | {desc:<155.155} | {maint:<15.15} | {test:<15.15} |\n'.format(plg=plg['name'], desc=plg['desc'][0], maint=plg['maint'][0], test=plg['test'][0]))
             for l in range(1, len(plg['desc'])):
                 fh.write('   | {plg:<17.17} | {desc:<155.155} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['desc'][l], maint=plg['maint'][l], test=plg['test'][l]))
             if plg['doc'] != '':
-                plg['doc'] = "`"+plg['name']+" additional info <"+plg['doc']+">`_"
+                if language == 'de':
+                    plg['doc'] = "`"+plg['name']+" zusätzliche Infos <"+plg['doc']+">`_"
+                else:
+                    plg['doc'] = "`"+plg['name']+" additional info <"+plg['doc']+">`_"
                 fh.write('   | {plg:<17.17} | - {desc:<153.153} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['doc'], maint='', test=''))
             if plg['sup'] != '':
 #                if plg['doc'] != '':
 #                    fh.write('   | {plg:<17.17} |   {desc:<153.153} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc='', maint='', test=''))
-                plg['sup'] = "`"+plg['name']+" support <"+plg['sup']+">`_"
+                if language == 'de':
+                    plg['sup'] = "`"+plg['name']+" Unterstützung <"+plg['sup']+">`_"
+                else:
+                    plg['sup'] = "`"+plg['name']+" support <"+plg['sup']+">`_"
                 fh.write('   | {plg:<17.17} | - {desc:<153.153} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['sup'], maint='', test=''))
             fh.write('   +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+\n')
         fh.write('\n')
@@ -302,12 +314,21 @@ def write_rstfile(plgtype='All', heading=''):
 
 if __name__ == '__main__':
     
-    
+#    print ('Number of arguments:', len(sys.argv), 'arguments.')
+#    print ('Argument List:', str(sys.argv))    
+
+    global language
+    if 'de' in sys.argv:
+        language = 'de'
+    if 'en' in sys.argv:
+        language = 'en'
+
     global docu_type
     docu_type = start_dir.split('/')[-1:][0]     # developer / user
 
-    print('Start directory    = '+start_dir)
-    print('Documentation type = '+docu_type)
+    print('Start directory        = '+start_dir)
+    print('Documentation type     = '+docu_type)
+    print('Documentation language = '+language)
     print('')
 
     # change the working diractory to the directory from which the converter is loaded (../tools)

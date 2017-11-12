@@ -14,7 +14,8 @@ Web/Cloud Plugins
 
    <br />
 
-A web- or cloud-plugin implements the access to network or internet services.
+Ein Web- oder Cloud-Plugin implementiert den Zugriff zu lokalen Netzwerk Services oder zu
+Internet Services.
 
 |br|
 |br|

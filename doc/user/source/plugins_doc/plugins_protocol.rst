@@ -18,17 +18,17 @@
    :widths: grid
 
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
-   | Plugin            | Description                                                                                                                                                 | Maintainer      | Tester          |
+   | Plugin            | Beschreibung                                                                                                                                                | Maintainer      | Tester          |
    +===================+===========================================================================================================================================+=================+=================+=================+
-   | mqtt              | Implementation of a MQTT client. Feature enriched implementation of the MQTT                                                                                | msinn           |                 |
-   |                   | protocol, **since SmartHomeNG v1.3**                                                                                                                        |                 |                 |
+   | mqtt              | Implementierung eines MQTT Clients. Umfassendere Implementierung des MQTT Protokolls,                                                                       | msinn           |                 |
+   |                   | **seit SmartHomeNG v1.3**                                                                                                                                   |                 |                 |
    |                   |                                                                                                                                                             |                 |                 |
-   |                   | - `mqtt support <https://knx-user-forum.de/forum/supportforen/smarthome-py/1089334-neues-mqtt-plugin>`_                                                     |                 |                 |
+   |                   | - `mqtt Unterstützung <https://knx-user-forum.de/forum/supportforen/smarthome-py/1089334-neues-mqtt-plugin>`_                                               |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
-   | mqtt_1_0          | Implementation of a MQTT client. - To be retired                                                                                                            | cmalo           |                 |
+   | mqtt_1_0          | Implementierung eines MQTT Clients. - veraltet                                                                                                              | cmalo           |                 |
    |                   |                                                                                                                                                             |                 |                 |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
-   | network           | Support for the protocols UDP and TCP                                                                                                                       | cmalo (mknx)    | onkelandy,      |
+   | network           | UDP und TCP Protokoll Unterstützung                                                                                                                         | cmalo (mknx)    | onkelandy,      |
    |                   |                                                                                                                                                             |                 | psilo909        |
    +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+
    | wol               | Wake on LAN                                                                                                                                                 | cmalo           |                 |

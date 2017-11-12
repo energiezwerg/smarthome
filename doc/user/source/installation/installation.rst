@@ -14,7 +14,7 @@ Es wird auch die Installation mit Docker und das Update bzw. Upgrade von ältere
    :titlesonly:
    
    anforderungen.md
-   komplettanleitung.md
+   komplettanleitung.rst
    docker.rst
    update_upgrade.rst
 

@@ -1,7 +1,11 @@
 
-Notes for the list above:
+Anmerkungen für die obige Liste:
 
-1 Description: Links in the description column refer to (mostly german) user-documentation in the SmartHomeNG wiki
+1 Beschreibung: Links in in der Beschreibungs-Spalte verweisen auf die (großteils deutsche) 
+Anwender-Dokumentation im SmartHomeNG Wiki
 
-2 Maintainer: If the mainenance state of a plugin is unknown, the column contains a ``?``.  The ``?`` may be followed by the name of the original author (in brackets). For plugins with an unknown maintainer it is not known at the moment, if those plugins are functional. 
+2 Maintainer: Falls unbekannt ist, ob das Plugin aktuell gepflegt wird, enthält die Spalte ein
+``?``.  Hinter dem ``?`` kann der Name des Original Autors (in Klammern) folgen. 
+Bei diesen Plugins, bei denen der Maintenance Status bzw. der Mainainer unbekannt sind, ist
+nicht sicher, dass diese Plugins mit der aktuellen Version von SmartHomeNG funktionieren.
   
