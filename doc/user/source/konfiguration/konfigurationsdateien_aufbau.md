@@ -193,9 +193,9 @@ wohnung:
 
 ### Konvertierung von .conf Dateien in das YAML Format
 
-Im Verzeichnis **`/tools`** von SmartHomeNG liegt ein Tool (conf_to_yaml_converter.py) zur Konvertierung der .conf Dateien in YAML Dateien. 
+Im Verzeichnis ***../tools*** von SmartHomeNG liegt ein Tool (conf_to_yaml_converter.py) zur Konvertierung der .conf Dateien in YAML Dateien. 
 
-Der Konverter konvertiert sowohl die .conf Dateien im **`/items`** Verzeichnis, als auch die .conf Dateien im **`/etc`** Verzeichnis. Nach dem Start des Konverters fragt er für jedes der beiden Verzeichnisse ab, ob die Dateien in dem Verzeichnis konvertiert werden sollen.
+Der Konverter konvertiert sowohl die .conf Dateien im ***../items*** Verzeichnis, als auch die .conf Dateien im ***../etc*** Verzeichnis. Nach dem Start des Konverters fragt er für jedes der beiden Verzeichnisse ab, ob die Dateien in dem Verzeichnis konvertiert werden sollen.
 Wichtig: Der Konverter muss vom Verzeichnis tools gestartet werden.
 
 > Wenn in den .conf Dateien Blöcke auskommentiert sind, so werden diese als Kommentare übernommen und nicht konvertiert. Falls es gewünscht ist diese Blöcke zu konvertieren, so muss die Auskommentierung der Zeilen vor der Konvertierung entfernt werden und nach der Konvertierung wieder hinzugefügt werden.
@@ -205,6 +205,6 @@ Die ursprünglichen .conf Dateien bleiben bei der Konvertierung unverändert in 
 
 #### Nacharbeiten
 
-**`/items`**-Verzeichnis: Als Nacharbeiten **müssen** die .conf Dateien aus dem **`/items`** Verzeichnis heraus bewegt werden, da SmartHomeNG im **/items** Verzeichnis alle .conf und alle .yaml Dateien einliest. Dabei würden die Definitionen der Items zweimal eingelesen (einmal aus der .conf Datei und einmal aus der .yaml Datei).
+***../items***-Verzeichnis: Als Nacharbeiten **müssen** die .conf Dateien aus dem ***../items*** Verzeichnis heraus bewegt werden, da SmartHomeNG im ***../items*** Verzeichnis alle .conf und alle .yaml Dateien einliest. Dabei würden die Definitionen der Items zweimal eingelesen (einmal aus der .conf Datei und einmal aus der .yaml Datei).
 
-**`/etc`**-Verzeichnis: Als Nacharbeiten sollten die .conf Dateien aus dem **`/etc`** Verzeichnis heraus bewegt werden, um Verwirrungen zu vermeiden. Das herausbewegen ist nicht unbedingt notwendig, da die SmartHomeNG beim Einlesen der Konfigurationsdateien nur eine Version einliest. Ist eine .yaml Datei vorhanden, wird diese eingelesen. Nur wenn keine .yaml Datei vorhanden ist, wird die .conf Datei gelesen.
+***../etc***-Verzeichnis: Als Nacharbeiten sollten die .conf Dateien aus dem ***../etc*** Verzeichnis heraus bewegt werden, um Verwirrungen zu vermeiden. Das herausbewegen ist nicht unbedingt notwendig, da die SmartHomeNG beim Einlesen der Konfigurationsdateien nur eine Version einliest. Ist eine .yaml Datei vorhanden, wird diese eingelesen. Nur wenn keine .yaml Datei vorhanden ist, wird die .conf Datei gelesen.

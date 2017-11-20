@@ -154,7 +154,7 @@ Beispiel:
 Best Practices
 --------------
 
-Wer eine brauchbare leicht konfigurierbare Loggiing Konfiguration sucht, der wird hier 
+Wer eine brauchbare leicht konfigurierbare Logging Konfiguration sucht, der wird hier 
 :doc:`Logging - Best Practices <logging_best_practices>` fündig.
 
 

@@ -2,9 +2,10 @@
 Komplettanleitung
 #################
 
-Aus dem Wiki übernommen: 11. November 2017 von Seite https://github.com/smarthomeNG/smarthome/wiki/Komplettanleitung
+.. Aus dem Wiki übernommen: 11. November 2017 von Seite https://github.com/smarthomeNG/smarthome/wiki/Komplettanleitung
 
-## Ziel dieser Anleitung
+Ziel dieser Anleitung
+=====================
 
 Diese Anleitung beschreibt ein komplettes Installieren von **SmartHomeNG 1.3** inklusive knxd, 1-Wire 
 und SmartVISU auf einem Debian 8.x (Jessie) oder Debian 9.x (Stretch) Linux Betriebssystem.

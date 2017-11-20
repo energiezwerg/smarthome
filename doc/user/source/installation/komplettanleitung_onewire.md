@@ -60,8 +60,8 @@ ftp: port = 2120
 server: port = 127.0.0.1:4304
 ```
 
-Wichtig dabei ist vor allem das in der Config nicht ``localhost`` steht sondern ``127.0.0.1`` explizit angegeben wird. 
-Dadurch wird eine Bindung des Ports **4304** an eine normale IP erreicht und nicht an tcp6 wie es sonst der Fall wäre. 
+Wichtig dabei ist vor allem das in der Config nicht ***localhost*** steht sondern ***127.0.0.1*** explizit angegeben wird. 
+Dadurch wird eine Bindung des Ports **4304** an eine normale IP erreicht und nicht an IPv6 wie es sonst der Fall wäre. 
 Mit tcp6 wiederum könnte das Smarthome.py derzeit nichts anfangen.
 
 Bei der Installation werden owserver und owhttp automatisch gestartet.
@@ -71,6 +71,6 @@ Nach der Konfigurationsänderung muß der owserver neu gestartet werden:
 sudo systemctl restart owserver
 ```
 
-Damit das Onewire-Plugin von SmartHomeNG genutzt werden kann, muß in der **/etc/plugin.yaml** bzw. **/etc/plugin.conf** müssen beim **ow:**-Abschnitt bzw. **[ow]**-Abschnitt und den direkt nachfolgenden Zeilen die führenden Kommentarzeichen **#**
+Damit das Onewire-Plugin von SmartHomeNG genutzt werden kann, muß in der **../etc/plugin.yaml** bzw. **../etc/plugin.conf** müssen beim **ow:**-Abschnitt bzw. **[ow]**-Abschnitt und den direkt nachfolgenden Zeilen die führenden Kommentarzeichen **#**
 entfernt werden.
 

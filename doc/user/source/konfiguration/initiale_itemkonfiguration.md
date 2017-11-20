@@ -7,7 +7,7 @@ Eigenschaften (Attribute) sind z.B. welcher Datentyp ein Item ist oder wie das I
 
 Ein kleines Beispiel: Du möchtest eine Lampe über KNX ein- und ausschalten. Dazu brauchst du zwei Schritte:
 
-Erstens, du installierst/aktivierst das **KNX Plugin**. Das geschieht in der datei ``etc/plugins.yaml``. Typischerweise sieht der entsprechende Eintrag dann so aus
+Erstens, du installierst/aktivierst das **KNX Plugin**. Das geschieht in der datei **../etc/plugins.yaml**. Typischerweise sieht der entsprechende Eintrag dann so aus
 
 ```yaml
 knx:
@@ -16,8 +16,8 @@ knx:
    host: 127.0.0.1
 ```
 
-Als nächsten Schritt legst Du ein Item an, um die Lampe zu schalten. Hierzu legst du eine Datei (mit beliebigem Namen) im Verzeichnis ``/items`` an, welche auf die Endung ``.yaml`` hört,
-z.B. die Datei ``/items/Lampen.yaml``. In dieser Datei legst du nun das Item an. Das geschieht einfach über den Doppelpunkt der dem Namen folgt. 
+Als nächsten Schritt legst Du ein Item an, um die Lampe zu schalten. Hierzu legst du eine Datei (mit beliebigem Namen) im Verzeichnis **../items** an, welche auf die Endung **.yaml** hört,
+z.B. die Datei **../items/Lampen.yaml**. In dieser Datei legst du nun das Item an. Das geschieht einfach über den Doppelpunkt der dem Namen folgt. 
 Der Inhalt der Datei wäre also:
 
 ```yaml
@@ -120,7 +120,7 @@ Lampe:
         visu_acl: rw
 ```
 
-Damit das funktioniert, muss das Websocket Plugin aktiviert sein. Hierzu in der ``/etc/plugin.yaml`` folgenen Eintrag anlegen:
+Damit das funktioniert, muss das Websocket Plugin aktiviert sein. Hierzu in der **../etc/plugin.yaml** folgenen Eintrag anlegen:
 
 ```yaml
 visu:
@@ -146,6 +146,6 @@ D.h. man kann die Lampe nun via KNX, SmartVisu oder Dashbutton ein- und ausschal
 
 Aber auch hier gilt: Funktioniert nur, wenn das dashbutton plugin in der ``/etc/plugin.yaml`` aktiviert ist.
 
-Wie man grundsätzlich die verschiedenen Plugins in der ``/etc/plugin.yaml`` konfiguriert, steht im Abschmitt **Konfiguration/Plugins** der Doku.
+Wie man grundsätzlich die verschiedenen Plugins in der **../etc/plugin.yaml** konfiguriert, steht im Abschmitt **Konfiguration/Plugins** der Doku.
 Auch wie die Attribute in den Items gesetzt werden müssen, ist für jedes Plugin in der Doku der **Plugins** zu finden.
 

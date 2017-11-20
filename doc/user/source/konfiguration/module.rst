@@ -12,7 +12,7 @@ Module nicht genutzt werden oder stellen nur einen eingeschränkten Funktionsumf
 So ist zum Beispiel der Einsatz des Plugins **Backend** ohne das geladene Modul **http** nicht
 möglich.
 
-...
+
 
 .. toctree::
    :maxdepth: 4

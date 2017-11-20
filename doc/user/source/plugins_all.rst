@@ -27,3 +27,6 @@ Wenn ein Plugin Autor die Informationen auf diesen Seiten aktualisieren möchte,
 die Metadaten Datei ``plugin.yaml`` in seinem Plugin aktualisieren. Beim nächsten Bau dieser
 Dokumentation werden dann diese aktualisierten Informationen automatisch mit aufgenommen.
 
+Informationen zur Erstellung eigener Plugins sind in der Entwickler Dokumentation zu finden.
+Die Entwickler Dokumentation ist nur in englischer Sprache verfügbar.
+

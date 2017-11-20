@@ -17,7 +17,7 @@ Attribute ist in der Dokumentation des jeweiligen Plugins nachzulesen.
 | name            | ein optionaler Name für das Item                                             |
 +-----------------+------------------------------------------------------------------------------+
 | remark          | ein optionaler Kommentar für das Item. Es ist sinnvoll Kommentare zu einem   |
-|                 | Item als **`remark`** Attribut zu erfassen und nicht als Kommentar (**`#`**) |
+|                 | Item als **remark** Attribut zu erfassen und nicht als Kommentar ( **#** )   |
 |                 | in die Konfigurationsdatei zu schreiben. Dadurch können Kommentare bei einer |
 |                 | kommenden Umstellung des Formates der Konfigurationsdateien automatisch      |
 |                 | konvertiert werden.                                                          |
@@ -48,19 +48,19 @@ Attribute ist in der Dokumentation des jeweiligen Plugins nachzulesen.
 |                 | Beschreibung unten)                                                          |
 +-----------------+------------------------------------------------------------------------------+
 | cycle           | Definiert ein regelmäßiges Aufrufen des Items (und damit der verknüpften     |
-|                 | Logik oder Eval-Funktion). ***Ab SmartHomeNG v1.3*** werden die              |
+|                 | Logik oder Eval-Funktion). **Ab SmartHomeNG v1.3** werden die                |
 |                 | Konfigurationsmöglichkeiten erweitert (siehe Beschreibung unten).            |
 +-----------------+------------------------------------------------------------------------------+
 | autotimer       | setzt den Wert des Items nach einer Zeitspanne auf einen bestimmten Wert.    |
-|                 | ***Ab SmartHomeNG v1.3*** werden die Konfigurationsmöglichkeiten erweitert   |
+|                 | **Ab SmartHomeNG v1.3** werden die Konfigurationsmöglichkeiten erweitert     |
 |                 | (siehe [Beschreibung unten](#attribut-autotimer)).                           |
 +-----------------+------------------------------------------------------------------------------+
 | on_update       | Ermöglicht das setzen des Wertes anderer Items, wenn das aktuelle Item ein   |
 |                 | Update erhält (auch wenn sich der Wert des aktuellen Items dabei nicht       |
-|                 | ändert). ***Ab SmartHomeNG v1.4***                                           |
+|                 | ändert). **Ab SmartHomeNG v1.4**                                             |
 +-----------------+------------------------------------------------------------------------------+
 | on_change       | Ermöglicht das setzen des Wertes anderer Items, wenn der Wert des aktuellen  |
-|                 | Items verändert wird. ***Ab SmartHomeNG v1.4***                              |
+|                 | Items verändert wird. **Ab SmartHomeNG v1.4**                                |
 +-----------------+------------------------------------------------------------------------------+
 
 

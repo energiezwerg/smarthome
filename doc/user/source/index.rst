@@ -1,8 +1,11 @@
 :tocdepth: 6
 
-#####################
+###########
+SmartHomeNG
+###########
+
 Anwenderdokumentation
-#####################
+=====================
 
 SmartHomeNG ist ein System das als Metagateway zwischen verschiedenen "Dingen" fungiert und 
 dient der Verbindung unterschiedlicher Geräte-Schnittstellen. Die Standard-Schnittstelle eines 
@@ -22,12 +25,17 @@ Die Entwickler-Dokumentation (für Entwickler von Plugins und den Core von Smart
 die READMEs der Plugins sind in Englisch gehalten.
  
 Die hier entstehende Anwenderdokumentation ist auf Deutsch. Später wird sie zweisprachig Deutsch/Englisch
-zur Verfügung stehen. Sie wird sich aus Inhalten speisen, die zurzeit im Wiki (https://github.com/smarthomeNG/smarthome/wiki)
+zur Verfügung stehen. Sie wird sich aus Inhalten speisen, die zurzeit im `SmartHomeNG Wiki <https://github.com/smarthomeNG/smarthome/wiki>`_
 zur Verfügung stehen.
 
+Hilfe zu SmartHomeNG gibt es im `Supportforum im KNX-User-Forum <https://knx-user-forum.de/forum/supportforen/smarthome-py>`_ 
+oder im `Chat auf gitter.im <https://gitter.im/smarthomeNG/smarthome>`_ .
 
-Hilfe zu SmartHomeNG gibt es im Supportforum im KNX-User-Forum (https://knx-user-forum.de/forum/supportforen/smarthome-py) 
-oder im Chat auf gitter.im (https://gitter.im/smarthomeNG/smarthome).
+.. note::
+
+   **Anmerkungen** und **Änderungswünsche** zu dieser Anwenderdokumentation bitte auf  
+   `dieser Wiki Seite <https://github.com/smarthomeNG/smarthome/wiki/Anwender-Dokumentation---Kommentare>`_ hinterlassen.
+
 
 
 .. toctree::

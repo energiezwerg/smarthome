@@ -2,7 +2,7 @@
 Konfigurationsdateien
 #####################
 
-Für die Konfiguration sind die Verzeichnisse ``etc``, ``items`` und ``logics`` wichtig.
+Für die Konfiguration sind die Verzeichnisse ***../etc***, ***../items***, ***../scenes*** und ***../logics*** wichtig.
 In diesen Verzeichnissen wird die Konfiguration gespeichert und gepflegt. Im folgenden sind
 die Konfigurationsdateien beschrieben, die in diesen Verzeichnissen gespeichert werdeen.
 
@@ -18,14 +18,14 @@ nicht mehr unterstützt werden. Ab welcher Version die Unterstützung entfallen 
 Wenn das Backend-Plugin konfiguriert ist, können damit Abschnitte des alten .conf Dateiformats in das yaml Format
 überführt werden.
 
-Es gibt außerdem ein Service Tool im Verzeichnis ``/tools``, welches dazu dient, die gesamte Konfiguration zu
-konvertieren. Hierbei kann gewählt werden, ob die Inhalte des ``/etc`` Verzeichnisses, des ``items`` Verzeichnisses
+Es gibt außerdem ein Service Tool im Verzeichnis ***../tools***, welches dazu dient, die gesamte Konfiguration zu
+konvertieren. Hierbei kann gewählt werden, ob die Inhalte des ***../etc*** Verzeichnisses, des ***../items*** Verzeichnisses
 oder beide konvertiert werden sollen.
 
-Please have a look at :doc:`../tools`.
+Genaueres bitte unter :doc:`../tools` nachlesen.
 
 ---------------------------------------------
-Konfigurationsdateien im Verzeichnis **/etc**
+Konfigurationsdateien im Verzeichnis *../etc*
 ---------------------------------------------
 
 - smarthome.yaml
@@ -35,14 +35,21 @@ Konfigurationsdateien im Verzeichnis **/etc**
 
 
 -------------------------------------------------
-Item Definitionsdateien im Verzeichnis **/items**
+Item Definitionsdateien im Verzeichnis *../items*
 -------------------------------------------------
 
 - *.yaml
 
 
+----------------------------------------------------
+Szenen Definitionsdateien im Verzeichnis *../scenes*
+----------------------------------------------------
+
+- *.yaml
+
+
 -------------------------------------
-Logik Code im Verzeichnis **/logics**
+Logik Code im Verzeichnis *../logics*
 -------------------------------------
 
 - *.py

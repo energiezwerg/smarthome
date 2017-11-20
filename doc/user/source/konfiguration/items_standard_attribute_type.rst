@@ -1,7 +1,7 @@
 `type`
 ------
 
-Das Attribut ``type`` legt den Datentyp des Items fest. Dadurch wird bestimmt, was für Daten in 
+Das Attribut **type** legt den Datentyp des Items fest. Dadurch wird bestimmt, was für Daten in 
 dem Item gespeichert werden können und wie das Item verwendet werden kann.
 
 Folgende mögliche Datentypen sind für Items definiert:
@@ -23,9 +23,10 @@ Folgende mögliche Datentypen sind für Items definiert:
 | foo      | allgemeiner Typ - Items dieses Typs können Daten beliebiger anderer Datentypen       |
 |          | aufnehmen                                                                            |
 +----------+--------------------------------------------------------------------------------------+
-| scene    | Spezialtyp für Szenen. Die eigentliche Konfiguration der Szenen wird in Dateien im   |
-|          | Verzeichnis ``/scenes`` von SmartHomeNG gespeichert. Dort muss es eine               |
-|          | Konfigurationsdatei mit dem Namen des Item-Pfades geben. Genaueres ist dem Abschnitt |
-|          | ***Konfiguration / Szenen*** dieser Dokumentation zu entnehmen.                      |
+| scene    | Eine Szene - Die eigentliche Konfiguration der Szene für das jeweilige Item wird in  |
+|          | einer eigenen Datei im Verzeichnis **../scenes** von SmartHomeNG gespeichert. Dort   |
+|          | muss es für jede Szene (jedes Item vom Typ *scene* eine eigene Konfigurationsdatei   |
+|          | mit dem Namen des Item-Pfades geben. Genaueres ist dem Abschnitt                     |
+|          | **Konfiguration / Szenen** dieser Dokumentation zu entnehmen.                        |
 +----------+--------------------------------------------------------------------------------------+
 

@@ -16,7 +16,7 @@ sudo nano /etc/samba/smb.conf
 
 In die Datei folgendes einfügen:
 
-```ini
+```
 [global]
     workgroup = WORKGROUP
     server string = SmartHome

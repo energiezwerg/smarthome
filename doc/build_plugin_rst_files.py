@@ -41,8 +41,8 @@ import shyaml
 
 import subprocess
 
-global language
-language = 'en'
+#global language
+#language = 'en'
 
 
 type_unclassified = 'unclassified'
@@ -318,6 +318,8 @@ if __name__ == '__main__':
 #    print ('Argument List:', str(sys.argv))    
 
     global language
+    language = 'en'
+    
     if 'de' in sys.argv:
         language = 'de'
     if 'en' in sys.argv:

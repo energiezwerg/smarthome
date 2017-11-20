@@ -9,9 +9,16 @@ Ort der SmartHomeNG Installation berechnen zu können, sind die geographischen K
 der SmartHomeNG Installation notwendig. Diese werden zusammen mit einigen globalen SmartHomeNG
 Konfigurationen in smarthome.yaml konfiguriert.
 
-Erzeuge eine neue Datei ``smarthome.yaml`` im Verzeichnis ``/etc`` oder kopiere die vorhandene
-Datei ``smarthome.yaml.default`` zu ``smarthome.yaml`` und passe sie nach Deinen Erfordernissen
-an. Die Datei sollte folgendermaßen aussehen:
+Erzeuge eine neue Datei **smarthome.yaml** im Verzeichnis ***../etc*** oder kopiere die vorhandene
+Datei **smarthome.yaml.default** zu **smarthome.yaml** und passe sie nach Deinen Erfordernissen
+an. 
+
+.. hint::
+
+    Falls beim Start von SmartHomeNG keine Datei **smarthome.yaml** existiert, wird die Datei 
+    **smarthome.yaml.default** automatisch kopiert.
+
+Die Datei sollte folgendermaßen aussehen:
       
 .. code-block:: yaml
    :caption: smarthome.yaml

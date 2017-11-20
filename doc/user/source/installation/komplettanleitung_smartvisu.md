@@ -88,9 +88,13 @@ Bei I/O Connection **Smarthome.py** auswählen.
 Bei Adresse (URL / IP) die IP Adresse des Servers oder den DNS Namen eingeben auf dem SmartHomeNG installiert ist. 
 Bei Port ist standardmäßig ``2424`` einzugeben. 
 
-**ACHTUNG**: Hier **NICHT** ``localhost`` oder ``127.0.0.1`` eingeben, denn diese Adresse wird vom Client Browser benutzt (Javascripts) um aktuelle Daten über einen Websocket direkt von SmartHomeNG abzufragen. 
-Im Tab ``Interfaces``muß noch die anzuzeigende Visuseite eingestellt werden. Dort kann unter anderem gewählt werden zwischen verschiedenen Demoseiten.
+**ACHTUNG**: Hier **NICHT** ***localhost*** oder ***127.0.0.1*** eingeben, denn diese Adresse wird vom Client Browser benutzt (Javascripts) um aktuelle Daten über einen Websocket direkt von SmartHomeNG abzufragen. 
+
+Im Tab **Interfaces** muß noch die anzuzeigende Visuseite eingestellt werden. Dort kann unter anderem gewählt werden zwischen verschiedenen Demoseiten.
+
 Um mit der SmartVISU eine eigene Visu anzulegen, muß innerhalt des pages Ordners der Visu ein neues Verzeichnis angelegt werden, in dem dann die eigenen Seiten z.B. für Räume abgelegt werden. Es existiert dort ein Ordner ``_template``. Wenn man diesen kopiert und umbenennt, kan man recht schnell damit eigene Schritte zur Visu machen.
-Alternativ bietet SmartHomeNG mit dem Plugin ``visu_smartvisu`` eine automatische Erstellung der Visuseiten an. Dazu bitte beim entsprechenden Plugin die Doku lesen.
+
+Alternativ bietet SmartHomeNG mit dem Plugin ***visu_smartvisu*** eine automatische Erstellung der Visuseiten an. Dazu bitte beim entsprechenden Plugin die Doku lesen.
+
 Um die Einstellungen zu sichern bitte Save auswählen. [In älteren Visuversionen mußte zweimal auf Save gedrückt werden, das sollte mit SV 2.9 behoben sein.]
 

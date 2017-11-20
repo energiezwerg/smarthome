@@ -1,15 +1,18 @@
 Items
 #####
 
-Aus dem Wiki übernommen: 11. November 2017 von Seite https://github.com/smarthomeNG/smarthome/wiki/Items
+.. Aus dem Wiki übernommen: 11. November 2017 von Seite https://github.com/smarthomeNG/smarthome/wiki/Items
+
 
 .. toctree::
    :maxdepth: 4
    :hidden:
 
+   initiale_itemkonfiguration.md
    items_standard_attribute.rst
    items_attributes_relative_referenzen.rst
    items_attributes_eval_ausdruecke.rst
+   items_funktionen.rst
 
 
 Überblick
@@ -35,7 +38,9 @@ oder eine Ziffer **0-9** darf _innerhalb_ des Itemnamens vorkommen. Einen Itemna
 wie `[1w_Bus]`, `[42]` oder `[_Bus]` sind nicht zulässig. Außerdem ist es unzulässig für Itemnamen
 reservierte Worte der Programmiersprache Python zu verwenden.
 
-**ACHTUNG**: Bei Items wird zwischen Groß- und Kleinschreibung unterschieden.
+.. attention::
+
+   Bei Items wird zwischen Groß- und Kleinschreibung unterschieden.
 
 Items können Hierarchisch aufgebaut sein, ein Item kann Kinder-Items haben, die ihrerseits wiederum 
 Kinder-Items haben können. Zur Kennzeichnung der Hierarchieebene wird im yaml Dateiformat eine
@@ -71,7 +76,7 @@ Namensvergabe
 Bei der Wahl von Itemnamen ist folgendes zu beachten:
 
 Plugin-Instanzen und Items der obersten Ebene (Top-Level) teilen sich den Namensraum. Es sollte 
-vermieden werden, Top-Level Items einen Namen zu geben, der in ``etc/plugin.yaml`` (bzw. ``etc/plugin.conf``) 
+vermieden werden, Top-Level Items einen Namen zu geben, der in **../etc/plugin.yaml** (bzw. **../etc/plugin.conf**) 
 bereits für eine Plugin-Instanz gewählt wurde. Dieses kann zu unvorhergesehenen Problemen führen. 
 
 z.B.: Wenn ein Plugin Funktionen implementiert hat, wird dies beim Aufruf dieser Funktionen zu 
@@ -100,9 +105,11 @@ angegeben. Normalerweise sind Attribut-Werte einzeilig. Es wird alles bis zum Ze
 zum Beginn eines Kommentars (`#`) angenommen. (Seit dem Release 1.3 werden auch mehrzeilige Attribute 
 unterstützt.)
 
-**Bitte beachten**:  ***Ab SmartHomeNG v1.3*** wird ein neues Dateiformat für Konfigurationsdateien 
-unterstützt. Das bisherige Format der Konfigurationsdateien wird vorerst weiter unterstützt. 
+.. hint::
 
-`Informationen zum neuen Dateiformat <https://github.com/smarthomeNG/smarthome/wiki/Configuration-Files>`_ 
-finden Sie `hier <https://github.com/smarthomeNG/smarthome/wiki/Configuration-Files>`_.
+   **Ab SmartHomeNG v1.3** wird ein neues Dateiformat für Konfigurationsdateien 
+   unterstützt. Das bisherige Format der Konfigurationsdateien wird vorerst weiter unterstützt. 
+
+   Informationen zum :doc:`neuen Dateiformat <./konfigurationsdateien_aufbau>` 
+   finden Sie :doc:`hier <./konfigurationsdateien_aufbau>`.
 

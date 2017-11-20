@@ -25,12 +25,12 @@ eingeben. Daraufhin sollte der Update-Vorgang starten. Zum Abschluss SmarthomeNG
 python3 bin/smarthome.py -d
 ```
 
-Jetzt heißt es genau zu schauen, was an **Warning** oder **Error** gemeldet wird. Logfiles findet man auch in der Standardinstallation unter ``/usr/local/smarthome/var/log/``. Von da aus kann man sie mit einem Editor in Ruhe anschauen und auf Fehler durchsuchen.
+Jetzt heißt es genau zu schauen, was an **Warning** oder **Error** gemeldet wird. Logfiles findet man auch im Verzeichnis  ``../var/log`` (in der Standardinstallation unter ``/usr/local/smarthome/var/log``). Von da aus kann man sie mit einem Editor in Ruhe anschauen und auf Fehler durchsuchen.
 Alternativ kann man ab SmartHomeNG Version 1.2 auch im Backend schauen. Dort werden die Logfiles aufgelistet.
 
 Wenn dann die Konfiguration stimmt, kann man natürlich den automatischen Neustart von SmartHomeNG wieder einschalten. In der Komplettanleitung ist beschrieben, welche Schritte dafür bei Verwendung von systemd durchgeführt werden müssen.
 
-Möchte man vom alten *.conf [Format der Konfigurationsdateien](https://github.com/smarthomeNG/smarthome/wiki/Configuration-Files) (die wohl absehbar auch nicht weiter unterstützt werden) auf das neue *.yaml Format umschwenken, so kann der unter ``usr/local/smarthome/tools/conf_to_yaml_converter.py`` bereitgestellte Konverter genutzt werden um das automatisch zu tun.
+Möchte man vom alten *.conf [Format der Konfigurationsdateien](https://github.com/smarthomeNG/smarthome/wiki/Configuration-Files) (die wohl absehbar auch nicht weiter unterstützt werden) auf das neue *.yaml Format umschwenken, so kann der im Verzeichnis ``../tools`` bereitgestellte Konverter ``conf_to_yaml_converter.py`` genutzt werden um das automatisch zu tun.
 
 Nacharbeiten empfehlen sich auf jeden Fall für Item Attribute deren Werte als String erwartet werden, die aufgrund ihrer Struktur aber als float eingelesen werden. Ein prominentes Beispiel sind Onewire Adressen.
 

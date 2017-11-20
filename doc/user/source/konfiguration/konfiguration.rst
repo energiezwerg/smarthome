@@ -8,7 +8,6 @@ Konfiguration
    :titlesonly:
    
    konfigurationsdateien.rst
-   initiale_itemkonfiguration.md
    items.rst
    module.rst
    plugins.rst
@@ -74,7 +73,7 @@ Gute Einführungen zu Python sind `hier <https://github.com/smarthomeNG/smarthom
 Verzeichnisse in SmartHomeNG
 ============================
 
-Die Verzeichnisse sind im Hauptverzeichnis von smarthome zu finden, für gewöhnlich im Ordner **"/usr/local/smarthome/"**.
+Die Verzeichnisse sind im Hauptverzeichnis von smarthome zu finden, für gewöhnlich im Verzeichnis **"/usr/local/smarthome"**.
 
 +-------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
 | Verzeichnis | Beschreibung / Inhalt                                                                                                                         |
@@ -107,8 +106,8 @@ Die Verzeichnisse sind im Hauptverzeichnis von smarthome zu finden, für gewöhn
 +-------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
 
 
-Dateien in etc
---------------
+Dateien im Verzeichnis *../etc*
+-------------------------------
 
 Während der Installation sind im Unterverzeichnis **etc** bereits drei Dateien erstellt worden: **smarthome.conf**, **plugin.conf** und **logic.conf**. 
 
@@ -242,8 +241,8 @@ Mit der **logging.yaml** kann man ziemlich fein steuern von welchen Modulen man 
 Weitere Informationen gibt es unter `Konfiguration - Logging <logging.html>`_
 
 
-Dateien in items
-----------------
+Dateien im Verzeichnis *../items*
+---------------------------------
 
 Hier finden sich die Dateien mit den Items. Es ist egal, wie viele Dateien hier abgelegt wurden. Alle Dateien die die Endung .conf besitzen, werden beim Start von SmartHomeNG gelesen und in die Struktur von SmartHomeNG eingebaut.
 Eine genaue Beschreibung des Aufbaus findet sich `hier <Items-und-Eval>`_.
@@ -263,12 +262,16 @@ Eine genaue Beschreibung des Aufbaus findet sich `hier <Items-und-Eval>`_.
 **Wichtig: Wenn eine Item-Datei oder eine Logic-Datei neu erstellt oder geändert worden ist oder ein neues Plugin implementiert werden soll, muss SmartHomeNG neu gestartet werden.**
 
 Der Dienst kann über den entsprechenden Befehl "systemctl" neu gestartet werden.
-```
-sudo systemctl restart smarthome.service
-```
+
+
+.. code-block:: 
+
+   sudo systemctl restart smarthome.service
+
+
 
 Weiterführende Themen
 ---------------------
 
-[[UZSU (Universelle Zeitschaltuhr)|UZSU-(Universelle-Zeitschaltuhr)]]
+`UZSU (Universelle Zeitschaltuhr) <https://github.com/smarthomeNG/smarthome/wiki/UZSU-%28Universelle-Zeitschaltuhr%29>`_
 
