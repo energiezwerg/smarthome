@@ -1,5 +1,7 @@
 keyword:
+  item:
+    global: test
   global:
-    type = num
+    type: num
   and:
-    type = num
+    type: num

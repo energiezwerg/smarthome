@@ -20,19 +20,23 @@ class ConfigBaseTests:
 
     def test_read_ignores_starting_digits(self):
         conf = self.config('digits')
-        self.assertEqual(0, len(conf['digits']))
+        self.assertEqual(1, len(conf['digits']))
+        self.assertFalse('123' in conf['digits']['item'])
 
     def test_read_ignores_set(self):
         conf = self.config('reserved')
-        self.assertEqual(0, len(conf['reserved']))
+        self.assertEqual(1, len(conf['reserved']))
+        self.assertEqual('test', conf['reserved']['item']['set'])
 
     def test_read_ignores_keyword(self):
         conf = self.config('keyword')
-        self.assertEqual(0, len(conf['keyword']))
+        self.assertEqual(1, len(conf['keyword']))
+        self.assertEqual('test', conf['keyword']['item']['global'])
 
     def test_read_ignores_invalidchars(self):
         conf = self.config('invalidchars')
-        self.assertEqual(0, len(conf['invalidchars']))
+        self.assertEqual(1, len(conf['invalidchars']))
+        self.assertFalse('invalid.dot' in conf['invalidchars']['item'])
 
     def test_read_sections(self):
         conf = self.config('sections')

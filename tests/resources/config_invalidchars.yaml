@@ -1,3 +1,5 @@
 invalidchars:
+  item:
+    invalid.dot: test
   invalid.dot:
-
+    key: value
