@@ -448,6 +448,7 @@ def parse_conf(filename, config=None):
                 if len(attr) > 0:
                     if attr[0] in digits:
                         logger.error("Problem parsing '{}' attrib starts with a digit '{}' in line {}: {}.".format(filename, attr[0], linenu, attr ))
+                        continue
                 if '|' in value:
                     item[attr] = [strip_quotes(x) for x in value.split('|')]
                 else:
