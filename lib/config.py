@@ -121,7 +121,7 @@ def parse(filename, config=None):
 
 # --------------------------------------------------------------------------------------
 
-def remove_keys(ydata, func, remove=REMOVE_ATTR, level=0, msg=None, key_prefix=''):
+def remove_keys(ydata, func, remove=[REMOVE_ATTR], level=0, msg=None, key_prefix=''):
     '''
     Removes given keys from a dict or OrderedDict structure
 
@@ -136,15 +136,16 @@ def remove_keys(ydata, func, remove=REMOVE_ATTR, level=0, msg=None, key_prefix='
     try:
         level_keys = list(ydata.keys())
         for key in level_keys:
-            if remove is REMOVE_PATH and func(str(key)):
-                logger.warn(msg.format(key_prefix+key))
-                ydata.pop(key)
-            elif type(ydata[key]).__name__ in ['dict','OrderedDict']:
-                remove_keys(ydata[key], func, remove, level+1, msg, key_prefix+key+'.')
-            else:
-                if remove is REMOVE_ATTR and func(str(key)):
-                    logger.warn(msg.format(key_prefix+key))
+            key_str = str(key)
+            if type(ydata[key]).__name__ not in ['dict','OrderedDict']:
+                if REMOVE_ATTR in remove and func(key_str):
+                    logger.warn(msg.format(key_prefix+key_str))
                     ydata.pop(key)
+            elif REMOVE_PATH in remove and func(key_str):
+                logger.warn(msg.format(key_prefix+key_str))
+                ydata.pop(key)
+            else:
+                remove_keys(ydata[key], func, remove, level+1, msg, key_prefix+key_str+'.')
     except Exception as e:
         logger.error("Problem removing key from '{}', probably invalid YAML file: {}".format(str(ydata), e))
 
@@ -158,7 +159,7 @@ def remove_comments(ydata):
     :type ydata: OrderedDict
     
     '''
-    remove_keys(ydata, lambda k: k.startswith('comment'), REMOVE_ATTR)
+    remove_keys(ydata, lambda k: k.startswith('comment'), [REMOVE_ATTR])
 
 
 def remove_digits(ydata):
@@ -169,7 +170,7 @@ def remove_digits(ydata):
     :type ydata: OrderedDict
 
     '''
-    remove_keys(ydata, lambda k: k[0] in digits, REMOVE_PATH, msg="Problem parsing '{}': item starts with digits")
+    remove_keys(ydata, lambda k: k[0] in digits, [REMOVE_ATTR, REMOVE_PATH], msg="Problem parsing '{}': item starts with digits")
 
 
 def remove_reserved(ydata):
@@ -180,7 +181,7 @@ def remove_reserved(ydata):
     :type ydata: OrderedDict
 
     '''
-    remove_keys(ydata, lambda k: k in reserved, REMOVE_PATH, msg="Problem parsing '{}': item using reserved word set/get")
+    remove_keys(ydata, lambda k: k in reserved, [REMOVE_PATH], msg="Problem parsing '{}': item using reserved word set/get")
 
 
 def remove_keyword(ydata):
@@ -191,7 +192,7 @@ def remove_keyword(ydata):
     :type ydata: OrderedDict
 
     '''
-    remove_keys(ydata, lambda k: keyword.iskeyword(k), REMOVE_PATH, msg="Problem parsing '{}': item using reserved Python keyword")
+    remove_keys(ydata, lambda k: keyword.iskeyword(k), [REMOVE_PATH], msg="Problem parsing '{}': item using reserved Python keyword")
 
 
 def remove_invalid(ydata):
@@ -203,7 +204,7 @@ def remove_invalid(ydata):
 
     '''
     valid_chars = valid_item_chars + valid_attr_chars
-    remove_keys(ydata, lambda k: True if True in [True for i in range(len(k)) if k[i] not in valid_chars] else False, REMOVE_PATH, msg="Problem parsing '{}' invalid character. Valid characters are: " + str(valid_chars))
+    remove_keys(ydata, lambda k: True if True in [True for i in range(len(k)) if k[i] not in valid_chars] else False, [REMOVE_ATTR, REMOVE_PATH], msg="Problem parsing '{}' invalid character. Valid characters are: " + str(valid_chars))
 
 
 def merge(source, destination):
