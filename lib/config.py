@@ -118,7 +118,7 @@ def parse(filename, config=None):
 
 # --------------------------------------------------------------------------------------
 
-def remove_keys(ydata, func, level=0):
+def remove_keys(ydata, func, level=0, msg=None, key_prefix=''):
     '''
     Removes given keys from a dict or OrderedDict structure
 
@@ -134,9 +134,10 @@ def remove_keys(ydata, func, level=0):
         level_keys = list(ydata.keys())
         for key in level_keys:
             if type(ydata[key]).__name__ in ['dict','OrderedDict']:
-                remove_keys(ydata[key], func, level+1)
+                remove_keys(ydata[key], func, level+1, msg, key_prefix+key+'.')
             else:
                 if func(str(key)):
+                    logger.warn(msg.format(key_prefix+key))
                     ydata.pop(key)
     except:
         logger.error("Problem removing key from '{}', probably invalid YAML file".format(str(ydata)))
@@ -162,7 +163,7 @@ def remove_digits(ydata):
     :type ydata: OrderedDict
 
     '''
-    remove_keys(ydata, lambda k: k[0] in digits)
+    remove_keys(ydata, lambda k: k[0] in digits, msg="Problem parsing '{}': item starts with digits")
 
 
 def remove_reserved(ydata):
@@ -173,7 +174,7 @@ def remove_reserved(ydata):
     :type ydata: OrderedDict
 
     '''
-    remove_keys(ydata, lambda k: k in reserved)
+    remove_keys(ydata, lambda k: k in reserved, msg="Problem parsing '{}': item using reserved word set/get")
 
 
 def remove_keyword(ydata):
@@ -184,7 +185,7 @@ def remove_keyword(ydata):
     :type ydata: OrderedDict
 
     '''
-    remove_keys(ydata, lambda k: keyword.iskeyword(k))
+    remove_keys(ydata, lambda k: keyword.iskeyword(k), msg="Problem parsing '{}': item using reserved Python keyword")
 
 
 def remove_invalid(ydata):
@@ -196,7 +197,7 @@ def remove_invalid(ydata):
 
     '''
     valid_chars = valid_item_chars + valid_attr_chars
-    remove_keys(ydata, lambda k: True if True in [True for i in range(len(k)) if k[i] not in valid_chars] else False)
+    remove_keys(ydata, lambda k: True if True in [True for i in range(len(k)) if k[i] not in valid_chars] else False, msg="Problem parsing '{}' invalid character. Valid characters are: " + str(valid_chars))
 
 
 def merge(source, destination):
