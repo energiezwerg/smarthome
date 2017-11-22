@@ -11,6 +11,7 @@ env:
 
 install:
     - pip install tox-travis "virtualenv<14.0.0"
+    - pip install sphinx sphinx_rtd_theme recommonmark ruamel.yaml
 
 script:
     - sh .travis.sh
