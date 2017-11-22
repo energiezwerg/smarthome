@@ -138,11 +138,12 @@ def remove_keys(ydata, func, remove=[REMOVE_ATTR], level=0, msg=None, key_prefix
         for key in level_keys:
             key_str = str(key)
             if type(ydata[key]).__name__ not in ['dict','OrderedDict']:
-                if REMOVE_ATTR in remove and func(key_str):
+                key_remove = REMOVE_ATTR in remove and func(key_str)
+            else:
+                key_remove = REMOVE_PATH in remove and func(key_str)
+            if key_remove:
+                if msg:
                     logger.warn(msg.format(key_prefix+key_str))
-                    ydata.pop(key)
-            elif REMOVE_PATH in remove and func(key_str):
-                logger.warn(msg.format(key_prefix+key_str))
                 ydata.pop(key)
             else:
                 remove_keys(ydata[key], func, remove, level+1, msg, key_prefix+key_str+'.')
