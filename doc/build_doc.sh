@@ -7,7 +7,7 @@
 #
 
 KEEP_REPO=True
-if [ "$1" == "-f" [ || ] "$2" == "-f" ]; then
+if [ "$1" == "-f" ] || [ "$2" == "-f" ]; then
   FORCE_CHECKOUT=True
 fi
 
