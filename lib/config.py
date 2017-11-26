@@ -137,8 +137,8 @@ def remove_keys(ydata, func, remove=[REMOVE_ATTR], level=0, msg=None, key_prefix
         level_keys = list(ydata.keys())
         for key in level_keys:
             key_str = str(key)
-            key_dict = type(ydata[key]).__name__ not in ['dict','OrderedDict']
-            if key_dict:
+            key_dict = type(ydata[key]).__name__ in ['dict','OrderedDict']
+            if  not key_dict:
                 key_remove = REMOVE_ATTR in remove and func(key_str)
             else:
                 key_remove = REMOVE_PATH in remove and func(key_str)
