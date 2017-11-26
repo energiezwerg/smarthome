@@ -282,7 +282,7 @@ def write_rstfile(plgtype='All', plgtype_print='', heading=''):
         if language == 'de':
             fh.write('   | Plugin            | {b:<165.165} | Maintainer      | Tester          |\n'.format(b='Beschreibung'))
         else:
-            fh.write('   | Plugin            | Description                                                                                                                                                 | Maintainer      | Tester          |\n')
+            fh.write('   | Plugin            | {b:<165.165} | Maintainer      | Tester          |\n'.format(b='Description'))
         fh.write('   +===================+' + '='*167 + '+=================+=================+\n')
         for plg in plglist:
             fh.write('   | {plg:<17.17} | {desc:<165.165} | {maint:<15.15} | {test:<15.15} |\n'.format(plg=plg['name'], desc=plg['desc'][0], maint=plg['maint'][0], test=plg['test'][0]))

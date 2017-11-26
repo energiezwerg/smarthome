@@ -1,4 +1,4 @@
-# Anzeige von zusätzlichen Informationen in der Navigation
+# Zusätzliche Infos in der Navigation
 
 ## Möglichkeiten
 

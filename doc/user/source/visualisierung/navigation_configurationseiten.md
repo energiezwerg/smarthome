@@ -1,4 +1,4 @@
-# Generierung einer Konfigurations-Navigation
+# Navigation für Konfiguration
 
 ## Möglichkeiten
 

@@ -1,4 +1,4 @@
-# Anzeige von Trennern in der Navigation
+# Trenner in der Navigation
 
 ## Möglichkeiten
 
