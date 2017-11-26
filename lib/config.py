@@ -137,7 +137,8 @@ def remove_keys(ydata, func, remove=[REMOVE_ATTR], level=0, msg=None, key_prefix
         level_keys = list(ydata.keys())
         for key in level_keys:
             key_str = str(key)
-            if type(ydata[key]).__name__ not in ['dict','OrderedDict']:
+            key_dict = type(ydata[key]).__name__ not in ['dict','OrderedDict']
+            if key_dict:
                 key_remove = REMOVE_ATTR in remove and func(key_str)
             else:
                 key_remove = REMOVE_PATH in remove and func(key_str)
@@ -145,7 +146,7 @@ def remove_keys(ydata, func, remove=[REMOVE_ATTR], level=0, msg=None, key_prefix
                 if msg:
                     logger.warn(msg.format(key_prefix+key_str))
                 ydata.pop(key)
-            else:
+            elif key_dict:
                 remove_keys(ydata[key], func, remove, level+1, msg, key_prefix+key_str+'.')
     except Exception as e:
         logger.error("Problem removing key from '{}', probably invalid YAML file: {}".format(str(ydata), e))
