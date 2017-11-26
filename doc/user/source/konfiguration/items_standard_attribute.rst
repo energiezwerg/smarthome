@@ -1,3 +1,7 @@
+
+.. index:: Items; Standardattribute
+.. index:: Standardattribute
+
 Standard Attribute
 ==================
 

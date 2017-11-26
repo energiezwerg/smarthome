@@ -62,3 +62,4 @@ any way you want and can.
    development_plugins
    development_core
    release
+   genindex

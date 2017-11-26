@@ -1,3 +1,6 @@
+.. index:: Items; Konfigurationsdateien /items/*.yaml
+.. index:: Konfigurationsdateien; /items/*.yaml
+
 items/*.yaml
 ============
 

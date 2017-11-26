@@ -1,5 +1,7 @@
-logics/*.yaml
-=============
+..index:: Logiken; Code-Files
+
+logics/*.py
+===========
 
 .. _`logic program files`:
 

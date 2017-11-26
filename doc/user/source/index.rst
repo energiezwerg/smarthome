@@ -50,8 +50,8 @@ oder im `Chat auf gitter.im <https://gitter.im/smarthomeNG/smarthome>`_ .
    logiken/logiken.rst
    visualisierung/visualisierung.rst
    backend/backend.rst
-   tools.rst
-   fehlersuche.rst
+   tools/tools.rst
+   fehlersuche
    faq.md
    entwickler_doku.rst
-
+   genindex

@@ -1,3 +1,5 @@
+.. index:: Logiken; Logiken
+
 #######
 Logiken
 #######

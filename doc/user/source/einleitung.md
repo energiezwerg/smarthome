@@ -1,4 +1,4 @@
-![Image](_static/img/logo_long.png?raw=true)
+![Image](_static/img/logo_long.png)
 
 # Einleitung
 

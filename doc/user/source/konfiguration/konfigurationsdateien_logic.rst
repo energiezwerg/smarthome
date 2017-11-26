@@ -1,3 +1,5 @@
+.. index:: Logiken; Konfigurationsdatei /etc/logic.yaml
+.. index:: Konfigurationsdateien; /etc/logic.yaml
 
 .. _`logic.yaml`:
 

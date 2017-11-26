@@ -22,7 +22,7 @@ Es gibt außerdem ein Service Tool im Verzeichnis ***../tools***, welches dazu d
 konvertieren. Hierbei kann gewählt werden, ob die Inhalte des ***../etc*** Verzeichnisses, des ***../items*** Verzeichnisses
 oder beide konvertiert werden sollen.
 
-Genaueres bitte unter :doc:`../tools` nachlesen.
+Genaueres bitte unter :doc:`../tools/tools` nachlesen.
 
 ---------------------------------------------
 Konfigurationsdateien im Verzeichnis *../etc*
@@ -38,22 +38,22 @@ Konfigurationsdateien im Verzeichnis *../etc*
 Item Definitionsdateien im Verzeichnis *../items*
 -------------------------------------------------
 
-- *.yaml
+- \*.yaml
 
 
 ----------------------------------------------------
 Szenen Definitionsdateien im Verzeichnis *../scenes*
 ----------------------------------------------------
 
-- *.yaml
+- \*.yaml
 
 
 -------------------------------------
 Logik Code im Verzeichnis *../logics*
 -------------------------------------
 
-- *.py
-- *.blockly
+- \*.py
+- \*.blockly
 
 
 .. toctree::

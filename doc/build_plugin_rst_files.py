@@ -46,12 +46,12 @@ import subprocess
 
 
 type_unclassified = 'unclassified'
-plugin_sections = [ ['gateway', 'Gateway'],
-                    ['interface', 'Interface'],
-                    ['protocol', 'Protocol'],
-                    ['system', 'System'],
-                    [type_unclassified, 'Non classified Plugins'],
-                    ['web', 'Web / Cloud Plugins']
+plugin_sections = [ ['gateway', 'Gateway', 'Gateway'],
+                    ['interface', 'Interface', 'Interface'],
+                    ['protocol', 'Protocol', 'Protokoll'],
+                    ['system', 'System', 'System'],
+                    [type_unclassified, 'Non classified', 'nicht klassifizierte'],
+                    ['web', 'Web/Cloud', 'Web/Cloud']
                   ]
 
 
@@ -233,7 +233,7 @@ def build_pluginlist( plugin_type='all' ):
     return result
 
 
-def write_rstfile(plgtype='All', heading=''):
+def write_rstfile(plgtype='All', plgtype_print='', heading=''):
     """
     Create a .rst file for each plugin category
     """
@@ -251,6 +251,9 @@ def write_rstfile(plgtype='All', heading=''):
     fh = open(plugin_rst_dir+'/'+rst_filename, "w")
 #    fh.write(title+'\n')
 #    fh.write('-'*len(title)+'\n')
+    if plgtype != type_unclassified:
+        fh.write('.. index:: Plugins; '+plgtype_print+'\n')
+        fh.write('\n')
     fh.write('.. include:: /plugins_doc/plugins_'+plgtype+'_header.rst\n')
     fh.write('\n')
 
@@ -275,31 +278,31 @@ def write_rstfile(plgtype='All', heading=''):
         fh.write('.. table:: \n')
         fh.write('   :widths: grid\n')
         fh.write('\n')
-        fh.write('   +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+\n')
+        fh.write('   +-------------------+' + '-'*167 + '+-----------------+-----------------+\n')
         if language == 'de':
-            fh.write('   | Plugin            | Beschreibung                                                                                                                                                | Maintainer      | Tester          |\n')
+            fh.write('   | Plugin            | {b:<165.165} | Maintainer      | Tester          |\n'.format(b='Beschreibung'))
         else:
             fh.write('   | Plugin            | Description                                                                                                                                                 | Maintainer      | Tester          |\n')
-        fh.write('   +===================+===========================================================================================================================================+=================+=================+=================+\n')
+        fh.write('   +===================+' + '='*167 + '+=================+=================+\n')
         for plg in plglist:
-            fh.write('   | {plg:<17.17} | {desc:<155.155} | {maint:<15.15} | {test:<15.15} |\n'.format(plg=plg['name'], desc=plg['desc'][0], maint=plg['maint'][0], test=plg['test'][0]))
+            fh.write('   | {plg:<17.17} | {desc:<165.165} | {maint:<15.15} | {test:<15.15} |\n'.format(plg=plg['name'], desc=plg['desc'][0], maint=plg['maint'][0], test=plg['test'][0]))
             for l in range(1, len(plg['desc'])):
-                fh.write('   | {plg:<17.17} | {desc:<155.155} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['desc'][l], maint=plg['maint'][l], test=plg['test'][l]))
+                fh.write('   | {plg:<17.17} | {desc:<165.165} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['desc'][l], maint=plg['maint'][l], test=plg['test'][l]))
             if plg['doc'] != '':
                 if language == 'de':
                     plg['doc'] = "`"+plg['name']+" zusätzliche Infos <"+plg['doc']+">`_"
                 else:
                     plg['doc'] = "`"+plg['name']+" additional info <"+plg['doc']+">`_"
-                fh.write('   | {plg:<17.17} | - {desc:<153.153} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['doc'], maint='', test=''))
+                fh.write('   | {plg:<17.17} | - {desc:<163.163} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['doc'], maint='', test=''))
             if plg['sup'] != '':
 #                if plg['doc'] != '':
-#                    fh.write('   | {plg:<17.17} |   {desc:<153.153} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc='', maint='', test=''))
+#                    fh.write('   | {plg:<17.17} |   {desc:<163.163} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc='', maint='', test=''))
                 if language == 'de':
                     plg['sup'] = "`"+plg['name']+" Unterstützung <"+plg['sup']+">`_"
                 else:
                     plg['sup'] = "`"+plg['name']+" support <"+plg['sup']+">`_"
-                fh.write('   | {plg:<17.17} | - {desc:<153.153} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['sup'], maint='', test=''))
-            fh.write('   +-------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------+-----------------+-----------------+\n')
+                fh.write('   | {plg:<17.17} | - {desc:<163.163} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['sup'], maint='', test=''))
+            fh.write('   +-------------------+' + '-'*167 + '+-----------------+-----------------+\n')
         fh.write('\n')
         fh.write('\n')
         
@@ -365,6 +368,6 @@ if __name__ == '__main__':
            
     for pl in plugin_sections:
 #        write_rstfile(pl[0], pl[1])
-        write_rstfile(pl[0])
+        write_rstfile(pl[0], pl[2])
     print()
     

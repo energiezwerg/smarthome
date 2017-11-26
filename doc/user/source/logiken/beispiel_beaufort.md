@@ -1,6 +1,23 @@
-# Beaufort Berechnung aus Windgeschwindigkeit
+# Berechnung der Windstärke
 
-Windangabe in m/s als num. Am Beispiel Wert der Wetterstation:
+## Ziel
+
+Das Ziel ist die Windstärke in Beaufort (Bft) als Zahl (0 bis 12) und als Text zu bestimmen. Die Berechnung der Windstärke erfolgt aus der Windgeschwindigkeit, die in Meter/Sekunde gegeben ist.
+
+Quelle der Zuordnung m/s zu Bft: [Wikipedia](https://de.wikipedia.org/wiki/Beaufortskala)
+
+
+## Logik
+
+Diw Logik bestimmt die Windstärke aus der Windgeschwindigkeit, die im Item *knx_global.weather.wind* gespeichert ist.
+
+Das Ergebnis wird als Zahl im Item *knx_global.weather.wind.beaufort* und als Text im Item *knx_global.weather.wind.string* zurückgeliefert.
+
+Im folgenden werden drei mögliche Implementierungen gezeigt.
+
+Die erste Implementierung nutzt ein reines Case-Statement (if / elif / else).
+
+#### /usr/local/smarthome/logics/beaufort1.py ####
 
 ```python
 #!/usr/bin/env python3
@@ -45,11 +62,24 @@ Windangabe in m/s als num. Am Beispiel Wert der Wetterstation:
  else:
      sh.knx_global.weather.wind.string("Orkan")
      sh.knx_global.weather.wind.beaufort(12)
+     
 ```
 
-Quelle der Zuordnung m/s zu Bft: [Wikipedia](https://de.wikipedia.org/wiki/Beaufortskala)
+#### /usr/local/smarthome/etc/logic.yaml ####
 
-## Alternative Umsetzung mit Funktion
+```yaml
+beaufort1:
+    filename: beaufort1.py
+    watch_item: knx_global.weather.wind
+    
+```
+
+
+## Alternative Umsetzung mit einer Funktion
+
+Die zweite Implementierung besteht aus einer Funktion, die in der Logik implementiert ist und aus dieser aufgerufen wird.
+ 
+#### /usr/local/smarthome/logics/beaufort2.py ####
 
 ```python
 #!/usr/bin/env python3
@@ -57,7 +87,8 @@ Quelle der Zuordnung m/s zu Bft: [Wikipedia](https://de.wikipedia.org/wiki/Beauf
 
 def get_beaufort(speed):
     """
-    returns a tuple of a string with the (german) description and an integer with beaufort speed
+    :parameter speed: windspeed in meter per second
+    :return: a tuple of a string with the (german) description and an integer with beaufort speed
     """
     if speed < 0.3:  
         return("Windstille",0)
@@ -89,9 +120,23 @@ def get_beaufort(speed):
 decription, bft = get_beaufort(sh.knx_global.weather.wind())
 sh.knx_global.weather.wind.string(description)
 sh.knx_global.weather.wind.beaufort(bft)
+    
 ```
 
-## Alternative Umsetzung als Funktion mit Lookup
+#### /usr/local/smarthome/etc/logic.yaml ####
+
+```yaml
+beaufort2:
+    filename: beaufort2.py
+    watch_item: knx_global.weather.wind
+    
+```
+
+## Alternative 2: Umsetzung als Funktion mit Lookup
+
+In dieser Alternative, werden die Werte in der Funktion nicht per Case-Statement (if / elif / else) bestimmt, sondern aus einer Tabelle mittels  Lookup ermittelt.
+
+#### /usr/local/smarthome/logics/beaufort3.py ####
 
 ```python
 #!/usr/bin/env python3
@@ -99,7 +144,8 @@ sh.knx_global.weather.wind.beaufort(bft)
 
 def get_beaufort(speed):
     """
-    returns a tuple of a string and an integer with the (german) description and speed class
+    :parameter speed: windspeed in meter per second
+    :return: a tuple of a string with the (german) description and an integer with beaufort speed
     """
     table = [ 
         (  0.3, "Windstille",0),
@@ -121,9 +167,20 @@ def get_beaufort(speed):
         bft = min(filter(lambda x: x[0] >= speed, table))[2]
         return description,bft
     except ValueError:
-        return None
+        return None, None
 
 decription, bft = get_beaufort(sh.knx_global.weather.wind())
 sh.knx_global.weather.wind.string(description)
 sh.knx_global.weather.wind.beaufort(bft)
+    
 ```
+
+#### /usr/local/smarthome/etc/logic.yaml ####
+
+```yaml
+beaufort2:
+    filename: beaufort3.py
+    watch_item: knx_global.weather.wind
+    
+```
+

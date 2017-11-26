@@ -1,3 +1,6 @@
+.. index:: Items; relative Referenzen
+.. index:: relative Referenzen
+
 Relative Item Referenzen
 ########################
 
@@ -40,7 +43,7 @@ Beispiele
 Die folgenden Beispiele beziehen sich auf diese Item Struktur:
 
 .. code-block:: yaml
-   :caption: ../items/*.yaml
+   :caption: ../items/\*.yaml
 
    item_tree:
        grandparent:
@@ -57,8 +60,8 @@ Die folgenden Beispiele beziehen sich auf diese Item Struktur:
                sister:
 
 
-.. code-block:: text
-   :caption: ../items/*.conf (deprecated)
+.. code-block:: none
+   :caption: ../items/\*.conf (deprecated)
 
    [item_tree]
        [[grandparent]]
@@ -105,14 +108,15 @@ und zwar soll **my_item** den dreifachen Wert von **my_item.child** erhalten, so
 Attribute folgendermaßen aussehen:
 
 .. code-block:: yaml
-   :caption: ../items/*.yaml
+   :caption: ../items/\*.yaml
 
    my_item:
        eval: 3 * sh..child()
        eval_trigger: .child
 
-.. code-block:: text
-   :caption: ../items/*.conf (deprecated)
+.. code-block:: none
+   :caption: ../items/\*.conf (deprecated)
+   
    [[[[my_item]]]]
        eval = 3 * sh..child()
        eval_trigger = .child
@@ -134,7 +138,7 @@ Attribute folgendermaßen aussehen:
    über relative Adressierung erfolgen soll, so würde das nach den obigen Beschreibungen so 
    aussehen: **sh...changed_by()**
 
-   Das würde jedoch nach Entfernung von 'sh.' und '()' als ```..changed_by```interpretiert, 
+   Das würde jedoch nach Entfernung von 'sh.' und '()' als ```..changed_by``` interpretiert, 
    also als ein Sister-Item namens 'changed_by'.
 
    In diesem Fall ist es notwendig, das Item selbst statt über ```.``` über die alternative 
@@ -180,14 +184,14 @@ Im Attribut **sv_widget** des Plugins **visu_smartvisu** sind eine oder mehrere 
 enthalten.
 
 .. code-block:: yaml
-   :caption: ../items/*.yaml
+   :caption: ../items/\*.yaml
 
    schreibtischleuchte:
        sv_widget: {{ basic.switch('id_schreibtischleuchte', 'wohnung.buero.schreibtischleuchte.onoff') }}
 
 
-.. code-block:: text
-   :caption: ../items/*.conf (deprecated)
+.. code-block:: none
+   :caption: ../items/\*.conf (deprecated)
 
    [[[schreibtischleuchte]]]
        sv_widget = {{ basic.switch('id_schreibtischleuchte', 'wohnung.buero.schreibtischleuchte.onoff') }}
@@ -205,14 +209,14 @@ Da im Beispiel oben ein absoluter Item-Pfad angegeben ist, passiert nichts. Wenn
 jedoch relativ wäre
 
 .. code-block:: yaml
-   :caption: ../items/*.yaml
+   :caption: ../items/\*.yaml
 
    schreibtischleuchte:
        sv_widget: {{ basic.switch('id_schreibtischleuchte', '.onoff') }}
 
 
-.. code-block:: text
-   :caption: ../items/*.conf (deprecated)
+.. code-block:: none
+   :caption: ../items/\*.conf (deprecated)
 
    [[[schreibtischleuchte]]]
        sv_widget = {{ basic.switch('id_schreibtischleuchte', '.onoff') }}

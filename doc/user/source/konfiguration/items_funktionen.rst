@@ -1,3 +1,6 @@
+.. index:: Items; Funktionen
+.. index:: Funktionen; Items
+
 Funktionen eines Items
 ======================
 
@@ -24,7 +27,12 @@ genutzt werden können.
 | timer(time, value)     | Funktioniert wir **autotimer()**, ausser dass die Aktion nur einmal          |
 |                        | ausgeführt wird.                                                             |
 +------------------------+------------------------------------------------------------------------------+
-| age()                  | Liefert das Alter des Items in Sekunden zurück.                              |
+| age()                  | Liefert das Alter des Items seit der letzten Änderung des Wertes in Sekunden |
+|                        | zurück.                                                                      |
++------------------------+------------------------------------------------------------------------------+
+| update_age()           | Liefert das Alter des Items seit dem letzten Update in Sekunden zurück. Das  |
+|                        | Update Age wird auch gesetzt, wenn sich bei einem Update der Wert des Items  |
+|                        | nicht ändert. (Neu **ab SmartHomeNG v1.4**)                                  |
 +------------------------+------------------------------------------------------------------------------+
 | prev_age()             | Liefert das Alter des vorangegangenen Wertes in Sekunden zurück.             |
 +------------------------+------------------------------------------------------------------------------+

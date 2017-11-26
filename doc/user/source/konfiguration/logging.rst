@@ -1,3 +1,5 @@
+..index:: Logging
+
 #######
 Logging
 #######
@@ -128,9 +130,9 @@ muss in der config auch dieser Name verwendet werden. Ohne `plugin.`
 .. code-block:: yaml
    :caption: ../etc/logging.yaml
 
-  loggers:
-     DWD:
-       level: DEBUG
+   loggers:
+       DWD:
+           level: DEBUG
        
 
 Auf den Logger kann dann so zugegriffen werden:

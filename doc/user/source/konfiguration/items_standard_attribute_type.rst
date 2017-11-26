@@ -1,3 +1,6 @@
+.. index:: Items; Datentypen
+.. index:: Datentypen
+
 `type`
 ------
 

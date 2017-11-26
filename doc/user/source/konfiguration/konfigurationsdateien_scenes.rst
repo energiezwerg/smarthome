@@ -79,3 +79,113 @@ Mit SmartHomeNG v1.4 kommen folgende neue Features hinzu:
 - Anstelle eines Wertes kann auch ein **eval** Ausdruck angegeben werden. In diesem Ausdruck sind auch relative Item Referenzen möglich.
 - Für Szenen Aktionen in denen ein absoluter Wert angegeben wird, wird bei Verwendung des neuen Dateiformats das Lernen (analog zu KNX Szenen) unterstützt
 
+
+Konfiguration im YAML Format
+----------------------------
+
+Im YAML Format erfolgt die Definition wie bisher in einer eigenen Datei für jede Szene. Im
+Gegensatz zu zur Konfiguration von Szenen im alten Dateiformat (wo die Definition der Stati 
+der Szene ungeordnet in Zeilen erfolgte), ist der Definition einer Szene im YAML Format 
+hierarchisch geordnet.
+
+Die Keys auf oberster Ebene sind die Stati (Integer Werte zwischen 0 und 63). Jeder dieser Stati
+enthält eine Unterstruktur, die den jeweiligen Status definiert. Dazu sind die untergeordneten
+Keys ``name:`` und ``actions:`` vorhanden.
+
+Mit dem Key **name** wird der Name des Status festgelegt. Ein Name muss nicht zwingend vergeben
+werden, er erhöht jedoch die Verständlichkeit der Szenendefinition und dient der Übersichtlichkeit 
+z.B. bei der Anzeige von Szenen im Backend Plugin.
+
+Mit dem Key **actions** der aus einer Liste von einzelnen Action-Definitionen besteht, wird 
+festgelegt, welche Aktionen ausgelöst werden sollen, wenn der entsprechende Status eintritt.
+
+Jede einzelne Aktion ist durch die Keys ``item:`` , ``value:`` und ``learn:`` definiert.
+
+Der Key **item** enthält den Pfad des Items, das verändert verden soll. Der Key **value** enthält 
+den Wert auf den das Item gesetzt werden soll. Anstelle eines festen Wertes, kann hier auch ein 
+**eval** Ausdruck angegeben werden. Der Key **learn** ist optional. Wird er nicht angegeben,
+wird der Wert False für **learn** angenommen. Außerdem wird der Wert für **learn** immer auf False
+gesetzt, wenn **value** einen Ausdruck und keinen absoluten  Wert enthält.
+
+Sowohl bei der Angabe des Ziel-Items, als auch im eval-Ausdruck ist die Nutzung relativer Item
+Referenzen möglich.
+
+Die Konfiguration der Szene in den Items erfolgt wie bisher.
+
+.. code-block:: yaml
+   :caption: Struktur einer Status Definition
+   
+   <Status>:
+       name: <Status Name>
+       actions:
+        - {item: <Ziel Item 1>, value: <Wert für Ziel 1>, learn: <true|false>}
+        - {item: <Ziel Item 2>, value: <Wert für Ziel 2>}
+        - {item: <Ziel Item 3>, value: <Wert für Ziel 3>, learn: <true|false>}
+        # ...
+
+.. note::
+
+   Für die einzelnen Aktionen innerhalb einer YAML Definition ist eine alternative Schreibweise 
+   möglich. Hierbei ist auf die genaue Einrückung der einzelnen Teile der **actions** Liste zu 
+   achten:
+
+   .. code-block:: yaml
+      :caption: Struktur einer Status Definition
+   
+      <Status>:
+          name: <Status Name>
+          actions:
+            - item: <Ziel Item 1>
+              value: <Wert für Ziel 1>
+              learn: <true|false>
+            - item: <Ziel Item 2>
+              value: <Wert für Ziel 2>
+            - item: <Ziel Item 3>
+              value: <Wert für Ziel 3>
+              learn: <true|false>
+           # ...
+
+
+Im folgenden ist eine Beispiel Szene beschrieben, die als Ergänzung zu einer KNX-Szene eine
+Philips Hue Leuchte ansteuert.
+
+.. code-block:: yaml
+   :caption: Beispiel einer Szenen-Definition
+
+   0:
+       name: Aus
+       # Sonderfall: Leuchte Dreieckschrank ausschalten, falls die Schreibtischleuchte nicht eingeschaltet ist, sonst level 126 setzen
+       actions:
+        - {item: wohnung.buero.dreieckschrank.level, value: 0 if (sh.wohnung.buero.schreibtischleuchte.status() < 2) else 126}
+        - {item: wohnung.buero.dreieckschrank.ct, value: 345, learn: false}
+        - {item: wohnung.buero.dreieckschrank.onoff, value: False if (sh.wohnung.buero.schreibtischleuchte.status() < 2) else True}
+
+   1:
+       name: Ambiente
+       actions:
+        - {item: wohnung.buero.dreieckschrank.level, value: sh...dreieckschrank.ambiente_level(), learn: false}
+        - {item: wohnung.buero.dreieckschrank.ct, value: 345, learn: true}
+        - {item: wohnung.buero.dreieckschrank.onoff, value: True, learn: true}
+
+   2:
+       name: Hell
+       actions:
+        - {item: wohnung.buero.dreieckschrank.level, value: 126, learn: true}
+        - {item: wohnung.buero.dreieckschrank.ct, value: 345, learn: true}
+        - {item: wohnung.buero.dreieckschrank.onoff, value: True, learn: true}
+
+   3:
+       name: Putzen
+       actions:
+        - {item: wohnung.buero.dreieckschrank.level, value: 255, learn: false}
+        - {item: wohnung.buero.dreieckschrank.ct, value: 345, learn: false}
+        - {item: wohnung.buero.dreieckschrank.onoff, value: True, learn: false}
+
+   4:
+       name: Party
+       actions:
+        - {item: wohnung.buero.dreieckschrank.level, value: 200, learn: false}
+        - {item: wohnung.buero.dreieckschrank.hue, value: 59635, learn: false}
+        - {item: wohnung.buero.dreieckschrank.sat, value: 230, learn: false}
+        - {item: wohnung.buero.dreieckschrank.onoff, value: True, learn: false}
+

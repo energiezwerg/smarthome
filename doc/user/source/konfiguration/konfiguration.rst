@@ -27,8 +27,7 @@ Die Codebasis von SmartHomeNG ist in der Programmiersprache Python geschrieben. 
 * elegant in der Anwendung
 * objektorientiert
 * Open-Source-Software
-* plattformunabhängig 
-(allerdings werden derzeit bei SmartHomeNG Linux-Besonderheiten genutzt so dass z.B. Windows derzeit nicht genutzt werden kann)
+* plattformunabhängig (allerdings werden derzeit bei SmartHomeNG Linux-Besonderheiten genutzt so dass z.B. Windows derzeit nicht genutzt werden kann)
 * multi-threaded
 
 Wichtig für den Einsteiger ist es zu wissen, dass Python peinlich genau auf Einrückungen achtet. Etwas wie
@@ -67,7 +66,7 @@ Ein guter Editor unterstützt dann auch mit der richtigen Syntaxeinfärbung.
       s = 'text'
 
 
-Gute Einführungen zu Python sind `hier <https://github.com/smarthomeNG/smarthome/wiki/Python>`_ zu finden. 
+Gute Einführungen zu `Python sind hier <https://github.com/smarthomeNG/smarthome/wiki/Python>`_ zu finden. 
 
 
 Verzeichnisse in SmartHomeNG
@@ -202,7 +201,7 @@ Seit Version 1.2 (Master Branch) gibt es ein neues Plugin für das Backend. Dabe
        #port = 8383
 
 
-Für die weitere Einrichtung und Konfiguration von Plugins geht es `hier <plugins.html>`_ weiter.
+Die weitere Einrichtung und Konfiguration von Plugins ist unter `Plugins <plugins.html>`_ beschrieben.
 
 
 logic.conf
@@ -264,7 +263,7 @@ Eine genaue Beschreibung des Aufbaus findet sich `hier <Items-und-Eval>`_.
 Der Dienst kann über den entsprechenden Befehl "systemctl" neu gestartet werden.
 
 
-.. code-block:: 
+.. code-block:: none
 
    sudo systemctl restart smarthome.service
 

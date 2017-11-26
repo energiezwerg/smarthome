@@ -1,8 +1,14 @@
-# Triggern von KNX DPT 2 Werten, Zwangswert/Priorität
+# Darstellung von DPT 2 Werten
 
-Items mit DPT 2 können aus der Visu oder CLI nicht korrekt ausgegeben werden. Diese Logik löst das Problem mit Hilfe eines Hilfsitems und dieser Logik:
+## Ziel
 
-### logics/prio.py
+Items mit dem KNX DPT 2 (Zwangswert/Priorität) können in der Visu oder CLI Plugin nicht korrekt ausgegeben werden. Ziel ist die Darstellung dieser Werte.
+
+## Logik
+
+Diese Logik löst das Problem mit Hilfe eines Hilfsitems und dieser Logik:
+
+#### /usr/local/smarthome/logics/prio.py.py ####
 
 ```
 #!/usr/bin/env python3
@@ -18,8 +24,8 @@ has_zwang = False
 
 search_id = source_item.id()+".zwangsstellung"
 for child in source_item.return_children():
-     if child.id() == search_id:
-            has_zwang = True
+    if child.id() == search_id:
+        has_zwang = True
             
 if has_zwang:
     if prio == 0:
@@ -32,18 +38,22 @@ if has_zwang:
         source_item.zwangsstellung([1,1])
 else:
     logger.debug("Kein Zwangsstellungsitem.")
+    
 ```
 
-### logic.yaml
+#### /usr/local/smarthome/etc/logic.yaml ####
 
 ```yaml
 Prio:
     filename: prio.py
     watch_item: '*.zwangvalue'
     visu_acl: rw
+    
 ```
 
-### item.yaml
+## Items
+
+#### /usr/local/smarthome/items/prio.yaml ####
 
 ```yaml
     licht:
@@ -60,7 +70,8 @@ Prio:
                 visu_acl: rw
                 knx_cache: 3/0/9
                 cache: False
-                enforce_updates: yes        
+                enforce_updates: yes
+                
 ```
 
 

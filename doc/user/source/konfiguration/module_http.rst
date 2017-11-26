@@ -1,3 +1,5 @@
+..index:: http
+
 ###########
 Module http
 ###########

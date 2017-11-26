@@ -1,3 +1,5 @@
+.. index:: Logiken; Konfiguration
+
 #######
 Logiken
 #######
