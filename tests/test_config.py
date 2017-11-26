@@ -97,10 +97,22 @@ class ConfigBaseTests:
 
     def test_read_structure(self):
         conf = self.config('structure')
+        self.assertTrue('attr1' in conf['parent1'])
+        self.assertEqual('value1', conf['parent1']['attr1'])
         self.assertTrue('child1' in conf['parent1'])
+        self.assertTrue('attr2' in conf['parent1']['child1'])
+        self.assertEqual('value2', conf['parent1']['child1']['attr2'])
         self.assertTrue('child2' in conf['parent1'])
+        self.assertTrue('attr3' in conf['parent1']['child2'])
+        self.assertEqual('value3', conf['parent1']['child2']['attr3'])
+        self.assertTrue('attr4' in conf['parent2'])
+        self.assertEqual('value4', conf['parent2']['attr4'])
         self.assertTrue('child1' in conf['parent2'])
+        self.assertTrue('attr5' in conf['parent2']['child1'])
+        self.assertEqual('value5', conf['parent2']['child1']['attr5'])
         self.assertTrue('child2' in conf['parent2'])
+        self.assertTrue('attr6' in conf['parent2']['child2'])
+        self.assertEqual('value6', conf['parent2']['child2']['attr6'])
 
 
 class TestConfigConf( unittest.TestCase,ConfigBaseTests):
