@@ -41,6 +41,7 @@ Eine Logik sieht prinzipiell folgendermaßen aus:
    :maxdepth: 4
    :hidden:
 
-   objekteundmethoden.rst
-   beispiellogiken.rst
+   objekteundmethoden
+   persistente_variablen
+   beispiellogiken
 

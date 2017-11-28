@@ -242,7 +242,8 @@ class Scenes():
         """
         logger.debug("_add_scene_entry: item = {}, state = {}, ditem = {}, value = {}, learn = {}, name = {}".format(item.id(), state, ditemname, value, learn, name))
         value = item.get_stringwithabsolutepathes(value, 'sh.', '(', 'scene')
-        ditem = self._sh.return_item(ditemname)
+#        ditem = self._sh.return_item(ditemname)
+        ditem = self._sh.return_item(item.get_absolutepath(ditemname, attribute='scene'))
 
         if learn:
             rvalue = self._eval(value)

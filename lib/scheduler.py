@@ -98,9 +98,9 @@ class Scheduler(threading.Thread):
         global _scheduler_instance
         _scheduler_instance = self
 
-    # ---------------------------------------------------------------------------------------
-    #   Following (static) method of the class Scheduler implement the API for logics in shNG
-    # ---------------------------------------------------------------------------------------
+    # -------------------------------------------------------------------------------------------
+    #   Following (static) method of the class Scheduler implement the API for schedulers in shNG
+    # -------------------------------------------------------------------------------------------
 
     @staticmethod
     def get_instance():
@@ -418,10 +418,13 @@ class Scheduler(threading.Thread):
         if obj.__class__.__name__ == 'Logic':
             trigger = {'by': by, 'source': source, 'dest': dest, 'value': value}  # noqa
             logic = obj  # noqa
+            logics = obj._logics
             sh = self._sh  # noqa
             try:
                 if logic.enabled:
                     exec(obj.bytecode)
+                    # store timestamp of last run
+                    obj.set_last_run()
                 for method in logic.get_method_triggers():
                     try:
                         method(logic, by, source, dest)

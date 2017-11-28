@@ -21,27 +21,45 @@ logic
 -----
 
 Dieses Objekt bietet Zugriff auf das aktuelle Logikobjekt. Es ist möglich, während der Laufzeit 
-logische Attribute (crontab, cycle, ...) zu ändern. Diese Änderungen gehen nach dem Neustart 
+logische Attribute (crontab, cycle, ...) abzufragen und ändern. Diese Änderungen gehen nach dem Neustart 
 von SmartHomeNG verloren. 
 
-Vordefinierte Attribute/Funktionen des Logikobjekts:
+Definierte Methoden des Logikobjekts:
 
 +-------------------+--------------------------------------------------------------------------------------------------------+
-| Attribut/Funktion | Erläuterung                                                                                            |
+| Methode           | Erläuterung                                                                                            |
 +===================+========================================================================================================+
-| logic.name        | mit dem Namen der Logik wie in **../etc/logic.yaml** angegeben.                                        |
+| logic.id()        | Diese Methode liefert dem Namen der Logik wie in **../etc/logic.yaml** angegeben.                      |
 +-------------------+--------------------------------------------------------------------------------------------------------+
-| logic.last_time() | Diese Funktion liefert den letzten Lauf dieser Logik (vor aktuellen Lauf).                             |
-+-------------------+--------------------------------------------------------------------------------------------------------+
-| logic.prio        | liest und setzt die aktuelle Priorität dieser Logik.                                                   |
-+-------------------+--------------------------------------------------------------------------------------------------------+
-| logic.trigger[]   | Ein Python-Dictionary, welches im Folgenden beschreiben wird.                                          |
+| logic.last_run()  | Diese Mathode liefert den letzten Lauf dieser Logik (vor aktuellen Lauf).                              |
 +-------------------+--------------------------------------------------------------------------------------------------------+
 | logic.disable()   | Konfigurierte Logiken sind standardmäßig aktiv und werden entsprechend der Konfiguration ausgeführt.   |
-|                   | Diese Methode deaktiviert die Logik, sodass deren Ausführung unterbunden wird.  (Ab SmartHomeNG v1.3)  |
+|                   | Diese Methode deaktiviert die Logik, sodass deren Ausführung unterbunden wird. (Ab SmartHomeNG v1.3)   |
 +-------------------+--------------------------------------------------------------------------------------------------------+
 | logic.enable()    | Eine bereits deaktivierte Logik kann mit dieser Methode wieder aktiviert werden. (Ab SmartHomeNG v1.3) |
 +-------------------+--------------------------------------------------------------------------------------------------------+
+
+
+Vordefinierte Attribute des Logikobjekts:
+
++---------------------------+--------------------------------------------------------------------------------------------------------+
+| Attribut                  | Erläuterung                                                                                            |
++===========================+========================================================================================================+
+| trigger[]                 | Ein Python-Dictionary, welches im Folgenden beschreiben wird.                                          |
++---------------------------+--------------------------------------------------------------------------------------------------------+
+| logic.name                | Das Attribut logic.name liefert das selbe Ergebnis wie die Methode logic.id()                          |
++---------------------------+--------------------------------------------------------------------------------------------------------+
+| logic.crontab             | Das Attribut liefert das aktuelle **crontab** Setting dieser Logik.                                    |
++---------------------------+--------------------------------------------------------------------------------------------------------+
+| logic.cycle               | Das Attribut liefert das aktuelle **cycle** Setting dieser Logik.                                      |
++---------------------------+--------------------------------------------------------------------------------------------------------+
+| logic.prio                | Das Attribut liefert das aktuelle **prio** Setting dieser Logik.                                       |
++---------------------------+--------------------------------------------------------------------------------------------------------+
+| logic.filename            | Das Attribut liefert den Dateinamen des Python Skripts dieser Logik.                                   |
++---------------------------+--------------------------------------------------------------------------------------------------------+
+| logic.<parameter>         | Liefert den konfigurierten Parameter <parameter> oder den Wert einer in einem vorherigen Lauf dieser   |
+|                           | Logik persistieren Variablen.                                                                          |
++---------------------------+--------------------------------------------------------------------------------------------------------+
 
 
 trigger
@@ -52,10 +70,39 @@ Ereignis liefert, das die Logik ausgelöst hat.
 
 Das Dictionary enthält folgende Informationen: 
 
-- trigger['by']
-- trigger['source']
-- trigger['dest']
-- trigger['value']
++-------------------+--------------------------------------------------------------------------------------------------------+
+| Attribut/Funktion | Erläuterung                                                                                            |
++===================+========================================================================================================+
+| trigger['by']     | Auslösendes Objekt/Plugin  (Beispiel: 'KNX:1.1.241')                                                   |
++-------------------+--------------------------------------------------------------------------------------------------------+
+| trigger['source'] | enthält den Pfad des Items, welches die Logik getriggert hat.                                          |
++-------------------+--------------------------------------------------------------------------------------------------------+
+| trigger['dest']   |                                                                                                        |
++-------------------+--------------------------------------------------------------------------------------------------------+
+| trigger['value']  | enthält den Wert des Items, dass die Logik getriggert hat.                                             |
++-------------------+--------------------------------------------------------------------------------------------------------+
+
+
+Zugriff auf das Logics-API:
+
++---------------------------------+---------------------------------------------------------------------------------------------------------+
+| Methode                         | Erläuterung                                                                                             |
++=================================+=========================================================================================================+
+| logics.<method>                 | ermöglicht den Zugriff auf das Logics API, welches in der Developer Dokumentation beschrieben ist.      |
+|                                 | Im folgenden sind einige Beispiele aufgeführt:                                                          |
++---------------------------------+---------------------------------------------------------------------------------------------------------+
+| logics.scheduler_add()          | Hinzufügen eines Scheduler Eintrages für den logics-Namensraum. Der Syntax entspricht der               |
+|                                 | scheduler.add() Methode.                                                                                |
++---------------------------------+---------------------------------------------------------------------------------------------------------+
+| logics.scheduler_change()       | Ändern eines Scheduler Eintrages im logics-Namensraum. Der Syntax entspricht der scheduler.change()     |
+|                                 | Methode.                                                                                                |
++---------------------------------+---------------------------------------------------------------------------------------------------------+
+| logics.scheduler_remove()       | Löschen eines Scheduler Eintrages im logics-Namensraum. Der Syntax entspricht der scheduler_remove()    |
++---------------------------------+---------------------------------------------------------------------------------------------------------+
+| logics.trigger_logic()          | Triggern einer im Logik                                                                                 |
++---------------------------------+---------------------------------------------------------------------------------------------------------+
+| logics.set_config_section_key() | Setzt den Wert eines Schlüssels für eine angegebene Logik (Abschnitt) permanent in ../etc/logic.yaml    |
++---------------------------------+---------------------------------------------------------------------------------------------------------+
 
 
 Geladene Python Module

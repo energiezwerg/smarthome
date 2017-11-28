@@ -1,4 +1,4 @@
-# Navigation für Konfiguration
+# Navigation: Konfigurationsseiten
 
 ## Möglichkeiten
 

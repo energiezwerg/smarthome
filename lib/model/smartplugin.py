@@ -419,7 +419,7 @@ class SmartPlugin(SmartObject, Utils):
 
     def scheduler_add(self, name, obj, prio=3, cron=None, cycle=None, value=None, offset=None, next=None):
         """
-        This methods adds a scheduler entry
+        This methods adds a scheduler entry for a plugin-scheduler
         
         A plugin identifiction is added to the scheduler name
          
@@ -432,9 +432,20 @@ class SmartPlugin(SmartObject, Utils):
         self._sh.scheduler.add(name, obj, prio, cron, cycle, value, offset, next, from_smartplugin=True)
 
 
+    def scheduler_change(self, name, **kwargs):
+        """
+        This methods changes a scheduler entry of a plugin-scheduler
+        """
+        if name != '':
+            name = '.'+name
+        name = self._pluginname_prefix+self.get_fullname()+name
+        self.logger.debug("scheduler_change: name = {}".format(name))
+        self._sh.scheduler.change(name, kwargs)
+        
+        
     def scheduler_remove(self, name):
         """
-        This methods rmoves a scheduler entry
+        This methods rmoves a scheduler entry of a plugin-scheduler
         
         A plugin identifiction is added to the scheduler name
          
@@ -443,7 +454,7 @@ class SmartPlugin(SmartObject, Utils):
         if name != '':
             name = '.'+name
         name = self._pluginname_prefix+self.get_fullname()+name
-        self.logger.debug("scheduler_add: name = {}".format(name))
+        self.logger.debug("scheduler_remove: name = {}".format(name))
         self._sh.scheduler.remove(name, from_smartplugin=True)
 
 

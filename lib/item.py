@@ -360,7 +360,7 @@ class Item():
                         dest_item, val = self._split_destitem_from_value(val)
                         # expand relative item pathes
                         dest_item = self.get_absolutepath(dest_item, KEY_ON_CHANGE).strip()
-                        val = 'sh.'+dest_item+'('+ self.get_stringwithabsolutepathes(val, 'sh.', '(', KEY_ON_CHANGE) +')'
+                        val = 'sh.'+dest_item+'( '+ self.get_stringwithabsolutepathes(val, 'sh.', '(', KEY_ON_CHANGE) +' )'
 #                        logger.warning("Item __init__: {}: for attr '{}', dest_item '{}', val '{}'".format(self._path, attr, dest_item, val))
                         val_list.append(val)
                     setattr(self, '_' + attr, val_list)
@@ -845,6 +845,10 @@ class Item():
 
     def age(self):
         delta = self._sh.now() - self.__last_change
+        return delta.total_seconds()
+
+    def update_age(self):
+        delta = self._sh.now() - self.__last_update
         return delta.total_seconds()
 
     def autotimer(self, time=None, value=None, compat=ATTRIB_COMPAT_V12):

@@ -21,7 +21,7 @@ Anzeige von zusätzlichen Informationen in der Navigation
 
 In der Navigation können eine Reihe zusätzlicher Informationen angezeigt werden. 
 
-Die Details sind auf der Seite :doc:`./autogeneration` beschrieben.
+Die Details sind auf der Seite :doc:`./navigation_zusatzinfos` beschrieben.
 
 
 Generierung einer Konfigurations-Navigation

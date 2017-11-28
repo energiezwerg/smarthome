@@ -24,7 +24,7 @@ Das smartVISU Plugin implementiert:
 
 - eine erweiterte Möglichkeit zum automatischen Generieren von smartVISU Seiten
 - die Fähigkeit zur Widget Installation in die smartVISU, die es Plugin Entwicklern ermöglicht, 
-mit ihrem  Plugin smartVISU Widgets auszuliefern.
+  mit ihrem  Plugin smartVISU Widgets auszuliefern.
 
 
 Änderungen in der Konfiguration ab SmartHomeNG v1.2

@@ -133,7 +133,7 @@ class Logics():
         if self.is_logic_loaded(name):
             return False
         logger.debug("Logic: {}".format(name))
-        logic = Logic(self._sh, name, config[name])
+        logic = Logic(self._sh, name, config[name], self)
         if hasattr(logic, 'bytecode'):
             self._logics[name] = logic
             self.scheduler.add(self._logicname_prefix+name, logic, logic.prio, logic.crontab, logic.cycle)
@@ -205,6 +205,47 @@ class Logics():
             return None
         else:
             return _logics_instance
+
+
+    def scheduler_add(self, name, obj, prio=3, cron=None, cycle=None, value=None, offset=None, next=None):
+        """
+        This methods adds a scheduler entry for a logic-scheduler
+        
+        A plugin identifiction is added to the scheduler name
+         
+        The parameters are identical to the scheduler.add method from lib.scheduler
+        """
+        if name != '':
+            name = '.'+name
+        name = self._logicname_prefix+self.get_fullname()+name
+        self.logger.debug("scheduler_add: name = {}".format(name))
+        self._sh.scheduler.add(name, obj, prio, cron, cycle, value, offset, next, from_smartplugin=True)
+
+
+    def scheduler_change(self, name, **kwargs):
+        """
+        This methods changes a scheduler entry of a logic-scheduler
+        """
+        if name != '':
+            name = '.'+name
+        name = self._logicname_prefix+self.get_fullname()+name
+        self.logger.debug("scheduler_change: name = {}".format(name))
+        self._sh.scheduler.change(name, kwargs)
+        
+        
+    def scheduler_remove(self, name):
+        """
+        This methods rmoves a scheduler entry of a logic-scheduler
+        
+        A plugin identifiction is added to the scheduler name
+         
+        The parameters are identical to the scheduler.remove method from lib.scheduler
+        """
+        if name != '':
+            name = '.'+name
+        name = self._logicname_prefix+self.get_fullname()+name
+        self.logger.debug("scheduler_remove: name = {}".format(name))
+        self._sh.scheduler.remove(name, from_smartplugin=False) 
 
 
     def get_logics_dir(self):
@@ -591,10 +632,8 @@ class Logics():
                     for i in range(len(value)):
                         if i in section_dict[key].ca.items:
                             c = section_dict[key].ca.items[i][0].value
-                            if c[0] == '#':
+                            if len(c) > 0 and c[0] == '#':
                                 c = c[1:]
-                            else:
-                                logger.warning("read_config_section: ???? i = {}, c.strip() = '{}'".format(i, c.strip()))
                         else:
                             c = ''
                     
@@ -604,7 +643,7 @@ class Logics():
                     c = ''
                     if key in section_dict.ca.items:
                         c = section_dict.ca.items[key][2].value    # if not list: loaded['a'].ca.items['b'][2].value 
-                        if c[0] == '#':
+                        if len(c) > 0 and c[0] == '#':
                             c = c[1:]
                     comment = c.strip()
             
@@ -615,6 +654,12 @@ class Logics():
         
     def set_config_section_key(self, section, key, value):
         """
+        Sets the value of key for a given logic (section)
+        
+        :param section: logic to set the key for
+        :param key: key for which the value should be set
+        :param value: value to sez
+        
         """
         # load /etc/logic.yaml
         conf_filename = os.path.join(self._get_etc_dir(), 'logic') 
@@ -802,18 +847,21 @@ class Logic():
 
     _logicname_prefix = 'logics.'
 
-    def __init__(self, smarthome, name, attributes):
+    def __init__(self, smarthome, name, attributes, logics):
         self._sh = smarthome
         self.name = name
+        self._logics = logics   # access to the logics api
         self.enabled = True if 'enabled' not in attributes else Utils.to_bool(attributes['enabled'])
         self.crontab = None
         self.cycle = None
         self.prio = 3
         self.last = None
+        self._last_run = None
         self.conf = attributes
         self.scheduler = Logics.get_instance().scheduler
         self.__methods_to_trigger = []
         if attributes != 'None':
+            # Fills crontab, cycle and other parameters
             for attribute in attributes:
                 if attribute != 'enabled':
                     vars(self)[attribute] = attributes[attribute]
@@ -835,7 +883,7 @@ class Logic():
     def __call__(self, caller='Logic', source=None, value=None, dest=None, dt=None):
         if self.enabled:
             self.scheduler.trigger(self._logicname_prefix+self.name, self, prio=self.prio, by=caller, source=source, dest=dest, value=value, dt=dt)
-
+            
     def enable(self):
         """
         Enables the loaded logic
@@ -853,6 +901,23 @@ class Logic():
         Is the loaded logic enabled?
         """
         return self.enabled
+        
+    def last_run(self):
+        """
+        Returns the timestamp of the last run of the logic or None (if the logic wasn't triggered)
+        
+        :return: timestamp of last run
+        :rtype: datetime timestamp
+        """
+        return self._last_run
+
+    def set_last_run(self):
+        """
+        Sets the timestamp of the last run of the logic to now
+        
+        This method is called by the scheduler
+        """
+        self._last_run = self._sh.now()
         
 
     def trigger(self, by='Logic', source=None, value=None, dest=None, dt=None):

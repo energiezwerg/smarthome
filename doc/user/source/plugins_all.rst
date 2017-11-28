@@ -20,11 +20,10 @@ Die Plugins sind in die folgenden Kategorien unterteilt:
    /plugins_doc/plugins_protocol
    /plugins_doc/plugins_web
    /plugins_doc/plugins_unclassified
-   modules
    
    
 Wenn ein Plugin Autor die Informationen auf diesen Seiten aktualisieren möchte, muss er nur
-die Metadaten Datei ``plugin.yaml`` in seinem Plugin aktualisieren. Beim nächsten Bau dieser
+die Metadaten Datei **plugin.yaml** in seinem Plugin aktualisieren. Beim nächsten Bau dieser
 Dokumentation werden dann diese aktualisierten Informationen automatisch mit aufgenommen.
 
 Informationen zur Erstellung eigener Plugins sind in der Entwickler Dokumentation zu finden.
