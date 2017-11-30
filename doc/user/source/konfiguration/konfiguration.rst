@@ -35,24 +35,24 @@ Wichtig für den Einsteiger ist es zu wissen, dass Python peinlich genau auf Ein
 .. code-block:: text
 
    def foo(a):
-      bar = a
-      d = 5
-      x = a
-      s = 'text'
+       bar = a
+     d = 5
+       x = a
+       s = 'text'
 
 führt unweigerlich zu Fehlern. Auch ist ein Mischen von TAB und Leerzeichen oftmals eine Fehlerquelle. Um diese Quellen von Ärgernissen auszuschalten, macht es Sinn einen Editor zu verwenden, den man von vorne herein auf **UTF-8 ohne BOM** und umwandeln von **TAB in 4 Leerzeichen** einstellen kann. 
 
 Passende Editoren sind z.B.
 
-+-----------+-----------------------------------------+
-| Plattform | Editor                                  |
-+===========+=========================================+
-| Linux     | emacs (nano oder vi ginge zur Not auch) |
-+-----------+-----------------------------------------+
-| Windows   | [Notepad++](www.notepad-plus-plus.org)  |
-+-----------+-----------------------------------------+
-| Mac       | TextWrangler oder BBEdit                |
-+-----------+-----------------------------------------+
++-----------+---------------------------------------------------------------------+
+| Plattform | Editor                                                              |
++===========+=====================================================================+
+| Linux     | emacs (nano oder vi ginge zur Not auch)                             |
++-----------+---------------------------------------------------------------------+
+| Windows   | `Notepad++ <http://www.notepad-plus-plus.org>`_                     |
++-----------+---------------------------------------------------------------------+
+| Mac       | `BBEdit <https://www.barebones.com/products/bbedit/download.html>`_ |
++-----------+---------------------------------------------------------------------+
 
 
 Ein guter Editor unterstützt dann auch mit der richtigen Syntaxeinfärbung.
@@ -111,14 +111,15 @@ Dateien im Verzeichnis *../etc*
 Während der Installation sind im Unterverzeichnis **etc** bereits drei Dateien erstellt worden: **smarthome.conf**, **plugin.conf** und **logic.conf**. 
 
 
-smarthome.conf
-^^^^^^^^^^^^^^
+smarthome.yaml / smarthome.conf
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In der **smarthome.conf** wird notiert, wo sich die Installation befindet und welche Zeitzone als Basis genommen werden soll:
 
-.. code-block:: text
+.. code-block:: none
+   :caption: ../etc/smarthome.conf (deprecated)
 
-   # smarthome.conf / smarthome.ymal
+   # smarthome.conf
    lat = 50.123
    lon = 14.67
    elev = 36
@@ -134,7 +135,8 @@ In der **smarthome.conf** wird notiert, wo sich die Installation befindet und we
 Die gleiche Konfiguration im neuen Dateiformat für Konfigurationsdateien:
 
 .. code-block:: yaml
-
+   :caption: ../etc/smarthome.yaml
+   
    # smarthome.yaml
    lat: '50.123'
    lon: '14.67'
@@ -155,12 +157,13 @@ Weiterführende Informationen gibt es im Abschnitt **Datentyp der Wertzuweisung*
 
 
 
-plugin.conf
-^^^^^^^^^^^
+plugin.yaml / plugin.conf
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 Die **plugin.conf** enthält die Konfigurationsanweisungen für alle Plugins, die benutzt werden sollen.
 
-.. code-block:: text
+.. code-block:: none
+   :caption: ../etc/plugin.conf (deprecated)
 
    # plugin.conf
    [knx]
@@ -173,8 +176,7 @@ Die **plugin.conf** enthält die Konfigurationsanweisungen für alle Plugins, di
    #   date_ga = 1/1/2 # default none
    [visu]
        class_name = WebSocket
-       class_path = plugins.visu
-       smartvisu_dir = /var/www/html/smartVISU
+       class_path = plugins.visu_websocket
    [cli]
        class_name = CLI
        class_path = plugins.cli
@@ -184,12 +186,39 @@ Die **plugin.conf** enthält die Konfigurationsanweisungen für alle Plugins, di
        class_name = SQL
        class_path = plugins.sqlite
 
+Im neuen Dateiformat sieht das obige Beispiel folgendermaßen aus:
 
-Seit Version 1.2 (Master Branch) gibt es ein neues Plugin für das Backend. Dabei kann man über 
+.. code-block:: yaml
+   :caption: ../etc/plugin.yaml
+
+   # plugin.yaml
+   knx:
+      class_name: KNX
+      class_path: plugins.knx
+      host: 127.0.0.1
+      port: 6720
+   #   send_time: 600 # update date/time every 600 seconds, default none
+   #   time_ga: 1/1/1 # default none
+   #   date_ga: 1/1/2 # default none
+   visu:
+       class_name: WebSocket
+       class_path: plugins.visu_websocket
+   cli:
+       class_name: CLI
+       class_path: plugins.cli
+       ip: 0.0.0.0
+       update: True
+   sql:
+       class_name: SQL
+       class_path: plugins.sqlite
+
+
+Seit Version 1.2 (Master Branch) gibt es ein neues Plugin (Backend) für SmartHomeNG. Dabei kann man über 
 einen Browser das gleiche erreichen, wie früher über das CLI-Plugin. Das Backend bindet man 
 dann ein über:
 
-.. code-block:: text
+.. code-block:: none
+   :caption: Auszug aus ../etc/plugin.conf (deprecated)
 
    [BackendServer]
        class_name = BackendServer
@@ -202,19 +231,36 @@ dann ein über:
        #ip = 0.0.0.0
        #port = 8383
 
+Im neuen Dateiformat sieht das obige Beispiel folgendermaßen aus:
+
+.. code-block:: yaml
+   :caption: Auszug aus ../etc/plugin.yaml
+
+   BackendServer:
+       class_name: BackendServer
+       class_path: plugins.backend
+       updates_allowed: True
+       user: admin
+       password: xxxx
+       language: de    
+       threads: 8
+       #ip: 0.0.0.0
+       #port: 8383
+
 
 Die weitere Einrichtung und Konfiguration von Plugins ist unter `Plugins <plugins.html>`_ beschrieben.
 
 
-logic.conf
-^^^^^^^^^^
+logic.yaml / logic.conf
+^^^^^^^^^^^^^^^^^^^^^^
 
-In der **logic.conf** werden die Logiken eingetragen. Der Name jeder Logik kommt zwischen zwei 
-eckige Klammern, der Eintrag **filename** verweist auf die Python-Datei die dann aufgerufen wird, 
-wenn die Logik abgearbeitet werden soll. **crontab** schreibt fest, dass die Logik zu bestimmten 
+In der **logic.yaml** bzw. **logic.conf** werden die Logiken eingetragen. Der Name jeder Logik kommt 
+zwischen zwei eckige Klammern, der Eintrag **filename** verweist auf die Python-Datei die dann aufgerufen 
+wird, wenn die Logik abgearbeitet werden soll. **crontab** schreibt fest, dass die Logik zu bestimmten 
 Zeiten ausgeführt werden soll. watch_item bestimmt, welche Items die Logik aufrufen können:
 
-.. code-block:: text
+.. code-block:: none
+   :caption: ../etc/logic.conf (deprecated)
 
    # logic.conf
    [InitSmarthomeNG]
@@ -226,6 +272,23 @@ Zeiten ausgeführt werden soll. watch_item bestimmt, welche Items die Logik aufr
        filename = Beispiel.py
        watch_item = *:Logikaufruf | item1.* | parent.item2
        crontab = init | 0,5,10,15,20,25,30,35,40,45,50,55 * * * # run every 5 minutes
+
+
+Im neuen Dateiformat sieht das obige Beispiel folgendermaßen aus:
+
+.. code-block:: yaml
+   :caption: ../etc/logic.yaml
+
+   # logic.yaml
+   InitSmarthomeNG:
+       filename: InitSmartHomeNG.py
+       crontab: init
+    
+   Beispiellogik:
+       # Umgebungsvariablen des Systems werden aktualisiert, z.B. Diskusage
+       filename: Beispiel.py
+       watch_item: *:Logikaufruf | item1.* | parent.item2
+       crontab: init | 0,5,10,15,20,25,30,35,40,45,50,55 * * * # run every 5 minutes
 
 
 Detaillierte Infos zur crontab Konfiguration finden sich unter :doc:`items_standard_attribute_crontab`.
@@ -268,6 +331,7 @@ Eine genaue Beschreibung des Aufbaus findet sich unter :doc:`items_standard_attr
 nach thematischen Gesichtspunkten aufzusplitten und die jeweiligen Items dort zu parametrieren.**
 
 **Beispielsweise:**
+
 * eg_kueche.conf
 * eg_wohnzimmer.conf
 * og_schlafzimmer_eltern.conf
@@ -287,7 +351,11 @@ Der Dienst kann über den entsprechenden Befehl "systemctl" neu gestartet werden
 
    sudo systemctl restart smarthome.service
 
+.. note::
 
+   Der Service **smarthome.service** muss vorher eingerichtet werden. Die Einrichtung ist in der
+   Komplettanleitung unter :doc:`../installation/komplettanleitung_abschluss` beschrieben.
+   
 
 Weiterführende Themen
 ---------------------
