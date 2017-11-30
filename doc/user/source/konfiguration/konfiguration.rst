@@ -112,7 +112,7 @@ Während der Installation sind im Unterverzeichnis **etc** bereits drei Dateien 
 
 
 smarthome.yaml / smarthome.conf
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In der **smarthome.conf** wird notiert, wo sich die Installation befindet und welche Zeitzone als Basis genommen werden soll:
 
@@ -252,7 +252,7 @@ Die weitere Einrichtung und Konfiguration von Plugins ist unter `Plugins <plugin
 
 
 logic.yaml / logic.conf
-^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
 
 In der **logic.yaml** bzw. **logic.conf** werden die Logiken eingetragen. Der Name jeder Logik kommt 
 zwischen zwei eckige Klammern, der Eintrag **filename** verweist auf die Python-Datei die dann aufgerufen 
@@ -287,8 +287,14 @@ Im neuen Dateiformat sieht das obige Beispiel folgendermaßen aus:
    Beispiellogik:
        # Umgebungsvariablen des Systems werden aktualisiert, z.B. Diskusage
        filename: Beispiel.py
-       watch_item: *:Logikaufruf | item1.* | parent.item2
-       crontab: init | 0,5,10,15,20,25,30,35,40,45,50,55 * * * # run every 5 minutes
+       watch_item: 
+       - '*:Logikaufruf'
+       - item1.*
+       - parent.item2
+       # run on start of SmartHomeNG and every 5 minutes afterwards
+       crontab: 
+       - init                                       
+       - 0,5,10,15,20,25,30,35,40,45,50,55 * * *  
 
 
 Detaillierte Infos zur crontab Konfiguration finden sich unter :doc:`items_standard_attribute_crontab`.

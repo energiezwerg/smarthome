@@ -631,7 +631,10 @@ class Logics():
                     comment = []            # 'Comment 6: ' + loaded['a']['c'].ca.items[0][0].value      'Comment 7: ' + loaded['a']['c'].ca.items[1][0].value
                     for i in range(len(value)):
                         if i in section_dict[key].ca.items:
-                            c = section_dict[key].ca.items[i][0].value
+                            try:
+                                c = section_dict[key].ca.items[i][0].value
+                            except:
+                                logger.warning("c: {}, Key: {}".format(c, key)) 
                             if len(c) > 0 and c[0] == '#':
                                 c = c[1:]
                         else:
@@ -665,6 +668,7 @@ class Logics():
         conf_filename = os.path.join(self._get_etc_dir(), 'logic') 
         conf = shyaml.yaml_load_roundtrip(conf_filename)
         
+        logger.info("set_config_section_key: section={}, key={}, value={}".format(section, key, str(value)))
         if value == None:
             del conf[section][key]
         else:
@@ -704,10 +708,6 @@ class Logics():
             conf = shyaml.get_emptynode()
             
         # empty section
-#        try:
-#            keep_enabled = conf[section].get('enabled', None)
-#        except:
-#            keep_enabled = None
         if conf.get(section, None) == None:
             conf[section] = shyaml.get_emptynode()
         del conf[section]['filename']
@@ -722,7 +722,7 @@ class Logics():
             key = c[0].strip()
             value = c[1]
             comment = c[2]
-            logger.info("update_config_section: key {}, value {}, comment {}".format(key, str(value), str(comment)))
+            logger.info(" - key={}, value={}, comment={}".format(key, str(value), str(comment)))
             if isinstance(value, str):
                 value = value.strip()
                 comment = comment.strip()
@@ -757,9 +757,6 @@ class Logics():
                             if comment[i] != '':
                                 conf[section][key].yaml_add_eol_comment(comment[i], i, column=50)
 
-#        if keep_enabled != None:
-#            conf[section]['enabled'] = keep_enabled
-            
         if conf[section] == shyaml.get_emptynode():
             conf[section] = None
         shyaml.yaml_save_roundtrip(conf_filename, conf, True)
