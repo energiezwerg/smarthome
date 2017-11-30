@@ -1,8 +1,8 @@
 .. index:: Items; Konfigurationsdateien /items/*.yaml
 .. index:: Konfigurationsdateien; /items/*.yaml
 
-items/*.yaml
-============
+items/\*.yaml
+=============
 
 .. _`item configuration files`:
 

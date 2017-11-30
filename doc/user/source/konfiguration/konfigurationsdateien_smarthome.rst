@@ -30,8 +30,6 @@ Die Datei sollte folgendermaßen aussehen:
    tz: Europe/Berlin    # timezone, the example will be fine for most parts of central Europe
    default_language: de # default language for use with the backend plugin and multi-language entries in metadata
 
-.. sidebar:: smarthome.conf
-   :class: deprecated
    
 .. code-block:: text
    :caption: smarthome.conf (deprecated)

@@ -1,5 +1,5 @@
-scenes/*.yaml
-#############
+scenes/\*.yaml
+##############
 
 
 .. _`scene configuration files`:
