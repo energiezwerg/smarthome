@@ -58,3 +58,10 @@ SmartHomeNG läuft:
 
 
 
+.. toctree::
+   :maxdepth: 4
+   :hidden:
+   :titlesonly:
+   
+   items
+   logiken

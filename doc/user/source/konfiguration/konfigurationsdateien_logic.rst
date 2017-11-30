@@ -32,5 +32,11 @@ Mit dem Beispiel oben, würde SmartHomeNG in ``/usr/local/smarthome/logics/`` na
 ``logic.py`` suchen. Die Logik würde einmal beim Start von SmartHomeNG ausgeführt und wenn sich 
 der Wert des Items `watch_item` ändert.
 
+.. note::
+
+   Ab SmartHomeNG v1.4 können Logiken vollständig in der graphischen Administrationsoberfläche 
+   **Backend** erstellt und konfiguriert werden.
+
+   .. image:: assets/backend_logikliste.jpg
 
 Details zur Konfiguration von Logiken finden sich :doc:`hier <./logiken>` .

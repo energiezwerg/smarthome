@@ -28,6 +28,14 @@ Falls das Blockly Plugin zum schreiben einer Logik genutzt wird, hat eine Logik 
 Eine Datei enthält den Blockly Code (Dateiendung **.blockly**) und die andere Datei enthält den
 generierten Python Code (Dateiendung **.py**).
 
+.. note::
+
+   Ab SmartHomeNG v1.4 können Logiken vollständig in der graphischen Administrationsoberfläche 
+   **Backend** erstellt und konfiguriert werden.
+
+   .. image:: assets/backend_logikeditor.jpg
+
+
 Für weitere Details zur Konfiguration von Logiken, bitte die Seite :doc:`Logiken <logiken>` im Abschnitt Konfiguration lesen.
 
 Für Details zur Erstellung von Logiken, bitte den Abschitt :doc:`Logiken <../logiken/logiken>` dieser Dokumentation lesen.
