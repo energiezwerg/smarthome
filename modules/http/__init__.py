@@ -32,7 +32,7 @@ from lib.utils import Utils
 
 class Http():
 
-    version = '1.4.4'
+    version = '1.4.5'
     _shortname = ''
     _longname = 'CherryPy http module for SmartHomeNG'
     
@@ -47,7 +47,9 @@ class Http():
     _hostmap_services = {}
 
     
-    def __init__(self, sh, port=None, servicesport=None, ip='', showpluginlist='True', showservicelist='False', showtraceback='False', threads=8, starturl=''):
+    def __init__(self, sh, port=None, servicesport=None, ip='', threads=8, starturl='', 
+                       showpluginlist='True', showservicelist='False', showtraceback='False', 
+                       user='', password='', hashed_password=''):
         """
         Initialization Routine for the module
         """
@@ -57,25 +59,71 @@ class Http():
         
         self.logger = logging.getLogger(__name__)
         self._sh = sh
-        self.logger.debug("{}: Initializing".format(self._shortname))
-        
-        self.logger.debug("Module '{}': Parameters = '{}'".format(self._shortname, str(self._parameters)))
+        self.logger.debug("Module '{}': Initializing".format(self._shortname))
+
+        self.logger.debug("Module '{}': Parameters = '{}'".format(self._shortname, str(dict(self._parameters))))
+
+
+        #================================================================================
+        # Checking and converting parameters
+        #
         try:
+            self._user = self._parameters['user']
+            self._password = self._parameters['password']
+            self._hashed_password = self._parameters['hashed_password']
+            self._realm = 'shng_http_webif'
             self._port = self._parameters['port']
+
+            self._service_user = self._parameters['service_user']
+            self._service_password = self._parameters['service_password']
+            self._service_hashed_password = self._parameters['service_hashed_password']
+            self._service_realm = 'shng_http_service'
             self._servicesport = self._parameters['servicesport']
+
             self.threads = self._parameters['threads']
             self._showpluginlist = self._parameters['showpluginlist']
             self._showservicelist = self._parameters['showservicelist']
             self._showtraceback = self._parameters['showtraceback']
+
+            self._starturl = self._parameters['starturl']
         except:
             self.logger.critical("Module '{}': Inconsistent module (invalid metadata definition)".format(self._shortname))
             self._init_complete = False
             return
             
+
+        if self._password is not None and self._password != "" and self._hashed_password is not None and self._hashed_password != "":
+            self.logger.warning("Module http - Webinterfaces: Both 'password' and 'hashed_password' given. Ignoring 'password' and using 'hashed_password'!")
+            self._password = None
+
+        if self._password is not None and self._password != "" and (self._hashed_password is None or self._hashed_password == ""):
+            self.logger.warning("Module http - Webinterfaces: Giving plaintext password in configuration is insecure. Consider using 'hashed_password' instead!")
+            self._hashed_password = None
+
+        if (self._password is not None and self._password != "") or (self._hashed_password is not None and self._hashed_password != ""):
+            self._basic_auth = True
+        else:
+            self._basic_auth = False
+
+
+        if self._service_password is not None and self._service_password != "" and self._service_hashed_password is not None and self._service_hashed_password != "":
+            self.logger.warning("Module http - Services: Both 'service_password' and 'service_hashed_password' given. Ignoring 'service_password' and using 'service_hashed_password'!")
+            self._service_password = None
+
+        if self._service_password is not None and self._service_password != "" and (self._service_hashed_password is None or self._service_hashed_password == ""):
+            self.logger.warning("Module http - Services: Giving plaintext service_password in configuration is insecure. Consider using 'service_hashed_password' instead!")
+            self._service_hashed_password = None
+
+        if (self._service_password is not None and self._service_password != "") or (self._service_hashed_password is not None and self._service_hashed_password != ""):
+            self._service_basic_auth = True
+        else:
+            self._service_basic_auth = False
+
+
         if self._servicesport == 0:
             self._servicesport = self._port
 
-        self._basic_auth = False
+#        self._basic_auth = False
         self._ip = self._get_local_ip_address()
 
         # ------------------------------------------------------------------------
@@ -85,7 +133,7 @@ class Http():
 
         self.logger.info("Module 'http': ip address = {}, hostname = '{}'".format(self.get_local_ip_address(), self.get_local_hostname()))
         
-        self.root = ModuleApp(self, starturl)
+        self.root = ModuleApp(self, self._starturl)
 
         global_conf = {
             'global': {
@@ -93,17 +141,21 @@ class Http():
                 'error_page.404': self._error_page,
                 'error_page.400': self._error_page,
                 'error_page.500': self._error_page,
+#                'server.socket_host': '127.0.0.1',
+#                'server.socket_port': 48080,     
+                'server.socket_host': self._ip,
+                'server.socket_port': int(self._port),     
             },
         }
 
         # Update the global CherryPy configuration
         cherrypy.config.update(global_conf)
 
-        self._server1 = cherrypy._cpserver.Server()
-        self._server1.socket_port=int(self._port)
-        self._server1.socket_host=self._ip
-        self._server1.thread_pool=self.threads
-        self._server1.subscribe()
+#        self._server1 = cherrypy._cpserver.Server()
+#        self._server1.socket_port=int(self._port)
+#        self._server1.socket_host=self._ip
+#        self._server1.thread_pool=self.threads
+#        self._server1.subscribe()
 
         if self._port != self._servicesport:
             self._server2 = cherrypy._cpserver.Server()
@@ -141,7 +193,7 @@ class Http():
         }
 
         # mount the application on the '/' base path (Creating an app-instance on the way)
-        self.root = ModuleApp(self, starturl)
+        self.root = ModuleApp(self, self._starturl)
 
         self.logger.info("module_conf = {}".format(self.module_conf))
         cherrypy.tree.mount(self.root, '/', config = self.msg_conf)
@@ -154,6 +206,9 @@ class Http():
         self.logger.info("mount '/plugins' - webif_dir = '{}'".format(self.webif_dir))
         config = {
             '/': {
+                'tools.auth_basic.on': self._basic_auth,
+                'tools.auth_basic.realm': self._realm,
+                'tools.auth_basic.checkpassword': self.validate_password,
                 'tools.staticdir.root': self.webif_dir,
             },
             '/static': {
@@ -161,6 +216,20 @@ class Http():
                 'tools.staticdir.dir': 'static'
             }
         }
+        config_services = {
+            '/': {
+                'tools.auth_basic.on': self._service_basic_auth,
+                'tools.auth_basic.realm': self._service_realm,
+                'tools.auth_basic.checkpassword': self.validate_service_password,
+                'tools.staticdir.root': self.webif_dir,
+            },
+            '/static': {
+                'tools.staticdir.on': True,
+                'tools.staticdir.dir': 'static'
+            }
+        }
+        self.logger.info("Module http: config dict: '{}'".format( config ) )
+        self.logger.info(" - user '{}', password '{}', hashed_password '{}'".format( self._user, self._password, self._hashed_password ) )
     
         if self._showpluginlist == True:
             # Register the plugin-list as a cherrypy app
@@ -175,6 +244,34 @@ class Http():
 #                                  pluginclass='', instance='', description='', servicename='')
 
         return
+
+
+    def validate_password(self, realm, username, password):
+        """
+        """
+        if username != self._user or password is None or password == '':
+            return False
+
+        if self._hashed_password is not None:
+            return Utils.check_hashed_password(password, self._hashed_password)
+        elif self._password is not None:
+            return password == self._password
+
+        return False
+
+
+    def validate_service_password(self, realm, username, password):
+        """
+        """
+        if username != self._service_user or password is None or password == '':
+            return False
+
+        if self._service_hashed_password is not None:
+            return Utils.check_hashed_password(password, self._service_hashed_password)
+        elif self._service_password is not None:
+            return password == self._service_password
+
+        return False
 
 
     def _error_page(self, status, message, traceback, version):
@@ -366,7 +463,7 @@ class Http():
         return result_list
         
     
-    def register_webif(self, app, pluginname, conf, pluginclass='', instance='', description='', webifname=''):
+    def register_webif(self, app, pluginname, conf, pluginclass='', instance='', description='', webifname='', use_global_basic_auth=True):
         """
         Register an application for CherryPy
         
@@ -379,7 +476,8 @@ class Http():
                                config, 
                                self.get_classname(), self.get_instance_name(),
                                description,
-                               webifname)
+                               webifname,
+                               use_global_basic_auth)
 
 
         :param app: Instance of the application object
@@ -389,6 +487,7 @@ class Http():
         :param instance: Instance of the plugin (if multi-instance)
         :param description: Description of the functionallity of the webif. If left empty, a generic description will be generated
         :param webifname: Name of the webinterface. If left empty, the pluginname is used
+        :param use_global_basic_auth: if True, global basic_auth settings from the http module are used. If False, registering plugin provides its own basic_auth
         :type app: object
         :type pluginname: str
         :type conf: dict
@@ -396,6 +495,7 @@ class Http():
         :type istance: str
         :type description: str
         :type webifname: str
+        :type: use_global_basic_auth: bool
         
         """
         pluginname = pluginname.lower()
@@ -405,7 +505,13 @@ class Http():
         if description == '':
            description = 'Webinterface {} of plugin {}'.format(webifname, pluginname)
            
+        if use_global_basic_auth:
+            conf['/']['tools.auth_basic.on'] = self._basic_auth
+            conf['/']['tools.auth_basic.realm'] = self._realm
+            conf['/']['tools.auth_basic.checkpassword'] = self.validate_password
+            
         self.logger.info("Module http: Registering webinterface '{}' of plugin '{}' from pluginclass '{}' instance '{}'".format( webifname, pluginname, pluginclass, instance ) )
+        self.logger.info(" - conf dict: '{}'".format( conf ) )
         if pluginclass != '':
             if instance == '':
                 webif_key = webifname
@@ -420,7 +526,7 @@ class Http():
         return
         
 
-    def register_service(self, app, pluginname, conf, pluginclass='', instance='', description='', servicename=''):
+    def register_service(self, app, pluginname, conf, pluginclass='', instance='', description='', servicename='', use_global_basic_auth=True):
         """
         Register a service for CherryPy
         
@@ -433,7 +539,8 @@ class Http():
                                    config, 
                                    self.get_classname(), self.get_instance_name(),
                                    description,
-                                   servicename)
+                                   servicename,
+                                   use_global_basic_auth)
 
 
         :param app: Instance of the service object
@@ -443,6 +550,7 @@ class Http():
         :param instance: Instance of the plugin (if multi-instance)
         :param description: Description of the functionallity of the webif. If left empty, a generic description will be generated
         :param servicename: Name of the service. I if left empty, the pluginname is used
+        :param use_global_basic_auth: if True, global basic_auth settings from the http module are used. If False, registering plugin provides its own basic_auth
         :type app: object
         :type pluginname: str
         :type conf: dict
@@ -450,7 +558,8 @@ class Http():
         :type istance: str
         :type description: str
         :type servicename: str
-        
+        :type: use_global_basic_auth: bool
+
         """
         pluginname = pluginname.lower()
         if servicename == '':
@@ -459,7 +568,13 @@ class Http():
         if description == '':
            description = 'Service {} of plugin {}'.format(servicename, pluginname)
 
+        if use_global_basic_auth:
+            conf['/']['tools.auth_basic.on'] = self._service_basic_auth
+            conf['/']['tools.auth_basic.realm'] = self._service_realm
+            conf['/']['tools.auth_basic.checkpassword'] = self.validate_service_password
+            
         self.logger.info("Module http: Registering service '{}' of plugin '{}' from pluginclass '{}' instance '{}'".format( servicename, pluginname, pluginclass, instance ) )
+        self.logger.info(" - conf dict: '{}'".format( conf ) )
         if pluginclass != '':
             if instance == '':
                 service_key = servicename
@@ -494,6 +609,9 @@ class Http():
         """
         self.logger.info("{}: Shutting down".format(self._shortname))   # should be debug
         cherrypy.engine.exit()
+        for thread in threading.enumerate():
+            if thread.name == '_TimeoutMonitor':
+                thread.join(2)
         self.logger.debug("{}: CherryPy engine exited".format(self._shortname))
 
     

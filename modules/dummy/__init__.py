@@ -31,12 +31,15 @@ class dummy():
         """
         Initialization Routine for the module
         """
-        self.shortname = self.__class__.__name__
+        # TO DO: Shortname anders setzen (oder warten bis der Plugin Loader es beim Laden setzt 
+        self._shortname = self.__class__.__name__
+        self._shortname = self._shortname.lower()
+        
         self.logger = logging.getLogger(__name__)
         self._sh = sh
-        self.logger.debug("Module '{}': Initializing".format(self.shortname))
+        self.logger.debug("Module '{}': Initializing".format(self._shortname))
 
-        self.logger.debug("Module '{}': Parameters = '{}'".format(self.shortname, str(self._parameters)))
+        self.logger.debug("Module '{}': Parameters = '{}'".format(self._shortname, str(self._parameters)))
 
         try:
             self._dummy = self._parameters['dummy']

@@ -1,10 +1,26 @@
 %YAML 1.1
 ---
 # etc/module.yaml
-dummy:
-    module_name: dummy
-
 http:
     module_name: http
-#    port: '1234'
 #    starturl: backend
+#    threads: 8
+
+#    port: 8383
+#    user: admin
+#    password: ''
+#    hashed_password: 'xxx'
+
+#    servicesport: 8384
+#    service_user: serviceuser
+#    service_password: ''
+#    service_hashed_password: 'xxx'
+
+#    showtraceback: False
+#    showpluginlist: True
+#    showservicelist: False
+
+
+#dummy:
+#    module_name: dummy
+

@@ -209,12 +209,13 @@ class Modules():
         :rtype: object
         """
         logger.debug('_load_module: Section {}, Module {}, classpath {}'.format( name, classname, classpath ))
+        logger.info("Loading module '{}': args = '{}'".format(name, args))
         
         # Load an instance of the module
         try:
             exec("import {0}".format(classpath))
         except Exception as e:
-            logger.error("Module '{}' ({}) exception during import of __init__.py: {}".format(name, classpath, e))
+            logger.critical("Module '{}' ({}) exception during import of __init__.py: {}".format(name, classpath, e))
             return None
         exec("self.loadedmodule = {0}.{1}.__new__({0}.{1})".format(classpath, classname))
                 

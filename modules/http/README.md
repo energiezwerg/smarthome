@@ -27,7 +27,7 @@ And please pay attention that the lib(s) are installed for Python3 and not an ol
 ```yaml
 # etc/module.yaml
 http:
-    class_name: http
+    module_name: http
 #    port: 8383
 #    servicesport: 8384
 #    showpluginlist: False
@@ -37,6 +37,30 @@ http:
 #    showtraceback: True
 
 ```
+
+#### user (optional
+
+username for the web access. By default username `admin` is used.
+
+#### password (optional)
+
+password for the web access. By default empty. Without a password access is available for everyone.
+
+#### hashed_password (optional)
+
+hashed password for the web access. By default empty. Without a hashed password the parameter password is used.
+
+#### service_user (optional
+
+username for the access to webervices. By default username `serviceuser` is used.
+
+#### service_password (optional)
+
+password for the access to the web services. By default empty. Without a password access is available for everyone.
+
+#### service_hashed_password (optional)
+
+hashed password for access to the web services. By default empty. Without a hashed password the parameter Service_password is used.
 
 #### port (optional)
 The port on which the html interface listens. By default port **`8383`** is used.

@@ -394,7 +394,7 @@ class Utils(object):
             # No password given -> return "not matching"
             return False
 
-        # todo: check pwd_to_check for minimum length?
+        # todo: check pwd_to_check for minimum length? <- msinn: not here, password policy at a central point
 
         return Utils.create_hash(pwd_to_check) == hashed_pwd.lower()
 
