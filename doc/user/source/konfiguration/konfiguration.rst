@@ -158,7 +158,7 @@ Weiterführende Informationen gibt es im Abschnitt **Datentyp der Wertzuweisung*
 
 
 plugin.yaml / plugin.conf
-^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Die **plugin.conf** enthält die Konfigurationsanweisungen für alle Plugins, die benutzt werden sollen.
 

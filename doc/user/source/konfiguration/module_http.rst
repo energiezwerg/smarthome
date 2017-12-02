@@ -1,4 +1,6 @@
-..index:: http
+.. index:: http
+.. index:: Webinterfaces; Konfiguration
+.. index:: Webservices; Konfiguration
 
 ###########
 Module http
@@ -7,13 +9,21 @@ Module http
 Dieses Modul erlaubt es Plugins eine Webschnittstelle zu implementieren. Die API wird weiter 
 unten beschrieben. Das erste Plugin zur Nutzung dieser API ist das Backend-Plugin.
 
+Es implementiert auch die Basisauthentifizierung für den Zugriff auf Webinterfaces und Webservices.
+
+Über Webinterfaces können Plugins Webseiten zur Verfügung stellen, um bei Befarf eine GUI für
+bestimmte Features anzubieten.
+
+Über Webservices können Plugins Dienste zu Verfügung stellen, welche die Kommunikation mit anderen
+Anwendungen ermöglichen (z.B. ein REST Interface).
+ 
 
 Voraussetzungen
 ===============
 
-Dieses Modul läuft unter SmmartHomeNG-Versionen jenseits von Version 1.3. Es benötigt 
-Python >= 3.4, sowie das Python Package  **cherrypy**. Sie können die Python-Module folgendermaßen 
-installieren:
+Dieses Modul läuft nur unter neueren SmmartHomeNG-Versionen. Mindestvoraussetzung ist SmartHomeNG v1.4. 
+Es benötigt Python >= 3.4, sowie das Python Package  **cherrypy**. Sie können die Python-Module 
+folgendermaßen installieren:
 
 .. code-block:: python
 
@@ -27,6 +37,9 @@ das wahrscheinlich auf Ihrem System installiert ist. Achten Sie darauf, `pip3` u
    Für dieses Modul muss die Modulhandhabung in SmartHomeNG aktiviert sein. Stellen Sie sicher, 
    dass `use_modules` in **../etc/smarthome.yaml** auf **nicht** auf **True** gesetzt ist!
    
+   
+
+.. index:: Konfigurationsdateien; /etc/module.yaml
 
 Konfiguration
 =============
@@ -36,41 +49,85 @@ Datei *../etc/module.yaml*
 --------------------------
 
 .. code-block:: yaml
-
+   :caption: ../etc/module.yaml
+   
    # etc/module.yaml
    http:
-   module_name: http
-   #    port: 8383
-   #    servicesport: 8384
-   #    showpluginlist: False
-       showservicelist: True
+       module_name: http
    #    starturl: backend
    #    threads: 8
-   #    showtraceback: True
+   #    showtraceback: False
+   #    showpluginlist: True
+
+   #    port: 8383
+   #    user: admin
+   #    password: geheim
+   #    hashed_password: 1245a9633edf47b7091f37c4d294b5be5a9936c81c5359b16d1c4833729965663f1943ef240959c53803fedef7ac19bd59c66ad7e7092d7dbf155ce45884607d
+
+   #    servicesport: 8384
+   #    service_user: serviceuser
+   #    service_password: geheim
+   #    service_hashed_password: 1245a9633edf47b7091f37c4d294b5be5a9936c81c5359b16d1c4833729965663f1943ef240959c53803fedef7ac19bd59c66ad7e7092d7dbf155ce45884607d
 
 
-+----------------+------------------------------------------------------------------------------------------------------+
-| **Parameter**  | **Bemerkung**                                                                                        |
-+----------------+------------------------------------------------------------------------------------------------------+
-| port           | **Optional**: Der Port auf welchem das html Interface lauscht. Standard Port ist **8383** is.        |
-+----------------+------------------------------------------------------------------------------------------------------+
-| serviceport    | **Optional**: Der Port auf welchem das html Interface lauscht. Standard Port ist **8384** is.        |
-+----------------+------------------------------------------------------------------------------------------------------+
-| showpluginlist | Falls der Parameter auf **False** gesetzt wird, wird unter **http://smarthomeNG.local:8383/plugins** |
-|                | keine Liste der geladenen Plugins mit Web Interface gezeigt. **showpluginlist** ist standardmäßig    |
-|                | **True**.                                                                                            |
-+----------------+------------------------------------------------------------------------------------------------------+
-| starturl       | **Optional**: Wenn **starturl** auf den Namen eines geladenen Plugins gesetzt ist, wird beim Aufruf  |
-|                | von http://smarthomeNG.local:8383/ auf dieses Plugin weitergeleitet, statt auf die Übersichtsseite.  |
-|                | Wenn z.B. standardmäßig das Backend Plugin aufgerufen werden soll, muss ``starturl: backend``        |
-|                | gesetzt werden.                                                                                      |
-+----------------+------------------------------------------------------------------------------------------------------+
-| threads        | **Optional**: Die Anzahl der Threads, die CherryPy für jeden Port startet, auf dem es lauscht.       |
-|                | Default ist 8, was für leistungsschwächere CPUs zu viel sein kann                                    |
-+----------------+------------------------------------------------------------------------------------------------------+
-| showtraceback  | Falls dieser Parameter auf  **True** gesetzt wird, zeigen Fehlerseiten (außer Fehler bei 404) einen  | 
-|                | Python Fehler-Trace an. Normalerweise wird dieser Trace nur im **smarthome.log** aufgezeichnet       |
-+----------------+------------------------------------------------------------------------------------------------------+
+
++-------------------------+------------------------------------------------------------------------------------------------------+
+| Parameter               | Bemerkung                                                                                            |
++=========================+======================================================================================================+
+| starturl                | **Optional**: Wenn **starturl** auf den Namen eines geladenen Plugins gesetzt ist, wird beim Aufruf  |
+|                         | von http://smarthomeNG.local:8383/ auf dieses Plugin weitergeleitet, statt auf die Übersichtsseite.  |
+|                         | Wenn z.B. standardmäßig das Backend Plugin aufgerufen werden soll, muss ``starturl: backend``        |
+|                         | gesetzt werden. Die Übersichtsseite ist weiterhin unter http://smarthomeNG.local:8383/plugins/       |
+|                         | erreichbar.                                                                                          |
++-------------------------+------------------------------------------------------------------------------------------------------+
+| threads                 | **Optional**: Die Anzahl der Threads, die CherryPy für jeden Port startet, auf dem es lauscht.       |
+|                         | Default ist 8, was für leistungsschwächere CPUs zu viel sein kann                                    |
++-------------------------+------------------------------------------------------------------------------------------------------+
+| showtraceback           | **Optional**: Falls dieser Parameter auf  **True** gesetzt wird, zeigen Fehlerseiten (außer Fehler   | 
+|                         | bei 404) einen Python Fehler-Trace an. Normalerweise wird dieser Trace nur im **smarthome.log**      |
+|                         | aufgezeichnet.                                                                                       |
++-------------------------+------------------------------------------------------------------------------------------------------+
+| showpluginlist          | **Optional**: Falls der Parameter auf **False** gesetzt wird, wird unter                             |
+|                         | **http://smarthomeNG.local:8383/plugins** keine Liste der geladenen Plugins mit Web Interface        |
+|                         | gezeigt. Dann ist der Zugriff auf die Webinterfaces nur direkt über die jeweilige Url oder über die  |
+|                         | Seite **Plugins** im Backend möglich. **showpluginlist** ist standardmäßig **True**.                 |
++-------------------------+------------------------------------------------------------------------------------------------------+
+| port                    | **Optional**: Der Port auf welchem das html Interface lauscht. Dieser Port wird für Webinterfaces    |
+|                         | wie z.B. das Backend Plugin genutzt- Standard Port ist **8383** .                                    |
++-------------------------+------------------------------------------------------------------------------------------------------+
+| user                    | **Optional**: Der Benutzername mit dem man sich zur Nutzung der Webinterfaces authentifizieren muss. |
+|                         | Der Standardwert ist **admin**                                                                       |
++-------------------------+------------------------------------------------------------------------------------------------------+
+| password                | **Optional**: Das Passwort mit dem man sich zur Nutzung der Webinterfaces authentifizieren muss im   |
+|                         | Klartext. Standardmäßig ist kein Passwort gesetzt. Wenn kein Passwort (oder Hashed-Passwort) gesetzt |
+|                         | ist, ist der Zugriff auf die Webinterfaces ohne Anmeldung möglich.                                   |
++-------------------------+------------------------------------------------------------------------------------------------------+
+| hashed_password         | **Optional**: Das Passwort für die Basis-Authentifizierung an Webinterfaces als Hash-Wert. Kann      |
+|                         | anstelle von**password** verwendet werden, wenn Sie kein Klartext-Passwort in Ihrer                  |
+|                         | Konfigurationsdatei haben möchten. Wenn weder **password** als auch **hashed_password** angegeben    |
+|                         | werden, ist die Basisauthentifizierung deaktiviert. Derzeit ist **hashed_password** der              |
+|                         | SHA-512-Hash-Wert des Passworts. Um den Hash für Ihr Passwort zu erstellen, können Sie die Funktion  |
+|                         | **Passwort-Hash erzeugen** auf der Seite **Dienste** im Backend verwenden.                           |
++-------------------------+------------------------------------------------------------------------------------------------------+
+| serviceport             | **Optional**: Der Port auf welchem das html Interface lauscht. Dieser Port wird für den Zugriff      |
+|                         | auf Webservices genutzt, wie ihn z.B. das Plugin Webservices zur Verfügung stellt. Standard Port     |
+|                         | ist **8384** .                                                                                       |
++-------------------------+------------------------------------------------------------------------------------------------------+
+| service_user            | **Optional**: Der Benutzername mit dem man sich zur Nutzung der Webservices authentifizieren muss.   |
+|                         | Der Standardwert ist **serviceuser**                                                                 |
++-------------------------+------------------------------------------------------------------------------------------------------+
+| service_password        | **Optional**: Das Passwort mit dem man sich zur Nutzung der Webservices authentifizieren muss im     |
+|                         | Klartext. Standardmäßig ist kein Passwort gesetzt. Wenn kein Service-Passwort (oder                  |
+|                         | Hashed-Service-Passwort) gesetzt ist,ist der Zugriff auf die Webservices ohne Anmeldung möglich.     |
++-------------------------+------------------------------------------------------------------------------------------------------+
+| service_hashed_password | **Optional**: Das Passwort für die Basis-Authentifizierung an Webservices als Hash-Wert. Kann        |
+|                         | anstelle von**service_password** verwendet werden, wenn Sie kein Klartext-Passwort in Ihrer          |
+|                         | Konfigurationsdatei haben möchten. Wenn weder **service_password** als auch                          |
+|                         | **service_hashed_password** angegeben werden, ist die Basisauthentifizierung deaktiviert. Derzeit    |
+|                         | ist **service_hashed_password** der SHA-512-Hash-Wert des Service-Passworts. Um den Hash für         |
+|                         | Ihr Passwort zu erstellen, können Sie die Funktion **Passwort-Hash erzeugen** auf der Seite          |
+|                         | **Dienste** im Backend verwenden.                                                                    |
++-------------------------+------------------------------------------------------------------------------------------------------+
 
 
 .. note::

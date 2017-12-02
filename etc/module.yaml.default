@@ -3,8 +3,10 @@
 # etc/module.yaml
 http:
     module_name: http
-#    starturl: backend
+    starturl: backend
 #    threads: 8
+#    showtraceback: False
+#    showpluginlist: True
 
 #    port: 8383
 #    user: admin
@@ -15,10 +17,6 @@ http:
 #    service_user: serviceuser
 #    service_password: ''
 #    service_hashed_password: 'xxx'
-
-#    showtraceback: False
-#    showpluginlist: True
-#    showservicelist: False
 
 
 #dummy:

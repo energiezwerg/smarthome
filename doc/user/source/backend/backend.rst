@@ -1,5 +1,6 @@
-.. index:: Plugins; Backend
+.. index:: Plugins; Backend (Administrations GUI)
 .. index:: Administrations GUI
+.. index:: Webinterfaces; Administrations GUI (Backend)
 
 ###################
 Administrations GUI
