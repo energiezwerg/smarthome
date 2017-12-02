@@ -36,8 +36,7 @@ Einbindung von Widgets in Plugins
 ---------------------------------
 
 Für Plugin Entwickler, die Widgets mit ihren Plugins ausliefern wollen, is die Lektüre der 
-Datei :doc:`../plugins/visu_smartvisu/README_for_developers` 
-empfohlen.
+:doc:`Entwickler Dokumentation des smartvisu Plugins <../plugins/visu_smartvisu/developer_doc>` empfohlen.
 
 
 .. toctree::

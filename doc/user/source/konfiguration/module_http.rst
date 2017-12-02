@@ -22,19 +22,20 @@ Voraussetzungen
 ===============
 
 Dieses Modul läuft nur unter neueren SmmartHomeNG-Versionen. Mindestvoraussetzung ist SmartHomeNG v1.4. 
-Es benötigt Python >= 3.4, sowie das Python Package  **cherrypy**. Sie können die Python-Module 
-folgendermaßen installieren:
+Es benötigt Python >= 3.4, sowie das Python Package  **cherrypy**. Python-Module können
+folgendermaßen installiert werden:
 
 .. code-block:: python
 
    sudo pip3 install cherrypy
 
-Und bitte beachten Sie, dass die lib (s) für Python3 installiert sind und nicht ein älteres Python 2.7, 
-das wahrscheinlich auf Ihrem System installiert ist. Achten Sie darauf, `pip3` und nicht` pip` zu verwenden.
+Bitte beachten, dass die lib (s) für Python3 installiert sind und nicht ein älteres Python 2.7, 
+welches wahrscheinlich auch auf dem System installiert ist. Deshalb unbedingt `pip3` und nicht` pip` 
+verwenden.
 
 .. note::
 
-   Für dieses Modul muss die Modulhandhabung in SmartHomeNG aktiviert sein. Stellen Sie sicher, 
+   Für dieses Modul muss die Modulhandhabung in SmartHomeNG aktiviert sein. Bitte darauf achten, 
    dass `use_modules` in **../etc/smarthome.yaml** auf **nicht** auf **True** gesetzt ist!
    
    
@@ -103,11 +104,11 @@ Datei *../etc/module.yaml*
 |                         | ist, ist der Zugriff auf die Webinterfaces ohne Anmeldung möglich.                                   |
 +-------------------------+------------------------------------------------------------------------------------------------------+
 | hashed_password         | **Optional**: Das Passwort für die Basis-Authentifizierung an Webinterfaces als Hash-Wert. Kann      |
-|                         | anstelle von**password** verwendet werden, wenn Sie kein Klartext-Passwort in Ihrer                  |
+|                         | anstelle von**password** verwendet werden, wenn kein Klartext-Passwort in der                        |
 |                         | Konfigurationsdatei haben möchten. Wenn weder **password** als auch **hashed_password** angegeben    |
 |                         | werden, ist die Basisauthentifizierung deaktiviert. Derzeit ist **hashed_password** der              |
-|                         | SHA-512-Hash-Wert des Passworts. Um den Hash für Ihr Passwort zu erstellen, können Sie die Funktion  |
-|                         | **Passwort-Hash erzeugen** auf der Seite **Dienste** im Backend verwenden.                           |
+|                         | SHA-512-Hash-Wert des Passworts. Um den Hash für das Passwort zu erstellen, kann die Funktion        |
+|                         | **Passwort-Hash erzeugen** auf der Seite **Dienste** im Backend verwendet werden.                    |
 +-------------------------+------------------------------------------------------------------------------------------------------+
 | serviceport             | **Optional**: Der Port auf welchem das html Interface lauscht. Dieser Port wird für den Zugriff      |
 |                         | auf Webservices genutzt, wie ihn z.B. das Plugin Webservices zur Verfügung stellt. Standard Port     |
@@ -121,12 +122,12 @@ Datei *../etc/module.yaml*
 |                         | Hashed-Service-Passwort) gesetzt ist,ist der Zugriff auf die Webservices ohne Anmeldung möglich.     |
 +-------------------------+------------------------------------------------------------------------------------------------------+
 | service_hashed_password | **Optional**: Das Passwort für die Basis-Authentifizierung an Webservices als Hash-Wert. Kann        |
-|                         | anstelle von**service_password** verwendet werden, wenn Sie kein Klartext-Passwort in Ihrer          |
+|                         | anstelle von**service_password** verwendet werden, wenn kein Klartext-Passwort in der                |
 |                         | Konfigurationsdatei haben möchten. Wenn weder **service_password** als auch                          |
 |                         | **service_hashed_password** angegeben werden, ist die Basisauthentifizierung deaktiviert. Derzeit    |
 |                         | ist **service_hashed_password** der SHA-512-Hash-Wert des Service-Passworts. Um den Hash für         |
-|                         | Ihr Passwort zu erstellen, können Sie die Funktion **Passwort-Hash erzeugen** auf der Seite          |
-|                         | **Dienste** im Backend verwenden.                                                                    |
+|                         | das Passwort zu erstellen, kann die Funktion **Passwort-Hash erzeugen** auf der Seite                |
+|                         | **Dienste** im Backend verwendet werden.                                                             |
 +-------------------------+------------------------------------------------------------------------------------------------------+
 
 
