@@ -250,8 +250,13 @@ class SmartHome():
         self._starttime = datetime.datetime.now()
 
         # test if a valid locale is set in the operating system
-        if os.environ['LANG'].find('UTF-8') == -1:
-            self._logger.error("Locale for the enviroment is not set to a valid value. Set the LANG environment variable to a value supporting UTF-8")
+        try:
+            if os.environ['LANG'].find('UTF-8') == -1:
+                self._logger.error("Locale for the enviroment is not set to a valid value. Set the LANG environment variable to a value supporting UTF-8")
+        except:
+            self._logger.error("Locale for the enviroment is not set. Defaulting to en_US.UTF-8")
+            os.environ["LANG"] = 'en_US.UTF-8'
+            os.environ["LC_ALL"] = 'en_US.UTF-8'
             
         #############################################################
         # Link Tools
@@ -965,11 +970,13 @@ def _reload_logics():
 #####################################################################
 
 if __name__ == '__main__':
-    if locale.getdefaultlocale() == (None, None):
-        locale.setlocale(locale.LC_ALL, 'C')
-    else:
-        locale.setlocale(locale.LC_ALL, '')
-
+    try:
+        if locale.getdefaultlocale() == (None, None):
+            locale.setlocale(locale.LC_ALL, 'C')
+        else:
+            locale.setlocale(locale.LC_ALL, '')
+    except:
+        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
     # argument handling
     argparser = argparse.ArgumentParser()
     arggroup = argparser.add_mutually_exclusive_group()
