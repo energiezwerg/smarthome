@@ -32,7 +32,7 @@ class SamplePlugin(SmartPlugin):
     the update functions for the items
     """
     
-    PLUGIN_VERSION='1.3c.0'
+    PLUGIN_VERSION='1.4.0'
 
 
     def __init__(self, sh, *args, **kwargs):
@@ -52,20 +52,28 @@ class SamplePlugin(SmartPlugin):
         the configured (and checked) value for a parameter by calling self.get_parameter_value(parameter_name). It
         returns the value in the datatype that is defined in the metadata.
         """
-        # attention:
-        # if your plugin runs standalone, sh will likely be None so do not rely on it later or check it within your code
-        
+        self.logger = logging.getLogger(__name__)
 
+        # get the parameters for the plugin (as defined in metadata plugin.yaml):
+        #   self.param1 = self.get_parameter_value('param1')
+        
         # Initialization code goes here
 
-        self.init_webinterface()
+        # On initialization error use:
+        #   self._init_complete = False
+        #   return
+
+        if not self.init_webinterface():
+            self._init_complete = False
+            
+        return
 
 
     def run(self):
         """
         Run method for the plugin
         """        
-        self.logger.debug("Plugin '{}': run method called".format(self.get_shortname()))
+        self.logger.debug("Plugin '{}': run method called".format(self.get_fullname()))
         self.alive = True
         # if you want to create child threads, do not make them daemon = True!
         # They will not shutdown properly. (It's a python bug)
@@ -75,7 +83,7 @@ class SamplePlugin(SmartPlugin):
         """
         Stop method for the plugin
         """
-        self.logger.debug("Plugin '{}': stop method called".format(self.get_shortname()))
+        self.logger.debug("Plugin '{}': stop method called".format(self.get_fullname()))
         self.alive = False
 
 
@@ -93,7 +101,7 @@ class SamplePlugin(SmartPlugin):
                         can be sent to the knx with a knx write function within the knx plugin.
         """
         if self.has_iattr(item.conf, 'foo_itemtag'):
-            self.logger.debug("Plugin '{}': parse item: {}".format(self.get_shortname(), item))
+            self.logger.debug("Plugin '{}': parse item: {}".format(self.get_fullname(), item))
 
         # todo
         # if interesting item for sending values:
@@ -121,7 +129,7 @@ class SamplePlugin(SmartPlugin):
         # change 'foo_itemtag' into your attribute name
         if item():
             if self.has_iattr(item.conf, 'foo_itemtag'):
-                self.logger.debug("Plugin '{}': update_item ws called with item '{}' from caller '{}', source '{}' and dest '{}'".format(self.get_shortname(), item, caller, source, dest))
+                self.logger.debug("Plugin '{}': update_item ws called with item '{}' from caller '{}', source '{}' and dest '{}'".format(self.get_fullname(), item, caller, source, dest))
             pass
 
         # PLEASE CHECK CODE HERE. The following was in the old skeleton.py and seems not to be 
@@ -137,10 +145,13 @@ class SamplePlugin(SmartPlugin):
 
         This method is only needed if the plugin is implementing a web interface
         """
-        self.mod_http = self.get_module('http')
+        try:
+            self.mod_http = self.get_module('http')   # try/except to handle running in a core version that does not support modules
+        except:
+             self.mod_http = None
         if self.mod_http == None:
             self.logger.error("Plugin '{}': Not initializing the web interface".format(self.get_shortname()))
-            return
+            return False
         
         # set application configuration for cherrypy
         webif_dir = self.path_join(self.get_plugin_dir(), 'webif')
@@ -155,11 +166,11 @@ class SamplePlugin(SmartPlugin):
         }
         
         # Register the web interface as a cherrypy app
-        self.mod_http.register_app(WebInterface(webif_dir, self), 
-                                   self.get_shortname(), 
-                                   config, 
-                                   self.get_classname(), self.get_instance_name(),
-                                   description='')
+        self.mod_http.register_web_if(WebInterface(webif_dir, self), 
+                                      self.get_shortname(), 
+                                      config, 
+                                      self.get_classname(), self.get_instance_name(),
+                                      description='')
                                    
         return True
 
@@ -183,6 +194,7 @@ class WebInterface:
         :type webif_dir: str
         :type plugin: object
         """
+        self.logger = logging.getLogger(__name__)
         self.webif_dir = webif_dir
         self.plugin = plugin
         self.tplenv = Environment(loader=FileSystemLoader(self.plugin.path_join( self.webif_dir, 'templates' ) ))

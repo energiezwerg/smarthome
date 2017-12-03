@@ -32,7 +32,7 @@ class SamplePlugin(SmartPlugin):
     the update functions for the items
     """
     
-    PLUGIN_VERSION='1.3c.0'
+    PLUGIN_VERSION='1.4.0'
 
 
     def __init__(self, sh, *args, **kwargs):
@@ -52,18 +52,23 @@ class SamplePlugin(SmartPlugin):
         the configured (and checked) value for a parameter by calling `self.get_parameter_value(parameter_name)`. It
         returns the value in the datatype that is defined in the metadata.
         """
-        # attention:
-        # if your plugin runs standalone, sh will likely be None so do not rely on it later or check it within your code
-        
+        self.logger = logging.getLogger(__name__)
 
+        # get the parameters for the plugin (as defined in metadata plugin.yaml):
+        #   self.param1 = self.get_parameter_value('param1')
+        
         # Initialization code goes here
+
+        # On initialization error use:
+        #   self._init_complete = False
+        #   return
 
 
     def run(self):
         """
         Run method for the plugin
         """        
-        self.logger.debug("Plugin '{}': run method called".format(self.get_shortname()))
+        self.logger.debug("Plugin '{}': run method called".format(self.get_fullname()))
         self.alive = True
         # if you want to create child threads, do not make them daemon = True!
         # They will not shutdown properly. (It's a python bug)
@@ -73,7 +78,7 @@ class SamplePlugin(SmartPlugin):
         """
         Stop method for the plugin
         """
-        self.logger.debug("Plugin '{}': stop method called".format(self.get_shortname()))
+        self.logger.debug("Plugin '{}': stop method called".format(self.get_fullname()))
         self.alive = False
 
 
@@ -91,7 +96,7 @@ class SamplePlugin(SmartPlugin):
                         can be sent to the knx with a knx write function within the knx plugin.
         """
         if self.has_iattr(item.conf, 'foo_itemtag'):
-            self.logger.debug("Plugin '{}': parse item: {}".format(self.get_shortname(), item))
+            self.logger.debug("Plugin '{}': parse item: {}".format(self.get_fullname(), item))
 
         # todo
         # if interesting item for sending values:
@@ -119,7 +124,7 @@ class SamplePlugin(SmartPlugin):
         # change 'foo_itemtag' into your attribute name
         if item():
             if self.has_iattr(item.conf, 'foo_itemtag'):
-                self.logger.debug("Plugin '{}': update_item ws called with item '{}' from caller '{}', source '{}' and dest '{}'".format(self.get_shortname(), item, caller, source, dest))
+                self.logger.debug("Plugin '{}': update_item ws called with item '{}' from caller '{}', source '{}' and dest '{}'".format(self.get_fullname(), item, caller, source, dest))
             pass
 
         # PLEASE CHECK CODE HERE. The following was in the old skeleton.py and seems not to be 
