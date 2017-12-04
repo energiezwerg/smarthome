@@ -275,8 +275,10 @@ class Item():
         self._enforce_updates = False
         self._eval = None				    # -> KEY_EVAL
         self._eval_trigger = False
-        self._on_update = None				# -> KEY_ON_UPDATE
-        self._on_change = None				# -> KEY_ON_CHANGE
+        self._on_update = None				# -> KEY_ON_UPDATE eval expression
+        self._on_change = None				# -> KEY_ON_CHANGE eval expression
+        self._on_update_dest_var = None		# -> KEY_ON_UPDATE destination var
+        self._on_change_dest_var = None		# -> KEY_ON_CHANGE destination var
         self._fading = False
         self._items_to_trigger = []
         self.__last_change = smarthome.now()
@@ -355,15 +357,19 @@ class Item():
                     if isinstance(value, str):
                         value = [ value ]
                     val_list = []
+                    dest_var_list = []
                     for val in value:
                         # seperate destination item (if it exists)
                         dest_item, val = self._split_destitem_from_value(val)
                         # expand relative item pathes
                         dest_item = self.get_absolutepath(dest_item, KEY_ON_CHANGE).strip()
-                        val = 'sh.'+dest_item+'( '+ self.get_stringwithabsolutepathes(val, 'sh.', '(', KEY_ON_CHANGE) +' )'
+#                        val = 'sh.'+dest_item+'( '+ self.get_stringwithabsolutepathes(val, 'sh.', '(', KEY_ON_CHANGE) +' )'
+                        val = self.get_stringwithabsolutepathes(val, 'sh.', '(', KEY_ON_CHANGE)
 #                        logger.warning("Item __init__: {}: for attr '{}', dest_item '{}', val '{}'".format(self._path, attr, dest_item, val))
                         val_list.append(val)
+                        dest_var_list.append(dest_item)
                     setattr(self, '_' + attr, val_list)
+                    setattr(self, '_' + attr + '_dest_var', dest_var_list)
                 elif attr == KEY_AUTOTIMER:
                     time, value, compat = _split_duration_value_string(value)
                     timeitem = None
@@ -714,6 +720,9 @@ class Item():
                 self._sh.trigger(name=self._path, obj=self.__run_eval, by='Init', value={'value': self._value, 'caller': 'Init'})
 
     def __run_eval(self, value=None, caller='Eval', source=None, dest=None):
+        """
+        eavuate the 'eval' entry of the actual item
+        """
         if self._eval:
             sh = self._sh  # noqa
             try:
@@ -728,25 +737,51 @@ class Item():
 
 
     # New for on_update / on_change
+    def _run_on_xxx(self, path, value, on_dest, on_eval, attr='?'):
+        """
+        common method for __run_on_update and __run_on_change
+        """
+        sh = self._sh
+        logger.info("Item {}: '{}' evaluating {} = {}".format(self._path, attr, on_dest, on_eval))
+        try:
+            dest_value = eval(on_eval)       # calculate to test if expression computes and see if it computes to None
+        except Exception as e:
+            logger.warning("Item {}: '{}' item-value='{}' problem evaluating {}: {}".format(self._path, attr, value, on_eval, e))
+        else:
+            if dest_value is not None:
+                # expression computes and does not result in None
+                if on_dest != '':
+                    dest_item = self._sh.return_item(on_dest)
+                    dest_item.__update(dest_value, caller=attr, source=self._path)
+                    logger.debug(" - : '{}' finally evaluating {} = {}, result={}".format(attr, on_dest, on_eval, dest_value))
+                else:
+                    dummy = eval(on_eval)
+                    logger.debug(" - : '{}' finally evaluating {}, result={}".format(attr, on_eval, dest_value))
+            else:
+                logger.debug(" - : '{}' {} not set (cause: eval=None)".format(attr, on_dest))
+                pass
+            
+    
     def __run_on_update(self, value=None):
+        """
+        evaluate all 'on_update' entries of the actual item
+        """
         if self._on_update:
             sh = self._sh  # noqa
-#            logger.warning("Item {}: 'on_update' evaluating {}".format(self._path, self._on_update))
-            for on_update in self._on_update:
-                try:
-                    dummy = eval(on_update)
-                except Exception as e:
-                    logger.warning("Item {}: 'on_update' problem evaluating {}: {}".format(self._path, on_update, e))
+#            logger.info("Item {}: 'on_update' evaluating {} = {}".format(self._path, self._on_update_dest_var, self._on_update))
+            for on_update_dest, on_update_eval in zip(self._on_update_dest_var, self._on_update):
+                self._run_on_xxx(self._path, value, on_update_dest, on_update_eval, 'on_update')
+
 
     def __run_on_change(self, value=None):
+        """
+        evaluate all 'on_change' entries of the actual item
+        """
         if self._on_change:
             sh = self._sh  # noqa
-#            logger.warning("Item {}: 'on_change' evaluating {}".format(self._path, self._on_change))
-            for on_change in self._on_change:
-                try:
-                    dummy = eval(on_change)
-                except Exception as e:
-                    logger.warning("Item {}: 'on_change' problem evaluating {}: {}".format(self._path, on_change, e))
+#            logger.info("Item {}: 'on_change' evaluating lists {} = {}".format(self._path, self._on_change_dest_var, self._on_change))
+            for on_change_dest, on_change_eval in zip(self._on_change_dest_var, self._on_change):
+                self._run_on_xxx(self._path, value, on_change_dest, on_change_eval, 'on_change')
 
 
     def __trigger_logics(self):
