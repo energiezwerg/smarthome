@@ -1,3 +1,5 @@
+.. index:: eval Ausdrücke
+
 eval Ausdrücke
 ##############
 
@@ -31,7 +33,8 @@ den Ausdruck **sh.self.prev_value()** zugegriffen werden.
 
 .. attention::
 
-   Bei eval Ausdrücken ist zu beachten, dass bei Verwendung von **if** auch immer ein **else**
+   Bei **eval** Ausdrücken (wie sie in den Item Attributen **eval**, **on_update** und **on_change**
+   verwendet werden) ist zu beachten, dass bei Verwendung von **if** auch immer ein **else**
    Zweig angegeben werden muss!
    
    Wenn man jedoch ein Item nur verändern möchte wenn die **if** Bedingung erfüllt ist und sonst

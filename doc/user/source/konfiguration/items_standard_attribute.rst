@@ -72,10 +72,10 @@ Attribute ist in der Dokumentation des jeweiligen Plugins nachzulesen.
    :maxdepth: 5
    :hidden:
 
-   items_standard_attribute_type.rst
-   items_standard_attribute_eval.md
-   items_standard_attribute_crontab.md
-   items_standard_attribute_cycle.md
-   items_standard_attribute_autotimer.md
-   items_standard_attribute_on_update.md
+   items_standard_attribute_type
+   items_standard_attribute_eval
+   items_standard_attribute_crontab
+   items_standard_attribute_cycle
+   items_standard_attribute_autotimer
+   items_standard_attribute_on_update
 
