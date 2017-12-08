@@ -94,6 +94,7 @@ sh.hour.until.week(sh.hour.until.midnight() + (24 * sh.day.until.week()))
 
 # Kalenderwoche/Jahr
 sh.week.since.year(sh.now().isocalendar()[1])
+sh.week.until.year(52-sh.now().isocalendar()[1])
 
 # Monat/Jahr
 sh.month.since.year(sh_now.month)
@@ -122,6 +123,10 @@ sh.second.until.week(sh.second.until.minute() + (60 * sh.minute.until.week()))
 # Tage/Monat
 sh.day.since.month(sh_now.day - 1)
 sh.day.until.month(days_of_month(sh_now.month,sh_now.year) - sh.day.since.month() - 1)
+
+# Wochen/Monat
+sh.week.since.month((sh.day.since.month()-1)//7+1)
+sh.week.until.month((sh.day.until.month())//7)
 
 # Tage/Jahr
 sh.day.since.year(day_of_year(sh_now.year,sh_now.month,sh_now.day) - 1)
