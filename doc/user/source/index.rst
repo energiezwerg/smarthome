@@ -52,6 +52,7 @@ oder im `Chat auf gitter.im <https://gitter.im/smarthomeNG/smarthome>`_ .
    backend/backend.rst
    tools/tools.rst
    fehlersuche
-   faq.md
-   entwickler_doku.rst
+   faq
+   entwickler_doku
+   release
    genindex

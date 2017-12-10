@@ -1,0 +1,35 @@
+=====================
+Release 1.4 - Shortly
+=====================
+
+There are a lot of new features for the core of SmartHomeNG and the plugins.
+
+
+New CORE features
+-----------------
+
+* ...
+
+
+
+Removed CORE Libs
+-----------------
+
+Nothing so far
+
+New Plugins
+-----------
+
+* ...
+
+
+Changes to existing Plugins
+---------------------------
+
+* ...
+ 
+  
+Removed Plugins
+---------------
+
+* ...
