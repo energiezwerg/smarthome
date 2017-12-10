@@ -152,7 +152,12 @@ def get_tester(section_dict, maxlen=20):
     maint = section_dict.get('tester', '')
             
     import textwrap
-    lines = textwrap.wrap(maint, maxlen, break_long_words=False)
+    try:
+        lines = textwrap.wrap(str(maint), maxlen, break_long_words=False)
+    except:
+        print()
+        print("section_dict: {}, maint: {}".format(section_dict, maint))
+        print()
     if lines == []:
         lines.append('')
     return lines
