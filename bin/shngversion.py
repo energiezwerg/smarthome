@@ -24,8 +24,9 @@ import os
 import subprocess
 
 # Update auf 1.3d wg. neuer item features on_update, on_change
+# Update auf 1.3e wg. neuer logic features for visu_websocket
 
-shNG_version = '1.3d'
+shNG_version = '1.3e'
 
 # ---------------------------------------------------------------------------------
 FileBASE = None
