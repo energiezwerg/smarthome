@@ -66,7 +66,7 @@ class SamplePlugin(SmartPlugin):
 
     def run(self):
         """
-        Run method for the plugin
+        Run method for the plugin - called once to start the plugins processing
         """        
         self.logger.debug("Plugin '{}': run method called".format(self.get_fullname()))
         self.alive = True
@@ -84,7 +84,8 @@ class SamplePlugin(SmartPlugin):
 
     def parse_item(self, item):
         """
-        Default plugin parse_item method. Is called when the plugin is initialized.
+        Plugin's parse_item method. Is called for every item when the plugin is initialized.
+        
         The plugin can, corresponding to its attribute keywords, decide what to do with
         the item in future, like adding it to an internal array for future reference
         :param item:    The item to process.
@@ -105,7 +106,7 @@ class SamplePlugin(SmartPlugin):
 
     def parse_logic(self, logic):
         """
-        Default plugin parse_logic method
+        Plugin's parse_logic method
         """
         if 'xxx' in logic.conf:
             # self.function(logic['name'])
@@ -115,6 +116,7 @@ class SamplePlugin(SmartPlugin):
     def update_item(self, item, caller=None, source=None, dest=None):
         """
         Write items values
+        
         :param item: item to be updated towards the plugin
         :param caller: if given it represents the callers name
         :param source: if given it represents the source

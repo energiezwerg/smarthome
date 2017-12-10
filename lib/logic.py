@@ -348,8 +348,25 @@ class Logics():
         info['logictype'] = self.return_logictype(logic.name)
         info['filename'] = logic.filename
         info['pathname'] = logic.pathname
+        try:
+            info['description'] = logic.description
+        except:
+            info['description'] = ''
+        info['visu_access'] = self.visu_access(logic.name)
 #        info['watch_item_list'] = []
         return info
+        
+
+    def visu_access(self, name):
+        """
+        Return if visu may access the logic
+        """
+        try:
+            if self.return_logic(name).visu_acl.lower() in ('true', 'yes', 'rw'):
+                return True
+        except Exception as e:
+            pass
+        return False
         
 
     def is_logic_enabled(self, name):
@@ -661,7 +678,7 @@ class Logics():
         
         :param section: logic to set the key for
         :param key: key for which the value should be set
-        :param value: value to sez
+        :param value: value to set
         
         """
         # load /etc/logic.yaml
@@ -676,6 +693,16 @@ class Logics():
 
         # save /etc/logic.yaml
         shyaml.yaml_save_roundtrip(conf_filename, conf, True)
+        
+        # activate visu_acl without reloading the logic
+        if key == 'visu_acl':
+            mylogic = self.return_logic(section)
+            if mylogic is not None:
+                logger.info(" - key={}, value={}".format(key, value))
+                if value is None:
+                    value = 'false'
+                mylogic.visu_acl = str(value)
+
         return
         
         
@@ -700,7 +727,7 @@ class Logics():
         if self.return_config_type() != YAML_FILE:
             logger.error("update_config_section: Editing of configuration only possible with new (yaml) config format")
             return False
-            
+                        
         # load /etc/logic.yaml
         conf_filename = os.path.join(self._get_etc_dir(), 'logic') 
         conf = shyaml.yaml_load_roundtrip(conf_filename)
