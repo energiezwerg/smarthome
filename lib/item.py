@@ -287,6 +287,7 @@ class Item():
         self.__logics_to_trigger = []
         self._name = path
         self.__prev_change = smarthome.now()
+        self.__prev_update = smarthome.now()
         self.__methods_to_trigger = []
         self.__parent = parent
         self._path = path
@@ -814,7 +815,7 @@ class Item():
         # ms: call run_on_update() from here
         self.__run_on_update(value)
         if _changed or self._enforce_updates or self._type == 'scene':
-#            self.__prev_update = self.__last_update #Multiclick
+            self.__prev_update = self.__last_update
             self.__last_update = self._sh.now()
             # ms: call run_on_change() from here
             self.__run_on_change(value)
@@ -908,17 +909,19 @@ class Item():
     def last_update(self):
         return self.__last_update
 
-    #Multiclick
-#    def prev_update_age(self):
-#        delta = self.__last_update - self.__prev_update
-#        return delta.total_seconds()
-
     def prev_age(self):
         delta = self.__last_change - self.__prev_change
         return delta.total_seconds()
 
+    def prev_update_age(self):
+        delta = self.__last_update - self.__prev_update
+        return delta.total_seconds()
+
     def prev_change(self):
         return self.__prev_change
+
+    def prev_update(self):
+        return self.__prev_update
 
     def prev_value(self):
         return self.__prev_value
