@@ -10,7 +10,7 @@ Unterstützte Python Versionen
 
 Bitte beachten: Ab SmartHomeNG Release 1.4 wollen wir die aktive Unterstützung älterer Python 
 Versionen einstellen. Die älteste unterstützte Python Version wird dann Python 3.4 sein. 
-(Siehe *Hard- u. Software Anforderungen* im Abschnitt *Installation* zu unterstützen Python Versionen)
+(Siehe *Hard- u. Software Anforderungen* im Abschnitt *Installation* zu unterstützten Python Versionen)
 
 Das bedeutet nicht unbedingt, dass SmartHomeNG ab Release 1.4 nicht mehr unter älteren Python 
 Versionen läuft. Es bedeutet, dass SmartHomeNG nicht mehr mit älteren Python Versionen getestet 
@@ -51,10 +51,11 @@ Neue Funktionen im CORE
 
   * Plugins können ein Webinterface implementieren (durch Nutzung des http-Moduls)
   * Unterstützung mehrerer Versionen eines Plugins. Vorgänger-Versionen von Plugins können mit einem Plugin ausgeliefert werden und durch Angebe der Versionsnummer in /etc/plugin.yaml statt der aktuellen Version geladen werden.
+  * Anwender und Entwickler Dokumentation kann dynamisch um Plugin Dokumentation ergänzt werden. (Durch Erstellen der Dateien user_doc.rst bzw. develpoer_doc.rst)
 
 * Scheduler:
 
-  * Namensräume eingeführt um mögliche Kollisionen durch Namensgleichheiten zu vermeiden.
+  * Implementierung eigener Nammensräume für Scheduler von Items, Logiken und Plugins, um mögliche Kollisionen durch Namensgleichheiten zu vermeiden.
     (ist besonders zu beachten, fall man `sh.scheduler.change()` für Scheduler von Logiken nutzt. Dort muss dem Scheduler Namen ein `logic.` vorangestellt werden)
 
 * Einführung von Plugin Metadaten:
@@ -69,14 +70,10 @@ Neue Funktionen im CORE
 
 * Szenen:
 
-  * Unterstützung des YAML Formates für Szenen
+  * Unterstützung des YAML Formates für die Konfiguration von Szenen
   * Einführung eines API für Szenen
   * Szenen können statt absolute Werte für Items zu definieren, auch Eval-Ausdrücke definieren. In den Eval-Ausdrücken ist die Referenzierung von Items sowohl absolut, als auch relativ zum Szenen-Item möglich
   * Im YAML Format können Namen für die Stati einer Szene vergeben werden
-
-* Scheduler:
-
-  * Implementierung eigener Nammensräume für Scheduler von Items, Logiken und Plugins
 
 * Logiken:
 
@@ -84,9 +81,9 @@ Neue Funktionen im CORE
   * Logics API:
 
     * Implementierung eines APIs für Logiken
-    * Das enable/disable von Logiken über das API wird persistiert (bleibt also auch über einen Neustart von shNG erhalten)
-    * Das ermöglicht den Plugins Backend, Blockly und CLI ein erweitertes Handling von Logiken (z.B. Update der Logik-Konfiguration) falls das neue Konfigurationsformat (yaml) verwendet wird.
-    * Details sind der Entwickler Dokumentation zu entnehmen
+    * Das enable/disable von Logiken über das API wird persistiert (bleibt also auch über einen Neustart von SmartHomeNG erhalten)
+    * Das API ermöglicht den Plugins Backend, Blockly und CLI ein erweitertes Handling von Logiken (z.B. Update der Logik-Konfiguration) falls das neue Konfigurationsformat (yaml) verwendet wird.
+    * Details des API sind der Entwickler Dokumentation zu entnehmen
 
   * Zugriff auf das Logics-API aus Logiken heraus
   * Möglichkeit persistenter Variablen für Logiken dokumentiert
@@ -107,10 +104,10 @@ Neue Plugins und Plugin-Erweiterungen
 
 * Allgemein:
 
-  * sample_plugin basierend auf erweiterter SmartPlugin Klasse (unter /dev)
-  * sample_plugin mit Web-Interface (unter /dev)
+  * sample_plugin basierend auf erweiterter SmartPlugin Klasse (unter /dev/sample_plugin)
+  * sample_plugin mit Web-Interface (unter /dev/sample_plugin_webif)
 
-* Blockly: Graphischer Logik Editor mit Integration in das Backend Plugin
+* Blockly: Graphischer Logik Editor mit Integration in das Backend Plugin (noch Expermental)
 * WebServices Plugin, dass das neue Web-Interface nutzt
 * Nokia Health Plugin
 * AV Device: 
@@ -138,7 +135,8 @@ Neue Plugins und Plugin-Erweiterungen
 
   * Items:
 
-    * Anzeige von update_age "Alter (Update)" hinzugefügt
+    * Anzeige von **update_age** "Alter (Update)" hinzugefügt
+    * Anzeige von **prev_update_age** "vorh. Alter (Update)" und **prev_update** "vorheriges Update" hinzugefügt
 
   * Logiken:
 
@@ -179,7 +177,7 @@ Neue Plugins und Plugin-Erweiterungen
 * CLI:
 
   * Umstellung auf das Logics-API
-  * Erweiterter Hilfe Befehl: mit help [group| kann (statt der vollständigen Hilfe) die Hilfe zu einer Gruppe von Befehlen (item, log, logic, scheduler) angezeigt werden.
+  * Erweiterter Hilfe Befehl: mit help [group] kann (statt der vollständigen Hilfe) die Hilfe zu einer Gruppe von Befehlen (item, log, logic, scheduler) angezeigt werden.
   * neuer Befehl zu Anzeige detaillierter Informationen zu einer Logik
   * Überarbeitung der Ausgabe der Threadliste
   * Einführung einer neuen (logischeren) Befehlsbenennung: Beispiel: Alle Befehle für Logiken beginnen mit 'l'. Die alten Befehle funktionieren weiterhin (bis auf Namens-Kollisionen).
@@ -195,11 +193,11 @@ Neue Plugins und Plugin-Erweiterungen
 * Enocean:
 
   * Unterstützung für einfache Schalter (Protokoll D2-01-07), wie z.B. Peha d 451 fu-ebi pf o.t. nr. 00364476 
+  * Unterstützung für Eltako Heligkeitssensor (FAH60)
   * Lernmethoden restrukturiert und erweitert
 
 * KNX Plugin: Typo Fix in enable_stats() / disable_stats()
 * DLMS Plugin: Pruefsummenbehandlung wieder eingefuehrt/aktiviert
-* visu_smartvisu Plugin: Verbesserte Anzeige der **Category** Seite auf mobilen Endgeräten
 * LIRCD Plugin: Neues Plugin um via lircd IR Kommandos zu verschicken
 * MPD Plugin: Unterstützung um Playlists zu laden und abzuspielen
 * Database-Plugin mit neuen Aggregatsfunktionen: 
@@ -210,7 +208,11 @@ Neue Plugins und Plugin-Erweiterungen
   * `raw` - Liefert alle Werte für den abgefragten Zeitraum zurück ohne eine Aggregation durchzuführen
 
 * XBMC: Neues Kommando `shutdown` wurde implementiert
-* visu_smartvisu: Initialer Support für smartVISU v2.9 hinzugefügt
+* visu_smartvisu:
+
+  * Verbesserte Anzeige der **Category** Seite auf mobilen Endgeräten
+  * Initialer Support für smartVISU v2.9 hinzugefügt
+
 * visu_websocket: 
 
   * Reagiert nun bei Logiken auf Änderungen an visu_acl ohne Neustart von SmartHomeNG

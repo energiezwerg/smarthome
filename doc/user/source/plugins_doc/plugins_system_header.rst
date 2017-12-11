@@ -16,6 +16,14 @@ System Plugins
 
 System Plugins erweitern die generrelle Funktionalität von SmartHomeNG.
 
+Die hier aufgeführten Plugins unterstützen nicht die Anbindung von Peripherie, sondern erweitern
+die zentralen Funktionen von SmartHomeNG. Diese Plugins sind zum Teil auch enger an den Core
+von SmartHomeNG gekoppelt und müssen daher in der Version genauer zum Core passen als andere
+Plugins.
+
+Besonders das **backend** Plugin, das **cli** Plugin und das **visu_websocket** Plugin müssen 
+genau zur Core Version von SmartHomeNG passen.
+
 |br|
 |br|
 |br|
