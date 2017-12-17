@@ -6,7 +6,7 @@ from lib.model.smartplugin import SmartPlugin
 
 from tests.mock.core import MockSmartHome
 
-class TestConfig(unittest.TestCase):
+class TestPlugin(unittest.TestCase):
 
 	def setUp(self):
 		self.sh = MockSmartHome()
