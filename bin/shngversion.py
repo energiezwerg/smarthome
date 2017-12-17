@@ -27,7 +27,9 @@ import subprocess
 # Update auf 1.3e wg. neuer logic features for visu_websocket
 # Update auf 1.3f wg. Vorbereitung Release Candidate
 
-shNG_version = '1.3f'
+# Update auf 1.3a wg. Kennzeichnung des Stands als "nach dem v1.4 Release"
+
+shNG_version = '1.4a'
 
 # ---------------------------------------------------------------------------------
 FileBASE = None
