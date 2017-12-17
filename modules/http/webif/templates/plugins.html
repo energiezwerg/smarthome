@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<head>
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" type="text/css"/>
+	<link rel="stylesheet" href="/static/css/bootstrap.min.css" type="text/css"/>
+	<link rel="icon" href="/static/img/favicon.ico" type="image/png">
+</head>
+<body>
+<div class="container">
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+	<br>
+    <div class="row">
+        <div align="center" class="col-md-7 col-md-offset-2 panel panel-default">
+			<h1 class="margin-base-vertical">
+			<img src="static/img/logo_big.png" width="150" height="75">
+			&nbsp; SmartHomeNG</h1>
+
+			<p align="center">
+				Willkommen bei SmartHomeNG.
+			</p>
+			<br>
+			<h3>Plugins:</h3>
+			{% for webif in webinterfaces.keys() %}
+				<br>
+				<li class="nav-item"><a href="/{{ webif }}">{{ webinterfaces[webif].Webifname }} {{ webinterfaces[webif].Instance }} - {{ webinterfaces[webif].Description }}</a></li>
+			{% endfor %}
+			<br>
+			<br>
+			<br>
+        </div><!-- //main content -->
+    </div><!-- //row -->
+</div> <!-- //container -->
+</body>

@@ -6,6 +6,8 @@
 
 This file contains basic information about the basic directories of SmartHomeNG.
 
+Developer documentation (english) can be found on [www.smarthomeNG.de](https://www.smarthomeNG.de)
+
 Additional information / documentation can be found in the [SmartHomeNG Wiki](https://github.com/smarthomeNG/smarthome/wiki). The Wiki ist in german for the greatest part.
 
 | directory | description|
@@ -17,7 +19,8 @@ Additional information / documentation can be found in the [SmartHomeNG Wiki](ht
 |items 	  | put here your own files for your items |
 |lib 	  | some more core python modules are in this directory. You won't need to change anything here
 |logics   |	here your logic files are put
-|plugins  | one subdirectory for every plugin is located here
+|modules  | here are all loadable core-modules located (one subdirectory for every module)
+|plugins  | here are all plugins located (one subdirectory for every plugin)
 |scenes   | the scenes are stored here
 |tools    | there are some tools which help you for creating an initial configuration 
 |var 	  | everything that is changed by smarthome is put here, e.g. logfiles, cache, sqlite database etc.

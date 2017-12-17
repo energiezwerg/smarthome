@@ -36,10 +36,29 @@ BackendServer:
 #     host: 127.0.0.1
 #     port: 4304
 
-# visu:
-#     class_name: WebSocket
-#     class_path: plugins.visu
-#     smartvisu_dir: /var/www/html/smartVISU
+# Bereitstellung eines Websockets zur Kommunikation zwischen SmartVISU und SmartHomeNG
+#visu:
+#    class_name: WebSocket
+#    class_path: plugins.visu_websocket
+#    # ip: 0.0.0.0
+#    # port: 2424
+#    # tls: no
+#    wsproto: 4
+#    acl: rw
+
+# Autogenerierung von Webseiten für SmartVISU
+#smartvisu:
+#    class_name: SmartVisu
+#    class_path: plugins.visu_smartvisu
+#    # '"neue" Linux Versionen (z.B. Debian > 8.x, Ubuntu > 14.x)'
+#    smartvisu_dir: /var/www/html/smartVISU
+#
+#    # nur \"alte\" Linux-Variationen
+#    # smartvisu_dir: /var/www/smartVISU
+#    # generate_pages: True
+#    # handle_widgets: True
+#    # overwrite_templates: Yes
+#    # visu_style: blk
 
 # sql:
 #     class_name: SQL

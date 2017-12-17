@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<head>
+	<link rel="stylesheet" href="/static/css/font-awesome.min.css" type="text/css"/>
+	<link rel="stylesheet" href="/static/css/bootstrap.min.css" type="text/css"/>
+	<link rel="icon" href="/static/img/favicon.ico" type="image/png">
+</head>'
+<body>
+	<h1 class="margin-base-vertical">
+		&nbsp;<img src="/static/img/logo_small_120x120.png" width="40" height="40" style="vertical-align:top">
+		&nbsp; Oops, Error {{ errno }}:
+	</h1>
+	<br>
+	<h3>
+		&nbsp;{{ errmsg }}
+	</h3>
+	<br>
+	<h5 style="color: #2269aa;"> {{ traceback }}</h5>
+</body>

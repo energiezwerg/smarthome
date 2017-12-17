@@ -1,6 +1,31 @@
+#!/usr/bin/env python3
+# vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+#########################################################################
+# Copyright 2016-       Martin Sinn                         m.sinn@gmx.de
+# Copyright 2016      Christian Strassburg            c.strassburg@gmx.de
+#########################################################################
+#  This file is part of SmartHomeNG
+#  https://github.com/smarthomeNG/smarthome
+#  http://knx-user-forum.de/
+#
+#  SmartHomeNG is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  SmartHomeNG is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with SmartHomeNG If not, see <http://www.gnu.org/licenses/>.
+#########################################################################
 
 import common
 import unittest
+import logging
+
 import lib.plugin
 import lib.item
 from lib.model.smartplugin import SmartPlugin
@@ -8,16 +33,62 @@ import threading
 
 from lib.constants import (CONF_FILE, YAML_FILE)
 
+from tests.mock.core import MockSmartHome
 
-ITEM_FILE_TYPE = CONF_FILE
-#ITEM_FILE_TYPE = YAML_FILE
+#ITEM_FILE_TYPE = CONF_FILE
+ITEM_FILE_TYPE = YAML_FILE
 
+verbose = False
+
+
+logger = logging.getLogger(__name__)
 
 class TestItem(unittest.TestCase):
+
     def props(self,cls):   
         return [i for i in cls.__dict__.keys() if i[:1] != '_']
 
         
+    def test__begin(self):
+        logger.warning('')
+        logger.warning('=== Begin Item Tests:')
+
+
+    def test_zz_end(self):    
+        logger.warning('')
+        logger.warning('=== End Item Tests.')
+
+
+    def setUp(self):
+        self.sh = MockSmartHome()
+
+    def load_items(self, filename, filetype=None):
+        if filetype == None:
+            conf_filename = common.BASE + "/tests/resources/"+filename+ITEM_FILE_TYPE
+        else:
+            conf_filename = common.BASE + "/tests/resources/"+filename+filetype
+        item_conf = None
+        item_conf = lib.config.parse(conf_filename, item_conf)
+        if item_conf == {}:
+            logger.warning('')
+            logger.warning("config file '"+conf_filename+"' not found")
+        if verbose == True:
+            logger.warning('')
+            logger.warning('test_item_relative_references: {}'.format(str(item_conf)))
+            logger.warning('test_item_relative_references: {}'.format(str(item_conf.items())))
+        for attr, value in item_conf.items():
+            if isinstance(value, dict):
+                child_path = attr
+                try:
+                    child = lib.item.Item(self.sh, self.sh, child_path, value)
+                except Exception as e:
+                    logger.error("Item {}: problem creating: {}".format(child_path, e))
+                else:
+                    #vars(sh)[attr] = child
+                    self.sh.add_item(child_path, child)
+                    self.sh.children.append(child)
+
+
     # ===================================================================
     # Following tests are about relative item addressing
     #
@@ -25,44 +96,31 @@ class TestItem(unittest.TestCase):
         """
         Tests various aspects around the handling of relative item references
         """
-        sh=MockSmartHome()
-        
-        #load items
-        conf_filename = common.BASE + "/tests/resources/item_items"+ITEM_FILE_TYPE
-        item_conf = None
-        item_conf = lib.config.parse(conf_filename, item_conf)
-        if item_conf == {}:
-            print()
-            print("config file '"+conf_filename+"' not found")
-        print(item_conf)
-        print(item_conf.items())
-        for attr, value in item_conf.items():
-            if isinstance(value, dict):
-                child_path = attr
-                try:
-                    child = lib.item.Item(sh, sh, child_path, value)
-                except Exception as e:
-                    self.logger.error("Item {}: problem creating: ()".format(child_path, e))
-                else:
-                    #vars(sh)[attr] = child
-                    sh.add_item(child_path, child)
-                    sh.children.append(child)
+        if verbose == True:
+            logger.warning('')
+            logger.warning('===== test_item_relative_references:')
        
-        if 0: self.dump_items(sh)
-
         # -----------------------------------------------------------------
         
-        print()
-        it = sh.return_item("item_tree.grandparent.parent.my_item")
+#        if verbose == True:
+#            logger.warning('')
+
+        self.load_items('item_items')
+        it = self.sh.return_item("item_tree")
+        self.assertIsNotNone(it)
+
+        it = self.sh.return_item("item_tree.grandparent.parent.my_item")
         self.assertIsNotNone(it)
         self.assertEqual(it._type, 'bool')
-        it = sh.return_item("item_tree.grandparent.parent.my_item.child")
+        it = self.sh.return_item("item_tree.grandparent.parent.my_item.child")
         self.assertIsNotNone(it)
         self.assertEqual(it._type, 'foo')
 
-        print('=== eval_trigger Tests:')
+        if verbose == True:
+            logger.warning('')
+            logger.warning('=== eval_trigger Tests:')
         # Attribute with relative references
-        it = sh.return_item("item_tree.grandparent.parent.my_item")
+        it = self.sh.return_item("item_tree.grandparent.parent.my_item")
         self.assertEqual(it.get_absolutepath('.', 'eval_trigger'), 'item_tree.grandparent.parent.my_item')
         self.assertEqual(it.get_absolutepath('.self', 'eval_trigger'), 'item_tree.grandparent.parent.my_item')
         self.assertEqual(it.get_absolutepath('.child', 'eval_trigger'), 'item_tree.grandparent.parent.my_item.child')
@@ -79,9 +137,11 @@ class TestItem(unittest.TestCase):
         self.assertEqual(it.get_absolutepath('item_tree.grandparent.parent.my_item', 'eval_trigger'), 'item_tree.grandparent.parent.my_item')
         self.assertEqual(it.get_absolutepath('abc', 'eval_trigger'), 'abc')
 
-        print('=== eval Tests:')
-        it = sh.return_item("item_tree.grandparent.parent.my_item")
-        #print(it.get_stringwithabsolutepathes('sh..child()', 'sh.', '(', 'eval'))
+        if verbose == True:
+            logger.warning('')
+            logger.warning('=== eval Tests:')
+        it = self.sh.return_item("item_tree.grandparent.parent.my_item")
+
         self.assertEqual(it.get_stringwithabsolutepathes('sh..child()', 'sh.', '(', 'eval'), 'sh.item_tree.grandparent.parent.my_item.child()')
         self.assertEqual(it.get_stringwithabsolutepathes('5*sh..child()', 'sh.', '(', 'eval'), '5*sh.item_tree.grandparent.parent.my_item.child()')
         self.assertEqual(it.get_stringwithabsolutepathes('5 * sh..child() + 4', 'sh.', '(', 'eval'), '5 * sh.item_tree.grandparent.parent.my_item.child() + 4')
@@ -96,21 +156,23 @@ class TestItem(unittest.TestCase):
         self.assertNotEqual(it.get_stringwithabsolutepathes('sh.....changed_by()', 'sh.', '(', 'eval'), 'sh.item_tree.grandparent.changed_by()')
         self.assertEqual(it.get_stringwithabsolutepathes('sh....self.changed_by()', 'sh.', '(', 'eval'), 'sh.item_tree.grandparent.changed_by()')
 
-        print('=== plugin-attribute Tests:')
+        if verbose == True:
+            logger.warning('')
+            logger.warning('=== plugin-attribute Tests:')
         # Attribute with relative references
-        it = sh.return_item("item_tree.grandparent.parent.my_item")
+        it = self.sh.return_item("item_tree.grandparent.parent.my_item")
         it.expand_relativepathes('sv_widget', "'", "'")
         self.assertEqual(it.conf['sv_widget'], "{{ basic.switch('id_schreibtischleuchte', 'item_tree.grandparent.parent.my_item.onoff') }}")
 
         # Attribute w/o relative references
-        it = sh.return_item("item_tree.grandparent.parent.my_item.child")
+        it = self.sh.return_item("item_tree.grandparent.parent.my_item.child")
         orig = it.conf['sv_widget']
         it.expand_relativepathes('sv_widget', "'", "'")
         self.assertEqual(it.conf['sv_widget'], orig)
         self.assertEqual(it.conf['sv_widget'], "{{ basic.switch('id_schreibtischleuchte', 'item_tree.grandparent.parent.my_item.child.onoff') }}")
 
         # Tests for accessing internal attributes of items using relative adressing
-        it = sh.return_item("item_tree.grandparent.parent.my_item")
+        it = self.sh.return_item("item_tree.grandparent.parent.my_item")
         self.assertEqual(it.get_absolutepath('.child', 'eval_trigger'), 'item_tree.grandparent.parent.my_item.child')
 
 
@@ -122,120 +184,101 @@ class TestItem(unittest.TestCase):
         """
         Tests about the autotimer attribut and value casting
         """
-        sh=None
-        sh=MockSmartHome()
-        print()
+        if verbose == True:
+            logger.warning('')
+            logger.warning('===== test_item_autotimers:')
+#        if verbose == True:
+#            logger.warning('')
         
-        #load items
-        conf_filename = common.BASE + "/tests/resources/item_timers"+ITEM_FILE_TYPE
-        item_conf = None
-        item_conf = lib.config.parse(conf_filename, item_conf)
-        if item_conf == {}:
-            print()
-            print("config file '"+conf_filename+"' not found")
-        print(item_conf)
-        for attr, value in item_conf.items():
-            if isinstance(value, dict):
-                child_path = attr
-                try:
-                    child = lib.item.Item(sh, sh, child_path, value)
-                except Exception as e:
-                    self.logger.error("Item {}: problem creating: ()".format(child_path, e))
-                else:
-                    #vars(sh)[attr] = child
-                    sh.add_item(child_path, child)
-                    sh.children.append(child)
-       
-        if 0: self.dump_items(sh)
+        self.load_items('item_timers')
 
         # -----------------------------------------------------------------
-
-        #print('== autotimer Tests:')
         
         # Compatibility mode: No value casting for SmartHome v1.2 and older
-        it = sh.return_item("item_tree.timertests.test_item01")		# autotimer = 5m = 42 = compat_1.2
+        it = self.sh.return_item("item_tree.timertests.test_item01")		# autotimer = 5m = 42 = compat_1.2
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (300, '42'))
         
-        it = sh.return_item("item_tree.timertests.test_item02")		# autotimer = 5s = = compat_1.2
+        it = self.sh.return_item("item_tree.timertests.test_item02")		# autotimer = 5s = = compat_1.2
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, ''))
         
-        it = sh.return_item("item_tree.timertests.test_item03")		# autotimer = 5s = None = compat_1.2
+        it = self.sh.return_item("item_tree.timertests.test_item03")		# autotimer = 5s = None = compat_1.2
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, 'None'))
 
 
         # Compatibility mode: No value casting for SmartHome v1.2 and older -> item-type ist str
-        it = sh.return_item("item_tree.timertests.test_item11")		# autotimer = 5m = 42 = latest
+        it = self.sh.return_item("item_tree.timertests.test_item11")		# autotimer = 5m = 42 = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (300, '42'))
         self.assertEqual(it._castvalue_to_itemtype(it._autotimer[0][1], it._autotimer[1]), '42')
 
-        it = sh.return_item("item_tree.timertests.test_item12")		# autotimer = 5s = = latest
+        it = self.sh.return_item("item_tree.timertests.test_item12")		# autotimer = 5s = = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, ''))
 
-        it = sh.return_item("item_tree.timertests.test_item13")		# autotimer = 5s = None = latest
+        it = self.sh.return_item("item_tree.timertests.test_item13")		# autotimer = 5s = None = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, 'None'))
 
 
         # Compatibility mode: No value casting for SmartHome v1.2 and older -> item-type ist num
-        it = sh.return_item("item_tree.timertests.test_item21")		# autotimer = 5m = 42 = latest
+        it = self.sh.return_item("item_tree.timertests.test_item21")		# autotimer = 5m = 42 = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (300, 42))
 
-        it = sh.return_item("item_tree.timertests.test_item22")		# autotimer = 5s = = latest
+        it = self.sh.return_item("item_tree.timertests.test_item22")		# autotimer = 5s = = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, 0))
 
-        it = sh.return_item("item_tree.timertests.test_item23")		# autotimer = 5s = None = latest
+        it = self.sh.return_item("item_tree.timertests.test_item23")		# autotimer = 5s = None = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, 0))
 
 
         # Compatibility mode: No value casting for SmartHome v1.2 and older -> item-type ist bool
-        it = sh.return_item("item_tree.timertests.test_item31")		# autotimer = 5m = 42 = latest
+        it = self.sh.return_item("item_tree.timertests.test_item31")		# autotimer = 5m = 42 = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (300, False))
 
-        it = sh.return_item("item_tree.timertests.test_item32")		# autotimer = 5s = = latest
+        it = self.sh.return_item("item_tree.timertests.test_item32")		# autotimer = 5s = = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, False))
 
-        it = sh.return_item("item_tree.timertests.test_item33")		# autotimer = 5s = None = latest
+        it = self.sh.return_item("item_tree.timertests.test_item33")		# autotimer = 5s = None = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, False))
 
-        it = sh.return_item("item_tree.timertests.test_item33")		# autotimer = 5s = 1 = latest
+        it = self.sh.return_item("item_tree.timertests.test_item33")		# autotimer = 5s = 1 = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, False))
 
-        it = sh.return_item("item_tree.timertests.test_item34")		# autotimer = 5s = True = latest
+        it = self.sh.return_item("item_tree.timertests.test_item34")		# autotimer = 5s = True = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, True))
 
-        it = sh.return_item("item_tree.timertests.test_item35")		# autotimer = 5s = true = latest
+        it = self.sh.return_item("item_tree.timertests.test_item35")		# autotimer = 5s = true = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, True))
 
         # test use of items in attributes
-        it = sh.return_item("item_tree.timertests.test_item41")		# sh.item_tree.timertests.test_item41.dauer() = 42 = latest
+        it = self.sh.return_item("item_tree.timertests.test_item41")		# sh.item_tree.timertests.test_item41.dauer() = 42 = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[2], 'item_tree.timertests.test_item41.dauer')
 
-        it = sh.return_item("item_tree.timertests.test_item42")		# 5m = sh.item_tree.timertests.test_item42.wert() = latest
+        it = self.sh.return_item("item_tree.timertests.test_item42")		# 5m = sh.item_tree.timertests.test_item42.wert() = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[3], 'item_tree.timertests.test_item42.wert')
 
-        it = sh.return_item("item_tree.timertests.test_item51")		# sh..dauer() = 42 = latest
+        it = self.sh.return_item("item_tree.timertests.test_item51")		# sh..dauer() = 42 = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[2], 'item_tree.timertests.test_item51.dauer')
         
-        it = sh.return_item("item_tree.timertests.test_item52")		# 5m = sh..wert() = latest
+        it = self.sh.return_item("item_tree.timertests.test_item52")		# 5m = sh..wert() = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[3], 'item_tree.timertests.test_item52.wert')
+
 
     def test_cast_str(self):
         with self.assertRaises(ValueError):
@@ -349,12 +392,14 @@ class TestItem(unittest.TestCase):
         self.assertEqual(100, item._value)
 
     def test_set(self):
+        
+        if verbose == True:
+            logger.warning('')
+            logger.warning('===== test_set:')
         sh = MockSmartHome()
         conf = {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}
         item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
         item.set(12)
-#        print(item.type())
-#        print(item.cast)
         self.assertEqual(12, item._value)
 
         item.set('13')
@@ -364,6 +409,9 @@ class TestItem(unittest.TestCase):
         item.set('14')
 
     def test_cast_duration(self):
+        if verbose == True:
+            logger.warning('')
+            logger.warning('===== test_item_relative_references:')
         sh = MockSmartHome()
         conf = {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}
         item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
@@ -375,6 +423,9 @@ class TestItem(unittest.TestCase):
         self.assertFalse(item._cast_duration(None))
 
     def test_call(self):
+        if verbose == True:
+            logger.warning('')
+            logger.warning('===== test_call:')
         sh = MockSmartHome()
         conf = {'type': 'num', 'autotimer': '5m = 42 = compat_1.2'}
         item = lib.item.Item(config=conf, parent=sh, smarthome=sh, path='test_item01')
@@ -469,10 +520,11 @@ class TestItem(unittest.TestCase):
         lib.item._split_duration_value_string("")
 
     def test_join_duration_value_string(self):
-        #print(lib.item._join_duration_value_string(12,123))
+        #logger.warning(lib.item._join_duration_value_string(12,123))
         #(time, value, compat=''):
         pass
-    def testCacheWriteReadJson(self):
+        
+    def test_cachewrite_readjson(self):
         import datetime
         from lib.constants import CACHE_JSON
 
@@ -487,7 +539,8 @@ class TestItem(unittest.TestCase):
         self.cache_write_load_value(v=["a","2","3"], f=CACHE_JSON)
         self.cache_write_load_value(v=["a","2","3",2,3,4,5], f=CACHE_JSON)
         # @TODO: not working : self.cache_write_load_value(v=datetime.datetime.now(), f=CACHE_JSON)
-    def testCacheWriteReadPickle(self):
+
+    def test_cachewrite_readpickle(self):
         import datetime
         from lib.constants import CACHE_PICKLE
 
@@ -504,9 +557,6 @@ class TestItem(unittest.TestCase):
         self.cache_write_load_value(v=datetime.datetime.now(), f=CACHE_PICKLE)
 
 
-
-
-
     def cache_write_load_value(self, v,f):
         from dateutil.tz import gettz
 
@@ -517,77 +567,23 @@ class TestItem(unittest.TestCase):
 
         date = cachedvalue = None
         date, cachedvalue = lib.item._cache_read(filename=fn, tz=TZ, cformat=f)
-        #print(type(cachedvalue))
+        #logger.warning(type(cachedvalue))
         self.assertEqual(v, cachedvalue)
 
 
-    def testItemJsonDump(self):
+    def test_item_jsondump(self):
         sh = MockSmartHome()
 
-        # load items
-        item_conf = None
-        item_conf = lib.config.parse(common.BASE + "/tests/resources/item_dumps.yaml", item_conf)
-        for attr, value in item_conf.items():
-            if isinstance(value, dict):
-                child_path = attr
-                try:
-                    child = lib.item.Item(sh, sh, child_path, value)
-                except Exception as e:
-                    self.logger.error("Item {}: problem creating: ()".format(child_path, e))
-                else:
-                    # vars(sh)[attr] = child
-                    sh.add_item(child_path, child)
-                    sh.children.append(child)
+        self.load_items('item_dumps', YAML_FILE)
 
-      #  if 1: self.dump_items(sh)
-        #print(item_conf)
-        #print(sh.return_item("item1").to_json())
-        #print(sh.return_item("item3.item3b.item3b1").to_json())
-        #print(sh.return_item("item3").to_json())
+        #logger.warning(self.sh.return_item("item1").to_json())
+        #logger.warning(self.sh.return_item("item3.item3b.item3b1").to_json())
+        #logger.warning(self.sh.return_item("item3").to_json())
         import json
-        self.assertEqual(json.loads(sh.return_item("item3").to_json())['name'], sh.return_item("item3")._name)
-        self.assertEqual(json.loads(sh.return_item("item3").to_json())['id'], sh.return_item("item3")._path)
+        self.assertEqual(json.loads(self.sh.return_item("item3").to_json())['name'], self.sh.return_item("item3")._name)
+        self.assertEqual(json.loads(self.sh.return_item("item3").to_json())['id'], self.sh.return_item("item3")._path)
 
 
-class MockSmartHome():
-    
-    class MockScheduler():
-        def add(self, name, obj, prio=3, cron=None, cycle=None, value=None, offset=None, next=None): 
-            print(name) 
-            if isinstance(obj.__self__, SmartPlugin):
-                name = name +'_'+ obj.__self__.get_instance_name()
-            print(name)
-            print( obj) 
-#            print(obj.__self__.get_instance_name())
-    __logs = {}
-    __item_dict = {}
-    __items = []
-    children = []
-    _plugins = []
-    scheduler = MockScheduler()
-    def trigger(self, name, obj=None, by='Logic', source=None, value=None, dest=None, prio=3, dt=None):
-        print (obj)
-
-    def add_log(self, name, log):
-        self.__logs[name] = log
-    def now(self):
-        import datetime
-        return datetime.datetime.now()
-    def add_item(self, path, item):
-        if path not in self.__items:
-            self.__items.append(path)
-        self.__item_dict[path] = item
-    def return_item(self, string):
-        if string in self.__items:
-            return self.__item_dict[string]
-    def return_items(self):
-        for item in self.__items:
-            yield self.__item_dict[item]
-    def return_plugins(self):
-        for plugin in self._plugins:
-            yield plugin
-    def return_none(self):
-        return None
 if __name__ == '__main__':
     unittest.main(verbosity=2)
 

@@ -22,6 +22,12 @@
 #  along with SmartHomeNG. If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
+"""
+This file is a special version of the configuration loader. It has been modified to
+support the conversion from CONF to YAML format. This configuration loader is only called
+by the converter tools/conf_to_yaml_converter.py.
+"""
+
 import os
 
 RUAMEL_YAML_INSTALLED = False
@@ -314,7 +320,7 @@ def convert_yaml(data):
     dict_type = 'dict'
     if ordered:
         dict_type = 'OrderedDict'
-        sdata = _ordered_dump(data, Dumper=yaml.SafeDumper, indent=indent_spaces, block_seq_indent=2, width=12288, allow_unicode=True, default_flow_style=False)
+        sdata = _ordered_dump(data, Dumper=yaml.SafeDumper, version=yaml_version, indent=indent_spaces, block_seq_indent=2, width=12288, allow_unicode=True, default_flow_style=False)
     else:
         sdata = yaml.dump(data, Dumper=yaml.SafeDumper, indent=indent_spaces, block_seq_indent=2, width=12288, allow_unicode=True, default_flow_style=False)
     sdata = _format_yaml_dump(sdata)

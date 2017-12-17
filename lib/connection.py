@@ -18,6 +18,12 @@
 #  along with SmartHomeNG. If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
+"""
+
+This library is softly on it's way out. In the future network classes for SmartHomeNG
+will be implemented trough the network library lib.network, which is still in development.
+
+"""
 import logging
 import socket
 import collections

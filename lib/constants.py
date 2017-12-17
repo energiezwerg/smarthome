@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2016 Christian Strassburg  c.strassburg@gmx.de
+#  Copyright 2016-     Martin Sinn                          m.sinn@gmx.de
+#  Copyright 2016      Christian Strassburg           c.strassburg@gmx.de
 #########################################################################
 #  This file is part of SmartHomeNG
 #
@@ -19,10 +20,20 @@
 #  along with SmartHomeNG  If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
+"""
+This file describes a group of system wide constants for items, plugins and file extensions
+"""
+
 #item types
-ITEM_DEFAULTS= __defaults = {'num': 0, 'str': '', 'bool': False, 'list': [], 'dict': {}, 'foo': None, 'scene': 0}
 ITEM_TYPES=["num","str","bool", "list","dict","foo","scene"]
+ITEM_DEFAULTS= __defaults = {'num': 0, 'str': '', 'bool': False, 'list': [], 'dict': {}, 'foo': None, 'scene': 0}
 FOO = 'foo'
+
+#metadata types
+META_DATA_TYPES=['bool', 'int', 'float', 'str', 'list', 'dict', 'num', 'scene', 'ip', 'ipv4', 'mac', 'foo']
+META_DATA_DEFAULTS={'bool': False, 'int': 0, 'float': 0.0, 'str': '', 
+                    'list': [], 'dict': {}, 'OrderedDict': {}, 'num': 0, 'scene': 0, 
+                    'ip': '0.0.0.0', 'ipv4': '0.0.0.0', 'mac': '00:00:00:00:00:00', 'foo': None}
 
 #config params for items
 KEY_ENFORCE_UPDATES = 'enforce_updates'
@@ -31,11 +42,14 @@ KEY_CYCLE = 'cycle'
 KEY_NAME = 'name'
 KEY_TYPE = 'type'
 KEY_VALUE = 'value'
+KEY_INITVALUE = 'initial_value'
 KEY_CRONTAB = 'crontab'
 KEY_EVAL_TRIGGER = 'eval_trigger'
 KEY_EVAL = 'eval'
 KEY_THRESHOLD = 'threshold'
 KEY_AUTOTIMER = 'autotimer'
+KEY_ON_UPDATE = 'on_update'
+KEY_ON_CHANGE = 'on_change'
 
 #config params for plugins
 KEY_INSTANCE = 'instance'

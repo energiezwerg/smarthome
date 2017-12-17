@@ -1,0 +1,149 @@
+# Metadata for the plugin
+module:
+    # Global plugin attributes
+    classname: test_metadata
+    version: 1.x.y
+    sh_minversion: 1.3a
+#   sh_maxversion:              # maximum shNG version to use this plugin (leave empty if latest)
+    description:
+        de: 'Modul zur Implementierung von ...'
+        en: 'Module for implementing ...'
+
+parameters:
+    # parameters without default value
+    notype_nodefault:
+
+    bool_nodefault:
+        type: bool
+    
+    int_nodefault:
+        type: int
+
+    int_validmin_nodefault:
+        type: int
+        valid_min: 2
+
+    int_validmax_nodefault:
+        type: int
+        valid_max: -42
+
+    pint_nodefault:
+        type: int
+        valid_min: 0
+
+    float_nodefault:
+        type: float
+
+    pfloat_nodefault:
+        type: float
+        valid_min: 0
+
+    str_nodefault:
+        type: str
+
+    str_validlist_nodefault:
+        type: str
+        valid_list:
+          - ''
+          - 'string1'
+          - 'string2'
+                 
+    list_nodefault:
+        type: list
+
+    dict_nodefault:
+        type: dict
+
+    ip_nodefault:
+        type: ip
+
+    mac_nodefault:
+        type: mac
+
+    foo_nodefault:
+        type: foo
+
+    # parameters with default value
+    notype_default1:
+        default: 42
+
+    notype_default2:
+        default: '42'
+
+    bool_default:
+        type: bool
+        default: True
+    
+    int_default:
+        type: int
+        default: 42
+
+    pint_default:
+        type: int
+        valid_min: 0
+        default: 42
+
+    float_default:
+        type: float
+        default: 4.2
+
+    pfloat_default:
+        type: float
+        valid_min: 0
+        default: 4.2
+
+    str_default:
+        type: str
+        default: '42'
+
+    str_validlist_default:
+        type: str
+        default: 'string2'
+        valid_list:
+          - 'string1'
+          - 'string2'
+          - ''
+                 
+    str_validlist_invalid_default:
+        type: str
+        default: 'string3'
+        valid_list:
+          - 'string1'
+          - 'string2'
+          - ''
+                 
+    list_default:
+        type: list
+        default:
+          - 4
+          - 2
+
+    dict_default:
+        type: dict
+        default:
+            answer: 42
+
+    ip_default:
+        type: ip
+        default: 127.0.0.1
+
+    mac_default:
+        type: mac
+        default: 01:23:45:67:89:ab
+
+    foo_default:
+        type: foo
+        default: 42
+
+
+        
+    test01: 
+        type: str
+    
+
+
+
+#META_DATA_TYPES=['bool', 'int', 'float', 'str', 'list', 'dict', 'ip', 'mac', 'foo']
+#META_DATA_DEFAULTS={'bool': False, 'int': 0, 'float': 0.0, 'str': '', 'list': [], 'dict': {}, 'num': 0, 'scene': 0, 'ip': '0.0.0.0', 'mac': '00:00:00:00:00:00', 'foo': None}
+
+

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2016-       Christian Straßburg           c.strassburg@gmx.de
 # Copyright 2016-2017   Martin Sinn                         m.sinn@gmx.de
+# Copyright 2016-       Christian Straßburg           c.strassburg@gmx.de
 # Copyright 2012-2013   Marcus Popp                        marcus@popp.mx
 #########################################################################
 #  This file is part of SmartHomeNG.
@@ -32,8 +32,8 @@ import math
 import json
 import lib.utils
 from lib.constants import (ITEM_DEFAULTS, FOO, KEY_ENFORCE_UPDATES, KEY_CACHE, KEY_CYCLE, KEY_CRONTAB, KEY_EVAL,
-                           KEY_EVAL_TRIGGER, KEY_NAME,KEY_TYPE, KEY_VALUE, PLUGIN_PARSE_ITEM,
-                           KEY_AUTOTIMER,KEY_THRESHOLD, CACHE_FORMAT, CACHE_JSON, CACHE_PICKLE,
+                           KEY_EVAL_TRIGGER, KEY_NAME,KEY_TYPE, KEY_VALUE, KEY_INITVALUE, PLUGIN_PARSE_ITEM,
+                           KEY_AUTOTIMER, KEY_ON_UPDATE, KEY_ON_CHANGE, KEY_THRESHOLD, CACHE_FORMAT, CACHE_JSON, CACHE_PICKLE,
                            KEY_ATTRIB_COMPAT, ATTRIB_COMPAT_V12, ATTRIB_COMPAT_LATEST)
 
 
@@ -261,6 +261,8 @@ def _fadejob(item, dest, step, delta):
 
 class Item():
 
+    _itemname_prefix = 'items.'     # prefix for scheduler names
+
     def __init__(self, smarthome, parent, path, config):
         self._autotimer = False
         self._cache = False
@@ -271,8 +273,12 @@ class Item():
         self._crontab = None
         self._cycle = None
         self._enforce_updates = False
-        self._eval = None
+        self._eval = None				    # -> KEY_EVAL
         self._eval_trigger = False
+        self._on_update = None				# -> KEY_ON_UPDATE eval expression
+        self._on_change = None				# -> KEY_ON_CHANGE eval expression
+        self._on_update_dest_var = None		# -> KEY_ON_UPDATE destination var
+        self._on_change_dest_var = None		# -> KEY_ON_CHANGE destination var
         self._fading = False
         self._items_to_trigger = []
         self.__last_change = smarthome.now()
@@ -281,6 +287,7 @@ class Item():
         self.__logics_to_trigger = []
         self._name = path
         self.__prev_change = smarthome.now()
+        self.__prev_update = smarthome.now()
         self.__methods_to_trigger = []
         self.__parent = parent
         self._path = path
@@ -323,7 +330,9 @@ class Item():
         #############################################################
         for attr, value in config.items():
             if not isinstance(value, dict):
-                if attr in [KEY_CYCLE, KEY_NAME, KEY_TYPE, KEY_VALUE]:
+                if attr in [KEY_CYCLE, KEY_NAME, KEY_TYPE, KEY_VALUE, KEY_INITVALUE]:
+                    if attr == KEY_INITVALUE:
+                        attr = KEY_VALUE
                     setattr(self, '_' + attr, value)
                 elif attr in [KEY_EVAL]:
                     value = self.get_stringwithabsolutepathes(value, 'sh.', '(', KEY_EVAL)
@@ -345,6 +354,23 @@ class Item():
                     for path in value:
                         expandedvalue.append(self.get_absolutepath(path, KEY_EVAL_TRIGGER))
                     setattr(self, '_' + attr, expandedvalue)
+                elif attr in [KEY_ON_CHANGE, KEY_ON_UPDATE]:
+                    if isinstance(value, str):
+                        value = [ value ]
+                    val_list = []
+                    dest_var_list = []
+                    for val in value:
+                        # seperate destination item (if it exists)
+                        dest_item, val = self._split_destitem_from_value(val)
+                        # expand relative item pathes
+                        dest_item = self.get_absolutepath(dest_item, KEY_ON_CHANGE).strip()
+#                        val = 'sh.'+dest_item+'( '+ self.get_stringwithabsolutepathes(val, 'sh.', '(', KEY_ON_CHANGE) +' )'
+                        val = self.get_stringwithabsolutepathes(val, 'sh.', '(', KEY_ON_CHANGE)
+#                        logger.warning("Item __init__: {}: for attr '{}', dest_item '{}', val '{}'".format(self._path, attr, dest_item, val))
+                        val_list.append(val)
+                        dest_var_list.append(dest_item)
+                    setattr(self, '_' + attr, val_list)
+                    setattr(self, '_' + attr + '_dest_var', dest_var_list)
                 elif attr == KEY_AUTOTIMER:
                     time, value, compat = _split_duration_value_string(value)
                     timeitem = None
@@ -430,7 +456,7 @@ class Item():
             cycle = self._cycle
             if cycle is not None:
                 cycle = self._build_cycledict(cycle)
-            self._sh.scheduler.add(self._path, self, cron=self._crontab, cycle=cycle)
+            self._sh.scheduler.add(self._itemname_prefix+self._path, self, cron=self._crontab, cycle=cycle)
         #############################################################
         # Plugins
         #############################################################
@@ -439,6 +465,32 @@ class Item():
                 update = plugin.parse_item(self)
                 if update:
                     self.add_method_trigger(update)
+
+
+    def _split_destitem_from_value(self, value):
+        """
+        For on_change and on_update: spit destination item from attribute value
+        
+        :param value: attribute value
+        
+        :return: dest_item, value
+        :rtype: str, str
+        """
+        dest_item = ''
+        # Check if assignment operator ('=') exists                   
+        if value.find('=') != -1:
+            # If delimiter exists, check if equal operator exists
+            if value.find('==') != -1:
+                # equal operator exists
+                if value.find('=') < value.find('=='):
+                    # assignment operator exists in front of equal operator
+                    dest_item = value[:value.find('=')].strip()
+                    value = value[value.find('=')+1:].strip()
+            else:
+                # if equal operator does not exist
+                dest_item = value[:value.find('=')]
+                value = value[value.find('=')+1:].strip()
+        return dest_item, value
 
 
     def _castvalue_to_itemtype(self, value, compat):
@@ -553,6 +605,7 @@ class Item():
         :param begintag: string that signals the beginning of a relative path is following
         :param endtag: string that signals the end of a relative path
         :param attribute: string with the name of the item's attribute, which contains the relative path
+        
         :return: string with the statement containing absolute item pathes
         """
         if evalstr.find(begintag+'.') == -1:
@@ -579,6 +632,7 @@ class Item():
 
         :param relativepath: string with the relative item path
         :param attribute: string with the name of the item's attribute, which contains the relative path
+        
         :return: string with the absolute item path
         """
         if (len(relativepath) == 0) or ((len(relativepath) > 0)  and (relativepath[0] != '.')):
@@ -667,6 +721,9 @@ class Item():
                 self._sh.trigger(name=self._path, obj=self.__run_eval, by='Init', value={'value': self._value, 'caller': 'Init'})
 
     def __run_eval(self, value=None, caller='Eval', source=None, dest=None):
+        """
+        eavuate the 'eval' entry of the actual item
+        """
         if self._eval:
             sh = self._sh  # noqa
             try:
@@ -678,6 +735,55 @@ class Item():
                     logger.debug("Item {}: evaluating {} returns None".format(self._path, self._eval))
                 else:
                     self.__update(value, caller, source, dest)
+
+
+    # New for on_update / on_change
+    def _run_on_xxx(self, path, value, on_dest, on_eval, attr='?'):
+        """
+        common method for __run_on_update and __run_on_change
+        """
+        sh = self._sh
+        logger.info("Item {}: '{}' evaluating {} = {}".format(self._path, attr, on_dest, on_eval))
+        try:
+            dest_value = eval(on_eval)       # calculate to test if expression computes and see if it computes to None
+        except Exception as e:
+            logger.warning("Item {}: '{}' item-value='{}' problem evaluating {}: {}".format(self._path, attr, value, on_eval, e))
+        else:
+            if dest_value is not None:
+                # expression computes and does not result in None
+                if on_dest != '':
+                    dest_item = self._sh.return_item(on_dest)
+                    dest_item.__update(dest_value, caller=attr, source=self._path)
+                    logger.debug(" - : '{}' finally evaluating {} = {}, result={}".format(attr, on_dest, on_eval, dest_value))
+                else:
+                    dummy = eval(on_eval)
+                    logger.debug(" - : '{}' finally evaluating {}, result={}".format(attr, on_eval, dest_value))
+            else:
+                logger.debug(" - : '{}' {} not set (cause: eval=None)".format(attr, on_dest))
+                pass
+            
+    
+    def __run_on_update(self, value=None):
+        """
+        evaluate all 'on_update' entries of the actual item
+        """
+        if self._on_update:
+            sh = self._sh  # noqa
+#            logger.info("Item {}: 'on_update' evaluating {} = {}".format(self._path, self._on_update_dest_var, self._on_update))
+            for on_update_dest, on_update_eval in zip(self._on_update_dest_var, self._on_update):
+                self._run_on_xxx(self._path, value, on_update_dest, on_update_eval, 'on_update')
+
+
+    def __run_on_change(self, value=None):
+        """
+        evaluate all 'on_change' entries of the actual item
+        """
+        if self._on_change:
+            sh = self._sh  # noqa
+#            logger.info("Item {}: 'on_change' evaluating lists {} = {}".format(self._path, self._on_change_dest_var, self._on_change))
+            for on_change_dest, on_change_eval in zip(self._on_change_dest_var, self._on_change):
+                self._run_on_xxx(self._path, value, on_change_dest, on_change_eval, 'on_change')
+
 
     def __trigger_logics(self):
         for logic in self.__logics_to_trigger:
@@ -706,9 +812,13 @@ class Item():
                 self._lock.notify_all()
                 self._change_logger("Item {} = {} via {} {} {}".format(self._path, value, caller, source, dest))
         self._lock.release()
+        # ms: call run_on_update() from here
+        self.__run_on_update(value)
         if _changed or self._enforce_updates or self._type == 'scene':
-#            self.__prev_update = self.__last_update #Multiclick
+            self.__prev_update = self.__last_update
             self.__last_update = self._sh.now()
+            # ms: call run_on_change() from here
+            self.__run_on_change(value)
             for method in self.__methods_to_trigger:
                 try:
                     method(self, caller, source, dest)
@@ -748,7 +858,7 @@ class Item():
             self._autotimer[0] = (_time, _value)     # for display of active/last timer configuration in backend
 
             next = self._sh.now() + datetime.timedelta(seconds=_time)
-            self._sh.scheduler.add(self.id() + '-Timer', self.__call__, value={'value': _value, 'caller': 'Autotimer'}, next=next)
+            self._sh.scheduler.add(self._itemname_prefix+self.id() + '-Timer', self.__call__, value={'value': _value, 'caller': 'Autotimer'}, next=next)
 
 
     def add_logic_trigger(self, logic):
@@ -773,6 +883,10 @@ class Item():
         delta = self._sh.now() - self.__last_change
         return delta.total_seconds()
 
+    def update_age(self):
+        delta = self._sh.now() - self.__last_update
+        return delta.total_seconds()
+
     def autotimer(self, time=None, value=None, compat=ATTRIB_COMPAT_V12):
         if time is not None and value is not None:
             self._autotimer = [(time, value), compat, None, None]
@@ -795,23 +909,25 @@ class Item():
     def last_update(self):
         return self.__last_update
 
-    #Multiclick
-#    def prev_update_age(self):
-#        delta = self.__last_update - self.__prev_update
-#        return delta.total_seconds()
-
     def prev_age(self):
         delta = self.__last_change - self.__prev_change
+        return delta.total_seconds()
+
+    def prev_update_age(self):
+        delta = self.__last_update - self.__prev_update
         return delta.total_seconds()
 
     def prev_change(self):
         return self.__prev_change
 
+    def prev_update(self):
+        return self.__prev_update
+
     def prev_value(self):
         return self.__prev_value
 
     def remove_timer(self):
-        self._sh.scheduler.remove(self.id() + '-Timer')
+        self._sh.scheduler.remove(self._itemname_prefix+self.id() + '-Timer')
 
     def return_children(self):
         for child in self.__children:
@@ -852,7 +968,7 @@ class Item():
         else:
             caller = 'Timer'
         next = self._sh.now() + datetime.timedelta(seconds=time)
-        self._sh.scheduler.add(self.id() + '-Timer', self.__call__, value={'value': value, 'caller': caller}, next=next)
+        self._sh.scheduler.add(self._itemname_prefix+self.id() + '-Timer', self.__call__, value={'value': value, 'caller': caller}, next=next)
 
     def type(self):
         return self._type
@@ -872,6 +988,7 @@ class Item():
                  "type": self._type,
                  "attributes": self.conf,
                  "children": self.get_children_path() }
+                 
 # alternative method to get all class members
 #    @staticmethod
 #    def get_members(instance):

@@ -19,21 +19,23 @@
 #  along with SmartHomeNG  If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
-import os
-import fnmatch
-
-
 """
-This script assembles a complete list of requirements for 
-the SmartHomeNG core and all plugins.
+This script assembles a complete list of requirements for the SmartHomeNG core and all plugins.
+
 The list is not tested for correctness nor checked for contrary 
 requirements. 
+
 The procedure is as following:
 1) walks the plugins subdirectory and collect all files with requirements
 2) read the requirements for the core 
 3) read all files with requirements and add them with source of requirement to a dict
 4) write it all to a file all.txt in requirements directory
+
 """
+
+import os
+import fnmatch
+
 
 files = []
 requirements = {}

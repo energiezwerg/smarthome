@@ -1,0 +1,8 @@
+{% extends "!layout.html" %}
+
+{%- set theme_logo_only = False %}
+
+  {% block menu %}
+    {{ super() }}
+    <a href="genindex.html">Index</a>
+  {% endblock %}

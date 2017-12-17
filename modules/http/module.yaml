@@ -1,0 +1,95 @@
+# Metadata for the plugin
+module:
+    # Global plugin attributes
+    classname: Http
+    version: 1.4.5
+    sh_minversion: 1.3d
+#   sh_maxversion:              # maximum shNG version to use this plugin (leave empty if latest)
+    description:
+        de: 'Modul zur Implementierung von Backend-Webinterfaces für Plugins'
+        en: 'Module for implementing a backend-webinterface for plugins'
+
+parameters:
+    # Definition of parameters to be configured in etc/module.yaml
+    user:
+        type: str
+        default: 'admin'
+        description:
+            de: Benutzername für den Web Zugriff (Basic Auth), falls ein Passwort definiert ist
+            en: username for the web access (basic auth), if a password is defined
+    password:
+        type: str
+        description:
+            de: Passwort (im Klartext) für den Web Zugriff
+            en: password (unencrypted) for the web access
+    hashed_password:
+        type: str
+        description:
+            de: hashed Version des Passworts für den Web Zugriff, ersetzt den Parameter 'password'
+            en: hashed version of the password for the web access, supersedes the parameter 'password'
+
+    service_user:
+        type: str
+        default: 'serviceuser'
+        description:
+            de: Benutzername für den Zugriff auf Webservices (Basic Auth), falls ein Passwort definiert ist
+            en: username for the access to webervices (basic auth), if a password is defined
+    service_password:
+        type: str
+        description:
+            de: Passwort (im Klartext) für den Zugriff auf Webservices
+            en: password (unencrypted) for the access to webervices
+    service_hashed_password:
+        type: str
+        description:
+            de: hashed Version des Passworts für den Zugriff auf Webservices, ersetzt den Parameter 'password'
+            en: hashed version of the password for the access to webervices, supersedes the parameter 'password'
+    port:
+        type: int
+        default: 8383
+        description:
+            de: Portnummer für die Webinterfaces
+            en: Port number for the access to webervices
+    servicesport:
+        type: int
+        default: 8384
+    showpluginlist:
+        type: bool
+        default: True
+    showservicelist:
+        type: bool
+        default: False
+    starturl:
+        type: str
+        default: 
+    threads:
+        type: int
+        default: 8
+        valid_list:
+          - 2
+          - 3
+          - 4
+          - 5
+          - 6
+          - 7
+          - 8
+    showtraceback:
+        type: bool
+        default: False
+        
+#    test1:
+#        Test auf einen ungültigen Default Wert (-1 bei Datentyp positive Integer): es wird der default für pint (0) verwendet
+#        type: pint
+#        default: -1
+
+#    test2:
+#        Test auf einen ungültigen Default Wert (8 ist nicht Element der Liste): es wird der 1. Listeneintrag verwendet
+#        type: int
+#        default: 8
+#        valid_list:
+#          - 4
+#          - 2
+#          - 3
+#          - 5
+#          - 6
+        

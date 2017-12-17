@@ -1,17 +1,15 @@
-
 # lib/env/init.py
+
+import psutil
+import socket
 
 sh.env.core.version(sh.version)
 sh.env.core.start(sh.now())
 
-namefile = "/proc/sys/kernel/hostname"
-with open(namefile, 'r') as f:
-    hostname = f.read().strip()
+# hostname
+hostname = socket.gethostname()
 sh.env.system.name(hostname)
 
 # system start
-with open("/proc/uptime", 'r') as f:
-    uptime = f.read()
-uptime = int(float(uptime.split()[0]))
-start = sh.now() - datetime.timedelta(seconds=uptime)
+start = sh.now() - datetime.timedelta(seconds=psutil.boot_time())
 sh.env.system.start(start)

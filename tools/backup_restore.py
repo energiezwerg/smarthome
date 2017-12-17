@@ -1,10 +1,17 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 
+"""
+This script can create a backup by combining the configuration files from ``etc``, ``items`` and ``scenes`` to a ``tar.gz`` file.
+
+Alternatively it can restore the configuration files from a previous backup.
+"""
+
 import tarfile
 import zipfile
 import os
 import argparse
+
 class BackupAndRestore:
     def __init__(self):
         self.files = []

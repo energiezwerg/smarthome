@@ -3,6 +3,8 @@ import unittest
 import common
 import lib.config
 
+verbose = True
+
 
 class ConfigBaseTests:
     fmt = None
@@ -18,19 +20,23 @@ class ConfigBaseTests:
 
     def test_read_ignores_starting_digits(self):
         conf = self.config('digits')
-        self.assertEquals(0, len(conf['digits']))
+        self.assertEqual(1, len(conf['digits']))
+        self.assertFalse('123' in conf['digits']['item'])
 
     def test_read_ignores_set(self):
         conf = self.config('reserved')
-        self.assertEquals(0, len(conf['reserved']))
+        self.assertEqual(1, len(conf['reserved']))
+        self.assertEqual('test', conf['reserved']['item']['set'])
 
     def test_read_ignores_keyword(self):
         conf = self.config('keyword')
-        self.assertEquals(0, len(conf['keyword']))
+        self.assertEqual(1, len(conf['keyword']))
+        self.assertEqual('test', conf['keyword']['item']['global'])
 
     def test_read_ignores_invalidchars(self):
         conf = self.config('invalidchars')
-        self.assertEquals(0, len(conf['invalidchars']))
+        self.assertEqual(1, len(conf['invalidchars']))
+        self.assertFalse('invalid.dot' in conf['invalidchars']['item'])
 
     def test_read_sections(self):
         conf = self.config('sections')
@@ -91,10 +97,22 @@ class ConfigBaseTests:
 
     def test_read_structure(self):
         conf = self.config('structure')
+        self.assertTrue('attr1' in conf['parent1'])
+        self.assertEqual('value1', conf['parent1']['attr1'])
         self.assertTrue('child1' in conf['parent1'])
+        self.assertTrue('attr2' in conf['parent1']['child1'])
+        self.assertEqual('value2', conf['parent1']['child1']['attr2'])
         self.assertTrue('child2' in conf['parent1'])
+        self.assertTrue('attr3' in conf['parent1']['child2'])
+        self.assertEqual('value3', conf['parent1']['child2']['attr3'])
+        self.assertTrue('attr4' in conf['parent2'])
+        self.assertEqual('value4', conf['parent2']['attr4'])
         self.assertTrue('child1' in conf['parent2'])
+        self.assertTrue('attr5' in conf['parent2']['child1'])
+        self.assertEqual('value5', conf['parent2']['child1']['attr5'])
         self.assertTrue('child2' in conf['parent2'])
+        self.assertTrue('attr6' in conf['parent2']['child2'])
+        self.assertEqual('value6', conf['parent2']['child2']['attr6'])
 
 
 class TestConfigConf( unittest.TestCase,ConfigBaseTests):
@@ -102,6 +120,9 @@ class TestConfigConf( unittest.TestCase,ConfigBaseTests):
     fmt = 'conf'
 
     def test_confread_ignores_empty_name(self):
+        if verbose == True:
+            print()
+            print('=== TestConfigConf:')
         conf = self.config('empty')
         self.assertEqual(0, len(conf['empty']))
 
@@ -117,6 +138,9 @@ class TestConfigYaml(unittest.TestCase,ConfigBaseTests):
     fmt = 'yaml'
 
     def test_yamlread_multiline(self):
+        if verbose == True:
+            print()
+            print('=== TestConfigYaml:')
         conf = self.config('keyvalues')
         self.assertEqual(conf['section']['key_multiline'], 'line1line2')
         self.assertEqual(conf['section']['key_multiline_quotes'], 'line1line2')

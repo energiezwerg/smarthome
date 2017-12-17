@@ -1,0 +1,15 @@
+# Metadata for the plugin
+module:
+    # Global plugin attributes
+    classname: dummy
+    version: 1.x.yz
+    sh_minversion: 1.3a
+#   sh_maxversion:              # maximum shNG version to use this plugin (leave empty if latest)
+    description:
+        de: 'Modul zur Implementierung von ...'
+        en: 'Module for implementing ...'
+
+parameters:
+    dummy: 
+        type: str
+    

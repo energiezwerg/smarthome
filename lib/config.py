@@ -20,6 +20,14 @@
 #  along with SmartHomeNG. If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
+"""
+This library does the handling and parsing of the configuration of SmartHomeNG.
+
+
+:Warning: This library is part of the core of SmartHomeNG. It **should not be called directly** from plugins!
+
+"""
+
 import logging
 import collections
 import keyword
@@ -33,6 +41,9 @@ valid_attr_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567
 digits = '0123456789'
 reserved = ['set', 'get']
 
+REMOVE_ATTR = 'attr'
+REMOVE_PATH = 'path'
+
 def parse_basename(basename, configtype=''):
     '''
     Load and parse a single configuration and merge it to the configuration tree
@@ -42,13 +53,19 @@ def parse_basename(basename, configtype=''):
     
     :param basename: Name of the configuration
     :param configtype: Optional string with config type (only used for log output)
+    :type basename: str
+    :type configtype: str
+    
     :return: The resulting merged OrderedDict tree
+    :rtype: OrderedDict
+    
     '''
     config = parse(basename+YAML_FILE)
     if config == {}:
         config = parse(basename+CONF_FILE)
     if config == {}:
-        logger.critical("No file '{}.*' found with {} configuration".format(basename, configtype))
+        if not (configtype == 'logics'):
+            logger.critical("No file '{}.*' found with {} configuration".format(basename, configtype))
     return config
         
 
@@ -61,15 +78,23 @@ def parse_itemsdir(itemsdir, item_conf):
     
     :param itemsdir: Name of folder containing the configuration files
     :param item_conf: Optional OrderedDict tree, into which the configuration should be merged
+    :type itemsdir: str
+    :type item_conf: OrderedDict
+
     :return: The resulting merged OrderedDict tree
+    :rtype: OrderedDict
+
     '''
     for item_file in sorted(os.listdir(itemsdir)):
         if item_file.endswith(CONF_FILE) or item_file.endswith(YAML_FILE):
-            try:
-                item_conf = parse(itemsdir + item_file, item_conf)
-            except Exception as e:
-                logger.exception("Problem reading {0}: {1}".format(item_file, e))
-                continue
+            if item_file == 'logic'+YAML_FILE and itemsdir.find('lib/env/') > -1:
+                logger.info("config.parse_itemsdir: skipping logic definition file = {}".format( itemsdir+item_file ))
+            else:
+                try:
+                    item_conf = parse(itemsdir + item_file, item_conf)
+                except Exception as e:
+                    logger.exception("Problem reading {0}: {1}".format(item_file, e))
+                    continue
     return item_conf
 
 
@@ -80,7 +105,12 @@ def parse(filename, config=None):
     
     :param filename: Name of the configuration file
     :param config: Optional OrderedDict tree, into which the configuration should be merged
+    :type filename: str
+    :type config: OrderedDict
+
     :return: The resulting merged OrderedDict tree
+    :rtype: OrderedDict
+
     '''
     if filename.endswith(YAML_FILE) and os.path.isfile(filename):
          return parse_yaml(filename, config)
@@ -91,24 +121,35 @@ def parse(filename, config=None):
 
 # --------------------------------------------------------------------------------------
 
-def remove_keys(ydata, func, level=0):
+def remove_keys(ydata, func, remove=[REMOVE_ATTR], level=0, msg=None, key_prefix=''):
     '''
     Removes given keys from a dict or OrderedDict structure
 
     :param ydata: configuration (sub)tree to work on
-    :param func: the function to call to check for removal
+    :param func: the function to call to check for removal (Example: lambda k: k.startswith('comment'))
     :param level: optional subtree level (used for recursion)
+    :type ydata: OrderedDict
+    :type func: function
+    :type level: int
+    
     '''
     try:
         level_keys = list(ydata.keys())
         for key in level_keys:
-            if type(ydata[key]).__name__ in ['dict','OrderedDict']:
-                remove_keys(ydata[key], func, level+1)
+            key_str = str(key)
+            key_dict = type(ydata[key]).__name__ in ['dict','OrderedDict']
+            if  not key_dict:
+                key_remove = REMOVE_ATTR in remove and func(key_str)
             else:
-                if func(str(key)):
-                    ydata.pop(key)
-    except:
-        logger.error("Problem removing key from '{}', probably invalid YAML file".format(str(ydata)))
+                key_remove = REMOVE_PATH in remove and func(key_str)
+            if key_remove:
+                if msg:
+                    logger.warn(msg.format(key_prefix+key_str))
+                ydata.pop(key)
+            elif key_dict:
+                remove_keys(ydata[key], func, remove, level+1, msg, key_prefix+key_str+'.')
+    except Exception as e:
+        logger.error("Problem removing key from '{}', probably invalid YAML file: {}".format(str(ydata), e))
 
 
 
@@ -117,8 +158,10 @@ def remove_comments(ydata):
     Removes comments from a dict or OrderedDict structure
 
     :param ydata: configuration (sub)tree to work on
+    :type ydata: OrderedDict
+    
     '''
-    remove_keys(ydata, lambda k: k.startswith('comment'))
+    remove_keys(ydata, lambda k: k.startswith('comment'), [REMOVE_ATTR])
 
 
 def remove_digits(ydata):
@@ -126,8 +169,10 @@ def remove_digits(ydata):
     Removes digit keys from a dict or OrderedDict structure
 
     :param ydata: configuration (sub)tree to work on
+    :type ydata: OrderedDict
+
     '''
-    remove_keys(ydata, lambda k: k[0] in digits)
+    remove_keys(ydata, lambda k: k[0] in digits, [REMOVE_ATTR, REMOVE_PATH], msg="Problem parsing '{}': item starts with digits")
 
 
 def remove_reserved(ydata):
@@ -135,8 +180,10 @@ def remove_reserved(ydata):
     Removes reserved keywords from a dict or OrderedDict structure
 
     :param ydata: configuration (sub)tree to work on
+    :type ydata: OrderedDict
+
     '''
-    remove_keys(ydata, lambda k: k in reserved)
+    remove_keys(ydata, lambda k: k in reserved, [REMOVE_PATH], msg="Problem parsing '{}': item using reserved word set/get")
 
 
 def remove_keyword(ydata):
@@ -144,8 +191,10 @@ def remove_keyword(ydata):
     Removes reserved Python keywords from a dict or OrderedDict structure
 
     :param ydata: configuration (sub)tree to work on
+    :type ydata: OrderedDict
+
     '''
-    remove_keys(ydata, lambda k: keyword.iskeyword(k))
+    remove_keys(ydata, lambda k: keyword.iskeyword(k), [REMOVE_PATH], msg="Problem parsing '{}': item using reserved Python keyword")
 
 
 def remove_invalid(ydata):
@@ -153,26 +202,34 @@ def remove_invalid(ydata):
     Removes invalid chars in item from a dict or OrderedDict structure
 
     :param ydata: configuration (sub)tree to work on
+    :type ydata: OrderedDict
+
     '''
     valid_chars = valid_item_chars + valid_attr_chars
-    remove_keys(ydata, lambda k: True if True in [True for i in range(len(k)) if k[i] not in valid_chars] else False)
+    remove_keys(ydata, lambda k: True if True in [True for i in range(len(k)) if k[i] not in valid_chars] else False, [REMOVE_ATTR, REMOVE_PATH], msg="Problem parsing '{}' invalid character. Valid characters are: " + str(valid_chars))
 
 
 def merge(source, destination):
     '''
     Merges an OrderedDict Tree into another one
     
-    Run me with nosetests --with-doctest file.py
+    :param source: source tree to merge into another one
+    :param destination: destination tree to merge into
+    :type source: OrderedDict
+    :type destination: OrderedDict
 
-    >>> a = { 'first' : { 'all_rows' : { 'pass' : 'dog', 'number' : '1' } } }
-    >>> b = { 'first' : { 'all_rows' : { 'fail' : 'cat', 'number' : '5' } } }
-    >>> merge(b, a) == { 'first' : { 'all_rows' : { 'pass' : 'dog', 'fail' : 'cat', 'number' : '5' } } }
-    True
+    :return: Merged configuration tree
+    :rtype: OrderedDict
+
+    :Example: Run me with nosetests --with-doctest file.py
+
+    .. code-block:: python
+
+        >>> a = { 'first' : { 'all_rows' : { 'pass' : 'dog', 'number' : '1' } } }
+        >>> b = { 'first' : { 'all_rows' : { 'fail' : 'cat', 'number' : '5' } } }
+        >>> merge(b, a) == { 'first' : { 'all_rows' : { 'pass' : 'dog', 'fail' : 'cat', 'number' : '5' } } }
+        True
     
-    
-    :param source: OrderedDict tree to be merged into another one
-    :param destination: OrderedDict tree, into which the other OrderedDict tree is merged
-    :return: The resulting merged OrderedDict tree
     '''
     try:
         for key, value in source.items():
@@ -198,7 +255,40 @@ def parse_yaml(filename, config=None):
 
     :param filename: Name of the configuration file
     :param config: Optional OrderedDict tree, into which the configuration should be merged
+    :type filename: str
+    :type config: bool
+    
     :return: The resulting merged OrderedDict tree
+    :rtype: OrderedDict
+
+    
+    The config file should stick to the following setup:
+
+    .. code-block:: yaml
+
+       firstlevel:
+           attribute1: xyz
+           attribute2: foo
+           attribute3: bar
+           
+           secondlevel:
+               attribute1: abc
+               attribute2: bar
+               attribute3: foo
+               
+               thirdlevel:
+                   attribute1: def
+                   attribute2: barfoo
+                   attribute3: foobar
+                   
+           anothersecondlevel:
+               attribute1: and so on
+
+    where firstlevel, secondlevel, thirdlevel and anothersecondlevel are defined as items and attribute are their respective attribute - value pairs
+
+    Valid characters for the items are a-z and A-Z plus any digit and underscore as second or further characters.
+    Valid characters for the attributes are the same as for an item plus @ and *
+
     '''
     if config is None:
         config = collections.OrderedDict()
@@ -219,6 +309,16 @@ def parse_yaml(filename, config=None):
 
 
 def strip_quotes(string):
+    """
+    Strip single-quotes or double-quotes from string beggining and end
+    
+    :param string: String to strip the quotes from
+    :type string: str
+    
+    :return: Stripped string
+    :rtype: str
+    
+    """
     string = string.strip()
     if len(string) > 0:
         if string[0] in ['"', "'"]:  # check if string starts with ' or "
@@ -233,6 +333,15 @@ def parse_conf(filename, config=None):
     Load and parse a configuration file which is in the old .conf format of smarthome.py
     and merge it to the configuration tree
 
+    :param filename: Name of the configuration file
+    :param config: Optional OrderedDict tree, into which the configuration should be merged
+    :type filename: str
+    :type config: bool
+    
+    :return: The resulting merged OrderedDict tree
+    :rtype: OrderedDict
+
+
     The config file should stick to the following setup:
 
     .. code-block:: ini
@@ -241,14 +350,17 @@ def parse_conf(filename, config=None):
            attribute1 = xyz
            attribute2 = foo
            attribute3 = bar
+           
            [[secondlevel]]
                attribute1 = abc
                attribute2 = bar
                attribute3 = foo
+               
                [[[thirdlevel]]]
                    attribute1 = def
                    attribute2 = barfoo
                    attribute3 = foobar
+                   
            [[anothersecondlevel]]
                attribute1 = and so on
 
@@ -257,9 +369,6 @@ def parse_conf(filename, config=None):
     Valid characters for the items are a-z and A-Z plus any digit and underscore as second or further characters.
     Valid characters for the attributes are the same as for an item plus @ and *
 
-    :param filename: Name of the configuration file
-    :param config: Optional OrderedDict tree, into which the configuration should be merged
-    :return: The resulting merged OrderedDict tree
     """
     
     valid_set = set(valid_attr_chars)
@@ -342,9 +451,9 @@ def parse_conf(filename, config=None):
                 if len(attr) > 0:
                     if attr[0] in digits:
                         logger.error("Problem parsing '{}' attrib starts with a digit '{}' in line {}: {}.".format(filename, attr[0], linenu, attr ))
+                        continue
                 if '|' in value:
                     item[attr] = [strip_quotes(x) for x in value.split('|')]
                 else:
                     item[attr] = strip_quotes(value)
         return config
-
