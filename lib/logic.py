@@ -651,7 +651,8 @@ class Logics():
                             try:
                                 c = section_dict[key].ca.items[i][0].value
                             except:
-                                logger.warning("c: {}, Key: {}".format(c, key)) 
+                                logger.info("c: {}, Key: {}".format(c, key)) 
+                                c = ''
                             if len(c) > 0 and c[0] == '#':
                                 c = c[1:]
                         else:
@@ -661,8 +662,11 @@ class Logics():
                 else:
                     value = section_dict[key]
                     c = ''
-                    if key in section_dict.ca.items:
-                        c = section_dict.ca.items[key][2].value    # if not list: loaded['a'].ca.items['b'][2].value 
+                    if key in section_dict.ca.items
+                        try:
+                            c = section_dict.ca.items[key][2].value    # if not list: loaded['a'].ca.items['b'][2].value 
+                        except:
+                            logger.info("c2: {}, Key: {}".format(c, key)) 
                         if len(c) > 0 and c[0] == '#':
                             c = c[1:]
                     comment = c.strip()
@@ -699,8 +703,8 @@ class Logics():
             mylogic = self.return_logic(section)
             if mylogic is not None:
                 logger.info(" - key={}, value={}".format(key, value))
-                if value is None:
-                    value = 'false'
+#                if value is None:
+#                    value = 'false'
                 mylogic.visu_acl = str(value)
 
         return
