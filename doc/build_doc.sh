@@ -7,14 +7,16 @@
 #
 
 if [ "$1" == "-h" ]; then
+  echo
   echo Skript zum Erzeugen der Dokumentation für SmartHomeNG
   echo =====================================================
   echo
   echo Optionen:
   echo   -h  -  Anzeigen dieser Hilfe
-  echo   -f  -  Github Repos erneut auschecken (auch wenn bereits lokale Clones vorhanden sind)
+  echo   -f  -  Github Repos erneut auschecken \(auch wenn bereits lokale Clones vorhanden sind\)
   echo   -u  -  Nur die Anwender Dokumentation erzeugen
   echo   -d  -  Nur die Entwickler Dokumentation erzeugen
+  echo
   exit
 fi
 
