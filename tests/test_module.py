@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 
 class TestModule(unittest.TestCase):
 
-    def test_module_is_registered(self):
+    def test_module_is_registered1(self):
         logger.warning('')
         logger.warning('=== Begin Module Tests:')
         
