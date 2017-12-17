@@ -662,7 +662,7 @@ class Logics():
                 else:
                     value = section_dict[key]
                     c = ''
-                    if key in section_dict.ca.items
+                    if key in section_dict.ca.items:
                         try:
                             c = section_dict.ca.items[key][2].value    # if not list: loaded['a'].ca.items['b'][2].value 
                         except:
