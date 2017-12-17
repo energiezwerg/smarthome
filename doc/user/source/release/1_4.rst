@@ -62,7 +62,7 @@ Neue Funktionen im CORE
 
   * Erweiterung der Plugins um eine Metadaten-Datei.
   * Metadaten zu Plugins werden in einer plugin.yaml im Plugin Verzeichnis abgelegt.
-  * Bei existierenden Plugin-Metadaten wird die Versionsverträglichkeit zwischen shNG und Plugin geprüft
+  * Bei existierenden Plugin-Metadaten wird die Versionsverträglichkeit zwischen SmartHomeNG und Plugin geprüft
   * Bei existierenden Parameter Definitionen in den Plugin-Metadaten werden die in /etc/plugin.yaml konfigurierten Werte auf formale Gültigkeit (Datentyp, min/max Werte, Werteliste, etc.) geprüft.
   * Neues Parameter Interface für Plugins: Bei existierenden Parameter Definitionen in den Plugin-Metadaten werden die geprüften Werte im Ziel-Datentyp in einem Dict an das gestartete Plugin übergeben.
   * Angabe des `classname` in den Metadaten ermöglicht einfachere Konfiguration: Nur `plugin_name:` muss in /etc/plugin.yaml angegeben werden, statt `class_path:` und `class_name:` (`classname` ist zu den Metadaten aller Plugins hinzugefügt worden)

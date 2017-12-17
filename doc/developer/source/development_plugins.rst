@@ -50,7 +50,7 @@ need not to be referenced in the metadata file **plugin.yaml**
 .. important::
 
    The first Heading of the **user_doc.rst** / **user_doc.md** or **developer_doc.rst** / **developer_doc.md** 
-   MUST be the name of the plugin.
+   MUST be the short-name of the plugin in lower case.
    
    It is used as the entry in the navigation bar of the documentation. Choosing an other top level
    header for these files would make the documentations navigation inconsistent.

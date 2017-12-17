@@ -29,6 +29,7 @@ Konfigurationsdateien im Verzeichnis *../etc*
 ---------------------------------------------
 
 - smarthome.yaml
+- module.yaml
 - plugin.yaml
 - logic.yaml
 - logging.yaml

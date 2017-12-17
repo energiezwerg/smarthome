@@ -6,17 +6,34 @@
 # den Webserver kopiert wurde
 #
 
+if [ "$1" == "-h" ]; then
+  echo Skript zum Erzeugen der Dokumentation für SmartHomeNG
+  echo =====================================================
+  echo
+  echo Optionen:
+  echo   -h  -  Anzeigen dieser Hilfe
+  echo   -f  -  Github Repos erneut auschecken (auch wenn bereits lokale Clones vorhanden sind)
+  echo   -u  -  Nur die Anwender Dokumentation erzeugen
+  echo   -d  -  Nur die Entwickler Dokumentation erzeugen
+  exit
+fi
+
 KEEP_REPO=True
-if [ "$1" == "-f" ] || [ "$2" == "-f" ]; then
+if [ "$1" == "-f" ] || [ "$2" == "-f" ] || [ "$3" == "-f" ]; then
   FORCE_CHECKOUT=True
 fi
 
 DOC=all
-if [ "$1" == "-u" ] || [ "$2" == "-u" ]; then
+if [ "$1" == "-u" ] || [ "$2" == "-u" ] || [ "$3" == "-u" ]; then
   DOC=user
 fi
-if [ "$1" == "-d" ] || [ "$2" == "-d" ]; then
+if [ "$1" == "-d" ] || [ "$2" == "-d" ] || [ "$3" == "-d" ]; then
   DOC=developer
+fi
+
+DESTBRANCH=develop
+if [ "$1" == "-m" ] || [ "$2" == "-m" ] || [ "$3" == "-m" ]; then
+  DESTBRANCH=master
 fi
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -26,7 +43,6 @@ DIR=$DIR
 ACCOUNT=smarthomeNG
 REPO=smarthome
 LOCALREPO=work
-DESTBRANCH=develop
 
 DEVELOPDOC=developer
 USERDOC=user

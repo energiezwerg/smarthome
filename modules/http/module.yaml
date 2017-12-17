@@ -15,29 +15,30 @@ parameters:
         type: str
         default: 'admin'
         description:
-            de: Benutzername für den Web Zugriff
-            en: username for the web access
+            de: Benutzername für den Web Zugriff (Basic Auth), falls ein Passwort definiert ist
+            en: username for the web access (basic auth), if a password is defined
     password:
         type: str
         description:
-            de: Passwort für den Web Zugriff
-            en: password for the web access
+            de: Passwort (im Klartext) für den Web Zugriff
+            en: password (unencrypted) for the web access
     hashed_password:
         type: str
         description:
             de: hashed Version des Passworts für den Web Zugriff, ersetzt den Parameter 'password'
             en: hashed version of the password for the web access, supersedes the parameter 'password'
+
     service_user:
         type: str
         default: 'serviceuser'
         description:
-            de: Benutzername für den Zugriff auf Webservices
-            en: username for the access to webervices
+            de: Benutzername für den Zugriff auf Webservices (Basic Auth), falls ein Passwort definiert ist
+            en: username for the access to webervices (basic auth), if a password is defined
     service_password:
         type: str
         description:
-            de: Passwort für den Zugriff auf Webservices
-            en: password for the access to webervices
+            de: Passwort (im Klartext) für den Zugriff auf Webservices
+            en: password (unencrypted) for the access to webervices
     service_hashed_password:
         type: str
         description:
