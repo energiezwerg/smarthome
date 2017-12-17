@@ -162,7 +162,7 @@ class SmartHome():
     plugin_load_complete = False
     item_load_complete = False
     plugin_start_complete = False
-    
+
     def __init__(self, extern_conf_dir=_base_dir):
         # set default timezone to UTC
         self._extern_conf_dir = extern_conf_dir
@@ -224,7 +224,7 @@ class SmartHome():
                 if not isinstance(config[attr], dict):  # ignore sub items
                     vars(self)['_' + attr] = config[attr]
             del(config)  # clean up
-        
+
         if hasattr(self, '_module_paths'):
             sys.path.extend(self._module_paths if type(self._module_paths) is list else [self._module_paths])
 
@@ -257,7 +257,7 @@ class SmartHome():
             self._logger.error("Locale for the enviroment is not set. Defaulting to en_US.UTF-8")
             os.environ["LANG"] = 'en_US.UTF-8'
             os.environ["LC_ALL"] = 'en_US.UTF-8'
-            
+
         #############################################################
         # Link Tools
         self.tools = lib.tools.Tools()
@@ -282,60 +282,60 @@ class SmartHome():
         Returns the configured default language of SmartHomeNG
         """
         return self._default_language
-        
-        
+
+
     def set_defaultlanguage(self, language):
         """
         Returns the configured default language of SmartHomeNG
         """
         self._default_language = language
-        
-        
+
+
     def get_basedir(self):
         """
         Function to return the base directory of the running SmartHomeNG installation
-        
+
         :return: Bas directory as an absolute path
         :rtype: str
         """
         return self._base_dir
-        
-        
+
+
     def get_confdir(self):
         """
         Function to return the config directory (that contain 'etc', 'logics' and 'items' subdirectories)
-        
+
         :return: Config directory as an absolute path
         :rtype: str
         """
         return self._extern_conf_dir
-        
-        
+
+
     def getBaseDir(self):
         """
         Function to return the base directory of the running SmartHomeNG installation
-        
+
         **getBaseDir()** is deprecated. Use method get_basedir() instead.
 
         :return: Bas directory as an absolute path
         :rtype: str
         """
         return self._base_dir
-        
-        
+
+
     def checkConfigFiles(self):
         """
-        This function checks if the needed configuration files exist. It checks for CONF and YAML files. 
+        This function checks if the needed configuration files exist. It checks for CONF and YAML files.
         If they dont exist, it is checked if a default configuration exist. If so, the default configuration
         is copied to corresponding configuration file.
-        
+
         The check is done for the files that have to exist (with some content) or SmartHomeNG won't start:
-        
+
         - smarthome.yaml / smarthome.conf
         - logging.yaml
         - plugin.yaml / plugin.conf
         - module.yaml / module.conf
-        
+
         """
         configs = ['logging', 'smarthome', 'module', 'plugin']
 
@@ -352,7 +352,7 @@ class SmartHome():
         """
         This function initiates the logging for SmartHomeNG.
         """
-        
+
         fo = open(self._log_conf_basename + YAML_FILE, 'r')
         doc = lib.shyaml.yaml_load(self._log_conf_basename + YAML_FILE, False)
         if doc == None:
@@ -374,7 +374,7 @@ class SmartHome():
         """
         This function initializes all needed datastructures to use the (old) memlog plugin
         """
-        
+
         self.log = lib.log.Log(self, 'env.core.log', ['time', 'thread', 'level', 'message'], maxlen=self._log_buffer)
         _logdate = "%Y-%m-%d %H:%M:%S"
         _logformat = "%(asctime)s %(levelname)-8s %(threadName)-12s %(message)s"
@@ -392,10 +392,10 @@ class SmartHome():
     def start(self):
         """
         This function starts the threads of the main smarthome object.
-        
+
         The main thread that is beeing started is called ``Main``
         """
-        
+
         threading.currentThread().name = 'Main'
 
         #############################################################
@@ -453,7 +453,7 @@ class SmartHome():
         self.item_count = len(self.__items)
         self._logger.info("Items initialization finished, {} items loaded".format(self.item_count))
         self.item_load_complete = True
-        
+
         #############################################################
         # Init Logics
         #############################################################
@@ -493,7 +493,7 @@ class SmartHome():
         """
         This function is used to stop SmartHomeNG and all it's threads
         """
-        
+
         self.alive = False
         self._logger.info("stop: Number of Threads: {}".format(threading.activeCount()))
 
@@ -514,7 +514,7 @@ class SmartHome():
                 self._modules.stop()
             except:
                 pass
-                
+
         try:
             self.connections.close()
         except:
@@ -526,7 +526,7 @@ class SmartHome():
                     thread.join(1)
                 except Exception as e:
                     pass
-    
+
         if threading.active_count() > 1:
             header_logged = False
             for thread in threading.enumerate():
@@ -547,7 +547,7 @@ class SmartHome():
 
 
     def list_threads(self, txt):
-    
+
         cp_threads = 0
         http_threads = 0
         for thread in threading.enumerate():
@@ -561,8 +561,8 @@ class SmartHome():
             if thread.name.find("CP Server") != 0 and thread.name.find("HTTPServer") != 0:
                 self._logger.info("list_threads: {} - Thread {}".format(txt, thread.name))
         return
-        
-        
+
+
     #################################################################
     # Item Methods
     #################################################################
@@ -575,13 +575,13 @@ class SmartHome():
         """
         Function to to add an item to the dictionary of items.
         If the path does not exist, it is created
-        
+
         :param path: Path of the item
         :param item: The item itself
         :type path: str
         :type item: object
         """
-        
+
         if path not in self.__items:
             self.__items.append(path)
         self.__item_dict[path] = item
@@ -590,14 +590,14 @@ class SmartHome():
     def return_item(self, string):
         """
         Function to return the item for a given path
-        
+
         :param string: Path of the item to return
         :type string: str
-        
+
         :return: Item
         :rtype: object
         """
-        
+
         if string in self.__items:
             return self.__item_dict[string]
 
@@ -605,26 +605,26 @@ class SmartHome():
     def return_items(self):
         """"
         Function to return a list with all items
-        
+
         :return: List of all items
         :rtype: list
         """
-        
+
         for item in self.__items:
             yield self.__item_dict[item]
 
 
     def match_items(self, regex):
-        """ 
+        """
         Function to match items against a regular expresseion
-        
+
         :param regex: Regular expression to match items against
         :type regex: str
-        
+
         :return: List of matching items
         :rtype: list
         """
-        
+
         regex, __, attr = regex.partition(':')
         regex = regex.replace('.', '\.').replace('*', '.*') + '$'
         regex = re.compile(regex)
@@ -641,14 +641,14 @@ class SmartHome():
     def find_items(self, conf):
         """"
         Function to find items that match the specified configuration
-        
+
         :param conf: Configuration to look for
         :type conf: str
-        
+
         :return: list of matching items
         :rtype: list
         """
-        
+
         for item in self.__items:
             if conf in self.__item_dict[item].conf:
                 yield self.__item_dict[item]
@@ -657,16 +657,16 @@ class SmartHome():
     def find_children(self, parent, conf):
         """
         Function to find children with the specified configuration
-        
+
         :param parent: parent item on which to start the search
         :param conf: Configuration to look for
         :type parent: str
         :type conf: str
-        
+
         :return: list or matching child-items
         :rtype: list
         """
-        
+
         children = []
         for item in parent:
             if conf in item.conf:
@@ -700,7 +700,7 @@ class SmartHome():
 
         :param name: Name of the module to return
         :type name: str
-        
+
         :return: list of module names
         :rtype: object
         """
@@ -737,10 +737,10 @@ class SmartHome():
 
     def return_logic(self, name):
         """
-        Returns (the object of) one loaded logic with given name 
+        Returns (the object of) one loaded logic with given name
 
         DEPRECATED - Use Logics.return_logic() instead
-        
+
         :param name: name of the logic to get
         :type name: str
 
@@ -771,23 +771,23 @@ class SmartHome():
     def add_log(self, name, log):
         """
         Function to add a log to the list of logs (deprecated? -> old logging?)
-        
+
         :param name: Name of log
         :param log: Log object
         :type name: str
         :type log: object
         """
-        
+
         self.__logs[name] = log
 
     def return_logs(self):
         """
         Function to the list of logs (deprecated? -> old logging?)
-        
+
         :return: List of logs
         :rtype: list
         """
-        
+
         return self.__logs
 
 
@@ -798,13 +798,13 @@ class SmartHome():
         """
         This Function adds listeners for a list of events. This function is called from
         plugins interfacing with visus (e.g. visu_websocket)
-        
+
         :param events: List of events to add listeners for
         :param method: Method used by the visu-interface
         :type events: list
         :type method: object
         """
-        
+
         for event in events:
             if event in self.__event_listeners:
                 self.__event_listeners[event].append(method)
@@ -816,14 +816,14 @@ class SmartHome():
     def return_event_listeners(self, event='all'):
         """
         This function returns the listeners for a specified event.
-        
+
         :param event: Name of the event or 'all' to return all listeners
         :type event: str
-        
+
         :return: List of listeners
         :rtype: list
         """
-        
+
         if event == 'all':
             return self.__all_listeners
         elif event in self.__event_listeners:
@@ -842,7 +842,7 @@ class SmartHome():
         :return: Actual time for the local timezone
         :rtype: datetime
         """
-        
+
         # tz aware 'localtime'
         return datetime.datetime.now(self._tzinfo)
 
@@ -850,9 +850,9 @@ class SmartHome():
     def tzinfo(self):
         """
         Returns the info about the actual local timezone
-        
+
         :return: Timezone info
-        :rtyye: str
+        :rtype: str
         """
 
         return self._tzinfo
@@ -861,9 +861,9 @@ class SmartHome():
     def utcnow(self):
         """
         Returns the actual time in GMT
-        
+
         :return: Actual time in GMT
-        :rtyye: datetime
+        :rtype: datetime
         """
 
         # tz aware utc time
@@ -873,7 +873,7 @@ class SmartHome():
     def utcinfo(self):
         """
         Returns the info about the GMT timezone
-        
+
         :return: Timezone info
         :rtype: str
         """
@@ -884,13 +884,13 @@ class SmartHome():
     def runtime(self):
         """
         Returns the uptime of SmartHomeNG
-        
+
         :return: Uptime in days, hours, minutes and seconds
         :rtype: str
         """
 
         return datetime.datetime.now() - self._starttime
-        
+
 
     #################################################################
     # Helper Methods
@@ -914,14 +914,14 @@ class SmartHome():
     def string2bool(self, string):
         """
         This function is deprecated. Use ``lib.utils.Utils.to_bool(string)`` instead.
-        
+
         :param string: string to convert
         :type string: str
-        
+
         :return: Parameter converted to bool
         :rtype: bool
         """
-        
+
         try:
             return lib.utils.Utils.to_bool(string)
         except Exception as e:
@@ -931,11 +931,11 @@ class SmartHome():
     def object_refcount(self):
         """
         Function to return the number of defined objects in SmartHomeNG
-        
+
         :return: Number of objects
         :rtype: int
         """
-        
+
         objects = self._object_refcount()
         objects = [(x[1], x[0]) for x in list(objects.items())]
         objects.sort(reverse=True)
@@ -1045,4 +1045,3 @@ if __name__ == '__main__':
     # Starting SmartHomeNG
     sh = SmartHome(extern_conf_dir=extern_conf_dir)
     sh.start()
-    
