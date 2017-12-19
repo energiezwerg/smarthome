@@ -355,7 +355,7 @@ sudo cp /etc/ssl/ca/certs/users/<USERNAME>.p12 /home/pi
 cd /home/pi/
 sudo chown pi <USERNAME>.p12
 ```
-Bspw. nun via SFTP ziehen und aufs Datei aufs Android Handy übertragen und ausführen oder im Browser unter Zertifikate" importieren.
+Bspw. nun via SFTP ziehen und aufs Datei aufs Android Handy übertragen und ausführen oder im Browser unter "Zertifikate" importieren.
 Dabei muss es mit Export Passwort bestätigt werden.
 
 ## Client Zertifikate in NGINX nutzen (optional)
