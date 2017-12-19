@@ -433,7 +433,7 @@ class SmartHome():
         self._logger.info("Start initialization of items")
         item_conf = None
         item_conf = lib.config.parse_itemsdir(self._env_dir, item_conf)
-        item_conf = lib.config.parse_itemsdir(self._items_dir, item_conf)
+        item_conf = lib.config.parse_itemsdir(self._items_dir, item_conf, addfilenames=True)
         for attr, value in item_conf.items():
             if isinstance(value, dict):
                 child_path = attr

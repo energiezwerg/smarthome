@@ -57,6 +57,12 @@ def _cast_str(value):
 
 
 def _cast_list(value):
+    if isinstance(value, str):
+        try:
+            value = json.loads(value)
+        except Exception as e:
+            value = value.replace("'",'"')
+            value = json.loads(value)
     if isinstance(value, list):
         return value
     else:
@@ -64,6 +70,12 @@ def _cast_list(value):
 
 
 def _cast_dict(value):
+    if isinstance(value, str):
+        try:
+            value = json.loads(value)
+        except Exception as e:
+            value = value.replace("'",'"')
+            value = json.loads(value)
     if isinstance(value, dict):
         return value
     else:
@@ -264,6 +276,7 @@ class Item():
     _itemname_prefix = 'items.'     # prefix for scheduler names
 
     def __init__(self, smarthome, parent, path, config):
+        self._filename = None
         self._autotimer = False
         self._cache = False
         self.cast = _cast_bool
@@ -392,6 +405,8 @@ class Item():
                     self.__th_low = float(low.strip())
                     self.__th_high = float(high.strip())
                     logger.debug("Item {}: set threshold => low: {} high: {}".format(self._path, self.__th_low, self.__th_high))
+                elif attr == '_filename':
+                    setattr(self, attr, value)
                 else:
                     self.conf[attr] = value
         #############################################################
@@ -753,8 +768,11 @@ class Item():
                 # expression computes and does not result in None
                 if on_dest != '':
                     dest_item = self._sh.return_item(on_dest)
-                    dest_item.__update(dest_value, caller=attr, source=self._path)
-                    logger.debug(" - : '{}' finally evaluating {} = {}, result={}".format(attr, on_dest, on_eval, dest_value))
+                    if dest_item is not None:
+                        dest_item.__update(dest_value, caller=attr, source=self._path)
+                        logger.debug(" - : '{}' finally evaluating {} = {}, result={}".format(attr, on_dest, on_eval, dest_value))
+                    else:
+                        logger.error(" - : '{}' has not found dest_item {} = {}, result={}".format(attr, on_dest, on_eval, dest_value))
                 else:
                     dummy = eval(on_eval)
                     logger.debug(" - : '{}' finally evaluating {}, result={}".format(attr, on_eval, dest_value))
