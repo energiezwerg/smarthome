@@ -464,3 +464,18 @@ sudo service nginx restart
 Die Sicherheit der eigenen https-Domain kann nun unter https://www.ssllabs.com/ssltest/ getestet werden. Mit den oben genannten Maßnahmen sollte ein A+ erreicht werden.
 
 Der versiertere Nutzer kann sich unter https://mozilla.github.io/server-side-tls/ssl-config-generator/ auch gleich eine eigene Konfiguration generieren lassen.
+
+## Wartung: Zertifikat nach 3 Monaten erneuern
+
+Nach 3 Monaten muss das Let's Encrypt Serverzertifikat erneuert werden. Damit das Erneuerungs-Skript funktioniert, muss Port 80 im NGINX freigegeben oder (wie oben dokumentiert) auf HTTPS umgeleitet sein.
+
+Die Erneuerung geht dann wie folgendermaßen:
+
+```
+sudo certbot certonly --rsa-key-size 4096 --webroot -w /var/www/letsencrypt -d <mydomain>.<myds>.<me>
+```
+Im nun folgenden Dialog Option 2 (2: Renew & replace the cert (limit ~5 per 7 days)) auswählen. Danach NGINX neu starten.
+```
+sudo service nginx restart
+```
+Der Test über https://www.ssllabs.com/ssltest/ gibt nun Aufschluß über die Laufzeit des verlängerten Zertifikats.
