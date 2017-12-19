@@ -467,7 +467,7 @@ Der versiertere Nutzer kann sich unter https://mozilla.github.io/server-side-tls
 
 ## Wartung: Zertifikat nach 3 Monaten erneuern
 
-Nach 3 Monaten muss das Let's Encrypt Serverzertifikat erneuert werden. Damit das Erneuerungs-Skript funktioniert, muss Port 80 im NGINX freigegeben oder (wie oben dokumentiert) auf HTTPS umgeleitet sein.
+Nach 3 Monaten muss das Let's Encrypt Serverzertifikat erneuert werden. Damit das Erneuerungs-Skript funktioniert, muss Port 80 im NGINX freigegeben, oder (wie oben dokumentiert) auf HTTPS umgeleitet sein.
 
 Die Erneuerung geht dann wie folgendermaßen:
 
