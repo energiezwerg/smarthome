@@ -1,8 +1,6 @@
 # NGINX als ReverseProxy
 
-Um einen sicheren Zugriff auf SmartHomeNG und die smartVISU von außen (ohne VPN) zu ermöglichen, empfiehlt es sich einen # NGINX als ReverseProxy
-
-ReverseProxy mit Basic Authentication oder Clientzertifikaten zu nutzen. Die folgende Dokumentation beschreibt eine Installation von NGINX als ReverseProxy auf eigenständiger Hardware unter Raspbian Stretch Lite.
+Um einen sicheren Zugriff auf SmartHomeNG und die smartVISU von außen (ohne VPN) zu ermöglichen, empfiehlt es sich einen ReverseProxy mit Basic Authentication oder Clientzertifikaten zu nutzen. Die folgende Dokumentation beschreibt eine Installation von NGINX als ReverseProxy auf eigenständiger Hardware unter Raspbian Stretch Lite.
 Dieser ist bspw. auch für das Alexa Plugin oder die Nutzung von SmartHomeNG mit "EgiGeoZone" / "Geofency" notwendig.
 
 ## Annahmen
