@@ -27,7 +27,7 @@ import subprocess
 # Update auf 1.3e wg. neuer logic features for visu_websocket
 # Update auf 1.3f wg. Vorbereitung Release Candidate
 
-# Update auf 1.3a wg. Kennzeichnung des Stands als "nach dem v1.4 Release"
+# Update auf 1.4a wg. Kennzeichnung des Stands als "nach dem v1.4 Release"
 
 shNG_version = '1.4a'
 
@@ -62,6 +62,8 @@ def get_shng_version():
     VERSION = get_shng_main_version()+'.'+commit
     if branch != 'master':
         VERSION += '.'+branch
+    else:
+        VERSION = get_shng_main_version()+'.'+branch
     return VERSION
 
 def get_plugins_version():
@@ -69,6 +71,8 @@ def get_plugins_version():
     VERSION = get_shng_main_version()+'.'+commit
     if branch != 'master':
         VERSION += '.'+branch
+    else:
+        VERSION = get_shng_main_version()+'.'+branch
     return VERSION
 
 def get_shng_docversion():
