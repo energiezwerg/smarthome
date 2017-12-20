@@ -91,6 +91,7 @@ Zur Verdeutlichung:
 | v1.2 und davor | diverse                          | Python 3.2, 3.3, 3.4          |
 | v1.3           | Python 3.5                       | Python 3.3, 3.4, 3.5          |
 | v1.4           | Python 3.6                       | Python 3.4, 3.5, 3.6          |
+| v1.5           | Python 3.6                       | Python 3.4, 3.5, 3.6          |
 ```
 
 Das bedeutet nich automatisch, dass SmartHomeNG auf älteren Versionen von Python nicht mehr funktioniert. Die Entwicklung wird nur nicht mehr gegen die älteren Versionen getestet.
