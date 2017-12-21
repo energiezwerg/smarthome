@@ -166,11 +166,11 @@ class SamplePlugin(SmartPlugin):
         }
         
         # Register the web interface as a cherrypy app
-        self.mod_http.register_web_if(WebInterface(webif_dir, self), 
-                                      self.get_shortname(), 
-                                      config, 
-                                      self.get_classname(), self.get_instance_name(),
-                                      description='')
+        self.mod_http.register_webif(WebInterface(webif_dir, self), 
+                                     self.get_shortname(), 
+                                     config, 
+                                     self.get_classname(), self.get_instance_name(),
+                                     description='')
                                    
         return True
 
