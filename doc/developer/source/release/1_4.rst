@@ -224,7 +224,7 @@ Remote plugins
 So far none
 
 
-documentation
+Documentation
 -------------
 
 * Advanced Developer Documentation (English) on the Web
