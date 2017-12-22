@@ -1,6 +1,6 @@
-====================================
-Release 1.4.1 - December, 23rd, 2017
-====================================
+===================================
+Release 1.4.1 - December 23rd, 2017
+===================================
 
 There are some bugfixes and new features for the core of SmartHomeNG and the plugins.
 
