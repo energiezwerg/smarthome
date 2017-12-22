@@ -21,7 +21,7 @@ Diese globale Funktion triggert eine Logic durch die Angabe ihrers Namens.
 
    Ab SmartHomeNG v1.4 darauf achten, dass eine Trennung der
    Namensräume für die Trigger stattgefunden hat. Wenn sh.trigger genutzt wird, muss dem Namen 
-   **logic.** vorangestellt werden.
+   **logics.** vorangestellt werden.
 
 
 

@@ -1,0 +1,52 @@
+# Beispiel: Astronomie
+
+## Übersicht
+
+Grundlegende astronomische Daten werden bereits von den Systemitems bereitgestellt. Für die Nutzung in der Visualisierung und die Nutzung in KNX müssen die Daten ggf. unterschiedlich formatiert werden. In der Visualisierung genügt es, auf das Systemitem direkt zuzugreifen. KNX benötigt je nach DPT ein entsprechend vorformatiertes Item.
+
+### Visualisierung (SmartVisu)
+
+`Sonnenaufgang {{ basic.formula('Sonnenaufgang', 'env.location.sunrise', 'time') }}`
+
+Erläuterung:
+
+_env.location.sunrise_ ist dabei das [Systemitem](https://github.com/smarthomeNG/smarthome/wiki/env), dass von SmarthomeNG fertig bereitgestellt wird. Mit _time_ wird dann nur noch die Ausgabe formatiert - in diesem Fall wird also die bereitgestellte Angabe _2016-08-11 06:02:56.375006+02:00_ umformatiert in _06:02_.
+
+### Item (SmarthomeNG)
+
+```
+[Zentral]
+	[[Astronomie]]
+		[[[Sonne]]]
+			[[[[Berechnung]]]]
+				type = bool
+				visu = yes
+				crontab = init = 1 | 30 2 * * = 1
+				enforce_updates = true
+
+			[[[[Aufgang]]]]
+				type = foo
+				visu = yes
+				eval = sh.sun.rise().astimezone(sh.tzinfo())
+				eval_trigger = Zentral.Astronomie.Sonne.Berechnung
+				knx_dpt = 10
+				knx_send = 0/2/10
+				enforce_updates = true
+```
+Erläuterung:
+
+In diesem Beispiel verwenden wir zwei Items. Das eigentliche Item für den Sonnenaufgang ist das _Zentral.Astronomie.Sonne.Aufgang_ - Item. Damit der Sonnenaufgang bei diesem Item überhaupt berechnet wird, muss die Berechnung erst mal ausgelöst (getriggert) werden. Diese Triggerung wird über _eval_trigger = Zentral.Astronomie.Sonne.Berechnung_ ausgelöst. Dabei wird durch das Item _Zentral.Astronomie.Sonne.Berechnung_, welches im oberen Codeausschnitt zu sehen ist, eine Neuberechnung des items _Aufgang_ ausgelöst.
+
+Beim Item für den Aufgang könnten wir nun natürlich auch das Systemitem _env.location.sunrise_ verwenden, dieses Item stellt den Sonnenaufgang im KNX aber nicht immer in der gewünschten Formatierung dar. Daher wird in diesem Beispiel stattdessen die eigentliche (SmarthomeNG-) Funktion _sh.sun.rise()_ aufgerufen und in diesem Fall noch um die Zeitzone korrigiert _astimezone(sh.tzinfo())_. Somit erhält man die gewünschte Zeitangabe datentypkonform für den DPT 10.001 in der Form _Thursday, 06:02:56_.
+
+Die Triggerung dieser Berechnung wird im _Zentral.Astronomie.Sonne.Berechnung_ - Item durch das Attribut _crontab_ gesteuert. In diesem Beispiel erfolgt die Berechnung ein Mal täglich um 02.30, sowie beim Systemstart.
+
+
+***
+Fehlerquellen:
+
+Die Formatierung des Items entspricht nicht dem KNX-Datentyp - dann bekommt man unklare Fehlermeldungen im Logfile, die meist daran liegen, dass z.B. ein Objekt erwartet wurde, aber eine Zeichenkette übergeben wurde, usw. und im KNX meist gar nichts.
+_eval = sh.sun.rise().astimezone(sh.tzinfo()).strftime("%H:%M")_ oder _sh.env.location.sunrise()_ ist zum Beispiel nicht geeignet, um den Wert in KNX als Datenpunkttyp _Time_ zu übertragen.
+
+Die Triggerung wird nicht ausgelöst, wenn beim Item _Berechnung_ _crontab = init | 30 2 * *_ geschrieben wird (im Internet in einigen Beispielen so geschrieben).
+
