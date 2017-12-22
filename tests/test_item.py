@@ -164,6 +164,17 @@ class TestItem(unittest.TestCase):
         it.expand_relativepathes('sv_widget', "'", "'")
         self.assertEqual(it.conf['sv_widget'], "{{ basic.switch('id_schreibtischleuchte', 'item_tree.grandparent.parent.my_item.onoff') }}")
 
+        # Attribute with relative references (sv_widget contains a list)
+        it = self.sh.return_item("item_tree.svwidget_list")
+        it.expand_relativepathes('sv_widget', "'", "'")
+        # result should be a list
+        self.assertEqual(isinstance(it.conf['sv_widget'],list), True)
+        # length of list should be 2
+        self.assertEqual(len(it.conf['sv_widget']), 2)
+        # test both values of list (first w/o relative path, second with relative path)
+        self.assertEqual(it.conf['sv_widget'][0], "{{ basic.switch('id_schreibtischleuchte1', 'item_tree.grandparent.parent.my_item.child.onoff') }}")
+        self.assertEqual(it.conf['sv_widget'][1], "{{ basic.switch('id_schreibtischleuchte2', 'item_tree.grandparent.parent.my_item.child.onoff') }}")
+        
         # Attribute w/o relative references
         it = self.sh.return_item("item_tree.grandparent.parent.my_item.child")
         orig = it.conf['sv_widget']
