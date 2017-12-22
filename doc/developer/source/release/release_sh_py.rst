@@ -1,5 +1,5 @@
-Releases von smarthome.py
-=========================
+Releases of smarthome.py
+========================
 
    
 The following release notes are for the original smarthome.py:
