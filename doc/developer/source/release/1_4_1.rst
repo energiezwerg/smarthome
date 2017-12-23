@@ -49,6 +49,10 @@ New functions in the CORE
 New plugins and plugin extensions
 ---------------------------------
 
+* AVDevice:
+
+  * Modifications
+  
 * Backend:
 
    * Basic editability of items if type is **list** or **dict**
