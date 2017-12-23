@@ -571,8 +571,7 @@ class Scheduler(threading.Thread):
         parses a given string with a time range to determine it's timely boundaries and
         returns a time
 
-        :param: dt contains a datetime object,
-        :param: tstr contains a string with '[H:M<](sunrise|sunset)[+|-][offset][<H:M]' like e.g. '6:00<sunrise<8:00'
+        :param: crontab contains a string with '[H:M<](sunrise|sunset)[+|-][offset][<H:M]' like e.g. '6:00<sunrise<8:00'
 
         """
         # checking preconditions from configuration:
