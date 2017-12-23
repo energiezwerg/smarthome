@@ -1,8 +1,6 @@
 # NGINX als ReverseProxy
 
-Um einen sicheren Zugriff auf SmartHomeNG und die smartVISU von außen (ohne VPN) zu ermöglichen, empfiehlt es sich einen # NGINX als ReverseProxy
-
-ReverseProxy mit Basic Authentication oder Clientzertifikaten zu nutzen. Die folgende Dokumentation beschreibt eine Installation von NGINX als ReverseProxy auf eigenständiger Hardware unter Raspbian Stretch Lite.
+Um einen sicheren Zugriff auf SmartHomeNG und die smartVISU von außen (ohne VPN) zu ermöglichen, empfiehlt es sich einen ReverseProxy mit Basic Authentication oder Clientzertifikaten zu nutzen. Die folgende Dokumentation beschreibt eine Installation von NGINX als ReverseProxy auf eigenständiger Hardware unter Raspbian Stretch Lite.
 Dieser ist bspw. auch für das Alexa Plugin oder die Nutzung von SmartHomeNG mit "EgiGeoZone" / "Geofency" notwendig.
 
 ## Annahmen
@@ -70,7 +68,7 @@ server {
 ```
 sudo service nginx restart
 ```
-Temporär Port 80 im Router auf den RaspberryPi weiterleiten !
+Port 80 und Port 443 im Router jeweils auf den identischen Port am ReverseProxy-RaspberryPi mappen!
 ```
 sudo certbot certonly --rsa-key-size 4096 --webroot -w /var/www/letsencrypt -d <mydomain>.<myds>.<me> 
 ```
@@ -81,8 +79,6 @@ Generating key (4096 bits): /etc/letsencrypt/keys/0000_key-certbot.pem
 Creating CSR: /etc/letsencrypt/csr/0000_csr-certbot.pem
 ```
 enden.
-
-Port 80 im Browser wieder schließen, dafür Port 443 (https) entsprechend auf den ReverseProxy-RaspberryPi weiterleiten!
 
 ## NGINX Konfiguration
 /etc/nginx/nginx.conf bearbeiten und direkt im "http" Block die GeoIP Einstellungen hinzufügen. Unter der Konfiguration der "virtual hosts" noch einen Block als Schutz gegen Denial of Service Angriffe ergänzen:
@@ -287,6 +283,18 @@ server {
 
         include /etc/nginx/snippets/letsencrypt.conf;
 ```
+Alternativ kann auch eine Weiterleitung von der HTTP (Port 80)  auf die HTTPS (Port 443) URL gesetzt werden. Das ist insbesondere beim Erneuern von Zertifikaten von Vorteil, da hier eine Anfrage gegen Port 80 gemacht wird:
+```
+server {
+        listen 80 default_server;
+        listen [::]:80 default_server;
+
+        server_name _;
+        return 301 https://$host$request_uri;
+
+        include /etc/nginx/snippets/letsencrypt.conf;
+```
+Danach den NGINX neu starten:
 ```
 /etc/init.d/nginx reload
 ```
@@ -347,7 +355,7 @@ sudo cp /etc/ssl/ca/certs/users/<USERNAME>.p12 /home/pi
 cd /home/pi/
 sudo chown pi <USERNAME>.p12
 ```
-Bspw. nun via SFTP ziehen und aufs Datei aufs Android Handy übertragen und ausführen oder im Browser unter Zertifikate" importieren.
+Bspw. nun via SFTP ziehen und aufs Datei aufs Android Handy übertragen und ausführen oder im Browser unter "Zertifikate" importieren.
 Dabei muss es mit Export Passwort bestätigt werden.
 
 ## Client Zertifikate in NGINX nutzen (optional)
@@ -456,3 +464,18 @@ sudo service nginx restart
 Die Sicherheit der eigenen https-Domain kann nun unter https://www.ssllabs.com/ssltest/ getestet werden. Mit den oben genannten Maßnahmen sollte ein A+ erreicht werden.
 
 Der versiertere Nutzer kann sich unter https://mozilla.github.io/server-side-tls/ssl-config-generator/ auch gleich eine eigene Konfiguration generieren lassen.
+
+## Wartung: Zertifikat nach 3 Monaten erneuern
+
+Nach 3 Monaten muss das Let's Encrypt Serverzertifikat erneuert werden. Damit das Erneuerungs-Skript funktioniert, muss Port 80 im NGINX freigegeben, oder (wie oben dokumentiert) auf HTTPS umgeleitet sein.
+
+Die Erneuerung geht dann wie folgendermaßen:
+
+```
+sudo certbot certonly --rsa-key-size 4096 --webroot -w /var/www/letsencrypt -d <mydomain>.<myds>.<me>
+```
+Im nun folgenden Dialog Option 2 (2: Renew & replace the cert (limit ~5 per 7 days)) auswählen. Danach NGINX neu starten.
+```
+sudo service nginx restart
+```
+Der Test über https://www.ssllabs.com/ssltest/ gibt nun Aufschluß über die Laufzeit des verlängerten Zertifikats.

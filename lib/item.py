@@ -57,6 +57,12 @@ def _cast_str(value):
 
 
 def _cast_list(value):
+    if isinstance(value, str):
+        try:
+            value = json.loads(value)
+        except Exception as e:
+            value = value.replace("'",'"')
+            value = json.loads(value)
     if isinstance(value, list):
         return value
     else:
@@ -64,6 +70,12 @@ def _cast_list(value):
 
 
 def _cast_dict(value):
+    if isinstance(value, str):
+        try:
+            value = json.loads(value)
+        except Exception as e:
+            value = value.replace("'",'"')
+            value = json.loads(value)
     if isinstance(value, dict):
         return value
     else:
@@ -264,6 +276,7 @@ class Item():
     _itemname_prefix = 'items.'     # prefix for scheduler names
 
     def __init__(self, smarthome, parent, path, config):
+        self._filename = None
         self._autotimer = False
         self._cache = False
         self.cast = _cast_bool
@@ -392,6 +405,8 @@ class Item():
                     self.__th_low = float(low.strip())
                     self.__th_high = float(high.strip())
                     logger.debug("Item {}: set threshold => low: {} high: {}".format(self._path, self.__th_low, self.__th_high))
+                elif attr == '_filename':
+                    setattr(self, attr, value)
                 else:
                     self.conf[attr] = value
         #############################################################
@@ -580,17 +595,36 @@ class Item():
         converts a configuration attribute containing relative item pathes
         to absolute pathes
         
+        The item's attribute can be of type str or list (of strings)
+        
         The begintag and the endtag remain in the result string!
 
         :param attr: Name of the attribute
         :param begintag: string that signals the beginning of a relative path is following
         :param endtag: string that signals the end of a relative path
+        
         """
         if attr in self.conf:
-            if (begintag != '') and (endtag != ''):
-                self.conf[attr] = self.get_stringwithabsolutepathes(self.conf[attr], begintag, endtag, attr)
-            elif (begintag == '') and (endtag == ''):
-                self.conf[attr] = self.get_absolutepath(self.conf[attr], attr)
+            if isinstance(self.conf[attr], str):
+                if (begintag != '') and (endtag != ''):
+                    self.conf[attr] = self.get_stringwithabsolutepathes(self.conf[attr], begintag, endtag, attr)
+                elif (begintag == '') and (endtag == ''):
+                    self.conf[attr] = self.get_absolutepath(self.conf[attr], attr)
+            elif isinstance(self.conf[attr], list):
+                logger.debug("expand_relativepathes(1): to expand={}".format(self.conf[attr]))
+                new_attr = []
+                for a in self.conf[attr]:
+                    logger.debug("expand_relativepathes: vor : to expand={}".format(a))
+                    if (begintag != '') and (endtag != ''):
+                        a = self.get_stringwithabsolutepathes(a, begintag, endtag, attr)
+                    elif (begintag == '') and (endtag == ''):
+                        a = self.get_absolutepath(a, attr)
+                    logger.debug("expand_relativepathes: nach: to expand={}".format(a))
+                    new_attr.append(a)
+                self.conf[attr] = new_attr
+                logger.debug("expand_relativepathes(2): to expand={}".format(self.conf[attr]))
+            else:
+                logger.warning("expand_relativepathes: attr={} can not expand for type(self.conf[attr])={}".format(attr, type(self.conf[attr])))
         return
         
 
@@ -753,8 +787,11 @@ class Item():
                 # expression computes and does not result in None
                 if on_dest != '':
                     dest_item = self._sh.return_item(on_dest)
-                    dest_item.__update(dest_value, caller=attr, source=self._path)
-                    logger.debug(" - : '{}' finally evaluating {} = {}, result={}".format(attr, on_dest, on_eval, dest_value))
+                    if dest_item is not None:
+                        dest_item.__update(dest_value, caller=attr, source=self._path)
+                        logger.debug(" - : '{}' finally evaluating {} = {}, result={}".format(attr, on_dest, on_eval, dest_value))
+                    else:
+                        logger.error(" - : '{}' has not found dest_item {} = {}, result={}".format(attr, on_dest, on_eval, dest_value))
                 else:
                     dummy = eval(on_eval)
                     logger.debug(" - : '{}' finally evaluating {}, result={}".format(attr, on_eval, dest_value))

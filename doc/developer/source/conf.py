@@ -75,9 +75,9 @@ version = shngversion.get_shng_main_version()
 #release = '1.3a dev (as of 13. October 2017)'  13. October 2017 is replaced by makefile with a date in the form of '2. September 2017'
 #release = '1.3c dev (as of 13. October 2017)'
 release = shngversion.get_shng_docversion() + ' (as of ' + today
-commit, branch = shngversion._get_git_data()
+commit, commit_short, branch, describe = shngversion._get_git_data()
 if branch != 'master':
-    release += ', commit '+commit
+    release += ', commit '+commit_short
 release += ')'
 #release = sphinx_bootstrap_theme.__version__
 

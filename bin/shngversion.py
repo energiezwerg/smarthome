@@ -27,12 +27,15 @@ import subprocess
 # Update auf 1.3e wg. neuer logic features for visu_websocket
 # Update auf 1.3f wg. Vorbereitung Release Candidate
 
-shNG_version = '1.4'
+# Update auf 1.4a wg. Kennzeichnung des Stands als "nach dem v1.4 Release"
+# Update auf 1.4.1 
+
+shNG_version = '1.4.1'
 
 # ---------------------------------------------------------------------------------
 FileBASE = None
 
-def _get_git_data(sub=''):
+def _get_git_data(sub='', printout=False):
     global FileBASE
     if FileBASE is None:
         FileBASE = os.path.sep.join(os.path.realpath(__file__).split(os.path.sep)[:-2])
@@ -41,14 +44,26 @@ def _get_git_data(sub=''):
         BASE = os.path.join(FileBASE,sub)
     commit = '0'
     branch = 'manual'
+    describe = ''
+    commit_short = ''
     if BASE is not None:
         try:
             os.chdir(BASE)
-            commit = subprocess.check_output(['git', 'describe', '--always'], stderr=subprocess.STDOUT).decode().strip('\n')
             branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], stderr=subprocess.STDOUT).decode().strip('\n')
+            commit = subprocess.check_output(['git', 'rev-parse', 'HEAD'], stderr=subprocess.STDOUT).decode().strip('\n')
+            commit_short = subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'], stderr=subprocess.STDOUT).decode().strip('\n')
+            describe = subprocess.check_output(['git', 'describe', '--all'], stderr=subprocess.STDOUT).decode().strip('\n')
         except Exception as e:
             pass
-    return commit, branch
+    if printout:
+        print()
+        print("_get_git_data: BASE={}".format(BASE)) 
+        print("- describe: {}".format(describe))
+        print("- commit_short : {}".format(commit_short))
+        print("- commit .: {}".format(commit))
+        print("- branch .: {}".format(branch))
+        print()
+    return commit, commit_short, branch, describe 
 
 # ---------------------------------------------------------------------------------
 
@@ -56,21 +71,33 @@ def get_shng_main_version():
     return shNG_version
 
 def get_shng_version():
-    commit, branch = _get_git_data()
-    VERSION = get_shng_main_version()+'.'+commit
-    if branch != 'master':
-        VERSION += '.'+branch
+    commit, commit_short, branch, describe = _get_git_data()
+    VERSION = get_shng_main_version()
+    if branch == 'master':
+        VERSION += '.'+branch+' ('+commit_short+')'
+    else:
+        VERSION += '.'+commit_short+'.'+branch
     return VERSION
+
+def get_shng_description():
+    commit, commit_short, branch, describe = _get_git_data()
+    return describe
 
 def get_plugins_version():
-    commit, branch = _get_git_data('plugins')
-    VERSION = get_shng_main_version()+'.'+commit
-    if branch != 'master':
-        VERSION += '.'+branch
+    commit, commit_short, branch, describe = _get_git_data('plugins')
+    VERSION = get_shng_main_version()
+    if branch == 'master':
+        VERSION += '.'+branch+' ('+commit_short+')'
+    else:
+        VERSION += '.'+commit_short+'.'+branch
     return VERSION
 
+def get_plugins_description():
+    commit, commit_short, branch, describe = _get_git_data('plugins')
+    return describe
+
 def get_shng_docversion():
-    commit, branch = _get_git_data()
+    commit, commit_short, branch, describe = _get_git_data()
     VERSION = get_shng_main_version()
     if branch != 'master':
         VERSION += ' '+branch
@@ -78,13 +105,15 @@ def get_shng_docversion():
 
 if __name__ == '__main__':
     print()
-    commit, branch = _get_git_data()
+    commit, commit_short, branch, describe = _get_git_data()
     print("get_shng_git         :", commit+'.'+branch)
-    commit, branch = _get_git_data('plugins')
+    commit, commit_short, branch, describe = _get_git_data('plugins')
     print("get_plugins_git      :", commit+'.'+branch)
     print()
     print("get_shng_main_version:", get_shng_main_version())
     print("get_shng_version     :", get_shng_version())
+    print(" - description       :", get_shng_description())
     print("get_plugins_version  :", get_plugins_version())
+    print(" - description       :", get_plugins_description())
     print()
 

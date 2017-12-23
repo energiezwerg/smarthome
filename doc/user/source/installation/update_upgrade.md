@@ -19,7 +19,17 @@ Wenn man SmarthomeNG laut der [Komplettanleitung](https://github.com/smarthomeNG
 git pull
 ```
 
-eingeben. Daraufhin sollte der Update-Vorgang starten. Zum Abschluss SmarthomeNG dann starten. Um zu prüfen, ob sich vielleicht Fehler oder Änderungen in den Plugins ergeben haben, sollte man dies im Debugmodus von der Kommandozeile aus machen:
+eingeben. Daraufhin sollte der Update-Vorgang starten. 
+
+Nachdem SmartHomeNG aktualisiert wurde, müssen noch die als Submodule eingebundenen **Plugins aktualisiert** werden. Dazu das folgende Kommando eingeben:
+
+```
+git submodule update --init
+```
+
+
+
+Zum Abschluss SmarthomeNG dann starten. Um zu prüfen, ob sich vielleicht Fehler oder Änderungen in den Plugins ergeben haben, sollte man dies im Debugmodus von der Kommandozeile aus machen:
 
 ```
 python3 bin/smarthome.py -d

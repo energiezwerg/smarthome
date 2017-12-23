@@ -69,7 +69,7 @@ def parse_basename(basename, configtype=''):
     return config
         
 
-def parse_itemsdir(itemsdir, item_conf):
+def parse_itemsdir(itemsdir, item_conf, addfilenames=False):
     '''
     Load and parse item configurations and merge it to the configuration tree
     The configuration is only specified by the name of the directory.
@@ -91,14 +91,14 @@ def parse_itemsdir(itemsdir, item_conf):
                 logger.info("config.parse_itemsdir: skipping logic definition file = {}".format( itemsdir+item_file ))
             else:
                 try:
-                    item_conf = parse(itemsdir + item_file, item_conf)
+                    item_conf = parse(itemsdir + item_file, item_conf, addfilenames)
                 except Exception as e:
                     logger.exception("Problem reading {0}: {1}".format(item_file, e))
                     continue
     return item_conf
 
 
-def parse(filename, config=None):
+def parse(filename, config=None, addfilenames=False):
     '''
     Load and parse a configuration file and merge it to the configuration tree
     Depending on the extension of the filename, the apropriate parser is called
@@ -113,7 +113,7 @@ def parse(filename, config=None):
 
     '''
     if filename.endswith(YAML_FILE) and os.path.isfile(filename):
-         return parse_yaml(filename, config)
+         return parse_yaml(filename, config, addfilenames)
     elif filename.endswith(CONF_FILE) and os.path.isfile(filename):
         return parse_conf(filename, config)
     return {}
@@ -249,8 +249,8 @@ def merge(source, destination):
     return destination
     
     
-def parse_yaml(filename, config=None):
-    '''
+def parse_yaml(filename, config=None, addfilenames=False):
+    """
     Load and parse a yaml configuration file and merge it to the configuration tree
 
     :param filename: Name of the configuration file
@@ -289,7 +289,8 @@ def parse_yaml(filename, config=None):
     Valid characters for the items are a-z and A-Z plus any digit and underscore as second or further characters.
     Valid characters for the attributes are the same as for an item plus @ and *
 
-    '''
+    """
+    logger.debug("parse_yaml: Parsing file {}".format(os.path.basename(filename)))
     if config is None:
         config = collections.OrderedDict()
 
@@ -300,9 +301,33 @@ def parse_yaml(filename, config=None):
         remove_reserved(items)
         remove_keyword(items)
         remove_invalid(items)
-        
+
+        if addfilenames:
+            logger.debug("parse_yaml: Add filename = {} to items".format(os.path.basename(filename)))
+            _add_filenames_to_config(items, os.path.basename(filename))
+
         config = merge(items, config)
     return config
+    
+
+def _add_filenames_to_config(items, filename, level=0):
+    """
+    Adds the name of the config file to the config items
+    
+    This routine is used to add the source filename to: 
+    - be able to display the file an item is defined in (backend page items)
+    - to enable editing and storing back of item definitions
+    
+    This function calls itself recurselively
+    
+    """
+    for attr, value in items.items():
+        if isinstance(value, dict):
+            child_path = dict(value)
+            if filename != '':
+                value['_filename'] = filename
+            _add_filenames_to_config(child_path, filename, level+1)
+    return
     
 
 # --------------------------------------------------------------------------------------

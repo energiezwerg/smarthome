@@ -106,18 +106,18 @@ class Scheduler(threading.Thread):
     def get_instance():
         """
         Returns the instance of the scheduler class, to be used to access the scheduler-api
-        
+
         Use it the following way to access the api:
-        
+
         .. code-block:: python
 
             from lib.scheduler import Scheduler
             scheduler = Scheduler.get_instance()
-            
+
             # to access a method (eg. to trigger a logic):
             scheduler.trigger(...)
 
-        
+
         :return: scheduler instance
         :rtype: object or None
         """
@@ -220,7 +220,7 @@ class Scheduler(threading.Thread):
         """
         remove a scheduler entry with given name. If a call is made from a SmartPlugin with a instance configuration
         the instance name is added to the name
-        
+
         :param name: scheduler entry name to remove
         """
         self._lock.acquire()
@@ -295,7 +295,7 @@ class Scheduler(threading.Thread):
             cycle = {cycle: _value}
         if cycle is not None and offset is None:  # spread cycle jobs
                 offset = random.randint(10, 15)
-        # change name for multi instance plugins 
+        # change name for multi instance plugins
         if obj.__class__.__name__ == 'method':
             if isinstance(obj.__self__, SmartPlugin):
                 if obj.__self__.get_instance_name() != '':
@@ -468,6 +468,12 @@ class Scheduler(threading.Thread):
             return datetime.datetime.now(tzutc()) + dateutil.relativedelta.relativedelta(years=+10)
 
     def _parse_month(self, crontab, next_month=False):
+        """
+        Inspects a given string with crontab information to calculate the next point in time that matches
+        :param crontab: a string with crontab entries. It is expected to have the form of ``minute hour day weekday``
+        :param next_month:
+        :return:
+        """
         now = self._sh.now()
         minute, hour, day, wday = crontab.split(' ')
         # evaluate the crontab strings
@@ -553,8 +559,18 @@ class Scheduler(threading.Thread):
 
         if cron.startswith('sunrise'):
             next_time = self._sh.sun.rise(doff, moff)
+            # time in next_time will be in utctime. So we need to adjust it
+            if next_time.tzinfo == tzutc():
+                next_time = next_time.astimezone(self._sh.tzinfo())
+            else:
+                self.logger.warning("next_time.tzinfo was not given as utc!")
         elif cron.startswith('sunset'):
             next_time = self._sh.sun.set(doff, moff)
+            # time in next_time will be in utctime. So we need to adjust it
+            if next_time.tzinfo == tzutc():
+                next_time = next_time.astimezone(self._sh.tzinfo())
+            else:
+                self.logger.warning("next_time.tzinfo was not given as utc!")
         else:
             logger.error('Wrong syntax: {0}. Should be [H:M<](sunrise|sunset)[+|-][offset][<H:M]'.format(crontab))
             return datetime.datetime.now(tzutc()) + dateutil.relativedelta.relativedelta(years=+10)
