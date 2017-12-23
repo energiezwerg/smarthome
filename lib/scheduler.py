@@ -3,6 +3,7 @@
 #########################################################################
 # Copyright 2011-2014 Marcus Popp                          marcus@popp.mx
 # Copyright 2016- Christian Straßburg
+# Copyright 2017 Bernd Meiners                      Bernd.Meiners@mail.de
 #########################################################################
 #  This file is part of SmartHomeNG
 #
@@ -189,6 +190,18 @@ class Scheduler(threading.Thread):
         self.alive = False
 
     def trigger(self, name, obj=None, by='Logic', source=None, value=None, dest=None, prio=3, dt=None):
+        """
+        triggers the execution of a logic optional at a certain datetime given with dt
+        :param name:
+        :param obj:
+        :param by:
+        :param source:
+        :param value:
+        :param dest:
+        :param prio:
+        :param dt: a certain datetime
+        :return: always None
+        """
         name = self.check_caller(name)
         if obj is None:
             if name in self._scheduler:
@@ -218,10 +231,11 @@ class Scheduler(threading.Thread):
 
     def remove(self, name, from_smartplugin=False):
         """
-        remove a scheduler entry with given name. If a call is made from a SmartPlugin with a instance configuration
-        the instance name is added to the name
+        Remove a scheduler entry with given name. If a call is made from a SmartPlugin with an instance configuration
+        the instance name is added to the name to be able to distinguish scheduler entries from different instances
 
         :param name: scheduler entry name to remove
+        :param from_smartplugin:
         """
         self._lock.acquire()
         name = self.check_caller(name, from_smartplugin)
@@ -231,6 +245,15 @@ class Scheduler(threading.Thread):
         self._lock.release()
 
     def check_caller(self, name, from_smartplugin=False):
+        """
+        Checks the calling stack if the calling function (one of get, change, remove, trigger) itself was called by
+        a smartplugin instance. If there is an instance name of the calling smartplugin then the instance name of that
+        calling smartplugin is appended to the name
+
+        :param name: the name of a scheduler entry
+        :param from_smartplugin:
+        :return: returns either the name or name combined with instance name
+        """
         stack = inspect.stack()
         try:
             obj = stack[2][0].f_locals["self"]
@@ -250,6 +273,20 @@ class Scheduler(threading.Thread):
             return self._scheduler[name]['next']
 
     def add(self, name, obj, prio=3, cron=None, cycle=None, value=None, offset=None, next=None, from_smartplugin=False):
+        """
+        Adds an entry to the scheduler.
+        :param name:
+        :param obj:
+        :param prio: a priority with default of 3 having 1 as most important and higher numbes less important
+        :param cron: a crontab entry of type string or a list of entries
+        :param cycle: a time given as integer in seconds or a string with a time given in seconds and
+        a value after an equal sign
+        :param value:
+        :param offset: an optional offset for cycle. If not given, cycle start point will be varied between 10..15
+        seconds to prevent too many scheduler entries with the same starting times
+        :param next:
+        :param from_smartplugin:
+        """
         self._lock.acquire()
         if isinstance(cron, str):
             cron = [cron, ]
@@ -299,7 +336,7 @@ class Scheduler(threading.Thread):
         if obj.__class__.__name__ == 'method':
             if isinstance(obj.__self__, SmartPlugin):
                 if obj.__self__.get_instance_name() != '':
-#                    if not (name).startswith(self._pluginname_prefix):
+                    #if not (name).startswith(self._pluginname_prefix):
                     if not from_smartplugin:
                         name = name +'_'+ obj.__self__.get_instance_name()
                     logger.debug("Scheduler: Name changed by adding plugin instance name to: " + name)
@@ -355,6 +392,13 @@ class Scheduler(threading.Thread):
             logger.warning("Could not change {0}. No logic/method with this name found.".format(name))
 
     def _next_time(self, name, offset=None):
+        """
+        Looks at the cycle and crontab attributes of job with name to find the next time for them and puts
+        this and the value to the job.
+
+        :param name: the name of the job
+        :param offset: if a cycle attribute is present, then this value offsets the next execution time of a cycle
+        """
         job = self._scheduler[name]
         if None == job['cron'] == job['cycle']:
             self._scheduler[name]['next'] = None
@@ -454,6 +498,13 @@ class Scheduler(threading.Thread):
         threading.current_thread().name = 'idle'
 
     def _crontab(self, crontab):
+        """
+        inspects if a crontab entry contains a sunbound time instruction (e.g. "17:00<sunset<20:00") or
+        if it contains a normal crontab entry (e.g. "*/5 6-19/1 * * *")
+        :param crontab: a string containing an enhanced crontab entry that may include a sunset/sunrise
+        :return: a timezone aware datetime with the next event time or
+        an error datatime object that lies 10 years in the future
+        """
         try:
             # process sunrise/sunset
             for entry in crontab.split('<'):
@@ -469,10 +520,11 @@ class Scheduler(threading.Thread):
 
     def _parse_month(self, crontab, next_month=False):
         """
-        Inspects a given string with crontab information to calculate the next point in time that matches
+        Inspects a given string with classic crontab information to calculate the next point in time that matches
+        The function depends on the function now() of SmartHomeNG core
         :param crontab: a string with crontab entries. It is expected to have the form of ``minute hour day weekday``
-        :param next_month:
-        :return:
+        :param next_month: inspect the current month or the next following month
+        :return: false or datetime
         """
         now = self._sh.now()
         minute, hour, day, wday = crontab.split(' ')
@@ -515,6 +567,15 @@ class Scheduler(threading.Thread):
         return False
 
     def _sun(self, crontab):
+        """
+        parses a given string with a time range to determine it's timely boundaries and
+        returns a time
+
+        :param: dt contains a datetime object,
+        :param: tstr contains a string with '[H:M<](sunrise|sunset)[+|-][offset][<H:M]' like e.g. '6:00<sunrise<8:00'
+
+        """
+        # checking preconditions from configuration:
         if not self._sh.sun:  # no sun object created
             logger.warning('No latitude/longitude specified. You could not use sunrise/sunset as crontab entry.')
             return datetime.datetime.now(tzutc()) + dateutil.relativedelta.relativedelta(years=+10)
@@ -599,6 +660,13 @@ class Scheduler(threading.Thread):
         return next_time
 
     def _range(self, entry, low, high):
+        """
+        inspects a single crontab entry for minutes our hours
+        :param entry: a string with single entries of intervals, numeric ranges or single values
+        :param low: lower limit as integer
+        :param high: higher limit as integer
+        :return:
+        """
         result = []
         item_range = []
 
@@ -633,6 +701,11 @@ class Scheduler(threading.Thread):
         return result
 
     def _day_range(self, days):
+        """
+        inspect a given string with days given as integer numbers separated by ","
+        :param days:
+        :return: an array with strings containing the days of month
+        """
         now = datetime.date.today()
         wdays = [MO, TU, WE, TH, FR, SA, SU]
         result = []
@@ -645,3 +718,4 @@ class Scheduler(threading.Thread):
             day = now + dateutil.relativedelta.relativedelta(weekday=wday(+2))
             result.append(day.strftime("%d"))
         return result
+
