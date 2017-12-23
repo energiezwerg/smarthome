@@ -49,6 +49,10 @@ Neue Funktionen im CORE
 Neue Plugins und Plugin-Erweiterungen
 -------------------------------------
 
+* AVDevice:
+
+  * Anpassungen
+  
 * Backend:
 
   * Grundsätzliche Editierbarkeit von Items der Typen **list** und **dict**
