@@ -35,11 +35,11 @@ New functions in the CORE
 * Composition of the version string corrected from GIT information
 * Items:
 
-   * Bugfix: Exception caught if **on_update** or **on_chang ** were assigning a value to a nonexistent item
-   * Bugfix: Expansion of relative item paths, if the item attribute is not a string but a list of strings
-   * Casting for **list**s and **dict**s extended so that values of type **str** are cast accordingly (via json.loads)
-   * When loading item definitions, the source file name is stored in the item for user-defined items (for display in the backend and for future features)
-  
+  * Bugfix: Exception caught if **on_update** or **on_change** were assigning a value to a nonexistent item
+  * Bugfix: Expansion of relative item paths, if the item attribute is not a string but a list of strings
+  * Casting for **list** s and **dict** s extended so that values of type **str** are cast accordingly (via json.loads)
+  * When loading item definitions, the source file name is stored in the item for user-defined items (for display in the backend and for future features)
+
 * Scheduler:
 
   * Times with sunrise/sunset in crontab are now timezone aware rather than utc
@@ -52,17 +52,17 @@ New plugins and plugin extensions
 * AVDevice:
 
   * Modifications
-  
+
 * Backend:
 
-   * Basic editability of items if type is **list** or **dict**
-   * For user-defined items: Display of the file name in which the item was defined
-   * Display of SmartHomeNG version extended
-   * Loggers are filtered out of the logging list, if they have only a NullHandler.
+  * Basic editability of items if type is **list** or **dict**
+  * For user-defined items: Display of the file name in which the item was defined
+  * Display of SmartHomeNG version extended
+  * Loggers are filtered out of the logging list, if they have only a NullHandler.
 
 * CLI:
 
-   * With the extended casting for **list**s and **dict**s it is possible with the CLI plugin to assign values to lists and dictionaries
+  * With the extended casting for **list** s and **dict** s it is possible with the CLI plugin to assign values to lists and dictionaries
 
 * mail: 
 

@@ -37,7 +37,7 @@ Neue Funktionen im CORE
 
   * Bugfix: Exception abgefangen, falls **on_update** oder **on_change** zu einem nicht existierenden Item zuweisen wollen
   * Bugfix: Expansion von relativen Item-Pfaden, wenn das Item Attribut kein String sondern eine Liste von Strings ist
-  * Casting für **list**s und **dict**s so erweitert, dass Werte vom Type **str** entsprechend gecastet werden (über json.loads)
+  * Casting für **list** s und **dict** s so erweitert, dass Werte vom Type **str** entsprechend gecastet werden (über json.loads)
   * Beim Laden von Item Definitionen wird bei Anwender-Definierten Items der Quell-Dateiname im Item gespeichert (zur Anzeige im Backend und für zukünftige Features)
   
 * Scheduler: 
@@ -62,7 +62,7 @@ Neue Plugins und Plugin-Erweiterungen
   
 * CLI: 
 
-  * Durch das erweiterte Casting für **list**s und **dict**s ist es möglich mit dem CLI Plugin Listen und Dictionaries Werte zuzuweisen
+  * Durch das erweiterte Casting für **list** s und **dict** s ist es möglich mit dem CLI Plugin Listen und Dictionaries Werte zuzuweisen
 
 * mail:
  
