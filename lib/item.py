@@ -281,7 +281,6 @@ class Item():
         self._cache = False
         self.cast = _cast_bool
         self.__changed_by = 'Init:None'
-        self.__updated_by = 'Init:None'
         self.__children = []
         self.conf = {}
         self._crontab = None
@@ -432,10 +431,7 @@ class Item():
             try:
                 self.__last_change, self._value = _cache_read(self._cache, self._sh._tzinfo)
                 self.__last_update = self.__last_change
-                self.__prev_change = self.__last_change
-                self.__prev_update = self.__last_change
                 self.__changed_by = 'Cache:None'
-                self.__updated_by = 'Cache:None'
             except Exception as e:
                 logger.warning("Item {}: problem reading cache: {}".format(self._path, e))
         #############################################################
@@ -841,7 +837,6 @@ class Item():
             return
         self._lock.acquire()
         _changed = False
-        self.__updated_by = "{0}:{1}".format(caller, source)
         if value != self._value:
             _changed = True
             self.__prev_value = self._value
@@ -938,9 +933,6 @@ class Item():
     def changed_by(self):
         return self.__changed_by
 
-    def updated_by(self):
-        return self.__updated_by
-
     def fade(self, dest, step=1, delta=1):
         dest = float(dest)
         self._sh.trigger(self._path, _fadejob, value={'item': self, 'dest': dest, 'step': step, 'delta': delta})
@@ -1001,7 +993,6 @@ class Item():
         else:
             self.__last_change = last_change
         self.__changed_by = "{0}:{1}".format(caller, None)
-        self.__updated_by = "{0}:{1}".format(caller, None)
         self._lock.release()
         self._change_logger("Item {} = {} via {} {} {}".format(self._path, value, caller, source, dest))
 
