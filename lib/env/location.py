@@ -3,7 +3,8 @@
 
 if sh.sun:
     try:
-        sunrise = sh.sun.rise().astimezone(sh.tzinfo())
+#        sunrise = sh.sun.rise().astimezone(sh.tzinfo())
+        sunrise = sh.sun.rise().astimezone(shtime.tzinfo())
         sh.env.location.sunrise(sunrise)
     except Exception as e:
         logger.error("ephem error while calculating sun rise: {}".format(e))
@@ -16,7 +17,8 @@ if sh.sun:
     sh.env.location.sunrise.elevation.radians(round(elevation_rise_radians,2))
 
     try:
-        sunset = sh.sun.set().astimezone(sh.tzinfo())
+#        sunset = sh.sun.set().astimezone(sh.tzinfo())
+        sunset = sh.sun.set().astimezone(shtime.tzinfo())
         sh.env.location.sunset(sunset)
     except Exception as e:
         logger.error("ephem error while calculating sun set: {}".format(e))
@@ -40,11 +42,13 @@ if sh.sun:
     sh.env.location.sun_position.elevation.radians(round(elevation_radians,2))
 
     try:
-        sh.env.location.moonrise(sh.moon.rise().astimezone(sh.tzinfo()))
+#        sh.env.location.moonrise(sh.moon.rise().astimezone(sh.tzinfo()))
+        sh.env.location.moonrise(sh.moon.rise().astimezone(shtime.tzinfo()))
     except Exception as e:
         logger.error("ephem error while calculating moon rise: {}".format(e))
     try:
-        sh.env.location.moonset(sh.moon.set().astimezone(sh.tzinfo()))
+#        sh.env.location.moonset(sh.moon.set().astimezone(sh.tzinfo()))
+        sh.env.location.moonset(sh.moon.set().astimezone(shtime.tzinfo()))
     except Exception as e:
         logger.error("ephem error while calculating moon set: {}".format(e))
 

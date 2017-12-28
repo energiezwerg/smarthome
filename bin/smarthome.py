@@ -85,6 +85,7 @@ import lib.scheduler
 import lib.tools
 import lib.utils
 import lib.orb
+from lib.shtime import Shtime
 import lib.shyaml
 
 from lib.constants import (YAML_FILE, CONF_FILE, DEFAULT_FILE)
@@ -134,7 +135,7 @@ class SmartHome():
     _module_conf = ''	# is filled by module.py while reading the configuration file, needed by Backend plugin
 
     _plugin_conf_basename = os.path.join(_etc_dir,'plugin')
-    _plugin_conf = ''	# is filled by plugin.py while reading the configuration file, needed by Backend plugin
+#    _plugin_conf = ''	# is filled by plugin.py while reading the configuration file, needed by Backend plugin
 
     _env_logic_conf_basename = os.path.join( _env_dir ,'logic')
     _items_dir = os.path.join(_base_dir, 'items'+os.path.sep)
@@ -142,6 +143,16 @@ class SmartHome():
     _logic_dir = os.path.join(_base_dir, 'logics'+os.path.sep)
     _cache_dir = os.path.join(_var_dir,'cache'+os.path.sep)
     _log_conf_basename = os.path.join(_etc_dir,'logging')
+
+    # the APIs available though the smarthome object instance:
+    shtime = None
+
+    plugins = None
+    items = None
+    logics = None
+    scheduler = None
+
+
     _smarthome_conf_basename = None
     _extern_conf_dir = BASE
     _log_buffer = 50
@@ -149,12 +160,12 @@ class SmartHome():
     __event_listeners = {}
     __all_listeners = []
     _use_modules = 'True'
-    _modules = []
-    _moduledict = {}
-    _plugins = []
-    __items = []
+    modules = []
+#    _moduledict = {}
+#    _plugins = []
+#    __items = []
+#    __item_dict = {}
     __children = []
-    __item_dict = {}
     _utctz = TZ
     _logger = logging.getLogger(__name__)
     _default_language = 'de'
@@ -164,13 +175,16 @@ class SmartHome():
     plugin_start_complete = False
 
     def __init__(self, extern_conf_dir=_base_dir):
-        # set default timezone to UTC
         self._extern_conf_dir = extern_conf_dir
+        
+        self.shtime = Shtime(self)
+        # set default timezone to UTC
         global TZ
         self.tz = 'UTC'
         os.environ['TZ'] = self.tz
-        self._tzinfo = TZ
-
+#        self._tzinfo = TZ
+        self.shtime.set_tzinfo(TZ)
+        
         threading.currentThread().name = 'Main'
         self.alive = True
         self.version = VERSION
@@ -240,7 +254,8 @@ class SmartHome():
                 TZ = tzinfo
                 self.tz = self._tz
                 os.environ['TZ'] = self.tz
-                self._tzinfo = TZ
+#                self._tzinfo = TZ
+                self.shtime.set_tzinfo(TZ)
             else:
                 self._logger.warning("Problem parsing timezone: {}. Using UTC.".format(self._tz))
             del(self._tz, tzinfo)
@@ -320,6 +335,7 @@ class SmartHome():
         :return: Bas directory as an absolute path
         :rtype: str
         """
+        self.deprecated_warning('sh.get_basedir()')
         return self._base_dir
 
 
@@ -415,25 +431,31 @@ class SmartHome():
         #############################################################
         if not(lib.utils.Utils.to_bool(self._use_modules) == False):
             self._logger.info("Init loadable Modules")
-            self._modules = lib.module.Modules(self, configfile=self._module_conf_basename)
-            self._modules.start()
+            self.modules = lib.module.Modules(self, configfile=self._module_conf_basename)
+            self.modules.start()
         else:
             self._logger.info("Loadable Modules are disabled")
+
+        #############################################################
+        # Init Item-Wrapper
+        #############################################################
+        self.items = lib.item.Items(self)
 
         #############################################################
         # Init Plugins
         #############################################################
         self._logger.info("Init Plugins")
-        self._plugins = lib.plugin.Plugins(self, configfile=self._plugin_conf_basename)
+        self.plugins = lib.plugin.Plugins(self, configfile=self._plugin_conf_basename)
         self.plugin_load_complete = True
 
         #############################################################
-        # Init Items
+        # Init Items (load item definitions)
         #############################################################
         self._logger.info("Start initialization of items")
         item_conf = None
         item_conf = lib.config.parse_itemsdir(self._env_dir, item_conf)
         item_conf = lib.config.parse_itemsdir(self._items_dir, item_conf, addfilenames=True)
+        
         for attr, value in item_conf.items():
             if isinstance(value, dict):
                 child_path = attr
@@ -443,21 +465,26 @@ class SmartHome():
                     self._logger.error("Item {}: problem creating: ()".format(child_path, e))
                 else:
                     vars(self)[attr] = child
-                    self.add_item(child_path, child)
+#                    self.add_item(child_path, child)
+                    self.items.add_item(child_path, child)
                     self.__children.append(child)
-        del(item_conf)  # clean up
-        for item in self.return_items():
+#        for item in self.return_items():
+        for item in self.items.return_items():
             item._init_prerun()
-        for item in self.return_items():
+#        for item in self.return_items():
+        for item in self.items.return_items():
             item._init_run()
-        self.item_count = len(self.__items)
-        self._logger.info("Items initialization finished, {} items loaded".format(self.item_count))
+#        self.item_count = len(self.__items)
+        self.item_count = self.items.item_count()
+
+        self._logger.info("Items initialization finished, {} items loaded".format(self.items.item_count()))
         self.item_load_complete = True
+        del(item_conf)  # clean up
 
         #############################################################
         # Init Logics
         #############################################################
-        self._logics = lib.logic.Logics(self, self._logic_conf_basename, self._env_logic_conf_basename)
+        self.logics = lib.logic.Logics(self, self._logic_conf_basename, self._env_logic_conf_basename)
 
         #############################################################
         # Init Scenes
@@ -472,7 +499,7 @@ class SmartHome():
         #############################################################
         # Start Plugins
         #############################################################
-        self._plugins.start()
+        self.plugins.start()
         self.plugin_start_complete = True
 
         #############################################################
@@ -497,21 +524,23 @@ class SmartHome():
         self.alive = False
         self._logger.info("stop: Number of Threads: {}".format(threading.activeCount()))
 
-        for item in self.__items:
-            self.__item_dict[item]._fading = False
+#        for item in self.__items:
+#            self.__item_dict[item]._fading = False
+        self.items.stop()
+        
         try:
             self.scheduler.stop()
         except:
             pass
 
         try:
-            self._plugins.stop()
+            self.plugins.stop()
         except:
             pass
 
         if not(lib.utils.Utils.to_bool(self._use_modules) == False):
             try:
-                self._modules.stop()
+                self.modules.stop()
             except:
                 pass
 
@@ -569,200 +598,6 @@ class SmartHome():
     def __iter__(self):
         for child in self.__children:
             yield child
-
-
-    def add_item(self, path, item):
-        """
-        Function to to add an item to the dictionary of items.
-        If the path does not exist, it is created
-
-        :param path: Path of the item
-        :param item: The item itself
-        :type path: str
-        :type item: object
-        """
-
-        if path not in self.__items:
-            self.__items.append(path)
-        self.__item_dict[path] = item
-
-
-    def return_item(self, string):
-        """
-        Function to return the item for a given path
-
-        :param string: Path of the item to return
-        :type string: str
-
-        :return: Item
-        :rtype: object
-        """
-
-        if string in self.__items:
-            return self.__item_dict[string]
-
-
-    def return_items(self):
-        """"
-        Function to return a list with all items
-
-        :return: List of all items
-        :rtype: list
-        """
-
-        for item in self.__items:
-            yield self.__item_dict[item]
-
-
-    def match_items(self, regex):
-        """
-        Function to match items against a regular expresseion
-
-        :param regex: Regular expression to match items against
-        :type regex: str
-
-        :return: List of matching items
-        :rtype: list
-        """
-
-        regex, __, attr = regex.partition(':')
-        regex = regex.replace('.', '\.').replace('*', '.*') + '$'
-        regex = re.compile(regex)
-        attr, __, val = attr.partition('[')
-        val = val.rstrip(']')
-        if attr != '' and val != '':
-            return [self.__item_dict[item] for item in self.__items if regex.match(item) and attr in self.__item_dict[item].conf and ((type(self.__item_dict[item].conf[attr]) in [list,dict] and val in self.__item_dict[item].conf[attr]) or (val == self.__item_dict[item].conf[attr]))]
-        elif attr != '':
-            return [self.__item_dict[item] for item in self.__items if regex.match(item) and attr in self.__item_dict[item].conf]
-        else:
-            return [self.__item_dict[item] for item in self.__items if regex.match(item)]
-
-
-    def find_items(self, conf):
-        """"
-        Function to find items that match the specified configuration
-
-        :param conf: Configuration to look for
-        :type conf: str
-
-        :return: list of matching items
-        :rtype: list
-        """
-
-        for item in self.__items:
-            if conf in self.__item_dict[item].conf:
-                yield self.__item_dict[item]
-
-
-    def find_children(self, parent, conf):
-        """
-        Function to find children with the specified configuration
-
-        :param parent: parent item on which to start the search
-        :param conf: Configuration to look for
-        :type parent: str
-        :type conf: str
-
-        :return: list or matching child-items
-        :rtype: list
-        """
-
-        children = []
-        for item in parent:
-            if conf in item.conf:
-                children.append(item)
-            children += self.find_children(item, conf)
-        return children
-
-    #################################################################
-    # Module Methods
-    #################################################################
-    def return_modules(self):
-        """
-        Returns a list with the names of all loaded modules
-
-        :return: list of module names
-        :rtype: list
-        """
-
-#        for module_key in self._modules.key:
-#            yield module_key
-        l = []
-        for module_key in self._moduledict.keys():
-            l.append(module_key)
-        return l
-
-
-    def get_module(self, name):
-        """
-        Returns the module object for the module named by the parameter
-        or None, if the named module is not loaded
-
-        :param name: Name of the module to return
-        :type name: str
-
-        :return: list of module names
-        :rtype: object
-        """
-
-        return self._moduledict.get(name)
-
-    #################################################################
-    # Plugin Methods
-    #################################################################
-    def return_plugins(self):
-        """
-        Returns a list with the instances of all loaded plugins
-
-        :return: list of plugin names
-        :rtype: list
-        """
-
-        for plugin in self._plugins:
-            yield plugin
-
-    #################################################################
-    # Logic Methods
-    #################################################################
-    def reload_logics(self, signum=None, frame=None):
-        """
-        Function to reload all logics
-
-        DEPRECATED - Use Logics.reload_logics() instead
-        """
-        self._logger.warning("Using deprecated function 'smarthome.reload_logics()', called by {} in class {} - use 'Logics.reload_logics()' instead".format(sys._getframe(1).f_code.co_name, sys._getframe(1).f_locals['self'].__class__.__name__))
-        for logic in self._logics:
-            self._logics[logic]._generate_bytecode()
-
-
-    def return_logic(self, name):
-        """
-        Returns (the object of) one loaded logic with given name
-
-        DEPRECATED - Use Logics.return_logic() instead
-
-        :param name: name of the logic to get
-        :type name: str
-
-        :return: object of the logic
-        :rtype: object
-        """
-        self._logger.warning("Using deprecated function 'smarthome.return_logic()', called by {} in class {} - use 'Logics.return_logic()' instead".format(sys._getframe(1).f_code.co_name, sys._getframe(1).f_locals['self'].__class__.__name__))
-        return self._logics[name]
-
-
-    def return_logics(self):
-        """
-        Returns a list with the names of all loaded logics
-
-        DEPRECATED - Use Logics.return_loaded_logics() instead
-
-        :return: list of logic names
-        :rtype: list
-        """
-        self._logger.warning("Using deprecated function 'smarthome.return_logics()', called by {} in class {} - use 'Logics.return_loaded_logics()' instead".format(sys._getframe(1).f_code.co_name, sys._getframe(1).f_locals['self'].__class__.__name__))
-        for logic in self._logics:
-            yield logic
 
 
     #################################################################
@@ -830,68 +665,8 @@ class SmartHome():
             return self.__event_listeners[event]
         else:
             return []
-
-
-    #################################################################
-    # Time Methods
-    #################################################################
-    def now(self):
-        """
-        Returns the actual time in a timezone aware format
-        
-        :return: Actual time for the local timezone
-        :rtype: datetime
-        """
-
-        # tz aware 'localtime'
-        return datetime.datetime.now(self._tzinfo)
-
-
-    def tzinfo(self):
-        """
-        Returns the info about the actual local timezone
-
-        :return: Timezone info
-        :rtype: str
-        """
-
-        return self._tzinfo
-
-
-    def utcnow(self):
-        """
-        Returns the actual time in GMT
-
-        :return: Actual time in GMT
-        :rtype: datetime
-        """
-
-        # tz aware utc time
-        return datetime.datetime.now(self._utctz)
-
-
-    def utcinfo(self):
-        """
-        Returns the info about the GMT timezone
-
-        :return: Timezone info
-        :rtype: str
-        """
-
-        return self._utctz
-
-
-    def runtime(self):
-        """
-        Returns the uptime of SmartHomeNG
-
-        :return: Uptime in days, hours, minutes and seconds
-        :rtype: str
-        """
-
-        return datetime.datetime.now() - self._starttime
-
-
+    
+    
     #################################################################
     # Helper Methods
     #################################################################
@@ -955,11 +730,372 @@ class SmartHome():
         return objects
 
 
+    #####################################################################
+    # Diplay DEPRECATED warning
+    #####################################################################
+    def deprecated_warning(self, n_func=''):
+        """
+        Display function deprecated warning
+        """
+        if hasattr(self, '_deprecated_warnings'):
+            if lib.utils.Utils.to_bool(self._deprecated_warnings) == False:
+                return
+        else:
+            return # if parameter is not defined
+
+        d_func = 'sh.'+str(sys._getframe(1).f_code.co_name)+'()'
+        if n_func != '':
+            n_func = '- use the '+n_func+' instead'
+        try:
+            d_test = ' (' + str(sys._getframe(2).f_locals['self'].__module__) + ')'
+        except:
+            d_test = ''
+
+        called_by = str(sys._getframe(2).f_code.co_name)
+        in_class = ''
+        try:
+            in_class = 'class ' + str(sys._getframe(2).f_locals['self'].__class__.__name__) + d_test
+        except:
+            in_class = 'a logic?' + d_test
+        if called_by == '<module>':
+            called_by = str(sys._getframe(3).f_code.co_name)
+            level = 3
+            while True:
+                level += 1
+                try:
+                    c_b = str(sys._getframe(level).f_code.co_name)
+                except ValueError:
+                    c_b = ''
+                if c_b == '':
+                    break
+                called_by += ' -> ' + c_b
+                               
+#            called_by = str(sys._getframe(3).f_code.co_name)
+
+        if not hasattr(self, 'dep_id_list'):
+            self.dep_id_list = []
+        id_str = d_func + '|' + in_class + '|' + called_by
+        if not id_str in self.dep_id_list:
+            self._logger.warning("DEPRECATED: Used function '{}', called in '{}' by '{}' {}".format(d_func, in_class, called_by, n_func))
+            self.dep_id_list.append(id_str)
+        return    
+    
+    
+    #################################################################
+    # Item Methods
+    #################################################################
+    def add_item(self, path, item):
+        """
+        Function to to add an item to the dictionary of items.
+        If the path does not exist, it is created
+
+        DEPRECATED - Use the Items-API instead
+
+        :param path: Path of the item
+        :param item: The item itself
+        :type path: str
+        :type item: object
+        """
+        self.deprecated_warning('Items-API')
+        return self.items.add_item(path, item)
+#        if path not in self.__items:
+#            self.__items.append(path)
+#        self.__item_dict[path] = item
+
+
+    def return_item(self, string):
+        """
+        Function to return the item for a given path
+
+        DEPRECATED - Use the Items-API instead
+
+        :param string: Path of the item to return
+        :type string: str
+
+        :return: Item
+        :rtype: object
+        """
+        self.deprecated_warning('Items-API')
+        return self.items.return_item(string)
+#        if string in self.__items:
+#            return self.__item_dict[string]
+
+
+    def return_items(self):
+        """"
+        Function to return a list with all items
+
+        DEPRECATED - Use the Items-API instead
+
+        :return: List of all items
+        :rtype: list
+        """
+        self.deprecated_warning('Items-API')
+        return self.items.return_items()
+#        for item in self.__items:
+#            yield self.__item_dict[item]
+
+
+    def match_items(self, regex):
+        """
+        Function to match items against a regular expresseion
+
+        DEPRECATED - Use the Items-API instead
+
+        :param regex: Regular expression to match items against
+        :type regex: str
+
+        :return: List of matching items
+        :rtype: list
+        """
+        self.deprecated_warning('Items-API')
+        return self.items.match_items(regex)
+#        regex, __, attr = regex.partition(':')
+#        regex = regex.replace('.', '\.').replace('*', '.*') + '$'
+#        regex = re.compile(regex)
+#        attr, __, val = attr.partition('[')
+#        val = val.rstrip(']')
+#        if attr != '' and val != '':
+#            return [self.__item_dict[item] for item in self.__items if regex.match(item) and attr in self.__item_dict[item].conf and ((type(self.__item_dict[item].conf[attr]) in [list,dict] and val in self.__item_dict[item].conf[attr]) or (val == self.__item_dict[item].conf[attr]))]
+#        elif attr != '':
+#            return [self.__item_dict[item] for item in self.__items if regex.match(item) and attr in self.__item_dict[item].conf]
+#        else:
+#            return [self.__item_dict[item] for item in self.__items if regex.match(item)]
+
+
+    def find_items(self, conf):
+        """"
+        Function to find items that match the specified configuration
+
+        DEPRECATED - Use the Items-API instead
+
+        :param conf: Configuration to look for
+        :type conf: str
+
+        :return: list of matching items
+        :rtype: list
+        """
+        self.deprecated_warning('Items-API')
+        return self.items.find_items(conf)
+#        for item in self.__items:
+#            if conf in self.__item_dict[item].conf:
+#                yield self.__item_dict[item]
+
+
+    def find_children(self, parent, conf):
+        """
+        Function to find children with the specified configuration
+
+        DEPRECATED - Use the Items-API instead
+
+        :param parent: parent item on which to start the search
+        :param conf: Configuration to look for
+        :type parent: str
+        :type conf: str
+
+        :return: list or matching child-items
+        :rtype: list
+        """
+        self.deprecated_warning('Items-API')
+        return self.items.find_children(parent, conf)
+#        children = []
+#        for item in parent:
+#            if conf in item.conf:
+#                children.append(item)
+#            children += self.find_children(item, conf)
+#        return children
+
+
+    #################################################################
+    # Module Methods
+    #################################################################
+    def return_modules(self):
+        """
+        Returns a list with the names of all loaded modules
+
+        DEPRECATED - Use the Modules-API instead
+
+        :return: list of module names
+        :rtype: list
+        """
+        self.deprecated_warning('Modules-API')
+        return self.modules.return_modules()
+#        l = []
+#        for module_key in self._moduledict.keys():
+#            l.append(module_key)
+#        return l
+
+
+    def get_module(self, name):
+        """
+        Returns the module object for the module named by the parameter
+        or None, if the named module is not loaded
+
+        DEPRECATED - Use the Modules-API instead
+
+        :param name: Name of the module to return
+        :type name: str
+
+        :return: list of module names
+        :rtype: object
+        """
+        self.deprecated_warning('Modules-API')
+        return self.modules.get_module(name)
+#        return self._moduledict.get(name)
+
+
+    #################################################################
+    # Plugin Methods
+    #################################################################
+    def return_plugins(self):
+        """
+        Returns a list with the instances of all loaded plugins
+
+        DEPRECATED - Use the Plugins-API instead
+
+        :return: list of plugin names
+        :rtype: list
+        """
+
+        self.deprecated_warning('Plugins-API')
+        for plugin in self.plugins:
+            yield plugin
+
+
+    #################################################################
+    # Logic Methods
+    #################################################################
+    def reload_logics(self, signum=None, frame=None):
+        """
+        Function to reload all logics
+
+        DEPRECATED - Use the Logics-API instead
+        """
+        self.deprecated_warning('Logics-API')
+        self.logics.reload_logics()
+#        for logic in self._logics:
+#            self._logics[logic]._generate_bytecode()
+
+
+    def return_logic(self, name):
+        """
+        Returns (the object of) one loaded logic with given name
+
+        DEPRECATED - Use the Logics-API instead
+
+        :param name: name of the logic to get
+        :type name: str
+
+        :return: object of the logic
+        :rtype: object
+        """
+        self.deprecated_warning('Logics-API')
+        self.logics.return_logic()
+#        return self._logics[name]
+
+
+    def return_logics(self):
+        """
+        Returns a list with the names of all loaded logics
+
+        DEPRECATED - Use the Logics-API instead
+
+        :return: list of logic names
+        :rtype: list
+        """
+        self.deprecated_warning('Logics-API')
+        self.logics.return_logics()
+#        for logic in self._logics:
+#            yield logic
+
+
+    #################################################################
+    # Time Methods
+    #################################################################
+    def now(self):
+        """
+        Returns the actual time in a timezone aware format
+        
+        DEPRECATED - Use the Shtime-API instead
+
+        :return: Actual time for the local timezone
+        :rtype: datetime
+        """
+
+        self.deprecated_warning('Shtime-API')
+#        return datetime.datetime.now(self._tzinfo)
+        return sh.shtime.now()
+
+    def tzinfo(self):
+        """
+        Returns the info about the actual local timezone
+
+        DEPRECATED - Use the Shtime-API instead
+
+        :return: Timezone info
+        :rtype: str
+        """
+
+        self.deprecated_warning('Shtime-API')
+#        return self._tzinfo
+        return self.shtime.tzinfo()
+        
+
+    def utcnow(self):
+        """
+        Returns the actual time in GMT
+
+        DEPRECATED - Use the Shtime-API instead
+
+        :return: Actual time in GMT
+        :rtype: datetime
+        """
+
+        self.deprecated_warning('Shtime-API')
+#        return datetime.datetime.now(self._utctz)
+        return sh.shtime.utcnow()
+
+
+    def utcinfo(self):
+        """
+        Returns the info about the GMT timezone
+
+        DEPRECATED - Use the Shtime-API instead
+
+        :return: Timezone info
+        :rtype: str
+        """
+
+        self.deprecated_warning('Shtime-API')
+        return sh.shtime.utcinfo()
+#        return self._utctz
+
+
+    def runtime(self):
+        """
+        Returns the uptime of SmartHomeNG
+
+        DEPRECATED - Use the Shtime-API instead
+
+        :return: Uptime in days, hours, minutes and seconds
+        :rtype: str
+        """
+
+        self.deprecated_warning('Shtime-API')
+        return self.shtime.runtime()
+#        return datetime.datetime.now() - self._starttime
+
+
+
+
 #####################################################################
 # Private Methods
 #####################################################################
 
 def _reload_logics():
+    """
+    Reload logics through the commandline with option -l
+    """
     pid = lib.daemon.read_pidfile(PIDFILE)
     if pid:
         os.kill(pid, signal.SIGHUP)

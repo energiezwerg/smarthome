@@ -76,6 +76,7 @@ class TestItem(unittest.TestCase):
             logger.warning('')
             logger.warning('test_item_relative_references: {}'.format(str(item_conf)))
             logger.warning('test_item_relative_references: {}'.format(str(item_conf.items())))
+        self.items = lib.item.Items(self)
         for attr, value in item_conf.items():
             if isinstance(value, dict):
                 child_path = attr
@@ -85,7 +86,8 @@ class TestItem(unittest.TestCase):
                     logger.error("Item {}: problem creating: {}".format(child_path, e))
                 else:
                     #vars(sh)[attr] = child
-                    self.sh.add_item(child_path, child)
+#                    self.sh.add_item(child_path, child)
+                    self.items.add_item(child_path, child)
                     self.sh.children.append(child)
 
 
@@ -106,13 +108,13 @@ class TestItem(unittest.TestCase):
 #            logger.warning('')
 
         self.load_items('item_items')
-        it = self.sh.return_item("item_tree")
+        it = self.sh.items.return_item("item_tree")
         self.assertIsNotNone(it)
 
-        it = self.sh.return_item("item_tree.grandparent.parent.my_item")
+        it = self.sh.items.return_item("item_tree.grandparent.parent.my_item")
         self.assertIsNotNone(it)
         self.assertEqual(it._type, 'bool')
-        it = self.sh.return_item("item_tree.grandparent.parent.my_item.child")
+        it = self.sh.items.return_item("item_tree.grandparent.parent.my_item.child")
         self.assertIsNotNone(it)
         self.assertEqual(it._type, 'foo')
 
@@ -120,7 +122,7 @@ class TestItem(unittest.TestCase):
             logger.warning('')
             logger.warning('=== eval_trigger Tests:')
         # Attribute with relative references
-        it = self.sh.return_item("item_tree.grandparent.parent.my_item")
+        it = self.sh.items.return_item("item_tree.grandparent.parent.my_item")
         self.assertEqual(it.get_absolutepath('.', 'eval_trigger'), 'item_tree.grandparent.parent.my_item')
         self.assertEqual(it.get_absolutepath('.self', 'eval_trigger'), 'item_tree.grandparent.parent.my_item')
         self.assertEqual(it.get_absolutepath('.child', 'eval_trigger'), 'item_tree.grandparent.parent.my_item.child')
@@ -140,7 +142,7 @@ class TestItem(unittest.TestCase):
         if verbose == True:
             logger.warning('')
             logger.warning('=== eval Tests:')
-        it = self.sh.return_item("item_tree.grandparent.parent.my_item")
+        it = self.sh.items.return_item("item_tree.grandparent.parent.my_item")
 
         self.assertEqual(it.get_stringwithabsolutepathes('sh..child()', 'sh.', '(', 'eval'), 'sh.item_tree.grandparent.parent.my_item.child()')
         self.assertEqual(it.get_stringwithabsolutepathes('5*sh..child()', 'sh.', '(', 'eval'), '5*sh.item_tree.grandparent.parent.my_item.child()')
@@ -160,12 +162,12 @@ class TestItem(unittest.TestCase):
             logger.warning('')
             logger.warning('=== plugin-attribute Tests:')
         # Attribute with relative references
-        it = self.sh.return_item("item_tree.grandparent.parent.my_item")
+        it = self.sh.items.return_item("item_tree.grandparent.parent.my_item")
         it.expand_relativepathes('sv_widget', "'", "'")
         self.assertEqual(it.conf['sv_widget'], "{{ basic.switch('id_schreibtischleuchte', 'item_tree.grandparent.parent.my_item.onoff') }}")
 
         # Attribute with relative references (sv_widget contains a list)
-        it = self.sh.return_item("item_tree.svwidget_list")
+        it = self.sh.items.return_item("item_tree.svwidget_list")
         it.expand_relativepathes('sv_widget', "'", "'")
         # result should be a list
         self.assertEqual(isinstance(it.conf['sv_widget'],list), True)
@@ -176,14 +178,14 @@ class TestItem(unittest.TestCase):
         self.assertEqual(it.conf['sv_widget'][1], "{{ basic.switch('id_schreibtischleuchte2', 'item_tree.grandparent.parent.my_item.child.onoff') }}")
         
         # Attribute w/o relative references
-        it = self.sh.return_item("item_tree.grandparent.parent.my_item.child")
+        it = self.sh.items.return_item("item_tree.grandparent.parent.my_item.child")
         orig = it.conf['sv_widget']
         it.expand_relativepathes('sv_widget', "'", "'")
         self.assertEqual(it.conf['sv_widget'], orig)
         self.assertEqual(it.conf['sv_widget'], "{{ basic.switch('id_schreibtischleuchte', 'item_tree.grandparent.parent.my_item.child.onoff') }}")
 
         # Tests for accessing internal attributes of items using relative adressing
-        it = self.sh.return_item("item_tree.grandparent.parent.my_item")
+        it = self.sh.items.return_item("item_tree.grandparent.parent.my_item")
         self.assertEqual(it.get_absolutepath('.child', 'eval_trigger'), 'item_tree.grandparent.parent.my_item.child')
 
 
@@ -206,87 +208,87 @@ class TestItem(unittest.TestCase):
         # -----------------------------------------------------------------
         
         # Compatibility mode: No value casting for SmartHome v1.2 and older
-        it = self.sh.return_item("item_tree.timertests.test_item01")		# autotimer = 5m = 42 = compat_1.2
+        it = self.sh.items.return_item("item_tree.timertests.test_item01")		# autotimer = 5m = 42 = compat_1.2
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (300, '42'))
         
-        it = self.sh.return_item("item_tree.timertests.test_item02")		# autotimer = 5s = = compat_1.2
+        it = self.sh.items.return_item("item_tree.timertests.test_item02")		# autotimer = 5s = = compat_1.2
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, ''))
         
-        it = self.sh.return_item("item_tree.timertests.test_item03")		# autotimer = 5s = None = compat_1.2
+        it = self.sh.items.return_item("item_tree.timertests.test_item03")		# autotimer = 5s = None = compat_1.2
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, 'None'))
 
 
         # Compatibility mode: No value casting for SmartHome v1.2 and older -> item-type ist str
-        it = self.sh.return_item("item_tree.timertests.test_item11")		# autotimer = 5m = 42 = latest
+        it = self.sh.items.return_item("item_tree.timertests.test_item11")		# autotimer = 5m = 42 = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (300, '42'))
         self.assertEqual(it._castvalue_to_itemtype(it._autotimer[0][1], it._autotimer[1]), '42')
 
-        it = self.sh.return_item("item_tree.timertests.test_item12")		# autotimer = 5s = = latest
+        it = self.sh.items.return_item("item_tree.timertests.test_item12")		# autotimer = 5s = = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, ''))
 
-        it = self.sh.return_item("item_tree.timertests.test_item13")		# autotimer = 5s = None = latest
+        it = self.sh.items.return_item("item_tree.timertests.test_item13")		# autotimer = 5s = None = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, 'None'))
 
 
         # Compatibility mode: No value casting for SmartHome v1.2 and older -> item-type ist num
-        it = self.sh.return_item("item_tree.timertests.test_item21")		# autotimer = 5m = 42 = latest
+        it = self.sh.items.return_item("item_tree.timertests.test_item21")		# autotimer = 5m = 42 = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (300, 42))
 
-        it = self.sh.return_item("item_tree.timertests.test_item22")		# autotimer = 5s = = latest
+        it = self.sh.items.return_item("item_tree.timertests.test_item22")		# autotimer = 5s = = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, 0))
 
-        it = self.sh.return_item("item_tree.timertests.test_item23")		# autotimer = 5s = None = latest
+        it = self.sh.items.return_item("item_tree.timertests.test_item23")		# autotimer = 5s = None = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, 0))
 
 
         # Compatibility mode: No value casting for SmartHome v1.2 and older -> item-type ist bool
-        it = self.sh.return_item("item_tree.timertests.test_item31")		# autotimer = 5m = 42 = latest
+        it = self.sh.items.return_item("item_tree.timertests.test_item31")		# autotimer = 5m = 42 = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (300, False))
 
-        it = self.sh.return_item("item_tree.timertests.test_item32")		# autotimer = 5s = = latest
+        it = self.sh.items.return_item("item_tree.timertests.test_item32")		# autotimer = 5s = = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, False))
 
-        it = self.sh.return_item("item_tree.timertests.test_item33")		# autotimer = 5s = None = latest
+        it = self.sh.items.return_item("item_tree.timertests.test_item33")		# autotimer = 5s = None = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, False))
 
-        it = self.sh.return_item("item_tree.timertests.test_item33")		# autotimer = 5s = 1 = latest
+        it = self.sh.items.return_item("item_tree.timertests.test_item33")		# autotimer = 5s = 1 = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, False))
 
-        it = self.sh.return_item("item_tree.timertests.test_item34")		# autotimer = 5s = True = latest
+        it = self.sh.items.return_item("item_tree.timertests.test_item34")		# autotimer = 5s = True = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, True))
 
-        it = self.sh.return_item("item_tree.timertests.test_item35")		# autotimer = 5s = true = latest
+        it = self.sh.items.return_item("item_tree.timertests.test_item35")		# autotimer = 5s = true = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[0], (5, True))
 
         # test use of items in attributes
-        it = self.sh.return_item("item_tree.timertests.test_item41")		# sh.item_tree.timertests.test_item41.dauer() = 42 = latest
+        it = self.sh.items.return_item("item_tree.timertests.test_item41")		# sh.item_tree.timertests.test_item41.dauer() = 42 = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[2], 'item_tree.timertests.test_item41.dauer')
 
-        it = self.sh.return_item("item_tree.timertests.test_item42")		# 5m = sh.item_tree.timertests.test_item42.wert() = latest
+        it = self.sh.items.return_item("item_tree.timertests.test_item42")		# 5m = sh.item_tree.timertests.test_item42.wert() = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[3], 'item_tree.timertests.test_item42.wert')
 
-        it = self.sh.return_item("item_tree.timertests.test_item51")		# sh..dauer() = 42 = latest
+        it = self.sh.items.return_item("item_tree.timertests.test_item51")		# sh..dauer() = 42 = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[2], 'item_tree.timertests.test_item51.dauer')
         
-        it = self.sh.return_item("item_tree.timertests.test_item52")		# 5m = sh..wert() = latest
+        it = self.sh.items.return_item("item_tree.timertests.test_item52")		# 5m = sh..wert() = latest
         self.assertIsNotNone(it)
         self.assertEqual(it._autotimer[3], 'item_tree.timertests.test_item52.wert')
 
@@ -591,8 +593,8 @@ class TestItem(unittest.TestCase):
         #logger.warning(self.sh.return_item("item3.item3b.item3b1").to_json())
         #logger.warning(self.sh.return_item("item3").to_json())
         import json
-        self.assertEqual(json.loads(self.sh.return_item("item3").to_json())['name'], self.sh.return_item("item3")._name)
-        self.assertEqual(json.loads(self.sh.return_item("item3").to_json())['id'], self.sh.return_item("item3")._path)
+        self.assertEqual(json.loads(self.sh.items.return_item("item3").to_json())['name'], self.sh.items.return_item("item3")._name)
+        self.assertEqual(json.loads(self.sh.items.return_item("item3").to_json())['id'], self.sh.items.return_item("item3")._path)
 
 
 if __name__ == '__main__':

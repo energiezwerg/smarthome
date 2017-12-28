@@ -26,10 +26,15 @@ import datetime
 import dateutil.parser
 import logging
 import os
+import re
 import pickle
 import threading
 import math
 import json
+
+from lib.plugin import Plugins
+from lib.shtime import Shtime
+
 import lib.utils
 from lib.constants import (ITEM_DEFAULTS, FOO, KEY_ENFORCE_UPDATES, KEY_CACHE, KEY_CYCLE, KEY_CRONTAB, KEY_EVAL,
                            KEY_EVAL_TRIGGER, KEY_NAME,KEY_TYPE, KEY_VALUE, KEY_INITVALUE, PLUGIN_PARSE_ITEM,
@@ -44,226 +49,192 @@ ATTRIB_COMPAT_DEFAULT = ''
 logger = logging.getLogger(__name__)
 
 
-
-#####################################################################
-# Cast Methods
-#####################################################################
-
-def _cast_str(value):
-    if isinstance(value, str):
-        return value
-    else:
-        raise ValueError
+_items_instance = None    # Pointer to the initialized instance of the Items class (for use by static methods)
 
 
-def _cast_list(value):
-    if isinstance(value, str):
-        try:
-            value = json.loads(value)
-        except Exception as e:
-            value = value.replace("'",'"')
-            value = json.loads(value)
-    if isinstance(value, list):
-        return value
-    else:
-        raise ValueError
+
+class Items():
+    """
+    Items loader class. Item-methods from bin/smarthome.py are moved here.
+    
+    :param smarthome: Instance of the smarthome master-object
+    :param configxxx: Basename of the xxx configuration file
+    :type samrthome: object
+    :type configxxx: str
+    """
+
+    __items = []
+    __item_dict = {}
 
 
-def _cast_dict(value):
-    if isinstance(value, str):
-        try:
-            value = json.loads(value)
-        except Exception as e:
-            value = value.replace("'",'"')
-            value = json.loads(value)
-    if isinstance(value, dict):
-        return value
-    else:
-        raise ValueError
+    def __init__(self, smarthome):
+        self._sh = smarthome
+#        self._sh._moduledict = {}
+        global _items_instance
+        _items_instance = self
 
 
-def _cast_foo(value):
-    return value
+    # aus bin/smarthome.py
+#    def __iter__(self):
+#        for child in self.__children:
+#            yield child
+
+    # aus lib.logic.py
+#    def __iter__(self):
+#        for logic in self._logics:
+#            yield logic
 
 
-# TODO: Candidate for Utils.to_bool()
-# write testcase and replace
-# -> should castng be restricted like this or handled exactly like Utils.to_bool()?
-#    Example: _cast_bool(2) is False, Utils.to_bool(2) is True
+    # ------------------------------------------------------------------------------------
+    #   Following (static) methods of the class Items implement the API for Items in shNG
+    # ------------------------------------------------------------------------------------
 
-def _cast_bool(value):
-    if type(value) in [bool, int, float]:
-        if value in [False, 0]:
-            return False
-        elif value in [True, 1]:
-            return True
+    @staticmethod
+    def get_instance():
+        """
+        Returns the instance of the Items class, to be used to access the items-api
+        
+        Use it the following way to access the api:
+        
+        .. code-block:: python
+
+            from lib.item import Items
+            items = Items.get_instance()
+            
+            # to access a method (eg. return_items()):
+            items.return_items()
+
+        
+        :return: items instance
+        :rtype: object of None
+        """
+        return _items_instance
+
+
+
+
+    def add_item(self, path, item):
+        """
+        Function to to add an item to the dictionary of items.
+        If the path does not exist, it is created
+
+        :param path: Path of the item
+        :param item: The item itself
+        :type path: str
+        :type item: object
+        """
+
+#        if path not in self._sh._SmartHome__items:
+        if path not in self.__items:
+            self.__items.append(path)
+#        self._sh._SmartHome__item_dict[path] = item
+        self.__item_dict[path] = item
+
+
+    def return_item(self, string):
+        """
+        Function to return the item for a given path
+
+        :param string: Path of the item to return
+        :type string: str
+
+        :return: Item
+        :rtype: object
+        """
+
+        if string in self.__items:
+            return self.__item_dict[string]
+
+
+    def return_items(self):
+        """"
+        Function to return a list with all items
+
+        :return: List of all items
+        :rtype: list
+        """
+
+        for item in self.__items:
+            yield self.__item_dict[item]
+
+
+    def match_items(self, regex):
+        """
+        Function to match items against a regular expresseion
+
+        :param regex: Regular expression to match items against
+        :type regex: str
+
+        :return: List of matching items
+        :rtype: list
+        """
+
+        regex, __, attr = regex.partition(':')
+        regex = regex.replace('.', '\.').replace('*', '.*') + '$'
+        regex = re.compile(regex)
+        attr, __, val = attr.partition('[')
+        val = val.rstrip(']')
+        if attr != '' and val != '':
+            return [self.__item_dict[item] for item in self.__items if regex.match(item) and attr in self.__item_dict[item].conf and ((type(self.__item_dict[item].conf[attr]) in [list,dict] and val in self.__item_dict[item].conf[attr]) or (val == self.__item_dict[item].conf[attr]))]
+        elif attr != '':
+            return [self.__item_dict[item] for item in self.__items if regex.match(item) and attr in self.__item_dict[item].conf]
         else:
-            raise ValueError
-    elif type(value) in [str, str]:
-        if value.lower() in ['0', 'false', 'no', 'off', '']:
-            return False
-        elif value.lower() in ['1', 'true', 'yes', 'on']:
-            return True
-        else:
-            raise ValueError
-    else:
-        raise TypeError
+            return [self.__item_dict[item] for item in self.__items if regex.match(item)]
 
 
-def _cast_scene(value):
-    return int(value)
+    def find_items(self, conf):
+        """"
+        Function to find items that match the specified configuration
+
+        :param conf: Configuration to look for
+        :type conf: str
+
+        :return: list of matching items
+        :rtype: list
+        """
+
+        for item in self.__items:
+            if conf in self.__item_dict[item].conf:
+                yield self.__item_dict[item]
 
 
-def _cast_num(value):
-    """
-    cast a passed value to int or float
+    def find_children(self, parent, conf):
+        """
+        Function to find children with the specified configuration
 
-    :param value: numeric value to be casted, passed as str, float or int
-    :return: numeric value, passed as int or float
-    """
-    if isinstance(value, str):
-        value = value.strip()
-    if value == '':
-        return 0
-    if isinstance(value, float):
-        return value
-    try:
-        return int(value)
-    except:
-        pass
-    try:
-        return float(value)
-    except:
-        pass
-    raise ValueError
+        :param parent: parent item on which to start the search
+        :param conf: Configuration to look for
+        :type parent: str
+        :type conf: str
+
+        :return: list or matching child-items
+        :rtype: list
+        """
+
+        children = []
+        for item in parent:
+            if conf in item.conf:
+                children.append(item)
+            children += self.find_children(item, conf)
+        return children
 
 
-#####################################################################
-# Methods for handling of duration_value strings
-#####################################################################
-
-def _split_duration_value_string(value): 
-    """
-    splits a duration value string into its thre components
-    
-    components are:
-    - time
-    - value
-    - compat
-
-    :param value: raw attribute string containing duration, value (and compatibility)
-    :return: three strings, representing time, value and compatibility attribute
-    """
-    time, __, value = value.partition('=')
-    value, __, compat = value.partition('=')
-    time = time.strip()
-    value = value.strip()
-    # remove quotes, if present
-    if value != '' and ((value[0] == "'" and value[-1] == "'") or (value[0] == '"' and value[-1] == '"')):
-        value = value[1:-1]
-    compat = compat.strip().lower()
-    if compat == '':
-        compat = ATTRIB_COMPAT_DEFAULT
-    return (time, value, compat)
+    def item_count(self):
+        """
+        Return the number of items
+        """
+        return len(self.__items)
 
 
-def _join_duration_value_string(time, value, compat=''): 
-    """
-    joins a duration value string from its thre components
-    
-    components are:
-    - time
-    - value
-    - compat
-
-    :param time: time (duration) parrt for the duration_value_string
-    :param value: value (duration) parrt for the duration_value_string
-    """
-    result = str(time)
-    if value != '' or compat != '':
-        result = result + ' ='
-        if value != '':
-            result = result + ' ' + value
-        if compat != '':
-           result = result + ' = ' + compat
-    return result
-    
-    
-#####################################################################
-# Cache Methods
-#####################################################################
-
-def json_serialize(obj):
-    """helper method to convert values to json serializable formats"""
-    import datetime
-    if isinstance(obj, datetime.datetime):
-        return obj.isoformat()
-    if isinstance(obj, datetime.date):
-        return obj.isoformat()
-    raise TypeError("Type not serializable")
-
-def json_obj_hook(json_dict):
-    """helper method for json deserialization"""
-    import dateutil
-    for (key, value) in json_dict.items():
-        try:
-            json_dict[key] = dateutil.parser.parse(value)
-        except Exception as e :
-            pass
-    return json_dict
+    def stop(self, signum=None, frame=None):
+        """
+        Stop fading of all items
+        """
+        for item in self.__items:
+            self.__item_dict[item]._fading = False
 
 
-def _cache_read(filename, tz, cformat=CACHE_FORMAT):
-    ts = os.path.getmtime(filename)
-    dt = datetime.datetime.fromtimestamp(ts, tz)
-    value = None
 
-    if cformat == CACHE_PICKLE:
-        with open(filename, 'rb') as f:
-            value = pickle.load(f)
-
-    elif cformat == CACHE_JSON:
-        with open(filename, 'r') as f:
-            value = json.load(f, object_hook=json_obj_hook)
-
-    return (dt, value)
-
-def _cache_write(filename, value, cformat=CACHE_FORMAT):
-    try:
-        if cformat == CACHE_PICKLE:
-            with open(filename, 'wb') as f:
-                pickle.dump(value,f)
-
-        elif cformat == CACHE_JSON:
-            with open(filename, 'w') as f:
-                json.dump(value,f, default=json_serialize)
-    except IOError:
-        logger.warning("Could not write to {}".format(filename))
-
-
-#####################################################################
-# Fade Method
-#####################################################################
-def _fadejob(item, dest, step, delta):
-    if item._fading:
-        return
-    else:
-        item._fading = True
-    if item._value < dest:
-        while (item._value + step) < dest and item._fading:
-            item(item._value + step, 'fader')
-            item._lock.acquire()
-            item._lock.wait(delta)
-            item._lock.release()
-    else:
-        while (item._value - step) > dest and item._fading:
-            item(item._value - step, 'fader')
-            item._lock.acquire()
-            item._lock.wait(delta)
-            item._lock.release()
-    if item._fading:
-        item._fading = False
-        item(dest, 'Fader')
 
 
 #####################################################################
@@ -276,6 +247,9 @@ class Item():
     _itemname_prefix = 'items.'     # prefix for scheduler names
 
     def __init__(self, smarthome, parent, path, config):
+        self.plugins = Plugins.get_instance()
+        self.shtime = Shtime.get_instance()
+
         self._filename = None
         self._autotimer = False
         self._cache = False
@@ -295,13 +269,13 @@ class Item():
         self._on_change_dest_var = None		# -> KEY_ON_CHANGE destination var
         self._fading = False
         self._items_to_trigger = []
-        self.__last_change = smarthome.now()
-        self.__last_update = smarthome.now()
+        self.__last_change = self.shtime.now()
+        self.__last_update = self.shtime.now()
         self._lock = threading.Condition()
         self.__logics_to_trigger = []
         self._name = path
-        self.__prev_change = smarthome.now()
-        self.__prev_update = smarthome.now()
+        self.__prev_change = self.shtime.now()
+        self.__prev_update = self.shtime.now()
         self.__methods_to_trigger = []
         self.__parent = parent
         self._path = path
@@ -422,7 +396,8 @@ class Item():
                     logger.exception("Item {}: problem creating: {}".format(child_path, e))
                 else:
                     vars(self)[attr] = child
-                    smarthome.add_item(child_path, child)
+#                    smarthome.add_item(child_path, child)
+                    _items_instance.add_item(child_path, child)
                     self.__children.append(child)
         #############################################################
         # Cache
@@ -430,7 +405,8 @@ class Item():
         if self._cache:
             self._cache = self._sh._cache_dir + self._path
             try:
-                self.__last_change, self._value = _cache_read(self._cache, self._sh._tzinfo)
+#                self.__last_change, self._value = _cache_read(self._cache, _items_instance._tzinfo)
+                self.__last_change, self._value = _cache_read(self._cache, self.shtime.tzinfo())
                 self.__last_update = self.__last_change
                 self.__prev_change = self.__last_change
                 self.__prev_update = self.__last_change
@@ -479,7 +455,8 @@ class Item():
         #############################################################
         # Plugins
         #############################################################
-        for plugin in self._sh.return_plugins():
+#        for plugin in self._sh.return_plugins():
+        for plugin in self.plugins.return_plugins():
             if hasattr(plugin, PLUGIN_PARSE_ITEM):
                 update = plugin.parse_item(self)
                 if update:
@@ -734,7 +711,8 @@ class Item():
         if self._eval_trigger:
             _items = []
             for trigger in self._eval_trigger:
-                _items.extend(self._sh.match_items(trigger))
+#                _items.extend(self._sh.match_items(trigger))
+                _items.extend(_items_instance.match_items(trigger))
             for item in _items:
                 if item != self:  # prevent loop
                         item._items_to_trigger.append(self)
@@ -764,6 +742,7 @@ class Item():
         """
         if self._eval:
             sh = self._sh  # noqa
+            shtime = self.shtime
             try:
                 value = eval(self._eval)
             except Exception as e:
@@ -790,7 +769,8 @@ class Item():
             if dest_value is not None:
                 # expression computes and does not result in None
                 if on_dest != '':
-                    dest_item = self._sh.return_item(on_dest)
+#                    dest_item = self._sh.return_item(on_dest)
+                    dest_item = _items_instance.return_item(on_dest)
                     if dest_item is not None:
                         dest_item.__update(dest_value, caller=attr, source=self._path)
                         logger.debug(" - : '{}' finally evaluating {} = {}, result={}".format(attr, on_dest, on_eval, dest_value))
@@ -847,7 +827,7 @@ class Item():
             self.__prev_value = self._value
             self._value = value
             self.__prev_change = self.__last_change
-            self.__last_change = self._sh.now()
+            self.__last_change = self.shtime.now()
             self.__changed_by = "{0}:{1}".format(caller, source)
             if caller != "fader":
                 self._fading = False
@@ -858,7 +838,7 @@ class Item():
         self.__run_on_update(value)
         if _changed or self._enforce_updates or self._type == 'scene':
             self.__prev_update = self.__last_update
-            self.__last_update = self._sh.now()
+            self.__last_update = self.shtime.now()
             # ms: call run_on_change() from here
             self.__run_on_change(value)
             for method in self.__methods_to_trigger:
@@ -899,7 +879,7 @@ class Item():
                     logger.warning("Item '{}': Attribute 'autotimer': Item '{}' does not exist".format(self._path, self._autotimer[3]))
             self._autotimer[0] = (_time, _value)     # for display of active/last timer configuration in backend
 
-            next = self._sh.now() + datetime.timedelta(seconds=_time)
+            next = self.shtime.now() + datetime.timedelta(seconds=_time)
             self._sh.scheduler.add(self._itemname_prefix+self.id() + '-Timer', self.__call__, value={'value': _value, 'caller': 'Autotimer'}, next=next)
 
 
@@ -922,11 +902,11 @@ class Item():
         return self.__methods_to_trigger
 
     def age(self):
-        delta = self._sh.now() - self.__last_change
+        delta = self.shtime.now() - self.__last_change
         return delta.total_seconds()
 
     def update_age(self):
-        delta = self._sh.now() - self.__last_update
+        delta = self.shtime.now() - self.__last_update
         return delta.total_seconds()
 
     def autotimer(self, time=None, value=None, compat=ATTRIB_COMPAT_V12):
@@ -997,7 +977,7 @@ class Item():
         else:
             self.__prev_change = prev_change
         if last_change is None:
-            self.__last_change = self._sh.now()
+            self.__last_change = self.shtime.now()
         else:
             self.__last_change = last_change
         self.__changed_by = "{0}:{1}".format(caller, None)
@@ -1013,7 +993,7 @@ class Item():
             self._autotimer = [(time, value), compat, None, None]
         else:
             caller = 'Timer'
-        next = self._sh.now() + datetime.timedelta(seconds=time)
+        next = self.shtime.now() + datetime.timedelta(seconds=time)
         self._sh.scheduler.add(self._itemname_prefix+self.id() + '-Timer', self.__call__, value={'value': value, 'caller': caller}, next=next)
 
     def type(self):
@@ -1045,3 +1025,227 @@ class Item():
 
     def to_json(self):
        return json.dumps(self.jsonvars(), sort_keys=True, indent=2)
+
+
+
+#####################################################################
+# Cast Methods
+#####################################################################
+
+def _cast_str(value):
+    if isinstance(value, str):
+        return value
+    else:
+        raise ValueError
+
+
+def _cast_list(value):
+    if isinstance(value, str):
+        try:
+            value = json.loads(value)
+        except Exception as e:
+            value = value.replace("'",'"')
+            value = json.loads(value)
+    if isinstance(value, list):
+        return value
+    else:
+        raise ValueError
+
+
+def _cast_dict(value):
+    if isinstance(value, str):
+        try:
+            value = json.loads(value)
+        except Exception as e:
+            value = value.replace("'",'"')
+            value = json.loads(value)
+    if isinstance(value, dict):
+        return value
+    else:
+        raise ValueError
+
+
+def _cast_foo(value):
+    return value
+
+
+# TODO: Candidate for Utils.to_bool()
+# write testcase and replace
+# -> should castng be restricted like this or handled exactly like Utils.to_bool()?
+#    Example: _cast_bool(2) is False, Utils.to_bool(2) is True
+
+def _cast_bool(value):
+    if type(value) in [bool, int, float]:
+        if value in [False, 0]:
+            return False
+        elif value in [True, 1]:
+            return True
+        else:
+            raise ValueError
+    elif type(value) in [str, str]:
+        if value.lower() in ['0', 'false', 'no', 'off', '']:
+            return False
+        elif value.lower() in ['1', 'true', 'yes', 'on']:
+            return True
+        else:
+            raise ValueError
+    else:
+        raise TypeError
+
+
+def _cast_scene(value):
+    return int(value)
+
+
+def _cast_num(value):
+    """
+    cast a passed value to int or float
+
+    :param value: numeric value to be casted, passed as str, float or int
+    :return: numeric value, passed as int or float
+    """
+    if isinstance(value, str):
+        value = value.strip()
+    if value == '':
+        return 0
+    if isinstance(value, float):
+        return value
+    try:
+        return int(value)
+    except:
+        pass
+    try:
+        return float(value)
+    except:
+        pass
+    raise ValueError
+
+
+#####################################################################
+# Methods for handling of duration_value strings
+#####################################################################
+
+def _split_duration_value_string(value): 
+    """
+    splits a duration value string into its thre components
+    
+    components are:
+    - time
+    - value
+    - compat
+
+    :param value: raw attribute string containing duration, value (and compatibility)
+    :return: three strings, representing time, value and compatibility attribute
+    """
+    time, __, value = value.partition('=')
+    value, __, compat = value.partition('=')
+    time = time.strip()
+    value = value.strip()
+    # remove quotes, if present
+    if value != '' and ((value[0] == "'" and value[-1] == "'") or (value[0] == '"' and value[-1] == '"')):
+        value = value[1:-1]
+    compat = compat.strip().lower()
+    if compat == '':
+        compat = ATTRIB_COMPAT_DEFAULT
+    return (time, value, compat)
+
+
+def _join_duration_value_string(time, value, compat=''): 
+    """
+    joins a duration value string from its thre components
+    
+    components are:
+    - time
+    - value
+    - compat
+
+    :param time: time (duration) parrt for the duration_value_string
+    :param value: value (duration) parrt for the duration_value_string
+    """
+    result = str(time)
+    if value != '' or compat != '':
+        result = result + ' ='
+        if value != '':
+            result = result + ' ' + value
+        if compat != '':
+           result = result + ' = ' + compat
+    return result
+    
+    
+#####################################################################
+# Cache Methods
+#####################################################################
+
+def json_serialize(obj):
+    """helper method to convert values to json serializable formats"""
+    import datetime
+    if isinstance(obj, datetime.datetime):
+        return obj.isoformat()
+    if isinstance(obj, datetime.date):
+        return obj.isoformat()
+    raise TypeError("Type not serializable")
+
+def json_obj_hook(json_dict):
+    """helper method for json deserialization"""
+    import dateutil
+    for (key, value) in json_dict.items():
+        try:
+            json_dict[key] = dateutil.parser.parse(value)
+        except Exception as e :
+            pass
+    return json_dict
+
+
+def _cache_read(filename, tz, cformat=CACHE_FORMAT):
+    ts = os.path.getmtime(filename)
+    dt = datetime.datetime.fromtimestamp(ts, tz)
+    value = None
+
+    if cformat == CACHE_PICKLE:
+        with open(filename, 'rb') as f:
+            value = pickle.load(f)
+
+    elif cformat == CACHE_JSON:
+        with open(filename, 'r') as f:
+            value = json.load(f, object_hook=json_obj_hook)
+
+    return (dt, value)
+
+def _cache_write(filename, value, cformat=CACHE_FORMAT):
+    try:
+        if cformat == CACHE_PICKLE:
+            with open(filename, 'wb') as f:
+                pickle.dump(value,f)
+
+        elif cformat == CACHE_JSON:
+            with open(filename, 'w') as f:
+                json.dump(value,f, default=json_serialize)
+    except IOError:
+        logger.warning("Could not write to {}".format(filename))
+
+
+#####################################################################
+# Fade Method
+#####################################################################
+def _fadejob(item, dest, step, delta):
+    if item._fading:
+        return
+    else:
+        item._fading = True
+    if item._value < dest:
+        while (item._value + step) < dest and item._fading:
+            item(item._value + step, 'fader')
+            item._lock.acquire()
+            item._lock.wait(delta)
+            item._lock.release()
+    else:
+        while (item._value - step) > dest and item._fading:
+            item(item._value - step, 'fader')
+            item._lock.acquire()
+            item._lock.wait(delta)
+            item._lock.release()
+    if item._fading:
+        item._fading = False
+        item(dest, 'Fader')
+
+

@@ -40,10 +40,10 @@ class TestModule(unittest.TestCase):
         
         self.sh = MockSmartHome()
         self.modules = self.sh.with_modules_from(common.BASE + "/tests/resources/module")
-        self.assertIsNotNone(self.sh.get_module("dummy"))    # Test module is not registered
-        self.assertIsNone(self.sh.get_module("dummyX"))      # Test module ist not registered
-        self.assertEqual(self.sh.return_modules(),['dummy']) # Test modules loaded
-        self.assertIsNone(self.sh.get_module("faulty"))      # Test module ist not registered
+        self.assertIsNotNone(self.sh.modules.get_module("dummy"))    # Test module is not registered
+        self.assertIsNone(self.sh.modules.get_module("dummyX"))      # Test module ist not registered
+        self.assertEqual(self.sh.modules.return_modules(),['dummy']) # Test modules loaded
+        self.assertIsNone(self.sh.modules.get_module("faulty"))      # Test module ist not registered
  
         logger.warning('=== End Module Tests')
 
