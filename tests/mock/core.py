@@ -158,13 +158,19 @@ class MockSmartHome():
             self.__items.append(path)
         self.__item_dict[path] = item
 
+#    def return_item(self, string):
+#        if string in self.__items:
+#            return self.__item_dict[string]
+
+#    def return_items(self):
+#        for item in self.__items:
+#            yield self.__item_dict[item]
+
     def return_item(self, string):
-        if string in self.__items:
-            return self.__item_dict[string]
+        return self.items.return_item(string)
 
     def return_items(self):
-        for item in self.__items:
-            yield self.__item_dict[item]
+        return self.items.return_items()
 
     def return_plugins(self):
         for plugin in self._plugins:
