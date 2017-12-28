@@ -73,18 +73,19 @@ The plugin may have the following subdirectories:
 The plugin code is a class based on the class SmartPlugin. The methods of SmartPlugin are documented here.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :titlesonly:
 
    development_plugin/smartplugin
 
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 4
    :titlesonly:
    :hidden:
    
    development_plugin/plugin_metadata
+   development_plugin/plugin_documentation_files
    development_plugin/sampleplugins
    modules_doc/modules_plugins
    modules_doc/modules_readmes

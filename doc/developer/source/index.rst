@@ -1,4 +1,4 @@
-:tocdepth: 5
+:tocdepth: 6
 
 ###########
 SmartHomeNG
@@ -33,7 +33,7 @@ any way you want and can.
 
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 5
    :hidden:
    :titlesonly:
    
@@ -53,13 +53,12 @@ any way you want and can.
 
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 5
    :hidden:
    :titlesonly:
    
    logging
    tools
-   development_plugins
-   development_core
+   development
    release
    genindex

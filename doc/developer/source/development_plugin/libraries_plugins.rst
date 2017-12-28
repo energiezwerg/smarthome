@@ -6,7 +6,7 @@ The description of their functions is shown here:
 
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :titlesonly:
 
    /lib/connection  
@@ -14,6 +14,5 @@ The description of their functions is shown here:
    /lib/logutils 
    /lib/network
    /lib/orb     
-   /lib/scheduler  
    /lib/tools
    /lib/utils

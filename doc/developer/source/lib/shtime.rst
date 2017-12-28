@@ -1,4 +1,4 @@
-Logics-API
+Shtime-API
 ==========
 
 There are two ways to access the API
@@ -10,12 +10,11 @@ There are two ways to access the API
    .. code-block:: python
 
        # to get access to the object instance:
-       from lib.logic import Logics
-       logics = Logics.get_instance()
+       from lib.shtime import Shtime
+       shtime = Shtime.get_instance()
 
-       # to access a method (eg. enable_logic()):
-       logics.enable_logic(name)
-
+       # to access a method (eg. to get timezone info):
+       shtime.tzinfo()
 
 2. Through the main SmartHome object 
         
@@ -23,19 +22,18 @@ There are two ways to access the API
            
    .. code-block:: python
 
-       # to access a method (eg. enable_logic()):
-       sh.logics.enable_logic(name)
+       # to access a method (eg. to get timezone info):
+       sh.shtime.tzinfo()
 
 
 The API is implemented through the following library:
 
 
-lib.logic
----------
+lib.shtime
+----------
 
-.. automodule:: lib.logic
+.. automodule:: lib.shtime
     :members:
     :undoc-members:
     :show-inheritance:
     :member-order: bysource
-

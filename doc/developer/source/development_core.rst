@@ -17,7 +17,7 @@ The libraries listed here provide the extra functionality for the core.
 More info upon the functions and their parameters can be found here. 
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 5
    :titlesonly:
    :hidden:
    

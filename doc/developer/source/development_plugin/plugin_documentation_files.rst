@@ -49,7 +49,10 @@ the plugin folder.
 
 In restructured text (rST) files, the images can then be included by the statement:
 
-  .. image:: assets/<picture-filename>
+  .. code::
+
+    .. image:: assets/<picture-filename>
+
 
 
 developer_doc.rst / developer_doc.md

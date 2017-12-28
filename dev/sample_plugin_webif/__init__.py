@@ -23,6 +23,8 @@
 #
 #########################################################################
 
+from lib.module import Modules
+
 from lib.model.smartplugin import SmartPlugin
 
 
@@ -146,7 +148,7 @@ class SamplePlugin(SmartPlugin):
         This method is only needed if the plugin is implementing a web interface
         """
         try:
-            self.mod_http = self.get_module('http')   # try/except to handle running in a core version that does not support modules
+            self.mod_http = Modules.get_instance().get_module('http')   # try/except to handle running in a core version that does not support modules
         except:
              self.mod_http = None
         if self.mod_http == None:
