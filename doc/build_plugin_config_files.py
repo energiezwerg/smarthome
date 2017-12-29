@@ -115,19 +115,19 @@ def get_pluginyamllist_fromgit():
     return plglist
     
     
-def get_description(section_dict, maxlen=70, lang='en'):
+def get_description(section_dict, maxlen=70, lang='en',textkey='description'):
     desc = ''
     if lang == 'en':
         lang2 = 'de'
     else:
         lang2 = 'en'
     try:
-        desc = section_dict['description'].get(lang, '')
+        desc = section_dict[textkey].get(lang, '')
     except:
         pass
     if desc == '':
         try:
-            desc = section_dict['description'].get(lang2, '')
+            desc = section_dict[textkey].get(lang2, '')
         except:
             pass
             
@@ -263,120 +263,231 @@ def build_pluginlist( plugin_type='all' ):
     return result
 
 
-def write_rstfile(plgtype='All', plgtype_print='', heading=''):
-    """
-    Create a .rst file for each plugin category
-    """
-    if heading == '':
-        title = plgtype + ' Plugins'
-    else:
-        title = heading
+def write_dummyfile(configfile_dir, namelist):
+    outf_name = os.path.join(configfile_dir, 'dummy_config.rst')
+    fh_dummy = open(outf_name, "w")
 
-    rst_filename = 'plugins_doc/plugins_'+plgtype.lower()+'.rst'
-    rst_dummyname = 'plugins_doc/dummy_'+plgtype.lower()+'.rst'
-    print('Datei: '+rst_filename+ ' '*(26-len(rst_filename)) +'  -  '+title)
-    
-    plglist = build_pluginlist(plgtype)
-    
-#    print("> Opening file "+plugin_rst_dir+'/'+rst_filename)
-    fh = open(plugin_rst_dir+'/'+rst_filename, "w")
-    fh_dummy = open(plugin_rst_dir+'/'+rst_dummyname, "w")
+    fh_dummy.write(':orphan:\n')
+    fh_dummy.write('\n')
+    fh_dummy.write('.. This file is only created to suppress Sphinx warnings about plugins config .rst files not beeing included in any toctree.\n')
+    fh_dummy.write('\n')
+    fh_dummy.write('.. toctree::\n')
+    fh_dummy.write('   :maxdepth: 2\n')
+    fh_dummy.write('   :glob:\n')
+    fh_dummy.write('   :titlesonly:\n')
+    fh_dummy.write('   :hidden:\n')
+    fh_dummy.write('\n')
+    for n in namelist:
+#        fh_dummy.write('   /doc/user/source/plugins_doc/config/'+n+'.rst\n')
+        fh_dummy.write('   '+n+'.rst\n')
+        
+    fh_dummy.close()
+    return
 
-#    fh.write(title+'\n')
-#    fh.write('-'*len(title)+'\n')
-    if plgtype != type_unclassified:
-        fh.write('.. index:: Plugins; '+plgtype_print+'\n')
-        fh.write('\n')
-    fh.write('.. include:: /plugins_doc/plugins_'+plgtype+'_header.rst\n')
+
+def write_heading(fh, heading, level):
+
+    liner1 = '=' * len(heading)
+    liner2 = '-' * len(heading)
+
+    fh.write('\n')
+    if level == 1:
+        fh.write(liner1+'\n')
+    fh.write(heading+'\n')
+    if level in [1,2]:
+        fh.write(liner1+'\n')
+    elif level == 3:
+        fh.write(liner2+'\n')
     fh.write('\n')
 
-    if (len(plglist) == 0):
-        fh.write('At the moments there are no plugins that have not been classified.\n')
-    else:
-        # write toctree to dummy file to suppress warnings for not included README.md files.
-        fh_dummy.write(':orphan:\n')
-        fh_dummy.write('\n')
-        fh_dummy.write('.. This file is only created to suppress Sphinx warnings about README.md files not beeing included in any toctree.\n')
-        fh_dummy.write('\n')
-        fh_dummy.write('.. toctree::\n')
-        fh_dummy.write('   :maxdepth: 2\n')
-        fh_dummy.write('   :glob:\n')
-        fh_dummy.write('   :titlesonly:\n')
-        fh_dummy.write('   :hidden:\n')
-        fh_dummy.write('\n')
+    return
+    
+        
+def get_doc_description(yml, language, key='description'):
 
-        # write toctree
-        fh.write('.. toctree::\n')
-        fh.write('   :maxdepth: 2\n')
-        fh.write('   :glob:\n')
-        fh.write('   :titlesonly:\n')
-        fh.write('   :hidden:\n')
+    desc = get_description(yml, 1024, language, key+'_long')
+    if desc[0] == '':
+        desc = get_description(yml, 1024, language, key)
+    return desc[0]
+    
+
+def write_formatted(fh, str):
+
+    sl = str.split('\\n')
+    if 1 == 2:
+        print('strl: {}'.format(str))
+        print()
+        print('sl: {}'.format(sl))
+        i = input('Press RETURN')
+    for s in sl:
+        fh.write(s+'\n')
+    fh.write('\n')
+
+
+# ==================================================================================
+#   write_configfile
+
+def write_configfile(plg, configfile_dir, language='de'):
+    """
+    Create a .rst file with configuration information for the passed plugin
+    """
+    plgname = plg['name']
+
+    # ---------------------------------
+    # read metadata for plugin
+    # ---------------------------------
+    metafile = plgname + '/plugin.yaml' 
+    if os.path.isfile(metafile):
+        meta_yaml = shyaml.yaml_load(metafile)
+        plugin_yaml = meta_yaml.get('plugin', {})
+        parameter_yaml = meta_yaml.get('parameters', {})
+        iattributes_yaml = meta_yaml.get('item_attributes', {})
+        if parameter_yaml is None:
+            parameter_yaml = {}
+        if iattributes_yaml is None:
+            iattributes_yaml = {}
+    else:
+        plugin_yaml = {}
+        parameter_yaml = {}
+        iattributes_yaml = {}
+
+
+    # ---------------------------------
+    # Create rST file
+    # ---------------------------------
+    outf_name = os.path.join(configfile_dir, plgname+'.rst')
+    fh = open(outf_name, "w")
+    write_heading(fh, 'Plugin ' + plgname, 1)
+
+    # --------------------------------------------
+    # write image for plugin-type and generic text
+    # --------------------------------------------
+    plgtype = plugin_yaml.get('type', '').lower()
+    if plgtype != '':
+        fh.write('.. image:: /_static/img/'+plgtype+'.svg\n')
+        fh.write('   :width: 70px\n')
+        fh.write('   :height: 70px\n')
+        fh.write('   :scale: 50 %\n')
+        fh.write('   :alt: protocol plugin\n')
+        fh.write('   :align: left\n')
         fh.write('\n')
-        for plg in plglist:
-            fh_dummy.write('   /plugins/'+plg['name']+'/README.md\n')
-            if docu_type == 'user':
-                fp = plg['name']+'/user_doc'
-#                fp_ignore = plg['name']+'/developer_doc'
-                if os.path.isfile(fp+'.rst') or os.path.isfile(fp+'.md'):
-                    fh.write('   /plugins/'+fp+'\n')
-#                if os.path.isfile(fp_ignore+'.rst') or os.path.isfile(fp_ignore+'.md'):
-#                    fh_dummy.write('   /plugins/'+fp_ignore+'\n')
-            elif docu_type == 'developer':
-                fp = plg['name']+'/developer_doc'
-#                fp_ignore = plg['name']+'/user_doc'
-                if os.path.isfile(fp+'.rst') or os.path.isfile(fp+'.md'):
-                    fh.write('   /plugins/'+fp+'\n')
-#                if os.path.isfile(fp_ignore+'.rst') or os.path.isfile(fp_ignore+'.md'):
-#                    fh_dummy.write('   /plugins/'+fp_ignore+'\n')
-            else:
-                fh.write('   /plugins/'+plg['name']+'/README.md\n')
+        fh.write('.. |br| raw:: html\n')
         fh.write('\n')
-        
-        # write table with details
-#        fh.write('.. include:: /plugins_doc/plugins_'+plgtype+'_header.rst\n')
+        fh.write('   <br />\n')
         fh.write('\n')
+    
+    fh.write('Im folgenden sind etwaige Anforderungen und unterstützte Hardware beschrieben. Danach folgt die Beschreibung, wie das Plugin **'+plgname+'** konfiguriert wird. Außerdem ist im folgenden beschrieben, wie das Plugin in den Item Definitionen genutzt werden kann. [#f1]_ \n')
+    fh.write('\n')
+    fh.write('\n')
+
+    write_heading(fh, 'Beschreibung', 2)
+    write_formatted(fh, get_doc_description(plugin_yaml, language))
+
+    # ---------------------------------
+    # write Requirements section
+    # ---------------------------------
+    requirements = get_description(plugin_yaml, 768, language, 'requirements')
+    min_version = str(plugin_yaml.get('sh_minversion', ''))
+    max_version = str(plugin_yaml.get('sh_maxversion', ''))
+    if requirements[0] != '' or min_version != '' or max_version != '':
+        write_heading(fh, 'Anforderungen', 2)
         fh.write('\n')
-        fh.write('.. table:: \n')
-        fh.write('   :widths: grid\n')
+        write_formatted(fh, get_doc_description(plugin_yaml, language, 'requirements'))
+        if min_version != '':
+            fh.write(' - Minimum SmartHomeNG Version: **'+min_version+'**\n')
+        if max_version != '':
+            fh.write(' - Maximum SmartHomeNG Version: **'+max_version+'**\n')
+
+
+    # ---------------------------------
+    # write supported hardware section
+    # ---------------------------------
+    hardware = get_description(plugin_yaml, 768, language, 'hardware')
+    if hardware[0] != '':
+        write_heading(fh, 'Unterstützte Hardware', 2)
         fh.write('\n')
-        fh.write('   +-'+ '-'*65 +'-+-'+ '-'*165 +'-+-----------------+-----------------+\n')
-        if language == 'de':
-            fh.write('   | {p:<65.65} | {b:<165.165} | Maintainer      | Tester          |\n'.format(p='Plugin', b='Beschreibung'))
-        else:
-            fh.write('   | {p:<65.65} | {b:<165.165} | Maintainer      | Tester          |\n'.format(p='Plugin', b='Description'))
-        fh.write('   +='+ '='*65 +'=+=' + '='*165 + '=+=================+=================+\n')
-        for plg in plglist:
-            plg_readme_link = ':doc:`'+plg['name']+' </plugins/'+plg['name']+'/README.md>`'
-            plg_readme_link = ':doc:`'+plg['name']+' <../plugins/'+plg['name']+'/README>`'
-            if os.path.isfile(plugin_rst_dir+'/'+'plugins_doc/config/'+plg['name']+'.rst'):
-                plg_readme_link = ':doc:`'+plg['name']+' <config/'+plg['name']+'>`'
+        write_formatted(fh, get_doc_description(plugin_yaml, language, 'hardware'))
+
+    # ---------------------------------
+    # write Konfiguration section
+    # ---------------------------------
+    write_heading(fh, 'Konfiguration', 2)
+    fh.write('\n')
+    fh.write('Im folgenden ist beschrieben, wie das Plugin **'+plgname+'** konfiguriert wird. Außerdem ist im folgenden beschrieben, wie das Plugin in den Item Definitionen genutzt werden kann.\n')
+    fh.write('\n')
+
+    # ---------------------------------
+    # write Parameter section
+    # ---------------------------------
+    write_heading(fh, 'Parameter', 2)
+    fh.write('\n')
+    fh.write('Das Plugin verfügt über folgende Parameter, die in der Datei **../etc/plugin.yaml** konfiguriert werden:\n')
+    fh.write('\n')
+
+    if len(parameter_yaml) == 0:
+        fh.write('**Keine** - zur Sicherheit in der README nachsehen (siehe Fußnote)\n')
+    for p in sorted(parameter_yaml):
+        # ---------------------------------
+        # write info for one parameter
+        # ---------------------------------
+        write_heading(fh, p, 3)
+        fh.write('\n')
+#        desc = get_description(parameter_yaml[p], 768, language)
+#        fh.write(desc[0]+'\n')
+#       fh.write('\n')
+        write_formatted(fh, get_doc_description(parameter_yaml[p], language))
+        datatype = parameter_yaml[p].get('type', '').lower()
+        default = str(parameter_yaml[p].get('default', ''))
+        validlist = parameter_yaml[p].get('valid_list', [])
+        fh.write(' - Datentyp: **'+datatype+'**\n')
+        if default != '':
+            fh.write(' - Standardwert: **'+default+'**\n')
+        fh.write('\n')
+        if len(validlist) > 0:
+            fh.write(' - Mögliche Werte:\n')
+            for v in validlist:
+                fh.write('   - **'+str(v)+'**\n')
+            fh.write('\n')
             
-#            fh.write('   | {plg:<65.65} | {desc:<165.165} | {maint:<15.15} | {test:<15.15} |\n'.format(plg=plg['name'], desc=plg['desc'][0], maint=plg['maint'][0], test=plg['test'][0]))
-            fh.write('   | {plg:<65.65} | {desc:<165.165} | {maint:<15.15} | {test:<15.15} |\n'.format(plg=plg_readme_link, desc=plg['desc'][0], maint=plg['maint'][0], test=plg['test'][0]))
-            for l in range(1, len(plg['desc'])):
-                fh.write('   | {plg:<65.65} | {desc:<165.165} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['desc'][l], maint=plg['maint'][l], test=plg['test'][l]))
-            if plg['doc'] != '':
-                if language == 'de':
-                    plg['doc'] = "`"+plg['name']+" zusätzliche Infos <"+plg['doc']+">`_"
-                else:
-                    plg['doc'] = "`"+plg['name']+" additional info <"+plg['doc']+">`_"
-                fh.write('   | {plg:<65.65} | - {desc:<163.163} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['doc'], maint='', test=''))
-            if plg['sup'] != '':
-#                if plg['doc'] != '':
-#                    fh.write('   | {plg:<65.65} |   {desc:<163.163} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc='', maint='', test=''))
-                if language == 'de':
-                    plg['sup'] = "`"+plg['name']+" Unterstützung <"+plg['sup']+">`_"
-                else:
-                    plg['sup'] = "`"+plg['name']+" support <"+plg['sup']+">`_"
-                fh.write('   | {plg:<65.65} | - {desc:<163.163} | {maint:<15.15} | {test:<15.15} |\n'.format(plg='', desc=plg['sup'], maint='', test=''))
-            fh.write('   +-'+ '-'*65 +'-+-'+ '-'*165 +'-+-----------------+-----------------+\n')
+    # ---------------------------------
+    # write item_attribute section
+    # ---------------------------------
+    write_heading(fh, 'Item Attribute', 2)
+    fh.write('\n')
+    fh.write('Das Plugin unterstützt folgende Item Attribute, die in den Dateien im Verzeichnis  **../items** verwendet werden:\n')
+    fh.write('\n')
+
+    if len(iattributes_yaml) == 0:
+        fh.write('**Keine** - zur Sicherheit in der README nachsehen (siehe Fußnote)\n')
+    for a in sorted(iattributes_yaml):
+        # ---------------------------------
+        # write info for one attribute
+        # ---------------------------------
+        write_heading(fh, a, 3)
         fh.write('\n')
+#        desc = get_description(iattributes_yaml[a], 768, language)
+#        fh.write(desc[0]+'\n')
+#        fh.write('\n')
+        write_formatted(fh, get_doc_description(iattributes_yaml[a], language))
+        datatype = iattributes_yaml[a].get('type', '').lower()
+        default = str(iattributes_yaml[a].get('default', ''))
+        validlist = iattributes_yaml[a].get('valid_list', [])
+        fh.write(' - Datentyp: **'+datatype+'**\n')
+        if default != '':
+            fh.write(' - Standardwert: **'+default+'**\n')
         fh.write('\n')
-        
-        fh.write('.. include:: /plugins_doc/plugins_footer.rst\n')
+        if len(validlist) > 0:
+            fh.write(' - Mögliche Werte:\n')
+            for v in validlist:
+                fh.write('   - **'+str(v)+'**\n')
+            fh.write('\n')
+
+
+    fh.write('\n')
+    fh.write('.. [#f1] Diese Seite wurde aus den Metadaten des Plugins erzeugt. Für den Fall, dass diese Seite nicht alle benötigten Informationen enthält, bitte auf die englischsprachige :doc:`README Datei <../../plugins/'+plgname+'/README>` des Plugins zugreifen.\n')
 
     fh.close()
-    fh_dummy.close()
+    return
     
 
 # ==================================================================================
@@ -420,8 +531,8 @@ if __name__ == '__main__':
     print('--- Liste der Plugins auf github ('+str(len(plugins_git))+'):')
     
     pluginsyaml_git = get_pluginyamllist_fromgit()
-    if not 'xmpp' in plugins_git:
-        plugins_git.append('xmpp')
+#    if not 'xmpp' in plugins_git:
+#        plugins_git.append('xmpp')
         
     print('--- Liste der Plugins mit Metadaten auf github ('+str(len(pluginsyaml_git))+'):')
     print()
@@ -435,8 +546,29 @@ if __name__ == '__main__':
     for pl in plugin_sections:
        plugin_types.append(pl[0])
            
-    for pl in plugin_sections:
-#        write_rstfile(pl[0], pl[1])
-        write_rstfile(pl[0], pl[2])
+    plglist = build_pluginlist()
+
+    configfile_dir = plugin_rst_dir+'/'+'plugins_doc/config'
+    if os.path.exists(configfile_dir):
+        # delete files in directory
+        for the_file in os.listdir(configfile_dir):
+            file_path = os.path.join(configfile_dir, the_file)
+            try:
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+            except Exception as e:
+                print(e)
+    else:
+        os.makedirs(configfile_dir)
+
+
+    dummy_list = []
+    print()
+    for plg in plglist:
+        write_configfile(plg, configfile_dir, language)
+        print('plugin {}: ./config/{}.rst'.format(plg['name'], plg['name']), ' '*20, end='\r')
+        dummy_list.append(plg['name'])
+    write_dummyfile(configfile_dir, dummy_list)
+    print(' '*50)
     print()
     
