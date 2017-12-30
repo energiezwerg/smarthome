@@ -448,6 +448,7 @@ def write_configfile(plg, configfile_dir, language='de'):
         fh.write('\n')
         if len(validlist) > 0:
             fh.write(' - Mögliche Werte:\n')
+            fh.write('\n')
             for v in validlist:
                 fh.write('   - **'+str(v)+'**\n')
             fh.write('\n')
@@ -481,6 +482,7 @@ def write_configfile(plg, configfile_dir, language='de'):
         fh.write('\n')
         if len(validlist) > 0:
             fh.write(' - Mögliche Werte:\n')
+            fh.write('\n')
             for v in validlist:
                 fh.write('   - **'+str(v)+'**\n')
             fh.write('\n')

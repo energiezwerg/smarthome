@@ -2,9 +2,14 @@ Plugins
 =======
 
 Es gibt eine Vielzahl von Plugins, welche die Funktionalität von SmartHomeNG erweitern. Die
-Informationen auf diesen Seiten wird aus den Metadaten-Dateien der Plugins ermittelt. Die 
-Einträge in der Navigationsspalte der Dokumentation verlinken auf die README Dateien der
-Plugins. Die README Dateien sind fast ausschließlich in Englisch gehalten.
+Informationen auf diesen Seiten wird aus den Metadaten-Dateien der Plugins ermittelt. 
+
+Ein Klick au den Plugin-Namen in den Pluin Listen führt zur **Konfigurationsdokumentation** des
+jeweiligen Plugins. Falls zu dem Plugin keine Metadaten vorliegen, wird auf die (englischsprachige)
+README Datei des jeweiligen Plugis verlinkt.
+
+Einige Plugins verfügen über eine zusätzliche Dokumentation. Diese Plugins haben eigene Einträge
+in der Navigationsleiste.
 
 .. note::
 
