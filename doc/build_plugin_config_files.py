@@ -320,6 +320,9 @@ def write_formatted(fh, str):
         print('sl: {}'.format(sl))
         i = input('Press RETURN')
     for s in sl:
+        if s.startswith(' '):
+            if not s.startswith(' -'):
+                s = s[1:]
         fh.write(s+'\n')
     fh.write('\n')
 
