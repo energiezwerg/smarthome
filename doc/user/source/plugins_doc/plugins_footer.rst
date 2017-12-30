@@ -3,7 +3,7 @@
 
 .. admonition:: Anmerkungen für die obige Liste:
 
-   1. **Plugin**: Der Link hinter dem Plugin Namen führt auf die (englischsprachige) README Datei des Plugins. Falls eine erweiterte Anwender Dokumentation zu Verfügung steht, ist für das Plugin ein Eintrag links in der Navigation vorhanden.
+   1. **Plugin**: Der Link hinter dem Plugin Namen führt auf die Seite mit den detaillierten Konfigurationsinformationen. Falls eine solche Seite aufgrund fehlender Metadaten nicht existiert, führt der Link auf die (englischsprachige) README Datei des Plugins. Falls eine erweiterte Anwender Dokumentation zu Verfügung steht, ist für das Plugin ein Eintrag links in der Navigation vorhanden.
 
    2. **Beschreibung**: Links in in der Beschreibungs-Spalte verweisen auf (großteils deutsche) weiterführende Anwender-Dokumentation außerhalb dieser Dokumentation (z.B. im SmartHomeNG Wiki).
 
