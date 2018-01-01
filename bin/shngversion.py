@@ -29,8 +29,10 @@ import subprocess
 
 # Update auf 1.4a wg. Kennzeichnung des Stands als "nach dem v1.4 Release"
 # Update auf 1.4b wg. Kennzeichnung des Stands als "nach dem v1.4.1 Release"
+# Update auf 1.4.2
+# Update auf 1.4c wg. Kennzeichnung des Stands als "nach dem v1.4.2 Release"
 
-shNG_version = '1.4b'
+shNG_version = '1.4c'
 
 # ---------------------------------------------------------------------------------
 FileBASE = None
