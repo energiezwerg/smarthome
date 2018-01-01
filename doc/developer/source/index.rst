@@ -7,7 +7,7 @@ SmartHomeNG
 Developer Documentation
 =======================
 
-SmartHomeNG is a software that serves a basis for home automation.
+SmartHomeNG [#f1]_ is a software that serves a basis for home automation.
 It interconnects multiple devices using plugins to access their specific interfaces. 
 
 This documentation reflects the current Release |release|.
@@ -30,6 +30,7 @@ any way you want and can.
    Place **remarks** und **wishes for changes** regarding this developer documentation on 
    `this wiki page <https://github.com/smarthomeNG/smarthome/wiki/Developer-Documentation---Comments>`_ .
 
+.. [#f1] SmartHomeNG © Copyright 2016-2018 SmartHomeNG Team, is based on smarthome.py © 2011-2014 Marcus Popp.
 
 
 .. toctree::
