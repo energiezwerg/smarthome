@@ -55,8 +55,7 @@ Neue Funktionen im CORE
 
 * Scheduler:
 
-  * Implementierung eigener Nammensräume für Scheduler von Items, Logiken und Plugins, um mögliche Kollisionen durch Namensgleichheiten zu vermeiden.
-    (ist besonders zu beachten, fall man `sh.scheduler.change()` für Scheduler von Logiken nutzt. Dort muss dem Scheduler Namen ein `logic.` vorangestellt werden)
+  * Implementierung eigener Nammensräume für Scheduler von Items, Logiken und Plugins, um mögliche Kollisionen durch Namensgleichheiten zu vermeiden. (ist besonders zu beachten, fall man `sh.scheduler.change()` für Scheduler von Logiken nutzt. Dort muss dem Scheduler Namen ein `logic.` vorangestellt werden)
 
 * Einführung von Plugin Metadaten:
 

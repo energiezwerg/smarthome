@@ -2,6 +2,14 @@
 Plugins
 #######
 
+.. toctree::
+   :maxdepth: 5
+   :hidden:
+   :titlesonly:
+   
+   plugins_multiinstance
+   
+
 Das Grundsystem von SmartHomeNG kann durch den Einsatz von Plugins erweitert werden. Ein Plugin 
 ist ein Zusatzmodul in einem Unterverzeichnis unterhalb des Verzeichnisses **../plugins**. 
 Um ein Plugin in SmartHomeNG zu verwenden (eine Instanz des Plugins zu laden) muß eine Sektion 
@@ -9,27 +17,15 @@ für das gewünschte Plugin in der Datei **etc/plugin.conf** erstellt werden.
 
 Für das oft benutzte KNX-Plugin sieht das z.B. so aus:
 
-.. code::
-
-   # etc/plugin.conf
-   [knx]
-      class_name = KNX
-      class_path = plugins.knx
-   #   host = 127.0.0.1
-   #   port = 6720
-      send_time = 600 # update date/time every 600 seconds, default none
-      time_ga = 8/0/0
-      date_ga = 8/0/1
-
-
-bzw. im neuen Format:
-
 .. code:: yaml
 
    # etc/plugin.yaml
    knx:
-       class_name: KNX
-       class_path: plugins.knx
+       plugin_name: knx
+   #    class_name: KNX
+   #    class_path: plugins.knx
+   #    instance: knx_1
+
    #    host: 127.0.0.1
    #    port: 6720
        send_time: 600    # update date/time every 600 seconds, default none
@@ -37,20 +33,59 @@ bzw. im neuen Format:
        date_ga: 8/0/1
 
 
-Dabei kann der Name der **Plugin-Instanz** (Name der Sektion in eckigen Klammern) frei gewählt 
-werden. Es muss nur darauf geachtet werden, dass er eindeutig ist, also nur einmal vorkommt. 
-Der name der Instanz sollte auch so gewählt werden, dass es zu keiner Namensgleichheit mit 
-Top-Level Items kommt.
+bzw. im alten Format:
 
-Die Parameter/Attribute **class_name** und **class_path** müssen angegeben werden. Dabei ist 
-**class_name** immer der Python Klassenname und **class_path** immer der Pfad vom SmartHomeNG 
-Basisverzeichnis zum Plugin. Diese beiden Einträge müssen exakt so übernommen werden, wie sie 
-in der README.md Datei des jeweiligen Plugins beschrieben sind.
+.. code::
 
-Die weiteren Einträge sind Plugin spezifisch. Welche Parameter/Attribute ein Plugin kennt ist 
-auch der README.md des Plugins zu entnehmen. Je nach Plugin können sie verpflichtend oder 
-optional sein. Im obigen Beispiel sind sie alle optional. Diese Parameter/Attribute werden 
-beim Start von SmartHomeNG an das Plugin übergeben.
+   # etc/plugin.conf
+   [knx]
+      plugin_name = knx
+   #   class_name = KNX
+   #   class_path = plugins.knx
+   #   instance = knx_1
+
+   #   host = 127.0.0.1
+   #   port = 6720
+      send_time = 600 # update date/time every 600 seconds, default none
+      time_ga = 8/0/0
+      date_ga = 8/0/1
+
+
+Dabei kann der Name der **Plugin-Instanz** (Name des Abschnitts) frei gewählt werden. Es muss 
+nur darauf geachtet werden, dass er eindeutig ist, also nur einmal vorkommt. Der name der Instanz 
+sollte auch so gewählt werden, dass es zu keiner Namensgleichheit mit Top-Level Items kommt.
+
+Es gibt folgende allgemeine Parameter im Abschnitt eines Plugins:
+
++--------------+-------------------------------------------------------------------------------------+
+| Parameter    | Bedeutung                                                                           |
++==============+=====================================================================================+
+| plugin_name  | Der Kurzname des Plugins, das eingebunden werden soll (Name des Verzeichnisses      |
+|              | im **../plugins** Verzeichnis). Statt des Parameters **plugin_name** können auch    |
+|              | die Parameter **class_name** und **class_path** angegeben werden. Dieses ist        |
+|              | jedoch nur in Ausnahmefällen notwendig.                                             |
++--------------+-------------------------------------------------------------------------------------+
+| class_name   | Name der Klasse in der Plugin Datei. Was hier einzutragen ist, steht in der         |
+|              | Dokumentation zum jeweiligen Plugin. Im Normalfall ist die Konfiguration über den   |
+|              | Parameter **plugin_name** vorzuziehen.                                              |
++--------------+-------------------------------------------------------------------------------------+
+| class_path   | Pfad zur Plugin Datei. Was hier einzutragen ist, steht in der                       |
+|              | Dokumentation zum jeweiligen Plugin. Im Normalfall ist die Konfiguration über den   |
+|              | Parameter **plugin_name** vorzuziehen.                                              |
++--------------+-------------------------------------------------------------------------------------+
+| instance     | Optional: Dieser Parameter muss nur verwendet werden, wenn mehrere Instanzen des    |
+|              | selben Plugins geladen werden sollen. Das Plugin selbst muss dazu **Multiinstance** |
+|              | fähig sein. Damit die Items der richtigen Plugin-Instanz zugeordnet werden, muss    |
+|              | in der jeweiligen Item Definition der Name des Plugin-spezifische Attributes um     |
+|              | die Angabe der Instanz ergänzt werden. Also z.B.: Statt **avm_data_type: uptime**   |
+|              | muss es **avm_data_type@<instance>: uptime** heissen.                               |
++--------------+-------------------------------------------------------------------------------------+
+
+
+Die weiteren Einträge sind Plugin spezifisch. Welche Parameter ein Plugin kennt ist auch der 
+README.md des Plugins zu entnehmen. Je nach Plugin können sie verpflichtend oder optional sein. 
+Im obigen Beispiel sind sie alle optional. Diese Parameter werden  beim Start von SmartHomeNG an 
+das Plugin übergeben.
 
 Ein **#** wirkt wie auch bei den Konfigurationsdateien der Items als Beginn eines Kommentars.
 

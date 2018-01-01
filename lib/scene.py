@@ -157,13 +157,14 @@ class Scenes():
         self._learned_values = {}
         scene_learnfile = os.path.join(self._scenes_dir, scene+'_learned')
         learned_dict = yaml.yaml_load(scene_learnfile+'.yaml', ordered=False, ignore_notfound=True)
-        if learned_dict != {}:
-            logger.info("Loading learned values for scene {}".format(scene))
-        for fkey in learned_dict:
-            key = scene + '#' + fkey
-            lvalue = learned_dict[fkey]
-            self._learned_values[key] = lvalue 
-            logger.debug(" - Loading value {} for state/ditem {}".format(lvalue, key))
+        if learned_dict is not None:
+            if learned_dict != {}:
+                logger.info("Loading learned values for scene {}".format(scene))
+            for fkey in learned_dict:
+                key = scene + '#' + fkey
+                lvalue = learned_dict[fkey]
+                self._learned_values[key] = lvalue 
+                logger.debug(" - Loading value {} for state/ditem {}".format(lvalue, key))
         return
         
 

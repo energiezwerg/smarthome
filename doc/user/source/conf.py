@@ -66,7 +66,8 @@ html_add_permalinks = ""
 #project = u'SmartHomeNG'
 project = u'Anwenderdokumentation'
 #copyright = u'2011-2013, Marcus Popp; since 2016 SmartHomeNG Team'
-copyright = u'2016-2017 SmartHomeNG Team, based on smarthome.py © 2011-2014 Marcus Popp'
+#copyright = u'2016-2017 SmartHomeNG Team, based on smarthome.py © 2011-2014 Marcus Popp'
+copyright = u'2016-2018 SmartHomeNG Team, SmartHomeNG is based on smarthome.py © Marcus Popp'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -78,8 +79,18 @@ version = shngversion.get_shng_main_version()
 # The full version, including alpha/beta/rc tags.
 #release = '1.3a dev (as of 13. October 2017)'  13. October 2017 is replaced by makefile with a date in the form of '2. September 2017'
 #release = '1.3c dev (as of 13. October 2017)'
-release = shngversion.get_shng_docversion() + ' (as of ' + today
-commit, commit_short, branch, describe = shngversion._get_git_data()
+if os.path.isfile(os.getcwd()+'/doc_version.flg'):
+    release = '1.4.x'
+    with open(os.getcwd()+'/doc_version.flg') as f:
+        release = f.readline()
+    branch = 'master'
+    commit = ''
+    comit_short = ''
+    describe = ''
+else:
+    release = shngversion.get_shng_docversion()
+    commit, commit_short, branch, describe = shngversion._get_git_data()
+release += ' (as of ' + today
 if branch != 'master':
     release += ', commit '+commit_short
 release += ')'
@@ -103,7 +114,7 @@ gettext_compact = True
 # directories to ignore when looking for source files.
 #exclude_patterns = ['plugins/backend_shng_1_3', 'plugins/backend/static', '._*']
 #exclude_patterns = ['plugins/deprecated_plugins', 'plugins/backend_shng_1_3/static', 'plugins/backend/static', '**/._*md']
-exclude_patterns = ['plugins/deprecated_plugins', 'plugins/backend*/static', 'plugins/blockly/webif/static', '**/_pv_*', '**/._*md', '**/developer_doc.*']
+exclude_patterns = ['plugins/deprecated_plugins', 'plugins/backend/webif/static', 'plugins/blockly/webif/static', '**/_pv_*', '**/._*md', '**/developer_doc.*']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
