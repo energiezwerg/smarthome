@@ -345,8 +345,13 @@ class SmartHome():
             if((c == 'logging' and not (os.path.isfile(conf_basename + YAML_FILE))) or
                (c != 'logging' and not (os.path.isfile(conf_basename + YAML_FILE)) and not (os.path.isfile(conf_basename + CONF_FILE)))):
                 if os.path.isfile(default):
-                    shutil.copy2(default, conf_basename + YAML_FILE)
-
+                    try:
+                        shutil.copy2(default, conf_basename + YAML_FILE)
+                    except PermissionError:
+                        print("Unable to create "+conf_basename + YAML_FILE+".")
+                        print ("You have no right to write to "+os.path.join(self._base_dir, 'etc'))
+                        exit(1)
+                        
 
     def initLogging(self):
         """
