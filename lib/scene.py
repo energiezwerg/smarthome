@@ -162,7 +162,7 @@ class Scenes():
                 logger.info("Loading learned values for scene {}".format(scene))
             for fkey in learned_dict:
                 key = scene + '#' + fkey
-               lvalue = learned_dict[fkey]
+                lvalue = learned_dict[fkey]
                 self._learned_values[key] = lvalue 
                 logger.debug(" - Loading value {} for state/ditem {}".format(lvalue, key))
         return
