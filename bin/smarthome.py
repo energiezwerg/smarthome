@@ -147,8 +147,8 @@ class SmartHome():
     # the APIs available though the smarthome object instance:
     shtime = None
 
-    plugins = None
     items = None
+    plugins = None
     logics = None
     scheduler = None
 
@@ -166,7 +166,7 @@ class SmartHome():
 #    __items = []
 #    __item_dict = {}
     __children = []
-    _utctz = TZ
+#    _utctz = TZ
     _logger = logging.getLogger(__name__)
     _default_language = 'de'
 
@@ -335,7 +335,7 @@ class SmartHome():
         :return: Bas directory as an absolute path
         :rtype: str
         """
-        self.deprecated_warning('sh.get_basedir()')
+        self._deprecated_warning('sh.get_basedir()')
         return self._base_dir
 
 
@@ -452,34 +452,39 @@ class SmartHome():
         # Init Items (load item definitions)
         #############################################################
         self._logger.info("Start initialization of items")
-        item_conf = None
-        item_conf = lib.config.parse_itemsdir(self._env_dir, item_conf)
-        item_conf = lib.config.parse_itemsdir(self._items_dir, item_conf, addfilenames=True)
-        
-        for attr, value in item_conf.items():
-            if isinstance(value, dict):
-                child_path = attr
-                try:
-                    child = lib.item.Item(self, self, child_path, value)
-                except Exception as e:
-                    self._logger.error("Item {}: problem creating: ()".format(child_path, e))
-                else:
-                    vars(self)[attr] = child
-#                    self.add_item(child_path, child)
-                    self.items.add_item(child_path, child)
-                    self.__children.append(child)
-#        for item in self.return_items():
-        for item in self.items.return_items():
-            item._init_prerun()
-#        for item in self.return_items():
-        for item in self.items.return_items():
-            item._init_run()
-#        self.item_count = len(self.__items)
-        self.item_count = self.items.item_count()
+        self.items.load_itemdefinitions(self._env_dir, self._items_dir)
 
+#        self._logger.warning("__children = {}".format(self.__children))
+        
+#        item_conf = None
+#        item_conf = lib.config.parse_itemsdir(self._env_dir, item_conf)
+#        item_conf = lib.config.parse_itemsdir(self._items_dir, item_conf, addfilenames=True)
+#        
+#        for attr, value in item_conf.items():
+#            if isinstance(value, dict):
+#                child_path = attr
+#                try:
+#                    child = lib.item.Item(self, self, child_path, value)
+#                except Exception as e:
+#                    self._logger.error("Item {}: problem creating: ()".format(child_path, e))
+#                else:
+#                    vars(self)[attr] = child
+##                    self.add_item(child_path, child)
+#                    self.items.add_item(child_path, child)
+#                    self.__children.append(child)
+#        del(item_conf)  # clean up
+
+##        for item in self.return_items():
+#        for item in self.items.return_items():
+#            item._init_prerun()
+##        for item in self.return_items():
+#        for item in self.items.return_items():
+#            item._init_run()
+##        self.item_count = len(self.__items)
+
+        self.item_count = self.items.item_count()
         self._logger.info("Items initialization finished, {} items loaded".format(self.items.item_count()))
         self.item_load_complete = True
-        del(item_conf)  # clean up
 
         #############################################################
         # Init Logics
@@ -596,8 +601,9 @@ class SmartHome():
     # Item Methods
     #################################################################
     def __iter__(self):
-        for child in self.__children:
-            yield child
+#        for child in self.__children:
+#            yield child
+        return items.get_toplevel_items()
 
 
     #################################################################
@@ -685,24 +691,6 @@ class SmartHome():
         self._logger.debug("Garbage collector: collected {0} objects.".format(c))
 
 
-    # obsolete by utils.
-    def string2bool(self, string):
-        """
-        This function is deprecated. Use ``lib.utils.Utils.to_bool(string)`` instead.
-
-        :param string: string to convert
-        :type string: str
-
-        :return: Parameter converted to bool
-        :rtype: bool
-        """
-
-        try:
-            return lib.utils.Utils.to_bool(string)
-        except Exception as e:
-            return None
-
-
     def object_refcount(self):
         """
         Function to return the number of defined objects in SmartHomeNG
@@ -733,7 +721,7 @@ class SmartHome():
     #####################################################################
     # Diplay DEPRECATED warning
     #####################################################################
-    def deprecated_warning(self, n_func=''):
+    def _deprecated_warning(self, n_func=''):
         """
         Display function deprecated warning
         """
@@ -781,6 +769,26 @@ class SmartHome():
         return    
     
     
+    # obsolete by utils.
+    def string2bool(self, string):
+        """
+        Returns the boolean value of a string
+
+        DEPRECATED - Use lib.utils.Utils.to_bool(string) instead
+
+        :param string: string to convert
+        :type string: str
+
+        :return: Parameter converted to bool
+        :rtype: bool
+        """
+        self._deprecated_warning('lib.utils.Utils.to_bool(string) function')
+        try:
+            return lib.utils.Utils.to_bool(string)
+        except Exception as e:
+            return None
+
+
     #################################################################
     # Item Methods
     #################################################################
@@ -796,7 +804,7 @@ class SmartHome():
         :type path: str
         :type item: object
         """
-        self.deprecated_warning('Items-API')
+        self._deprecated_warning('Items-API')
         return self.items.add_item(path, item)
 #        if path not in self.__items:
 #            self.__items.append(path)
@@ -815,7 +823,7 @@ class SmartHome():
         :return: Item
         :rtype: object
         """
-        self.deprecated_warning('Items-API')
+        self._deprecated_warning('Items-API')
         return self.items.return_item(string)
 #        if string in self.__items:
 #            return self.__item_dict[string]
@@ -830,7 +838,7 @@ class SmartHome():
         :return: List of all items
         :rtype: list
         """
-        self.deprecated_warning('Items-API')
+        self._deprecated_warning('Items-API')
         return self.items.return_items()
 #        for item in self.__items:
 #            yield self.__item_dict[item]
@@ -848,7 +856,7 @@ class SmartHome():
         :return: List of matching items
         :rtype: list
         """
-        self.deprecated_warning('Items-API')
+        self._deprecated_warning('Items-API')
         return self.items.match_items(regex)
 #        regex, __, attr = regex.partition(':')
 #        regex = regex.replace('.', '\.').replace('*', '.*') + '$'
@@ -875,7 +883,7 @@ class SmartHome():
         :return: list of matching items
         :rtype: list
         """
-        self.deprecated_warning('Items-API')
+        self._deprecated_warning('Items-API')
         return self.items.find_items(conf)
 #        for item in self.__items:
 #            if conf in self.__item_dict[item].conf:
@@ -896,7 +904,7 @@ class SmartHome():
         :return: list or matching child-items
         :rtype: list
         """
-        self.deprecated_warning('Items-API')
+        self._deprecated_warning('Items-API')
         return self.items.find_children(parent, conf)
 #        children = []
 #        for item in parent:
@@ -918,7 +926,7 @@ class SmartHome():
         :return: list of module names
         :rtype: list
         """
-        self.deprecated_warning('Modules-API')
+        self._deprecated_warning('Modules-API')
         return self.modules.return_modules()
 #        l = []
 #        for module_key in self._moduledict.keys():
@@ -939,7 +947,7 @@ class SmartHome():
         :return: list of module names
         :rtype: object
         """
-        self.deprecated_warning('Modules-API')
+        self._deprecated_warning('Modules-API')
         return self.modules.get_module(name)
 #        return self._moduledict.get(name)
 
@@ -957,9 +965,10 @@ class SmartHome():
         :rtype: list
         """
 
-        self.deprecated_warning('Plugins-API')
-        for plugin in self.plugins:
-            yield plugin
+        self._deprecated_warning('Plugins-API')
+        return self.plugins.get_module(name)
+#        for plugin in self.plugins:
+#            yield plugin
 
 
     #################################################################
@@ -971,7 +980,7 @@ class SmartHome():
 
         DEPRECATED - Use the Logics-API instead
         """
-        self.deprecated_warning('Logics-API')
+        self._deprecated_warning('Logics-API')
         self.logics.reload_logics()
 #        for logic in self._logics:
 #            self._logics[logic]._generate_bytecode()
@@ -989,7 +998,7 @@ class SmartHome():
         :return: object of the logic
         :rtype: object
         """
-        self.deprecated_warning('Logics-API')
+        self._deprecated_warning('Logics-API')
         self.logics.return_logic()
 #        return self._logics[name]
 
@@ -1003,7 +1012,7 @@ class SmartHome():
         :return: list of logic names
         :rtype: list
         """
-        self.deprecated_warning('Logics-API')
+        self._deprecated_warning('Logics-API')
         self.logics.return_logics()
 #        for logic in self._logics:
 #            yield logic
@@ -1022,7 +1031,7 @@ class SmartHome():
         :rtype: datetime
         """
 
-        self.deprecated_warning('Shtime-API')
+        self._deprecated_warning('Shtime-API')
 #        return datetime.datetime.now(self._tzinfo)
         return sh.shtime.now()
 
@@ -1036,7 +1045,7 @@ class SmartHome():
         :rtype: str
         """
 
-        self.deprecated_warning('Shtime-API')
+        self._deprecated_warning('Shtime-API')
 #        return self._tzinfo
         return self.shtime.tzinfo()
         
@@ -1051,7 +1060,7 @@ class SmartHome():
         :rtype: datetime
         """
 
-        self.deprecated_warning('Shtime-API')
+        self._deprecated_warning('Shtime-API')
 #        return datetime.datetime.now(self._utctz)
         return sh.shtime.utcnow()
 
@@ -1066,7 +1075,7 @@ class SmartHome():
         :rtype: str
         """
 
-        self.deprecated_warning('Shtime-API')
+        self._deprecated_warning('Shtime-API')
         return sh.shtime.utcinfo()
 #        return self._utctz
 
@@ -1081,7 +1090,7 @@ class SmartHome():
         :rtype: str
         """
 
-        self.deprecated_warning('Shtime-API')
+        self._deprecated_warning('Shtime-API')
         return self.shtime.runtime()
 #        return datetime.datetime.now() - self._starttime
 

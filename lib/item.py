@@ -66,6 +66,8 @@ class Items():
     __items = []
     __item_dict = {}
 
+    _children = []         # List of top level items
+
 
     def __init__(self, smarthome):
         self._sh = smarthome
@@ -74,10 +76,52 @@ class Items():
         _items_instance = self
 
 
+    def load_itemdefinitions(self, env_dir, items_dir):
+    
+        item_conf = None
+#        item_conf = lib.config.parse_itemsdir(self._env_dir, item_conf)
+#        item_conf = lib.config.parse_itemsdir(self._items_dir, item_conf, addfilenames=True)
+        item_conf = lib.config.parse_itemsdir(env_dir, item_conf)
+        item_conf = lib.config.parse_itemsdir(items_dir, item_conf, addfilenames=True)
+        
+        for attr, value in item_conf.items():
+            if isinstance(value, dict):
+                child_path = attr
+                try:
+#                    child = lib.item.Item(self, self, child_path, value)
+#                              (smarthome, parent, path, config):
+                    child = Item(self._sh, self, child_path, value)
+                except Exception as e:
+#                    self._logger.error("Item {}: problem creating: ()".format(child_path, e))
+                    logger.error("load_itemdefinitions: Item {}: problem creating: ()".format(child_path, e))
+                else:
+                    vars(self)[attr] = child
+                    vars(self._sh)[attr] = child
+#                    self.add_item(child_path, child)
+#                    self.items.add_item(child_path, child)
+                    self.add_item(child_path, child)
+                    self._children.append(child)
+#                    self._sh._SmartHome__children.append(child)
+        del(item_conf)  # clean up
+
+#        for item in self.return_items():
+        for item in self.return_items():
+            item._init_prerun()
+#        for item in self.return_items():
+        for item in self.return_items():
+            item._init_run()
+#        self.item_count = len(self.__items)
+#        self._sh.item_count = self.item_count()
+
+
+
     # aus bin/smarthome.py
 #    def __iter__(self):
 #        for child in self.__children:
 #            yield child
+    def get_toplevel_items(self):
+        for child in self._children:
+            yield child
 
     # aus lib.logic.py
 #    def __iter__(self):
@@ -741,6 +785,8 @@ class Item():
         eavuate the 'eval' entry of the actual item
         """
         if self._eval:
+            if self._path == 'wohnung.flur.szenen_helper':
+                logger.info("__run_eval: item = {}, value = {}, self._eval = {}".format(self._path, value, self._eval))
             sh = self._sh  # noqa
             shtime = self.shtime
             try:
@@ -751,6 +797,8 @@ class Item():
                 if value is None:
                     logger.debug("Item {}: evaluating {} returns None".format(self._path, self._eval))
                 else:
+                    if self._path == 'wohnung.flur.szenen_helper':
+                        logger.info("__run_eval: item = {}, value = {}".format(self._path, value))
                     self.__update(value, caller, source, dest)
 
 
@@ -759,6 +807,8 @@ class Item():
         """
         common method for __run_on_update and __run_on_change
         """
+        if self._path == 'wohnung.flur.szenen_helper':
+            logger.info("_run_on_xxx: item = {}, value = {}".format(self._path, value))
         sh = self._sh
         logger.info("Item {}: '{}' evaluating {} = {}".format(self._path, attr, on_dest, on_eval))
         try:

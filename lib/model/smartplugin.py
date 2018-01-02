@@ -24,6 +24,9 @@
 #import lib.scheduler
 
 from lib.model.smartobject import SmartObject
+
+from lib.shtime import Shtime
+from lib.module import Modules
 from lib.utils import Utils
 
 import logging
@@ -42,6 +45,7 @@ class SmartPlugin(SmartObject, Utils):
     _sh = None          #: Variable containing a pointer to the main SmartHomeNG object; is initialized during loading of the plugin; :Warning: Don't change it
     _shortname = ''     #: Shortname of the plugin; is initialized during loading of the plugin; :Warning: Don't change it
     _classname = ''     #: Classname of the plugin; is initialized during loading of the plugin; :Warning: Don't change it
+    shtime = None       #: Variable containing a pointer to the SmartHomeNG time handling object; is initialized during loading of the plugin; :Warning: Don't change it
 
     _pluginname_prefix = 'plugins.'
 
@@ -373,6 +377,9 @@ class SmartPlugin(SmartObject, Utils):
         :type smarthome: object
         """
         self._sh = smarthome
+        
+        if self.shtime is None:
+            self.shtime = Shtime.get_instance()
 
 
     def get_module(self, modulename):
@@ -380,7 +387,7 @@ class SmartPlugin(SmartObject, Utils):
         Test if module http is loaded and if loaded, return a handle to the module
         """
         try:
-            mymod = self.get_sh().get_module(modulename)
+            mymod = Modules.get_instance().get_module(modulename)
         except:
              mymod = None
         if mymod == None:
@@ -417,6 +424,13 @@ class SmartPlugin(SmartObject, Utils):
         pass
 
 
+    def now(self):
+        """
+        Returns SmartHomeNGs current time (timezone aware)
+        """
+        return self.shtime.now()
+        
+    
     def scheduler_add(self, name, obj, prio=3, cron=None, cycle=None, value=None, offset=None, next=None):
         """
         This methods adds a scheduler entry for a plugin-scheduler
