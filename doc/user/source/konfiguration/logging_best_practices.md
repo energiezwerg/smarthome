@@ -69,10 +69,10 @@ root:
 Sie loggt nur Warnungen und Fehler in das Hauptlog. Das Zusatzlog wird nicht beschrieben. Diese Grundkonfiguration definiert drei handler (Ziele für Logausgaben):
 
 * Die Konsole
-* Das Logfile **smarthome.log**, welches nur nur Warnungen und Fehler aufnimmt
+* Das Logfile **smarthome.log**, welches nur Warnungen und Fehler aufnimmt
 *  Das Logfile **smarthome-additional.log**, welches prinzipiell alle Logmeldungen (von DEBUG bis CRITICAL) aufnimmt
 
-Die beiden Handler die Logfiles schreiben, sind als rotierende Handler ausgelegt, die in eigenen Dateien die Logeinträge der letzten sieben Tage aufheben. 
+Die beiden Handler die Logfiles schreiben, sind als rotierende Handler ausgelegt, die in eigenen Dateien die Logeinträge der letzten sieben Tage aufheben.
 
 > **Note**: Die Rotation der Logfiles erfolgt um Mitternacht GMT, also nicht unbedingt um Mitternacht lokaler Zeit.
 
@@ -82,7 +82,7 @@ Die beiden Handler die Logfiles schreiben, sind als rotierende Handler ausgelegt
 
 Um zusätzliche Logausgaben zu konfigurieren muss nur der Abschnitt **logger:** der Logging Konfiguration angepasst/erweitert werden.
 
-Die meisten Plugins schreiben ihre Logausgaben in in einen eigenen Logger, falls dieser in **logging.yaml** definiert ist. Die Logausgaben werden dann in diesen eigenen Logger und in den root-Logger geschrieben. Die Konfiguration des root-Loggers verhindert, das INFO und DEBUG ausgaben ins Hauptlog kommen. 
+Die meisten Plugins schreiben ihre Logausgaben in einen eigenen Logger, falls dieser in **logging.yaml** definiert ist. Die Logausgaben werden dann in diesen eigenen Logger und in den root-Logger geschrieben. Die Konfiguration des root-Loggers verhindert, das INFO und DEBUG ausgaben ins Hauptlog kommen.
 
 Welche Ausgaben in das Zusatzlog kommen, wird durch die Konfiguration der einzelnen Logger festgelegt. Prinzipiell kann das Zusatzlog ja alle Loglevel aufnehmen.
 
@@ -118,7 +118,7 @@ Nun werden INFO Logs des mqtt Plugins, sowie DEBUG und INFO Logs des enogw Plugi
 
 ## Identifizieren von Neustarts im Zusatzlog
 
-Im Hauptlog wird eine Zeile 
+Im Hauptlog wird eine Zeile
 
 ```
 2017-08-18  10:44:37 WARNING  Main         --------------------   Init SmartHomeNG 1.3   --------------------
@@ -155,7 +155,7 @@ formatters:
     datefmt: '%Y-%m-%d  %H:%M:%S'
 ```
 
-Wenn man die Angabe `%(threadName)-12s`durch `%(name)-16s` ersetzt, wird stattdessen des Name des Loggers ausgegeben:
+Wenn man die Angabe `%(threadName)-12s`durch `%(name)-16s` ersetzt, wird stattdessen der Name des Loggers ausgegeben:
 
 ```yaml
 formatters:
@@ -203,4 +203,3 @@ handlers:
 ```
 
 Das bewirkt, dass im Zusatzlog die Funktionsnamen mit geloggt werden, während im Hauptlog das Logging unverändert das `simple` Format nutzt.
-

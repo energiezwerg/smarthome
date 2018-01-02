@@ -11,7 +11,7 @@ Ein beliebiger Rechner mit x86 or x64 CPU sollte funktionieren, genauso wie Rech
 Häufig verwendete Hardware ist:
 
 - Raspberry 1, Raspberry 2, Raspberry 3 (der Letztere wird aufgrund der besseren Hardware **unbedingt empfohlen**)
-  Der Großteil der Nutzer verwendet diese Hardware, Siehe `Umfrage <https://knx-user-forum.de/forum/supportforen/smarthome-py/1112952-welche-hardware-nutzt-ihr-f%C3%BCr-euer-smarthomeng>`_
+  Der Großteil der Nutzer verwendet diese Hardware, siehe [Umfrage](https://knx-user-forum.de/forum/supportforen/smarthome-py/1112952-welche-hardware-nutzt-ihr-f%C3%BCr-euer-smarthomeng)
 - Intel NUC (Empfohlen für Stabilität und Geschwindigkeit, auch wenn diese Rechner mehr Leistung haben, als benötigt wird. Unterstützt normale SATA Festplatten, was ein Vorteil gegenüber den Raspberry Pis mit ihren SD-Karten ist)
 - ODroid
 - Banana Pi
@@ -24,12 +24,12 @@ Häufig verwendete Hardware ist:
 Eine brauchbare Grundlage um SmartHomeNG auszuprobieren ist eine Virtuelle Maschine mit 512MB RAM und zwischen 20GB und 60GB Plattenplatz.
 
 ### Raspberry Pi 1, 2 oder 3, jeweils Modell B oder B+
-#### Vorteile: 
+#### Vorteile:
 * recht günstig im Einstieg, auch gebraucht zu bekommen
 * weit verbreitet
 * fertiges [Image](https://knx-user-forum.de/forum/supportforen/smarthome-py/979095-smarthomeng-image-file) von Onkelandy verfügbar
 
-#### Nachteile: 
+#### Nachteile:
 * Standardmäßig wird nur eine SD-Karte als Massenspeicher unterstützt - Hochwertige SD-Karte wird dringend empfohlen
   aufgrund der häufigen Schreibzyklen (Alternativ ist eine [Auslagerung der Dateien](https://knx-user-forum.de/forum/supportforen/smarthome-py/862047-wie-sqlite-auf-schnelleres-medium-verlagern) auf einen USB-Stick möglich
 * Empfindlich, braucht eine **sehr stabile Spannungsversorgung**
@@ -58,16 +58,16 @@ Eine brauchbare Grundlage um SmartHomeNG auszuprobieren ist eine Virtuelle Masch
 
 ### Weitere Einplatinencomputer (Banana PI, ODroid, BeagleBone, etc.)
 
-#### Vorteile: 
+#### Vorteile:
 * recht günstig im Einstieg
 * teilweise mit SATA Anschluß für Festplatte/SSD
 
-#### Nachteile: 
+#### Nachteile:
 * es hängt sehr von der Plattform ab ob sich Nachteile ergeben
 
 ## Betriebssystem
 
-Ein beliebiges Linux oder Unix System (mit Shell Zugang um die Requirements und SmartHomeNG zu installieren) sollte funktionieren. 
+Ein beliebiges Linux oder Unix System (mit Shell Zugang um die Requirements und SmartHomeNG zu installieren) sollte funktionieren.
 SmartHomeNG ist mindestend getestet auf Raspbian und Debian Jessie (amd64)
 
 Wenn eine Hardware ohne gepufferte Realtime Clock genutzt wird, ist der Einsatz eines NTP Deamons notwendig, um die Zeit über das Internet zu beziehen. Sonst wird SmartHomeNG aufgrund der fehlenden Zeitinformation nicht starten.
