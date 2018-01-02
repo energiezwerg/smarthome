@@ -90,7 +90,7 @@ if os.path.isfile(os.getcwd()+'/doc_version.flg'):
 else:
     release = shngversion.get_shng_docversion()
     commit, commit_short, branch, describe = shngversion._get_git_data()
-release += ' (as of ' + today
+release += ' (Stand ' + today
 if branch != 'master':
     release += ', commit '+commit_short
 release += ')'
