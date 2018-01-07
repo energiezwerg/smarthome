@@ -94,8 +94,8 @@ class MockSmartHome():
 #        self._tzinfo = dateutil.tz.tzutc()
 
 #        self.shtime.set_tzinfo(dateutil.tz.tzutc())
-#        TZ = gettz('UTC')
-        TZ = gettz('Europe/Berlin')
+#        TZ = dateutil.tz.gettz('UTC')
+        TZ = dateutil.tz.gettz('Europe/Berlin')
         self.shtime.set_tzinfo(TZ)
 
         self.scheduler = MockScheduler()
