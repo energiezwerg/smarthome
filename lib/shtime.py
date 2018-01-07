@@ -32,6 +32,7 @@ _shtime_instance = None    # Pointer to the initialized instance of the shtime c
 class Shtime:
 
     _tzinfo = None
+    _utctz = None
     _starttime = None
     
     
@@ -87,7 +88,9 @@ class Shtime:
         :return: Actual time for the local timezone
         :rtype: datetime
         """
-
+        
+        if self._tzinfo is None:
+            self._tzinfo = tz.gettz('UTC')
         # tz aware 'localtime'
         return datetime.datetime.now(self._tzinfo)
 
@@ -112,6 +115,8 @@ class Shtime:
         """
 
         # tz aware utc time
+        if self._utctz is None:
+            self._utctz = tz.gettz('UTC')
         return datetime.datetime.now(self._utctz)
 
 
