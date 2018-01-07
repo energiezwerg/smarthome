@@ -92,7 +92,12 @@ class MockSmartHome():
         self._plugins = []
         self.shtime = Shtime(self)
 #        self._tzinfo = dateutil.tz.tzutc()
-        self.shtime.set_tzinfo(dateutil.tz.tzutc())
+
+#        self.shtime.set_tzinfo(dateutil.tz.tzutc())
+#        TZ = gettz('UTC')
+        TZ = gettz('Europe/Berlin')
+        self.shtime.set_tzinfo(TZ)
+
         self.scheduler = MockScheduler()
         self.connections = lib.connection.Connections()
         
