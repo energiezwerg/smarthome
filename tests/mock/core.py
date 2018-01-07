@@ -155,7 +155,7 @@ class MockSmartHome():
     
     def now(self):
 #        return datetime.datetime.now()
-        return sh.shtime.now()
+        return self.shtime.now()
 
     def tzinfo(self):
 #        return self._tzinfo
