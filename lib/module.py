@@ -74,7 +74,7 @@ class Modules():
     
     def __init__(self, smarthome, configfile):
         self._sh = smarthome
-        self._sh._moduledict = {}
+#        self._sh._moduledict = {}
         global _modules_instance
         _modules_instance = self
 
@@ -95,8 +95,8 @@ class Modules():
                     except Exception as e:
                         logger.exception("Module {0} exception: {1}".format(module, e))
 
-        self._sh._moduledict = self._moduledict
-        logger.warning('Loaded Modules: {}'.format( str( self._sh.return_modules() ) ) )
+#        self._sh._moduledict = self._moduledict
+        logger.warning('Loaded Modules: {}'.format( str( self.return_modules() ) ) )
 
         # clean up (module configuration from module.yaml)
         del(_conf)  # clean up
@@ -278,7 +278,7 @@ class Modules():
             modules.xxx()
 
         
-        :return: logics instance
+        :return: modules instance
         :rtype: object of None
         """
         if _modules_instance == None:
@@ -322,9 +322,9 @@ class Modules():
         """
         logger.info('Start Modules')
 
-        for module in self._sh.return_modules():
+        for module in self.return_modules():
             logger.debug('Starting {} Module'.format(module))
-            self.m = self._sh.get_module(module)
+            self.m = self.get_module(module)
             self.m.start()
 
 
@@ -336,8 +336,8 @@ class Modules():
         """
         logger.warning('Stop Modules')
     
-        for module in self._sh.return_modules():
+        for module in self.return_modules():
             logger.debug('Stopping {} Module'.format(module))
-            self.m = self._sh.get_module(module)
+            self.m = self.get_module(module)
             self.m.stop()
 

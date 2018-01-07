@@ -5,10 +5,13 @@ import datetime
 import dateutil.tz
 import logging
 
-import lib.item
-import lib.plugin
 import lib.config
 import lib.connection
+
+import lib.item
+import lib.plugin
+from lib.shtime import Shtime
+from lib.module import Modules
 
 from lib.model.smartplugin import SmartPlugin
 from lib.constants import (YAML_FILE, CONF_FILE, DEFAULT_FILE)
@@ -64,6 +67,16 @@ class MockSmartHome():
 #    _log_config = os.path.join(_etc_dir,'logging'+YAML_FILE)
 #    _smarthome_conf_basename = None
 
+    # the APIs available though the smarthome object instance:
+    shtime = None
+
+    plugins = None
+    items = None
+    logics = None
+    scheduler = None
+
+    _SmartHome__items = []
+
 
     def __init__(self):
         VERSION = '1.3c.'
@@ -80,6 +93,14 @@ class MockSmartHome():
         self._tzinfo = dateutil.tz.tzutc()
         self.scheduler = MockScheduler()
         self.connections = lib.connection.Connections()
+        
+        self.shtime = Shtime(self)
+        # Start()
+#        self.scheduler = lib.scheduler.Scheduler(self)
+        self.modules = lib.module.Modules(self, configfile=self._module_conf_basename)
+        self.items = lib.item.Items(self)
+        self.plugins = lib.plugin.Plugins(self, configfile=self._plugin_conf_basename)
+        
 
     def get_defaultlanguage(self):
         return self._default_language
@@ -137,13 +158,19 @@ class MockSmartHome():
             self.__items.append(path)
         self.__item_dict[path] = item
 
+#    def return_item(self, string):
+#        if string in self.__items:
+#            return self.__item_dict[string]
+
+#    def return_items(self):
+#        for item in self.__items:
+#            yield self.__item_dict[item]
+
     def return_item(self, string):
-        if string in self.__items:
-            return self.__item_dict[string]
+        return self.items.return_item(string)
 
     def return_items(self):
-        for item in self.__items:
-            yield self.__item_dict[item]
+        return self.items.return_items()
 
     def return_plugins(self):
         for plugin in self._plugins:

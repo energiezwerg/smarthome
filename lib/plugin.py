@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-# Copyright 2011-2013   Marcus Popp                        marcus@popp.mx
-# Copyright 2016-       Christian Strassburg 
 # Copyright 2016-       Martin Sinn                         m.sinn@gmx.de
+# Copyright 2016-       Christian Strassburg 
+# Copyright 2011-2013   Marcus Popp                        marcus@popp.mx
 #########################################################################
 #  This file is part of SmartHomeNG
 #
@@ -80,9 +80,10 @@ class Plugins():
 
         # until Backend plugin is modified
         if os.path.isfile(configfile+ YAML_FILE):
-            smarthome._plugin_conf = configfile + YAML_FILE
+            self._plugin_conf_filename = configfile + YAML_FILE
         else:
-            smarthome._plugin_conf = configfile + CONF_FILE
+            self._plugin_conf_filename = configfile + CONF_FILE
+        smarthome._plugin_conf = self._plugin_conf_filename
 
         # read plugin configuration (from etc/plugin.yaml)
         _conf = lib.config.parse_basename(configfile, configtype='plugin')
@@ -288,6 +289,28 @@ class Plugins():
         else:
             return _plugins_instance
 
+
+    def return_plugins(self):
+        """
+        Returns a list with the instances of all loaded plugins
+
+        :return: list of plugin names
+        :rtype: list
+        """
+
+        for plugin in self._plugins:
+            yield plugin
+
+
+    def _get_plugin_conf_filename(self):
+        """
+        Returns the basename of the logic configuration file 
+        """
+        return self._plugin_conf_filename
+        
+
+
+    # ------------------------------------------------------------------------------------
 
     def start(self):
         logger.info('Start plugins')

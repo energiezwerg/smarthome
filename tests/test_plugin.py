@@ -94,17 +94,17 @@ class TestPlugin(unittest.TestCase):
 		self.assertIsNone(wolplug.plugin.get_iattr_value(config_mock, "key3"))
 
 	def test_plugin_instance_not_used_in_item_config(self):
-		it = self.sh.return_item("item3.item3b.item3b1")
+		it = self.sh.items.return_item("item3.item3b.item3b1")
 		self.assertIsNotNone(it)
 		self.assertEqual(len(it.get_method_triggers()),1)
 
 	def test_plugin_instance_used_in_item_config(self):
-		it = self.sh.return_item("item3.item3b.item3b1.item3b1a")
+		it = self.sh.items.return_item("item3.item3b.item3b1.item3b1a")
 		self.assertIsNotNone(it)
 		self.assertEqual(len(it.get_method_triggers()),2)
 
 	def test_plugin_instance_no_attributes_item_config(self):
-		it = self.sh.return_item("item3.item3b")
+		it = self.sh.items.return_item("item3.item3b")
 		self.assertIsNotNone(it)
 		self.assertEqual(len(it.get_method_triggers()),0)
 

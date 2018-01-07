@@ -35,6 +35,8 @@ import types  # noqa
 import subprocess  # noqa
 import inspect
 
+from lib.shtime import Shtime
+from lib.item import Items
 from lib.model.smartplugin import SmartPlugin
 
 import dateutil.relativedelta
@@ -46,7 +48,7 @@ logger = logging.getLogger(__name__)
 _scheduler_instance = None    # Pointer to the initialized instance of the scheduler class (for use by static methods)
 
 
-class PriorityQueue:
+class _PriorityQueue:
 
     def __init__(self):
         self.queue = []
@@ -78,6 +80,7 @@ class PriorityQueue:
         return len(self.queue)
 
 
+
 class Scheduler(threading.Thread):
 
     _workers = []
@@ -85,8 +88,8 @@ class Scheduler(threading.Thread):
     _worker_max = 20
     _worker_delta = 60  # wait 60 seconds before adding another worker thread
     _scheduler = {}
-    _runq = PriorityQueue()
-    _triggerq = PriorityQueue()
+    _runq = _PriorityQueue()
+    _triggerq = _PriorityQueue()
 
     _pluginname_prefix = 'plugins.'     # prefix for scheduler names
 
@@ -98,6 +101,9 @@ class Scheduler(threading.Thread):
         self._runc = threading.Condition()
         global _scheduler_instance
         _scheduler_instance = self
+        self.shtime = Shtime.get_instance()
+        self.items = Items.get_instance()
+
 
     # -------------------------------------------------------------------------------------------
     #   Following (static) method of the class Scheduler implement the API for schedulers in shNG
@@ -134,7 +140,8 @@ class Scheduler(threading.Thread):
         for i in range(self._worker_num):
             self._add_worker()
         while self.alive:
-            now = self._sh.now()
+#            now = self._sh.now()
+            now = self.shtime.now()
             if self._runq.qsize() > len(self._workers):
                 delta = now - self._last_worker
                 if delta.seconds > self._worker_delta:
@@ -192,6 +199,7 @@ class Scheduler(threading.Thread):
     def trigger(self, name, obj=None, by='Logic', source=None, value=None, dest=None, prio=3, dt=None):
         """
         triggers the execution of a logic optional at a certain datetime given with dt
+        
         :param name:
         :param obj:
         :param by:
@@ -275,18 +283,21 @@ class Scheduler(threading.Thread):
     def add(self, name, obj, prio=3, cron=None, cycle=None, value=None, offset=None, next=None, from_smartplugin=False):
         """
         Adds an entry to the scheduler.
+        
         :param name:
         :param obj:
         :param prio: a priority with default of 3 having 1 as most important and higher numbes less important
         :param cron: a crontab entry of type string or a list of entries
-        :param cycle: a time given as integer in seconds or a string with a time given in seconds and
-        a value after an equal sign
+        :param cycle: a time given as integer in seconds or a string with a time given in seconds and a value after an equal sign
         :param value:
-        :param offset: an optional offset for cycle. If not given, cycle start point will be varied between 10..15
-        seconds to prevent too many scheduler entries with the same starting times
+        :param offset: an optional offset for cycle. If not given, cycle start point will be varied between 10..15 seconds to prevent too many scheduler entries with the same starting times
         :param next:
         :param from_smartplugin:
         """
+        if self.shtime == None:
+            self.shtime = Shtime.get_instance()
+        if self.shtime == None:
+            self.items = Items.get_instance()
         self._lock.acquire()
         if isinstance(cron, str):
             cron = [cron, ]
@@ -309,7 +320,8 @@ class Scheduler(threading.Thread):
                         if op:
                             offset -= int(seconds)
                     value = _value
-                    next = self._sh.now() + datetime.timedelta(seconds=offset)
+#                    next = self._sh.now() + datetime.timedelta(seconds=offset)
+                    next = self.shtime.now() + datetime.timedelta(seconds=offset)
                 else:
                     _cron[desc] = _value
             if _cron == {}:
@@ -405,7 +417,8 @@ class Scheduler(threading.Thread):
             return
         next_time = None
         value = None
-        now = self._sh.now()
+#        now = self._sh.now()
+        now = self.shtime.now()
         now = now.replace(microsecond=0)
         if job['cycle'] is not None:
             cycle = list(job['cycle'].keys())[0]
@@ -433,7 +446,8 @@ class Scheduler(threading.Thread):
             yield job
 
     def _add_worker(self):
-        self._last_worker = self._sh.now()
+#        self._last_worker = self._sh.now()
+        self._last_worker = self.shtime.now()
         t = threading.Thread(target=self._worker)
         t.start()
         self._workers.append(t)
@@ -464,6 +478,8 @@ class Scheduler(threading.Thread):
             logic = obj  # noqa
             logics = obj._logics
             sh = self._sh  # noqa
+            shtime = self.shtime
+            items = self.items
             try:
                 if logic.enabled:
                     exec(obj.bytecode)
@@ -501,6 +517,7 @@ class Scheduler(threading.Thread):
         """
         inspects if a crontab entry contains a sunbound time instruction (e.g. "17:00<sunset<20:00") or
         if it contains a normal crontab entry (e.g. "*/5 6-19/1 * * *")
+        
         :param crontab: a string containing an enhanced crontab entry that may include a sunset/sunrise
         :return: a timezone aware datetime with the next event time or
         an error datatime object that lies 10 years in the future
@@ -522,11 +539,13 @@ class Scheduler(threading.Thread):
         """
         Inspects a given string with classic crontab information to calculate the next point in time that matches
         The function depends on the function now() of SmartHomeNG core
+        
         :param crontab: a string with crontab entries. It is expected to have the form of ``minute hour day weekday``
         :param next_month: inspect the current month or the next following month
         :return: false or datetime
         """
-        now = self._sh.now()
+#        now = self._sh.now()
+        now = self.shtime.now()
         minute, hour, day, wday = crontab.split(' ')
         # evaluate the crontab strings
         minute_range = self._range(minute, 00, 59)
@@ -621,25 +640,29 @@ class Scheduler(threading.Thread):
             next_time = self._sh.sun.rise(doff, moff)
             # time in next_time will be in utctime. So we need to adjust it
             if next_time.tzinfo == tzutc():
-                next_time = next_time.astimezone(self._sh.tzinfo())
+#                next_time = next_time.astimezone(self._sh.tzinfo())
+                next_time = next_time.astimezone(self.shtime.tzinfo())
             else:
                 self.logger.warning("next_time.tzinfo was not given as utc!")
         elif cron.startswith('sunset'):
             next_time = self._sh.sun.set(doff, moff)
             # time in next_time will be in utctime. So we need to adjust it
             if next_time.tzinfo == tzutc():
-                next_time = next_time.astimezone(self._sh.tzinfo())
+#                next_time = next_time.astimezone(self._sh.tzinfo())
+                next_time = next_time.astimezone(self.shtime.tzinfo())
             else:
                 self.logger.warning("next_time.tzinfo was not given as utc!")
         else:
             logger.error('Wrong syntax: {0}. Should be [H:M<](sunrise|sunset)[+|-][offset][<H:M]'.format(crontab))
             return datetime.datetime.now(tzutc()) + dateutil.relativedelta.relativedelta(years=+10)
 
-        now = self._sh.now()
+#        now = self._sh.now()
+        now = self.shtime.now()
         if smin is not None:
             h, sep, m = smin.partition(':')
             try:
-                dmin = next_time.replace(hour=int(h), minute=int(m), second=0, tzinfo=self._sh.tzinfo())
+#                dmin = next_time.replace(hour=int(h), minute=int(m), second=0, tzinfo=self._sh.tzinfo())
+                dmin = next_time.replace(hour=int(h), minute=int(m), second=0, tzinfo=self.shtime.tzinfo())
             except Exception:
                 logger.error('Wrong syntax: {0}. Should be [H:M<](sunrise|sunset)[+|-][offset][<H:M]'.format(crontab))
                 return datetime.datetime.now(tzutc()) + dateutil.relativedelta.relativedelta(years=+10)
@@ -648,7 +671,8 @@ class Scheduler(threading.Thread):
         if smax is not None:
             h, sep, m = smax.partition(':')
             try:
-                dmax = next_time.replace(hour=int(h), minute=int(m), second=0, tzinfo=self._sh.tzinfo())
+#                dmax = next_time.replace(hour=int(h), minute=int(m), second=0, tzinfo=self._sh.tzinfo())
+                dmax = next_time.replace(hour=int(h), minute=int(m), second=0, tzinfo=self.shtime.tzinfo())
             except Exception:
                 logger.error('Wrong syntax: {0}. Should be [H:M<](sunrise|sunset)[+|-][offset][<H:M]'.format(crontab))
                 return datetime.datetime.now(tzutc()) + dateutil.relativedelta.relativedelta(years=+10)
@@ -661,6 +685,7 @@ class Scheduler(threading.Thread):
     def _range(self, entry, low, high):
         """
         inspects a single crontab entry for minutes our hours
+        
         :param entry: a string with single entries of intervals, numeric ranges or single values
         :param low: lower limit as integer
         :param high: higher limit as integer
@@ -702,6 +727,7 @@ class Scheduler(threading.Thread):
     def _day_range(self, days):
         """
         inspect a given string with days given as integer numbers separated by ","
+        
         :param days:
         :return: an array with strings containing the days of month
         """
@@ -717,4 +743,5 @@ class Scheduler(threading.Thread):
             day = now + dateutil.relativedelta.relativedelta(weekday=wday(+2))
             result.append(day.strftime("%d"))
         return result
+
 
