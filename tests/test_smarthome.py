@@ -57,6 +57,13 @@ class SmarthomeTest(unittest.TestCase):
         self.assertTrue(bin.smarthome.SmartHome.string2bool(self,"t"))
         # self.assertTrue(bin.smarthome.SmartHome.string2bool(self,1))
 
+    #####################################################################
+    # Diplay DEPRECATED warning
+    #####################################################################
+    def _deprecated_warning(self, n_func=''):
+        pass
+        
+         
     def testConfigInit(self):
         logger.warning('')
         logger.warning('=== Begin Smarthome Tests: testConfigInit')
