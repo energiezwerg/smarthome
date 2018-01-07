@@ -21,6 +21,7 @@
 
 
 import datetime
+import dateutil
 import logging
 
 
@@ -90,7 +91,7 @@ class Shtime:
         """
         
         if self._tzinfo is None:
-            self._tzinfo = tz.gettz('UTC')
+            self._tzinfo = dateutil.tz.gettz('UTC')
         # tz aware 'localtime'
         return datetime.datetime.now(self._tzinfo)
 
@@ -116,7 +117,7 @@ class Shtime:
 
         # tz aware utc time
         if self._utctz is None:
-            self._utctz = tz.gettz('UTC')
+            self._utctz = dateutil.tz.gettz('UTC')
         return datetime.datetime.now(self._utctz)
 
 
