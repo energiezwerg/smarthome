@@ -28,7 +28,6 @@ import os
 import sys
 import psutil
 import fcntl
-import time
 
 logger = logging.getLogger(__name__)
 
@@ -72,17 +71,9 @@ def daemonize(pidfile,stdin='/dev/null', stdout='/dev/null', stderr=None):
         if pid > 0:
             # exit from second parent, print eventual PID before
             print ("Daemon PID %d" % pid )
-            write_pidfile(pid, pidfile)
             sys.exit(0)
         else:
-            while not os.path.exists(pidfile):
-                time.sleep(0.05) # wait for pidfile to be written
-            try:
-                fd = os.open(pidfile, os.O_RDONLY)
-                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                # don't close fd or lock is gone
-            except OSError as e:
-                print("Could not lock pid file: %d (%s)" % (e.errno, e.strerror) , file=sys.stderr)
+            write_pidfile(os.getpid(), pidfile)
         
     except OSError as  e: 
         print("fork #2 failed: %d (%s)" % (e.errno, e.strerror) , file=sys.stderr)
@@ -126,6 +117,13 @@ def write_pidfile(pid, pidfile):
     fd.write("%s" % pid)
     fd.close()
 
+    # lock pidfile:
+    try:
+        fd = os.open(pidfile, os.O_RDONLY)
+        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        # don't close fd or lock is gone
+    except OSError as e:
+        print("Could not lock pid file: %d (%s)" % (e.errno, e.strerror) , file=sys.stderr)
 
 def read_pidfile(pidfile):
     """
