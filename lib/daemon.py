@@ -27,6 +27,8 @@ import logging
 import os
 import sys
 import psutil
+import fcntl
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +73,17 @@ def daemonize(pidfile,stdin='/dev/null', stdout='/dev/null', stderr=None):
             # exit from second parent, print eventual PID before
             print ("Daemon PID %d" % pid )
             write_pidfile(pid, pidfile)
-            sys.exit(0) 
+            sys.exit(0)
+        else:
+            while not os.path.exists(pidfile):
+                time.sleep(0.05) # wait for pidfile to be written
+            try:
+                fd = os.open(pidfile, os.O_RDONLY)
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                # don't close fd or lock is gone
+            except OSError as e:
+                print("Could not lock pid file: %d (%s)" % (e.errno, e.strerror) , file=sys.stderr)
+        
     except OSError as  e: 
         print("fork #2 failed: %d (%s)" % (e.errno, e.strerror) , file=sys.stderr)
         sys.exit(1) 
@@ -145,7 +157,18 @@ def check_sh_is_running(pidfile):
     """
     
     pid = read_pidfile(pidfile)
-    return psutil.pid_exists(pid) if pid > 0 and pid != os.getpid() else False
+    isRunning = False
+    if pid > 0 and psutil.pid_exists(pid):
+        try:
+            fd = os.open(pidfile, os.O_RDONLY)
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            os.close(fd)
+            # pidfile not locked, so sh is terminated
+        except OSError as e:
+            # pidfile is locked, so sh is running
+            isRunning = True
+            pass
+    return isRunning
 
 
 def kill(pidfile, waittime=15):
