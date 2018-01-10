@@ -78,7 +78,6 @@ In die Datei folgendes einfügen:
 
 Nun muß der User smarthome noch bekannt gemacht werden mit ``sudo smbpasswd -a smarthome``.
 
-Im Windows Explorer sollten nun via **\\<IP des Rechners oder hostname>** zwei Freigaben angezeigt werden.
+Im Windows Explorer sollten nun via **`\\<IP des Rechners oder hostname>`** zwei Freigaben angezeigt werden.
 
 Da bei Samba immer wieder Sicherheitslöcher aufgedeckt werden, empfiehlt sich ein Ausschluß des SMB1 Protocols. Näheres dazu [hier](https://www.samba.org/samba/docs/man/manpages-3/smb.conf.5.html)
-

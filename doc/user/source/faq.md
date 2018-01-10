@@ -18,10 +18,8 @@ Antwort: ?
 
     Auf der Konfigurationsseite muss unter I/O-Connection folgendes eingetragen sein:
     - Driver: Smarthome.py
-    - Address: <IP Adresse oder DNS Name der SmartHomeNG Installation>
+    - Address: `<IP Adresse oder DNS Name der SmartHomeNG Installation>`
     - Port: 2424
     - Realtime: on
 
     Wichtig: Der Eintrag **localhost** als Adresse funktioniert **nicht**!
-
-

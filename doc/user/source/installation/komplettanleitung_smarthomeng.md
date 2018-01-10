@@ -59,10 +59,10 @@ touch logic.yaml
 
 #### smarthome.yaml
 
-In der **smarthome.yaml** stehen die Koordinaten des Standortes der Installation. Die Koordinaten werden benötigt um unter anderem Sonnenaufgang / -untergang zu berechnen. 
+In der **smarthome.yaml** stehen die Koordinaten des Standortes der Installation. Die Koordinaten werden benötigt um unter anderem Sonnenaufgang / -untergang zu berechnen.
 Die Koordinaten für einen Standort kann man z.B. [hier](http://www.mapcoordinates.net/de) ermitteln.
 
-Alternativ kann die mitgelieferte **smarthome.yaml.default** kopiert werden in **smarthome.yaml** mit ``cp smarthome.yaml.default smarthome.yaml`` 
+Alternativ kann die mitgelieferte **smarthome.yaml.default** kopiert werden in **smarthome.yaml** mit ``cp smarthome.yaml.default smarthome.yaml``
 oder das folgende Code snippet kann von der **cat** Zeile an bis zur Zeile unter **EOL** ausgewählt und ins ssh kopiert werden.
 
 ```
@@ -78,9 +78,9 @@ EOL
 In beiden Fällen sollte der Inhalt von **smarthome.yaml** nun mit einem Editor (z.B. **nano**) angepasst werden.
 
 
-#### plugin.yaml 
+#### plugin.yaml
 
-Auch hier wird eine **plugin.yaml.default** mitgeliefert mit den meisten Voreinstellungen die per ``cp plugin.yaml.default plugin.yaml`` 
+Auch hier wird eine **plugin.yaml.default** mitgeliefert mit den meisten Voreinstellungen die per ``cp plugin.yaml.default plugin.yaml``
 kopiert werden kann, allerdings sind in dieser Datei alle Einstellungen zunächst auskommentiert **#**.
 Alternativ dazu kann analog zur obigen **smarthome.yaml** das folgende Code snippet von der **cat** Zeile an bis zur Zeile unter **EOL** ausgewählt und ins ssh kopiert werden:
 
@@ -180,7 +180,7 @@ Jedes Plugin kann weitere Abhängigkeiten mit sich bringen. Diese sind einzeln z
 sudo pip3 install -r plugins/<plugin-name-hier-einsetzen>/requirements.txt
 ```
 
-oder aber alternativ kann man auch sämtliche von allen Plugins benötigten Module nachladen über 
+oder aber alternativ kann man auch sämtliche von allen Plugins benötigten Module nachladen über
 
 ```
 sudo pip3 install -r requirements/all.txt
@@ -209,7 +209,7 @@ Wir schauen nach ERROR und WARNING und versuchen diese zu vermeiden.
 ToDo: Erweitern.
 
 ### Backend Plugin nutzen
-Wenn jetzt erstmal SmartHomeNG am Laufen ist, sollte auch das Backend funktionieren. Dazu prüfen wir im Browser unter der Adresse **http:\\<IP vom SmartHomeNG>:8383** den Zugriff.
+Wenn jetzt erstmal SmartHomeNG am Laufen ist, sollte auch das Backend funktionieren. Dazu prüfen wir im Browser unter der Adresse **`http://<IP vom SmartHomeNG>:8383`** den Zugriff.
 Bei der Frage nach Benutzer und Passwort geben wir **admin** und **xxxx** ein. Jetzt ist erstmal die Spielwiese eröffnet. Der Backendserver ist unabhängig von der SmartVISU und funktioniert auch dann, wenn ihr kein visu Plugin geladen habt. Ein paar Bilder vom Backendserver:
 
 Der Item-Tree:
@@ -221,5 +221,5 @@ Die Dienste/Tools Seite:
 Die Logik-Liste:
 ![Backend Logiken](assets/Backend_Logiken.jpg)
 
-Die Szenen Übersicht_:
+Die Szenen Übersicht:
 ![Backend Logiken](assets/Backend_Szenen.jpg)
