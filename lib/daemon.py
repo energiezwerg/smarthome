@@ -28,6 +28,7 @@ import os
 import sys
 import psutil
 import fcntl
+import errno
 
 logger = logging.getLogger(__name__)
 
@@ -105,7 +106,7 @@ def remove_pidfile(pidfile):
 
 def write_pidfile(pid, pidfile):
     """
-    This method writes the PID to the pidfile.
+    This method writes the PID to the pidfile and locks it while the process is running.
     
     :param pid: PID of SmartHomeNG
     :param pidfile: Name of the pidfile to write to
@@ -145,12 +146,12 @@ def read_pidfile(pidfile):
 
 def check_sh_is_running(pidfile):
     """
-    This method deamonizes the sh.py process and redirects standard file descriptors.
+    This method checks whether another smarthome process process is already running.
     
     :param pidfile: Name of the pidfile to check
     :type pidfile: str
     
-    :return: True: if SmartHomeNG is running, False: if SmartHome is not running
+    :return: True: if SmartHomeNG is running, False: if SmartHome is not running     
     :rtype: bool
     """
     
@@ -160,12 +161,16 @@ def check_sh_is_running(pidfile):
         try:
             fd = os.open(pidfile, os.O_RDONLY)
             fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            os.close(fd)
             # pidfile not locked, so sh is terminated
         except OSError as e:
-            # pidfile is locked, so sh is running
-            isRunning = True
-            pass
+            if (e.errno == errno.EWOULDBLOCK):
+                # pidfile is locked, so sh is running
+                isRunning = True
+            else:
+                print("Error while testing lock in pidfile: %d (%s)" % (e.errno, e.strerror) , file=sys.stderr)
+        finally:
+            if fd:
+                os.close(fd)
     return isRunning
 
 
