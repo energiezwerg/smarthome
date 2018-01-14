@@ -23,6 +23,7 @@
 import datetime
 import dateutil
 import logging
+import os
 
 
 logger = logging.getLogger(__name__)
@@ -35,6 +36,7 @@ class Shtime:
     _tzinfo = None
     _utctz = None
     _starttime = None
+    tz = ''
     
     
     def __init__(self, smarthome):
@@ -42,6 +44,12 @@ class Shtime:
         _shtime_instance = self
         
         self._starttime = datetime.datetime.now()
+
+        # set default timezone to UTC
+#        global TZ
+        self.tz = 'UTC'
+        os.environ['TZ'] = self.tz
+        self.set_tzinfo(dateutil.tz.gettz('UTC'))
 
 
     # -------------------------------------------------------------------------------------------
@@ -71,6 +79,22 @@ class Shtime:
             return _shtime_instance
 
 
+    def set_tz(self, tz):
+        """
+        set timezone info from name of timezone
+        """
+        tzinfo = dateutil.tz.gettz(tz)
+        if tzinfo is not None:
+#            TZ = tzinfo
+            self.tz = tz
+            os.environ['TZ'] = self.tz
+#             self._tzinfo = TZ
+            self.set_tzinfo(tzinfo)
+        else:
+            logger.warning("Problem parsing timezone: {}. Using UTC.".format(tz))
+        return
+        
+        
     def set_tzinfo(self, tzinfo):
         """
         Set the timezone info
@@ -96,12 +120,23 @@ class Shtime:
         return datetime.datetime.now(self._tzinfo)
 
 
+    def tz(self):
+        """
+        Returns the the actual local timezone
+
+        :return: Timezone
+        :rtype: str
+        """
+
+        return self.tz
+
+
     def tzinfo(self):
         """
         Returns the info about the actual local timezone
 
         :return: Timezone info
-        :rtype: str
+        :rtype: object
         """
 
         return self._tzinfo

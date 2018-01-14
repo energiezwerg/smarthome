@@ -22,6 +22,16 @@
 #  along with SmartHomeNG. If not, see <http://www.gnu.org/licenses/>.
 #########################################################################
 
+
+#########################################################################
+#
+# TO DO:
+# - Isolate Logging (MemLog, etc.) to lib modile
+# - remove all remarks with old code (that has been moved to lib modules
+#
+#########################################################################
+
+
 #####################################################################
 # Check Python Version
 #####################################################################
@@ -96,7 +106,7 @@ from lib.constants import (YAML_FILE, CONF_FILE, DEFAULT_FILE)
 import bin.shngversion
 
 MODE = 'default'
-TZ = gettz('UTC')
+#TZ = gettz('UTC')
 VERSION = bin.shngversion.get_shng_version()
 
 
@@ -105,12 +115,17 @@ VERSION = bin.shngversion.get_shng_version()
 #####################################################################
 
 class _LogHandler(logging.StreamHandler):
-    def __init__(self, log):
+    """
+    LogHandler used by MemLog
+    """
+    def __init__(self, log, shtime):
         logging.StreamHandler.__init__(self)
         self._log = log
+        self._shtime = shtime
 
     def emit(self, record):
-        timestamp = datetime.datetime.fromtimestamp(record.created, TZ)
+#        timestamp = datetime.datetime.fromtimestamp(record.created, TZ)
+        timestamp = datetime.datetime.fromtimestamp(record.created, self._shtime.tzinfo())
         self._log.add([timestamp, record.threadName, record.levelname, record.message])
 
 
@@ -175,15 +190,18 @@ class SmartHome():
     plugin_start_complete = False
 
     def __init__(self, extern_conf_dir=_base_dir):
+        """
+        Initialization of main smarthome object
+        """
         self._extern_conf_dir = extern_conf_dir
         
-        self.shtime = Shtime(self)
         # set default timezone to UTC
-        global TZ
-        self.tz = 'UTC'
-        os.environ['TZ'] = self.tz
-#        self._tzinfo = TZ
-        self.shtime.set_tzinfo(TZ)
+#        global TZ
+        self.shtime = Shtime(self)
+#        self.tz = 'UTC'
+#        os.environ['TZ'] = self.tz
+##        self._tzinfo = TZ
+#        self.shtime.set_tzinfo(TZ)
         
         threading.currentThread().name = 'Main'
         self.alive = True
@@ -206,7 +224,7 @@ class SmartHome():
             return
 
         # setup logging
-        self.initLogging()
+        self.init_logging(self._log_conf_basename, MODE)
         self._logger.info("Using config dir: {}".format(self._extern_conf_dir))
 
         # Fork process and write pidfile
@@ -214,7 +232,7 @@ class SmartHome():
             lib.daemon.daemonize(PIDFILE)
 
         # Add Signal Handling
-        signal.signal(signal.SIGHUP, self.reload_logics)
+#        signal.signal(signal.SIGHUP, self.reload_logics)
         signal.signal(signal.SIGINT, self.stop)
         signal.signal(signal.SIGTERM, self.stop)
 
@@ -247,22 +265,24 @@ class SmartHome():
         self.initMemLog()
 
         #############################################################
-        # Setting (local) tz if set in smarthome.conf
+        # Setting (local) tz if set in smarthome.yaml
         if hasattr(self, '_tz'):
-            tzinfo = gettz(self._tz)
-            if tzinfo is not None:
-                TZ = tzinfo
-                self.tz = self._tz
-                os.environ['TZ'] = self.tz
-#                self._tzinfo = TZ
-                self.shtime.set_tzinfo(TZ)
-            else:
-                self._logger.warning("Problem parsing timezone: {}. Using UTC.".format(self._tz))
-            del(self._tz, tzinfo)
+            self.shtime.set_tz(self._tz)
+            del(self._tz)
+#            tzinfo = gettz(self._tz)
+#            if tzinfo is not None:
+#                TZ = tzinfo
+#                self.tz = self._tz
+#                os.environ['TZ'] = self.tz
+##                self._tzinfo = TZ
+#                self.shtime.set_tzinfo(TZ)
+#            else:
+#                self._logger.warning("Problem parsing timezone: {}. Using UTC.".format(self._tz))
+#            del(self._tz, tzinfo)
 
         self._logger.warning("--------------------   Init SmartHomeNG {0}   --------------------".format(VERSION))
         self._logger.debug("Python {0}".format(sys.version.split()[0]))
-        self._starttime = datetime.datetime.now()
+#        self._starttime = datetime.datetime.now()
 
         # test if a valid locale is set in the operating system
         try:
@@ -361,21 +381,17 @@ class SmartHome():
             if((c == 'logging' and not (os.path.isfile(conf_basename + YAML_FILE))) or
                (c != 'logging' and not (os.path.isfile(conf_basename + YAML_FILE)) and not (os.path.isfile(conf_basename + CONF_FILE)))):
                 if os.path.isfile(default):
-                    try:
-                        shutil.copy2(default, conf_basename + YAML_FILE)
-                    except PermissionError:
-                        print("Unable to create "+conf_basename + YAML_FILE+".")
-                        print ("You have no right to write to "+os.path.join(self._base_dir, 'etc'))
-                        exit(1)
-                        
+                    shutil.copy2(default, conf_basename + YAML_FILE)
 
-    def initLogging(self):
+
+    def init_logging(self, conf_basename='', MODE='default'):
         """
         This function initiates the logging for SmartHomeNG.
         """
-
-        fo = open(self._log_conf_basename + YAML_FILE, 'r')
-        doc = lib.shyaml.yaml_load(self._log_conf_basename + YAML_FILE, False)
+        if conf_basename == '':
+            conf_basename = self._log_conf_basename
+        fo = open(conf_basename + YAML_FILE, 'r')
+        doc = lib.shyaml.yaml_load(conf_basename + YAML_FILE, False)
         if doc == None:
             print()
             print("ERROR: Invalid logging configuration in file 'logging.yaml'")
@@ -400,7 +416,7 @@ class SmartHome():
         _logdate = "%Y-%m-%d %H:%M:%S"
         _logformat = "%(asctime)s %(levelname)-8s %(threadName)-12s %(message)s"
         formatter = logging.Formatter(_logformat, _logdate)
-        log_mem = _LogHandler(self.log)
+        log_mem = _LogHandler(self.log, self.shtime)
         log_mem.setLevel(logging.WARNING)
         log_mem.setFormatter(formatter)
         logging.getLogger('').addHandler(log_mem)
@@ -417,6 +433,7 @@ class SmartHome():
         The main thread that is beeing started is called ``Main``
         """
 
+        print('sh.start()')
         threading.currentThread().name = 'Main'
 
         #############################################################
@@ -495,6 +512,7 @@ class SmartHome():
         # Init Logics
         #############################################################
         self.logics = lib.logic.Logics(self, self._logic_conf_basename, self._env_logic_conf_basename)
+        signal.signal(signal.SIGHUP, self.logics.reload_logics)
 
         #############################################################
         # Init Scenes
@@ -525,6 +543,7 @@ class SmartHome():
                 self.connections.poll()
             except Exception as e:
                 self._logger.exception("Connection polling failed: {}".format(e))
+
 
     def stop(self, signum=None, frame=None):
         """
@@ -616,7 +635,7 @@ class SmartHome():
     #################################################################
     def add_log(self, name, log):
         """
-        Function to add a log to the list of logs (deprecated? -> old logging?)
+        Function to add a log to the list of logs (deprecated? -> old logging!)
 
         :param name: Name of log
         :param log: Log object
@@ -628,7 +647,7 @@ class SmartHome():
 
     def return_logs(self):
         """
-        Function to the list of logs (deprecated? -> old logging?)
+        Function to the list of logs (deprecated? -> old logging!)
 
         :return: List of logs
         :rtype: list
@@ -774,6 +793,10 @@ class SmartHome():
         return    
     
     
+    #####################################################################
+    # THE FOLLOWING METHODS ARE DEPRECATED
+    #####################################################################
+
     # obsolete by utils.
     def string2bool(self, string):
         """
