@@ -194,6 +194,10 @@ class Http():
             '/': {
                 'tools.staticdir.root': self.webif_dir,
             },
+            '/gstatic': {
+                'tools.staticdir.on': True,
+                'tools.staticdir.dir': 'gstatic',
+            },
             '/static': {
                 'tools.staticdir.on': True,
                 'tools.staticdir.dir': 'static'
@@ -222,6 +226,10 @@ class Http():
             '/static': {
                 'tools.staticdir.on': True,
                 'tools.staticdir.dir': 'static'
+            },
+            '/gstatic': {
+                'tools.staticdir.on': True,
+                'tools.staticdir.dir': 'gstatic',
             }
         }
         config_services = {
