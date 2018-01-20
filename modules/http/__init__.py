@@ -45,6 +45,8 @@ class Http():
     _hostmap = {}
     _hostmap_webifs = {}
     _hostmap_services = {}
+    
+    _gstatic_dir = ''
 
     
     def __init__(self, sh, port=None, servicesport=None, ip='', threads=8, starturl='', 
@@ -168,6 +170,8 @@ class Http():
         
         self.tplenv = Environment(loader=FileSystemLoader(os.path.join( self.webif_dir, 'templates' ) ))
 
+        self._gstatic_dir = self.webif_dir + '/gstatic'
+        
         self.module_conf = {
             '/': {
                 'tools.staticdir.root': self.webif_dir,
@@ -175,6 +179,10 @@ class Http():
                 'tools.trailing_slash.on': False,
                 'log.screen': False,
                 'request.dispatch': cherrypy.dispatch.VirtualHost(**self._hostmap),
+            },
+            '/gstatic': {
+                'tools.staticdir.on': True,
+                'tools.staticdir.dir': 'gstatic',
             },
             '/static': {
                 'tools.staticdir.on': True,
@@ -510,6 +518,10 @@ class Http():
             conf['/']['tools.auth_basic.realm'] = self._realm
             conf['/']['tools.auth_basic.checkpassword'] = self.validate_password
             
+        conf['/gstatic'] = {}
+        conf['/gstatic']['tools.staticdir.on'] = True
+        conf['/gstatic']['tools.staticdir.dir'] = self._gstatic_dir
+
         self.logger.info("Module http: Registering webinterface '{}' of plugin '{}' from pluginclass '{}' instance '{}'".format( webifname, pluginname, pluginclass, instance ) )
         self.logger.info(" - conf dict: '{}'".format( conf ) )
         if pluginclass != '':
