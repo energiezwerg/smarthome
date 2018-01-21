@@ -99,7 +99,7 @@ class SmartPlugin(SmartObject, Utils):
         :param instance: Name of this instance of the plugin
         :type instance: str
         """
-        if self.ALLOW_MULTIINSTANCE:
+        if hasattr(self, 'ALLOW_MULTIINSTANCE') and self.ALLOW_MULTIINSTANCE:
             self.__instance = instance
         else: 
             self.logger.warning("Plugin '{}': Only multi-instance capable plugins allow setting a name for an instance".format(self.get_shortname()))
@@ -147,15 +147,19 @@ class SmartPlugin(SmartObject, Utils):
         self._classname = classname
         
         
-    def get_version(self):
+    def get_version(self, extended=False):
         """
         Return plugin version
+        
+        :param extended: If True, returned version string contains (pv) if not the latest version is loaded 
         
         :return: plugin version
         :rtype: str
         """
-        return self.PLUGIN_VERSION
-        
+        if extended and ('_pv_' in self._plugin_dir):
+            return self.PLUGIN_VERSION + ' (pv)'
+        else:
+            return self.PLUGIN_VERSION
     
     def is_multi_instance_capable(self):
         """

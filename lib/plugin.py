@@ -190,9 +190,11 @@ class Plugins():
         :rtype: str, str
         """
         classname = plg_conf.get(KEY_CLASS_NAME,'')
-        plugin_version = plg_conf.get('plugin_version','').lower()
-        if plugin_version != '':
-            plugin_version = '._pv_' + plugin_version.replace('.','_')
+        plugin_version = ''
+        if plugin_name == '':
+            plugin_version = plg_conf.get('plugin_version','').lower()
+            if plugin_version != '':
+                plugin_version = '._pv_' + plugin_version.replace('.','_')
 
         if classname == '':
             classname = self.meta.get_string('classname')
