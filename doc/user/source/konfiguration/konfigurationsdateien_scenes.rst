@@ -149,8 +149,23 @@ Die Konfiguration der Szene in den Items erfolgt wie bisher.
 Im folgenden ist eine Beispiel Szene beschrieben, die als Ergänzung zu einer KNX-Szene eine
 Philips Hue Leuchte ansteuert.
 
+Dafür muss ein Szenen-Item angelegt werden:
+
 .. code-block:: yaml
-   :caption: Beispiel einer Szenen-Definition
+   :caption: Ausschnitt aus einer Item Datei
+
+   wohnung:
+       buero:
+           szenen:
+               type: scene
+
+Um festzulegen wie die Szenen aussehen sollen, muss im Verzeichnis **../scenes** eine
+Konfigurationsdatei für die Szene-Definition angelegt werden. Für das obige
+Beispiel muss die Datei den Namen **wohnung.buero.szenen.yaml** tragen.
+
+
+.. code-block:: yaml
+   :caption: wohnung.buero.szenen.yaml: Beispiel einer Szenen-Definition
 
    0:
        name: Aus
