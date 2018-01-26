@@ -400,6 +400,9 @@ class PluginWrapper(threading.Thread):
             self.get_implementation()._set_shortname(str(classpath).split('.')[1])
             self.get_implementation()._classpath = classpath
             self.get_implementation()._set_classname(classname)
+            # if instance != '' war auskommentiert, reaktiviert: 26.01.2018 MS
+            if self.get_implementation().ALLOW_MULTIINSTANCE is None:
+                self.get_implementation().ALLOW_MULTIINSTANCE = self.meta.get_bool('multi_instance')
             if instance != '':
                 logger.debug("set plugin {0} instance to {1}".format(name, instance ))
                 self.get_implementation()._set_instance_name(instance)
@@ -455,10 +458,17 @@ class PluginWrapper(threading.Thread):
                     try:
                         dummy = self.get_implementation().ALLOW_MULTIINSTANCE
                     except:
+#                        logger.warning("self.meta.get_bool('multi_instance') = {}".format(self.meta.get_bool('multi_instance')))
                         self.get_implementation().ALLOW_MULTIINSTANCE = self.meta.get_bool('multi_instance')
+#                        logger.warning("get_implementation().ALLOW_MULTIINSTANCE = {}".format(self.get_implementation().ALLOW_MULTIINSTANCE))
+                    if not self.get_implementation()._set_multi_instance_capable(self.meta.get_bool('multi_instance')):
+                        logger.error("Plugins: Loaded plugin '{}' ALLOW_MULTIINSTANCE differs between metadata ({}) and Python code ({})".format(name, self.meta.get_bool('multi_instance'), self.get_implementation().ALLOW_MULTIINSTANCE ))
                     logger.debug("Plugins: Loaded plugin '{}' (class '{}') v{}: {}".format( name, str(self.get_implementation().__class__.__name__), self.meta.get_version(), self.meta.get_mlstring('description') ) )
             else:
                 logger.debug("Plugins: Loaded classic-plugin '{}' (class '{}')".format( name, str(self.get_implementation().__class__.__name__) ) )
+            if instance != '':
+                logger.debug("set plugin {0} instance to {1}".format(name, instance ))
+                self.get_implementation()._set_instance_name(instance)
         else:
             logger.error("Plugins: Plugin '{}' initialization failed, plugin not loaded".format(classpath.split('.')[1]))
 

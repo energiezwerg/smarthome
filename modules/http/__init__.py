@@ -515,8 +515,12 @@ class Http():
         
         """
         pluginname = pluginname.lower()
+        instance = instance.lower()
         if webifname == '':
             webifname = pluginname
+        if instance != '':
+            webifname = webifname + '_' + instance
+        
         mount = '/' + webifname
         if description == '':
            description = 'Webinterface {} of plugin {}'.format(webifname, pluginname)
@@ -533,10 +537,12 @@ class Http():
         self.logger.info("Module http: Registering webinterface '{}' of plugin '{}' from pluginclass '{}' instance '{}'".format( webifname, pluginname, pluginclass, instance ) )
         self.logger.info(" - conf dict: '{}'".format( conf ) )
         if pluginclass != '':
-            if instance == '':
-                webif_key = webifname
-            else:
-                webif_key = instance + '@' + webifname
+            webif_key = webifname
+            # statt:
+#            if instance == '':
+#                webif_key = webifname
+#            else:
+#                webif_key = instance + '@' + webifname
             self._applications[webif_key] = {'Mount': mount, 'Pluginclass': pluginclass, 'Webifname': webifname, 'Pluginname': pluginname, 'Instance': instance, 'Conf': conf, 'Description': description}
             self.logger.info("self._applications['{}'] = {}".format(webif_key, self._applications[webif_key]))
         if len(self._hostmap_services) > 0:
@@ -582,8 +588,12 @@ class Http():
 
         """
         pluginname = pluginname.lower()
+        instance = instance.lower()
         if servicename == '':
             servicename = pluginname
+        if instance != '':
+            servicename = servicename + '_' + instance
+
         mount = '/' + servicename
         if description == '':
            description = 'Service {} of plugin {}'.format(servicename, pluginname)
@@ -596,10 +606,12 @@ class Http():
         self.logger.info("Module http: Registering service '{}' of plugin '{}' from pluginclass '{}' instance '{}'".format( servicename, pluginname, pluginclass, instance ) )
         self.logger.info(" - conf dict: '{}'".format( conf ) )
         if pluginclass != '':
-            if instance == '':
-                service_key = servicename
-            else:
-                service_key = instance + '@' + servicename
+            service_key = servicename
+            # statt:
+#            if instance == '':
+#                service_key = servicename
+#            else:
+#                service_key = instance + '@' + servicename
             self._services[servicename] = {'Mount': mount, 'Pluginclass': pluginclass, 'Servicename': servicename, 'Pluginname': pluginname, 'Instance': instance, 'Conf': conf, 'Description': description}
             self.logger.info("self._services['{}'] = {}".format(service_key, self._services[service_key]))
         if len(self._hostmap_webifs) > 0:

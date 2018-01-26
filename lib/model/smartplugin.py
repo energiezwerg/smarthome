@@ -41,6 +41,8 @@ class SmartPlugin(SmartObject, Utils):
     In adition the methods implemented in lib.utils.Utils are inhereted.
     """
     
+    ALLOW_MULTIINSTANCE = None
+
     __instance = ''     #: Name of this instance of the plugin
     _sh = None          #: Variable containing a pointer to the main SmartHomeNG object; is initialized during loading of the plugin; :Warning: Don't change it
     _shortname = ''     #: Shortname of the plugin; is initialized during loading of the plugin; :Warning: Don't change it
@@ -101,7 +103,7 @@ class SmartPlugin(SmartObject, Utils):
         """
         if hasattr(self, 'ALLOW_MULTIINSTANCE') and self.ALLOW_MULTIINSTANCE:
             self.__instance = instance
-        else: 
+        elif hasattr(self, 'ALLOW_MULTIINSTANCE') and not self.ALLOW_MULTIINSTANCE:
             self.logger.warning("Plugin '{}': Only multi-instance capable plugins allow setting a name for an instance".format(self.get_shortname()))
 
 
@@ -152,6 +154,7 @@ class SmartPlugin(SmartObject, Utils):
         Return plugin version
         
         :param extended: If True, returned version string contains (pv) if not the latest version is loaded 
+        :type extended: bool
         
         :return: plugin version
         :rtype: str
@@ -161,6 +164,24 @@ class SmartPlugin(SmartObject, Utils):
         else:
             return self.PLUGIN_VERSION
     
+
+    def _set_multi_instance_capable(self, mi):
+        """
+        Sets information if plugin is capable of multi instance handling (derived from metadate),
+        but only, if ALLOW_MULTIINSTANCE is not set in source code
+        
+        :param mi: True, if plugin is multiinstance capable
+        :type mi: bool 
+        :return: True, if success or ALLOW_MULTIINSTANCE == mi
+        :rtype: bool
+        """
+        if hasattr(self, 'ALLOW_MULTIINSTANCE') and (self.ALLOW_MULTIINSTANCE != None):
+            return (self.ALLOW_MULTIINSTANCE == mi)
+        else:
+            self.ALLOW_MULTIINSTANCE = mi
+        return True
+        
+
     def is_multi_instance_capable(self):
         """
         Returns information if plugin is capable of multi instance handling
