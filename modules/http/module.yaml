@@ -2,8 +2,8 @@
 module:
     # Global plugin attributes
     classname: Http
-    version: 1.4.5
-    sh_minversion: 1.3d
+    version: 1.4.6
+    sh_minversion: 1.4
 #   sh_maxversion:              # maximum shNG version to use this plugin (leave empty if latest)
     description:
         de: 'Modul zur Implementierung von Backend-Webinterfaces für Plugins'
