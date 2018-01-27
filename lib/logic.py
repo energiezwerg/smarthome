@@ -439,10 +439,7 @@ class Logics():
         """
         logger.debug("trigger_logic: Trigger logic = '{}'".format(name))
         if name in self.return_loaded_logics():
-            if self.is_logic_enabled(name):
-                self.scheduler.trigger(self._logicname_prefix+name, by='Backend')
-            else:
-                logger.warning("trigger_logic: Logic '{}' not triggered because it is disabled".format(name))
+            self.scheduler.trigger(self._logicname_prefix+name, by='Backend')
         else:
             logger.warning("trigger_logic: Logic '{}' not found/loaded".format(name))
 
@@ -976,6 +973,8 @@ class Logic():
     def trigger(self, by='Logic', source=None, value=None, dest=None, dt=None):
         if self.enabled:
             self.scheduler.trigger(self._logicname_prefix+self.name, self, prio=self.prio, by=by, source=source, dest=dest, value=value, dt=dt)
+        else:
+            logger.warning("trigger: Logic '{}' not triggered because it is disabled".format(self.name))
 
     def _generate_bytecode(self):
         if hasattr(self, 'pathname'):
