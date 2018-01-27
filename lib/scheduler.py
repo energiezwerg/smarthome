@@ -485,11 +485,11 @@ class Scheduler(threading.Thread):
                     exec(obj.bytecode)
                     # store timestamp of last run
                     obj.set_last_run()
-                for method in logic.get_method_triggers():
-                    try:
-                        method(logic, by, source, dest)
-                    except Exception as e:
-                        logger.exception("Logic: Trigger {} for {} failed: {}".format(method, logic.name, e))
+                    for method in logic.get_method_triggers():
+                        try:
+                            method(logic, by, source, dest)
+                        except Exception as e:
+                            logger.exception("Logic: Trigger {} for {} failed: {}".format(method, logic.name, e))
             except SystemExit:
                 # ignore exit() call from logic.
                 pass
