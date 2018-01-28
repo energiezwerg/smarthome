@@ -1,6 +1,6 @@
 export as namespace fontawesome;
-import {IconDefinition, IconLookup, IconName, IconPrefix} from '@fortawesome/fontawesome-common-types';
-export {IconDefinition, IconLookup, IconName, IconPrefix} from '@fortawesome/fontawesome-common-types';
+import {IconDefinition, IconLookup, IconName, IconPrefix, IconPack } from '@fortawesome/fontawesome-common-types';
+export {IconDefinition, IconLookup, IconName, IconPrefix, IconPack } from '@fortawesome/fontawesome-common-types';
 export const dom: DOM;
 export const library: Library;
 export const parse: { transform(transformString: string): Transform };
@@ -14,6 +14,23 @@ export function layer(
   ) => void
 ): Layer;
 export function icon(icon: IconName | IconLookup, params?: IconParams): Icon;
+
+declare const api: {
+  dom: DOM;
+  library: Library;
+  parse: { transform(transformString: string): Transform };
+  config: Config;
+  noAuto():void;
+  findIconDefinition(iconLookup: IconLookup): IconDefinition;
+  text(content: string, params?: Params): Text;
+  layer(
+    assembler: (
+      addLayerCallback: (layerToAdd: IconLookup | IconLookup[]) => void
+    ) => void
+  ): Layer;
+  icon(icon: IconName | IconLookup, params?: IconParams): Icon;
+}
+export default api;
 
 export type IconProp = IconName | [IconPrefix, IconName] | IconLookup;
 export type FlipProp = "horizontal" | "vertical" | "both";
@@ -95,7 +112,8 @@ export interface DOM {
   css(): string;
   insertCss(): string;
 }
+type IconDefinitionOrPack = IconDefinition | IconPack;
 export interface Library {
-  add(...definitions: IconDefinition[]): void;
+  add(...definitions: IconDefinitionOrPack[]): void;
   reset(): void;
 }
