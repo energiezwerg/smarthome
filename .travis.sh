@@ -57,9 +57,6 @@ for REPO in $REPOSITORIES ; do
     cd $REPO
     git checkout $REPOSITORY_BRANCH
     cd ..
-  else
-    echo "Moving checkout $TRAVIS_REPO_SLUG to $REPO ..."
-    mv ../$TRAVIS_REPO_SLUG $REPO
   fi
 done
 
