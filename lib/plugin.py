@@ -408,12 +408,14 @@ class PluginWrapper(threading.Thread):
                 self.get_implementation()._set_instance_name(instance)
             self.get_implementation()._set_sh(smarthome)
             self.get_implementation()._set_plugin_dir( os.path.join( os.path.dirname( os.path.dirname(os.path.abspath(__file__)) ), classpath.replace('.',os.sep) ) )
+            self.get_implementation()._plgtype = self.meta.get_string('type')
         else:
             # classic plugin
             self.get_implementation()._config_section = name
             self.get_implementation()._shortname = str(classpath).split('.')[1]
             self.get_implementation()._classpath = classpath
             self.get_implementation()._classname = classname
+            self.get_implementation()._plgtype = ''
 
         # get arguments defined in __init__ of plugin's class to self.args
         exec("self.args = inspect.getargspec({0}.{1}.__init__)[0][1:]".format(classpath, classname))
