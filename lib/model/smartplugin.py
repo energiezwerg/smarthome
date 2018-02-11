@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-#  Copyright 2016       Christian Strassburg      c.strassburg(a)gmx.de
 #  Copyright 2017-      Martin Sinn                       m.sinn@gmx.de
-# 
+#  Copyright 2016       Christian Strassburg      c.strassburg(a)gmx.de
 #########################################################################
 #  This file is part of SmartHomeNG
 #
@@ -514,3 +513,55 @@ class SmartPlugin(SmartObject, Utils):
         """
         raise NotImplementedError("'Plugin' subclasses should have a 'stop()' method")
         
+
+
+
+
+from jinja2 import Environment, FileSystemLoader
+from lib.module import Modules
+
+
+class SmartPluginWebIf():
+
+    def __init__(self, **kwargs):
+        pass
+
+    def init_template_ennvironment(self):
+        """
+        Initialize the Jinja2 template engine environment
+        
+        :return: Jinja2 template engine environment
+        :rtype: object
+        """
+        mytemplates = self.plugin.path_join( self.webif_dir, 'templates' )
+        globaltemplates = self.plugin.mod_http.gtemplates_dir
+        tplenv = Environment(loader=FileSystemLoader([mytemplates,globaltemplates]))
+
+        tplenv.globals['isfile'] = self.is_staticfile
+        return tplenv
+        
+        
+    def is_staticfile(self, path):
+        """
+        For use by Jinja2
+        -----------------
+        Method tests, if the given pathname points to an existing file in the webif's static
+        directory or the global static directory gstatic in the http module
+        
+        :param path: path to test
+        :param type: str
+        
+        :return: True if the file exists
+        :rtype: bool
+        """
+        if path.startswith('/gstatic/'):
+#            complete_path = self.plugin.path_join(Modules.get_instance().get_module('http')._gstatic_dir, path[len('/gstatic/'):])
+            complete_path = self.plugin.path_join(self.plugin.mod_http.gstatic_dir, path[len('/gstatic/'):])
+        else:
+            complete_path = self.plugin.path_join(self.webif_dir, path)
+        from os.path import isfile as isfile
+        result = isfile(complete_path)
+        self.logger.debug("is_staticfile: path={}, complete_path={}, result={}".format(path, complete_path, result))
+        return result
+
+

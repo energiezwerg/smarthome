@@ -48,6 +48,7 @@ class Http():
     
     _gstatic_dir = ''
     gtemplates_dir = ''
+    gstatic_dir = ''
 
     
     def __init__(self, sh, port=None, servicesport=None, ip='', threads=8, starturl='', 
@@ -134,6 +135,7 @@ class Http():
         #
         self.webif_dir = os.path.dirname(os.path.abspath(__file__)) + '/webif'
         self.gtemplates_dir = self.webif_dir + '/gtemplates'
+        self.gstatic_dir = self.webif_dir + '/gstatic'
 
         self.logger.info("Module 'http': ip address = {}, hostname = '{}'".format(self.get_local_ip_address(), self.get_local_hostname()))
         
