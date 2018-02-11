@@ -538,15 +538,16 @@ class SmartPluginWebIf():
         tplenv = Environment(loader=FileSystemLoader([mytemplates,globaltemplates]))
 
         tplenv.globals['isfile'] = self.is_staticfile
+        tplenv.globals['_'] = self.translate
         return tplenv
         
         
     def is_staticfile(self, path):
         """
-        For use by Jinja2
-        -----------------
         Method tests, if the given pathname points to an existing file in the webif's static
         directory or the global static directory gstatic in the http module
+
+        This method extends the jinja2 template engine
         
         :param path: path to test
         :param type: str
@@ -563,5 +564,26 @@ class SmartPluginWebIf():
         result = isfile(complete_path)
         self.logger.debug("is_staticfile: path={}, complete_path={}, result={}".format(path, complete_path, result))
         return result
+
+
+    def translate(txt, block=''):
+        """
+        Returns translated text - This is a DUMMY at the moment
+    
+        This method extends the jinja2 template engine
+        """
+        logger = logging.getLogger(__name__)
+
+        txt = str(txt)
+        return txt
+#        if translation_lang == '':
+#            tr = txt
+#        else:
+#            tr = _get_translation(txt, block)
+#
+#            if tr == '':
+#                logger.info("Backend: -> Language '{0}': Translation for '{1}' is missing".format(translation_lang, txt))
+#                tr = txt
+#        return html.escape(tr)
 
 
