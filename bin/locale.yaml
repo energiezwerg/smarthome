@@ -8,7 +8,12 @@ global_translations:
     'Gestoppt':      {'de': '=', 'en': 'Stopped'}
     'Benutzer':      {'de': '=', 'en': 'User'}
     'Passwort':      {'de': '=', 'en': 'Password'}
+    'Verbunden':     {'de': '=', 'en': 'Connected'}
     'Laufzeit':      {'de': '=', 'en': 'Uptime'}
+    'Firmware':      {'de': '=', 'en': '='}
+    'Name':          {'de': '=', 'en': '='}
+    'Version':       {'de': '=', 'en': '='}
+
     'Tag':           {'de': '=', 'en': 'day', 'fr': 'jour'}
     'Stunde':        {'de': '=', 'en': 'hour', 'fr': 'heure'}
     'Minute':        {'de': '=', 'en': 'minute', 'fr': 'minute'}
@@ -17,4 +22,18 @@ global_translations:
     'Stunden':       {'de': '=', 'en': 'hours', 'fr': 'heures'}
     'Minuten':       {'de': '=', 'en': 'minutes', 'fr': 'minutes'}
     'Sekunden':      {'de': '=', 'en': 'seconds', 'fr': 'secondes'}
+    
+    'Host':          {'de': '=', 'en': '='}
+    'Port':          {'de': '=', 'en': '='}
+    'IP':            {'de': '=', 'en': '='}
+    'Protokoll':     {'de': '=', 'en': 'Protocol'}
+    'Kanal':         {'de': '=', 'en': 'Channel'}
+    'Knoten':        {'de': '=', 'en': 'Node'}
+    'Funktion':      {'de': '=', 'en': 'Function'}
+    'Browser':       {'de': '=', 'en': '='}
+    'Adresse':       {'de': '=', 'en': 'Address'}
+    'Gerät':         {'de': '=', 'en': 'Device'}
+    'Geräte':        {'de': '=', 'en': 'Devices'}
 
+    'Typ':           {'de': '=', 'en': 'Type'}
+    'Wert':          {'de': '=', 'en': 'Value'}
