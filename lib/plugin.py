@@ -49,6 +49,7 @@ import inspect
 import os.path		# until Backend is modified
 
 import lib.config
+import lib.shyaml as shyaml
 from lib.model.smartplugin import SmartPlugin
 from lib.constants import (KEY_CLASS_NAME, KEY_CLASS_PATH, KEY_INSTANCE,YAML_FILE,CONF_FILE)
 #from lib.utils import Utils
@@ -90,6 +91,8 @@ class Plugins():
         if _conf == {}:
             return
             
+        self._load_translations()
+        
         logger.info('Load plugins')
         
         for plugin in _conf:
@@ -109,7 +112,7 @@ class Plugins():
                     instance = self._get_instancename(_conf[plugin])
                     dummy = self._test_duplicate_pluginconfiguration(plugin, classname, instance)
                     try:
-                        plugin_thread = PluginWrapper(smarthome, plugin, classname, classpath, args, instance, self.meta)
+                        plugin_thread = PluginWrapper(smarthome, plugin, classname, classpath, args, instance, self.meta, self._gtrans)
                         if plugin_thread._init_complete == True:
                             try:
                                 self._plugins.append(plugin_thread.plugin)
@@ -127,6 +130,18 @@ class Plugins():
         del(_conf)  # clean up
         
 
+    def _load_translations(self):
+        """
+        """
+        self._gtrans = {}
+        self.relative_filename = os.path.join( 'bin', 'locale'+YAML_FILE ) 
+        filename = os.path.join( self._sh.get_basedir(), self.relative_filename )
+        trans = shyaml.yaml_load(filename, ordered=False, ignore_notfound=True)
+        if trans != None:
+            self._gtrans = trans.get('global_translations', {})
+            logger.info("Loaded global translations = {}".format(self._gtrans))
+    
+    
     def _get_pluginname_and_metadata(self, plg_section, plg_conf):
         """
         Return the actual plugin name and the metadata instance
@@ -374,7 +389,7 @@ class PluginWrapper(threading.Thread):
     :type meta: object
     """
     
-    def __init__(self, smarthome, name, classname, classpath, args, instance, meta):
+    def __init__(self, smarthome, name, classname, classpath, args, instance, meta, gtranslations):
         """
         Initialization of wrapper class
         """
@@ -392,10 +407,21 @@ class PluginWrapper(threading.Thread):
             return
         exec("self.plugin = {0}.{1}.__new__({0}.{1})".format(classpath, classname))
 
+        relative_filename = os.path.join( classpath.replace('.', '/'), 'locale'+YAML_FILE ) 
+        filename = os.path.join( smarthome.get_basedir(), relative_filename )
+        trans = shyaml.yaml_load(filename, ordered=False, ignore_notfound=True)
+        if trans != None:
+            self._ptrans = trans.get('plugin_translations', {})
+            logger.info("Plugin '{}': Loaded plugin translations = {}".format(name, self._ptrans))
+        else:
+            self._ptrans = {}
+
         # make the plugin a method/function of the main smarthome object  (MS: Ist das zu früh? Falls Init fehlschlägt?)
 #        setattr(smarthome, self.name, self.plugin)
         # initialize attributes of the newly created plugin object instance
         if isinstance(self.get_implementation(), SmartPlugin):
+            self.get_implementation()._gtranslations = gtranslations
+            self.get_implementation()._ptranslations = self._ptrans
             self.get_implementation()._config_section = name
             self.get_implementation()._set_shortname(str(classpath).split('.')[1])
             self.get_implementation()._classpath = classpath

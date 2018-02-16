@@ -95,8 +95,7 @@ class Modules():
                     except Exception as e:
                         logger.exception("Module {0} exception: {1}".format(module, e))
 
-#        self._sh._moduledict = self._moduledict
-        logger.warning('Loaded Modules: {}'.format( str( self.return_modules() ) ) )
+        logger.info('Loaded Modules: {}'.format( str( self.return_modules() ) ) )
 
         # clean up (module configuration from module.yaml)
         del(_conf)  # clean up
@@ -334,7 +333,7 @@ class Modules():
         
         Call stop routine of module to clean up in case the module has started any threads
         """
-        logger.warning('Stop Modules')
+        logger.info('Stop Modules')
     
         for module in self.return_modules():
             logger.debug('Stopping {} Module'.format(module))

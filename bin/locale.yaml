@@ -1,0 +1,20 @@
+global_translations:
+    # Translations for the plugin specially for the web interface
+    'Ja':            {'de': '=', 'en': 'Yes', 'fr': 'Qui'}
+    'Nein':          {'de': '=', 'en': 'No', 'fr': 'Non'}
+    'Aktualisieren': {'de': '=', 'en': 'Update', 'fr': 'Recharger'}
+    'Schließen':     {'de': '=', 'en': 'Close', 'fr': 'Fermer'}
+    'Aktiv':         {'de': '=', 'en': 'Active'}
+    'Gestoppt':      {'de': '=', 'en': 'Stopped'}
+    'Benutzer':      {'de': '=', 'en': 'User'}
+    'Passwort':      {'de': '=', 'en': 'Password'}
+    'Laufzeit':      {'de': '=', 'en': 'Uptime'}
+    'Tag':           {'de': '=', 'en': 'day', 'fr': 'jour'}
+    'Stunde':        {'de': '=', 'en': 'hour', 'fr': 'heure'}
+    'Minute':        {'de': '=', 'en': 'minute', 'fr': 'minute'}
+    'Sekunde':       {'de': '=', 'en': 'second', 'fr': 'seconde'}
+    'Tage':          {'de': '=', 'en': 'days', 'fr': 'jours'}
+    'Stunden':       {'de': '=', 'en': 'hours', 'fr': 'heures'}
+    'Minuten':       {'de': '=', 'en': 'minutes', 'fr': 'minutes'}
+    'Sekunden':      {'de': '=', 'en': 'seconds', 'fr': 'secondes'}
+

@@ -208,10 +208,10 @@ class SmartPlugin(SmartObject, Utils):
         
     def _set_plugin_dir(self, dir):
         """
-        Set the object's local variable `_sh` to the main smarthomeNG object.
-        You can reference the main object of SmartHmeNG by using self._sh.
+        Set the object's local variable `_plugin_dir` to root directory of the plugins.
+        You can reference the main object of SmartHmeNG by using self._plugin_dir.
         
-        :Note: Usually **you don't need to call this method**, since it is called during loading of the plugin
+        :Note: Usually **you don't need to call this method**, since it is called during loading of the plugin by PluginWrapper
 
         :note: Only available in SmartHomeNG versions **beyond** v1.3
         
@@ -514,6 +514,38 @@ class SmartPlugin(SmartObject, Utils):
         raise NotImplementedError("'Plugin' subclasses should have a 'stop()' method")
         
 
+    def _get_translation(self, translation_lang, txt):
+        """
+        Returns translated text for a specified language - This is a DUMMY at the moment
+        """
+        translations = self._ptranslations.get(txt, {})
+        if translations == {}:
+            translations = self._gtranslations.get(txt, {})
+        return translations.get(translation_lang, '')
+        
+
+    def translate(self, txt):
+        """
+        Returns translated text
+        """        
+        txt = str(txt)
+        
+        translation_lang = self.get_sh().get_defaultlanguage()
+        translated_txt = self._get_translation(translation_lang, txt)
+        if translated_txt == '=':
+            translated_txt = txt
+        elif translated_txt == '':
+            translated_txt = self._get_translation('en', txt)
+            if translated_txt == '=':
+                translated_txt = txt
+            elif translated_txt == '':
+                translated_txt = txt
+                if self._ptranslations != {}:
+                    self.logger.warning("translate: Text '{}' to language '{}' -> no translation ('{}' or 'en') found".format(txt, translation_lang, translation_lang))
+            else:
+                self.logger.warning("translate: Text '{}' to language '{}' -> no translation found".format(txt, translation_lang))
+
+        return translated_txt
 
 
 
@@ -566,24 +598,11 @@ class SmartPluginWebIf():
         return result
 
 
-    def translate(txt, block=''):
+    def translate(self, txt, block=''):
         """
-        Returns translated text - This is a DUMMY at the moment
+        Returns translated text
     
         This method extends the jinja2 template engine
         """
-        logger = logging.getLogger(__name__)
-
-        txt = str(txt)
-        return txt
-#        if translation_lang == '':
-#            tr = txt
-#        else:
-#            tr = _get_translation(txt, block)
-#
-#            if tr == '':
-#                logger.info("Backend: -> Language '{0}': Translation for '{1}' is missing".format(translation_lang, txt))
-#                tr = txt
-#        return html.escape(tr)
-
+        return self.plugin.translate(txt)
 
