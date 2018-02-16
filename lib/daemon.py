@@ -167,7 +167,8 @@ def check_sh_is_running(pidfile):
                 # pidfile is locked, so sh is running
                 isRunning = True
             else:
-                print("Error while testing lock in pidfile: %d (%s)" % (e.errno, e.strerror) , file=sys.stderr)
+                print("Error while testing lock in pidfile %s: %d (%s)" % (pidfile, e.errno, e.strerror) , file=sys.stderr)
+                sys.exit(1)
         finally:
             if fd:
                 os.close(fd)
