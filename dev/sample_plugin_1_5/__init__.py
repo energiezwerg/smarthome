@@ -189,6 +189,11 @@ class SamplePlugin(SmartPlugin):
             self.logger.error("Plugin '{}': Not initializing the web interface".format(self.get_shortname()))
             return False
         
+        import sys
+        if not "SmartPluginWebIf" in list(sys.modules['lib.model.smartplugin'].__dict__):
+            self.logger.warning("Plugin '{}': Web interface needs SmartHomeNG v1.5 and up. Not initializing the web interface".format(self.get_shortname()))
+            return False
+
         # set application configuration for cherrypy
         webif_dir = self.path_join(self.get_plugin_dir(), 'webif')
         config = {

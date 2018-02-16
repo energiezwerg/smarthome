@@ -8,15 +8,15 @@
 				<tbody>
 					<tr>
 						<td class="py-1"><strong>Prompt 1</strong></td>
-						<td class="py-1">{% if 1 == 2 %}Ja{% else %}Nein{% endif %}</td>
+						<td class="py-1">{% if 1 == 2 %}{{ _('Ja') }}{% else %}{{ _('Nein') }}{% endif %}</td>
 						<td class="py-1" width="50px"></td>
 						<td class="py-1"><strong>Prompt 4</strong></td>
-						<td class="py-1">Wert 4</td>
+						<td class="py-1">{{ _('Wert 4') }}</td>
 						<td class="py-1" width="50px"></td>
 					</tr>
 					<tr>
 						<td class="py-1"><strong>Prompt 2</strong></td>
-						<td class="py-1">Wert 2</td>
+						<td class="py-1">{{ _('Wert 2') }}</td>
 						<td></td>
 						<td class="py-1"><strong>Prompt 5</strong></td>
 						<td class="py-1">-</td>
@@ -39,9 +39,11 @@
 	Additional buttons for the web interface (if any are needed) - displayed below the headtable-section
 -->
 {% block buttons %}
+{% if 1==2 %}
 	<form action="" method="post">
 	<button id="btn1" class="btn btn-shng btn-sm" name="learn" type="submit" value="on"><i class="fas fa-wifi"></i>&nbsp;&nbsp;&nbsp;Mach was&nbsp;</button>
 	</form>
+{% endif %}
 {% endblock %}
 
 <!--
@@ -63,6 +65,9 @@
 -->
 { % set tab1title = "<strong>" ~ p.get_shortname() ~ " Items</strong> (" ~ item_count ~ ")" % }
 {% block bodytab1 %}
+<div class="container-fluid m-2">
+	{{ _('Hier kommt der Inhalt des Webinterfaces hin.') }}
+</div>
 {% endblock %}
 
 
