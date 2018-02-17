@@ -109,7 +109,7 @@ class Plugins():
                 else:
                     args = self._get_conf_args(_conf[plugin])
 #                    logger.warning("Plugin '{}' from from section '{}': classname = {}, classpath = {}".format( str(classpath).split('.')[1], plugin, classname, classpath ) )
-                    instance = self._get_instancename(_conf[plugin])
+                    instance = self._get_instancename(_conf[plugin]).lower()
                     dummy = self._test_duplicate_pluginconfiguration(plugin, classname, instance)
                     try:
                         plugin_thread = PluginWrapper(smarthome, plugin, classname, classpath, args, instance, self.meta, self._gtrans)

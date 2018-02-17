@@ -37,3 +37,6 @@ global_translations:
 
     'Typ':           {'de': '=', 'en': 'Type'}
     'Wert':          {'de': '=', 'en': 'Value'}
+
+    'Item':          {'de': '=', 'en': '=', 'fr': '='}
+    'Items':         {'de': '=', 'en': '=', 'fr': '='}

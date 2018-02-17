@@ -541,9 +541,9 @@ class SmartPlugin(SmartObject, Utils):
             elif translated_txt == '':
                 translated_txt = txt
                 if self._ptranslations != {}:
-                    self.logger.warning("translate: Text '{}' to language '{}' -> no translation ('{}' or 'en') found".format(txt, translation_lang, translation_lang))
+                    self.logger.info("translate: Text '{}' to language '{}' -> no translation ('{}' or 'en') found".format(txt, translation_lang, translation_lang))
             else:
-                self.logger.warning("translate: Text '{}' to language '{}' -> no translation found".format(txt, translation_lang))
+                self.logger.info("translate: Text '{}' to language '{}' -> no translation found".format(txt, translation_lang))
 
         return translated_txt
 
