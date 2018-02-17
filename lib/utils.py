@@ -153,8 +153,8 @@ class Utils(object):
         :return: IPv4 address as a string
         :rtype: string
         """
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             s.connect(('10.255.255.255', 1))
             IP = s.getsockname()[0]
         except:
@@ -172,8 +172,8 @@ class Utils(object):
         :return: IPv6 address as a string
         :rtype: string
         """
-        s = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
         try:
+            s = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
             s.connect(('2001:4860:4860::8888', 1))
             IP = s.getsockname()[0]
         except:
