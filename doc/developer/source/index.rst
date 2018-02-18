@@ -1,4 +1,4 @@
-:tocdepth: 6
+:tocdepth: 7
 
 ###########
 SmartHomeNG
@@ -34,7 +34,7 @@ any way you want and can.
 
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 6
    :hidden:
    :titlesonly:
    
@@ -44,7 +44,7 @@ any way you want and can.
 
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 6
    :hidden:
 
    config
@@ -54,7 +54,7 @@ any way you want and can.
 
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 6
    :hidden:
    :titlesonly:
    
@@ -63,3 +63,4 @@ any way you want and can.
    development
    release
    genindex
+   impressum

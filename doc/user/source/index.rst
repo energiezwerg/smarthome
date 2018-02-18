@@ -57,3 +57,5 @@ oder im `Chat auf gitter.im <https://gitter.im/smarthomeNG/smarthome>`_ .
    entwickler_doku
    release
    genindex
+   impressum
+

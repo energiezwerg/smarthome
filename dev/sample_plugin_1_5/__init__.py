@@ -137,7 +137,7 @@ class SamplePlugin(SmartPlugin):
         Item has been updated
         
         This method is called, if the value of an item has been updated by SmartHomeNG.
-        If should write the changed value out to the device (hardware/interface) that 
+        It should write the changed value out to the device (hardware/interface) that 
         is managed by this plugin.
         
         :param item: item to be updated towards the plugin

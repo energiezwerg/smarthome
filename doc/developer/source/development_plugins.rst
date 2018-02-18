@@ -32,6 +32,9 @@ A plugin consists of a minimum of three files (without user- and developer docum
 +--------------------------+----------------------------------------------------------------------+
 | **plugin.yaml**          | The file containing the metadata of the plugin                       |               
 +--------------------------+----------------------------------------------------------------------+
+| **locale.yaml**          | Optional, containing translation strings for the multi-language      |
+|                          | implementation of a web interface                                    |
++--------------------------+----------------------------------------------------------------------+
 | **README.md** or         | A basic documentation file (in English language) - The documentation |
 | **README.rst**           | can be written in **markdown** or **restructured text** format       |
 +--------------------------+----------------------------------------------------------------------+
@@ -66,26 +69,40 @@ The plugin may have the following subdirectories:
 +--------------------------+----------------------------------------------------------------------+
 | assets                   | Containing files user by the **user_doc** or **developer_doc** files |
 +--------------------------+----------------------------------------------------------------------+
-| webif                    | Containing the files of a webinterface, if the plugin implements one |
+| webif                    | Containing the files of a webinterface, if the plugin implements     |
+|                          | one. This directory should contain two sub directories (**static**   |
+|                          | and **templates**).                                                  |
++--------------------------+----------------------------------------------------------------------+
+| webif/static             | Containing the files of a webinterface, if the plugin implements     |
++--------------------------+----------------------------------------------------------------------+
+| webif/static/css         | Optional, if cascading style sheets are needed by the web interface, |
+|                          | they go here.                                                        |
++--------------------------+----------------------------------------------------------------------+
+| webif/static/img         | Optional, if images are needed by the web interface, they go here.   |
++--------------------------+----------------------------------------------------------------------+
+| webif/templates          | The **templates** directory should contain the html tempate(s), at   |
+|                          | least **index.html**.                                                |
 +--------------------------+----------------------------------------------------------------------+
 
 
 The plugin code is a class based on the class SmartPlugin. The methods of SmartPlugin are documented here.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 5
    :titlesonly:
 
    development_plugin/smartplugin
 
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 5
    :titlesonly:
    :hidden:
    
    development_plugin/plugin_metadata
    development_plugin/plugin_documentation_files
+   development_plugin/webinterface
+   development_plugin/multilanguage
    development_plugin/sampleplugins
    modules_doc/modules_plugins
    modules_doc/modules_readmes
