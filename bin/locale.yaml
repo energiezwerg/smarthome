@@ -4,15 +4,15 @@ global_translations:
     'Nein':          {'de': '=', 'en': 'No', 'fr': 'Non'}
     'Aktualisieren': {'de': '=', 'en': 'Update', 'fr': 'Recharger'}
     'Schließen':     {'de': '=', 'en': 'Close', 'fr': 'Fermer'}
-    'Aktiv':         {'de': '=', 'en': 'Active'}
-    'Gestoppt':      {'de': '=', 'en': 'Stopped'}
-    'Benutzer':      {'de': '=', 'en': 'User'}
+    'Aktiv':         {'de': '=', 'en': 'Active', 'fr': 'Actif'}
+    'Gestoppt':      {'de': '=', 'en': 'Stopped', 'fr': 'Arrêté'}
+    'Benutzer':      {'de': '=', 'en': 'User', 'fr': 'Utilisateur'}
     'Passwort':      {'de': '=', 'en': 'Password'}
     'Verbunden':     {'de': '=', 'en': 'Connected'}
     'Laufzeit':      {'de': '=', 'en': 'Uptime'}
-    'Firmware':      {'de': '=', 'en': '='}
-    'Name':          {'de': '=', 'en': '='}
-    'Version':       {'de': '=', 'en': '='}
+    'Firmware':      {'de': '=', 'en': '=', 'fr': 'Micrologiciel'}
+    'Name':          {'de': '=', 'en': '=', 'fr': 'Nom'}
+    'Version':       {'de': '=', 'en': '=', 'fr': '='}
 
     'Tag':           {'de': '=', 'en': 'day', 'fr': 'jour'}
     'Stunde':        {'de': '=', 'en': 'hour', 'fr': 'heure'}
@@ -23,20 +23,20 @@ global_translations:
     'Minuten':       {'de': '=', 'en': 'minutes', 'fr': 'minutes'}
     'Sekunden':      {'de': '=', 'en': 'seconds', 'fr': 'secondes'}
     
-    'Host':          {'de': '=', 'en': '='}
-    'Port':          {'de': '=', 'en': '='}
-    'IP':            {'de': '=', 'en': '='}
-    'Protokoll':     {'de': '=', 'en': 'Protocol'}
-    'Kanal':         {'de': '=', 'en': 'Channel'}
-    'Knoten':        {'de': '=', 'en': 'Node'}
-    'Funktion':      {'de': '=', 'en': 'Function'}
-    'Browser':       {'de': '=', 'en': '='}
-    'Adresse':       {'de': '=', 'en': 'Address'}
-    'Gerät':         {'de': '=', 'en': 'Device'}
-    'Geräte':        {'de': '=', 'en': 'Devices'}
+    'Host':          {'de': '=', 'en': '=', 'fr': 'Hôte'}
+    'Port':          {'de': '=', 'en': '=', 'fr': '='}
+    'IP':            {'de': '=', 'en': '=', 'fr': '='}
+    'Protokoll':     {'de': '=', 'en': 'Protocol', 'fr': 'Protocole'}
+    'Kanal':         {'de': '=', 'en': 'Channel', 'fr': 'Canal'}
+    'Knoten':        {'de': '=', 'en': 'Node', 'fr': 'noeud'}
+    'Funktion':      {'de': '=', 'en': 'Function', 'fr': 'Fonction'}
+    'Browser':       {'de': '=', 'en': '=', 'fr': 'Navigateur'}
+    'Adresse':       {'de': '=', 'en': 'Address', 'fr': 'Adresse'}
+    'Gerät':         {'de': '=', 'en': 'Device', 'fr': 'Appareil'}
+    'Geräte':        {'de': '=', 'en': 'Devices', 'fr': 'Appareils'}
 
-    'Typ':           {'de': '=', 'en': 'Type'}
-    'Wert':          {'de': '=', 'en': 'Value'}
+    'Typ':           {'de': '=', 'en': 'Type', 'fr': 'Type'}
+    'Wert':          {'de': '=', 'en': 'Value', 'fr': 'Valeur'}
 
-    'Item':          {'de': '=', 'en': '=', 'fr': '='}
-    'Items':         {'de': '=', 'en': '=', 'fr': '='}
+    'Item':          {'de': '=', 'en': '=', 'fr': '=', 'fr': 'Objet'}
+    'Items':         {'de': '=', 'en': '=', 'fr': '=', 'fr': 'Objets'}
