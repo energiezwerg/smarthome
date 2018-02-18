@@ -6,6 +6,8 @@ global_translations:
     'Schließen':     {'de': '=', 'en': 'Close', 'fr': 'Fermer'}
     'Aktiv':         {'de': '=', 'en': 'Active', 'fr': 'Actif'}
     'Gestoppt':      {'de': '=', 'en': 'Stopped', 'fr': 'Arrêté'}
+    'aktiviert':     {'de': '=', 'en': 'enabled'}
+    'deaktiviert':   {'de': '=', 'en': 'disabled'}
     'Benutzer':      {'de': '=', 'en': 'User', 'fr': 'Utilisateur'}
     'Passwort':      {'de': '=', 'en': 'Password'}
     'Verbunden':     {'de': '=', 'en': 'Connected'}
