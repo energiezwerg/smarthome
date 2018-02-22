@@ -76,3 +76,8 @@ p {
 }
 /* background: #2980B9; RTD Blau */
 /* background: #CEE3F6; */
+
+rednew  {
+  textColor: red;
+  position: relative; top: -0.5em; font-size: 80%;
+}

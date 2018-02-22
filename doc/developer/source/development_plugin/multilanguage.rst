@@ -1,5 +1,7 @@
-Multi-Language Support
-======================
+.. index:: New; Multi-Language Support
+
+Multi-Language Support :sup:`new`
+=================================
 
 This documentation is valid vor SmartHomeNG versions beyond v1.4.2. It does not work on v1.4.2
 and below.
@@ -9,6 +11,10 @@ Words or phrases in the webinterface can be marked for translation.
 
 Marking text for translation
 ----------------------------
+
+1. In Jinja2 templates
+~~~~~~~~~~~~~~~~~~~~~~
+
 
 To mark a word or phrase for translation, it has to be part of a Jinja1 expression (it ha to 
 be included in ``{{ ... }}``).
@@ -33,6 +39,14 @@ constant string to be translated:
    :caption: Example with translation markup for `plugin/webif/templates/index.html`
 
 	<td class="py-1"><strong>{{ _('Service für den KNX Support') }}</strong></td>
+
+
+2. In Python code
+~~~~~~~~~~~~~~~~~
+
+To mark a word or phrase for translation, the function translate of the plugin has to be called:
+
+``translated _text = self.translate('text')``
 
 
 How translation works

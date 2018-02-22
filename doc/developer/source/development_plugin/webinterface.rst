@@ -1,5 +1,7 @@
-Web Interface
-=============
+.. index:: New; Web Interface
+
+Web Interface :sup:`new`
+========================
 
 This documentation is valid vor SmartHomeNG versions beyond v1.4.2. It does not work on v1.4.2
 and below.
