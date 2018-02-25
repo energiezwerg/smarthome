@@ -29,8 +29,9 @@ from lib.constants import (YAML_FILE, FOO, META_DATA_TYPES, META_DATA_DEFAULTS)
 
 META_MODULE_PARAMETER_SECTION = 'parameters'
 META_PLUGIN_PARAMETER_SECTION = 'parameters'
-#META_DATA_TYPES=['bool', 'int', 'float', 'str', 'list', 'dict', 'ip', 'ipv4', 'mac', 'foo']
-#META_DATA_DEFAULTS={'bool': False, 'int': 0, 'float': 0.0, 'str': '', 'list': [], 'dict': {}, 'OrderedDict': {}, 'num': 0, 'scene': 0, 'ip': '0.0.0.0', 'ipv4': '0.0.0.0', 'mac': '00:00:00:00:00:00', 'foo': None}
+META_PLUGIN_ITEMATTRIBUTE_SECTION = 'item_attributes'
+#META_DATA_TYPES=['bool', 'int', 'float','num', 'scene', 'str', ['list','list(subtype)'], 'dict', 'ip', 'ipv4', 'ipv6', 'mac', 'knx_ga', 'foo']
+#META_DATA_DEFAULTS={'bool': False, 'int': 0, 'float': 0.0, 'scene': 0, 'str': '', 'list': [], 'dict': {}, 'OrderedDict': {}, 'num': 0, 'scene': 0, 'ip': '0.0.0.0', 'ipv4': '0.0.0.0', 'mac': '00:00:00:00:00:00', 'knx_ga': '', 'foo': None}
 
 
 logger = logging.getLogger(__name__)
@@ -44,7 +45,6 @@ class Metadata():
         self._sh = sh
         self._addon_name = addon_name.lower()
         self._addon_type = addon_type
-        self._paramlist = []
 
         self._log_premsg = "{} '{}': ".format(addon_type, self._addon_name)
 
@@ -60,50 +60,106 @@ class Metadata():
         else:
             self.relative_filename = os.path.join( classpath.replace('.', os.sep), addon_type+YAML_FILE )
 #        logger.warning(self._log_premsg+"relative_filename = '{}'".format( self.relative_filename ) )
-        
-        self.parameters = None
+
+        # read definitions from metadata file        
         filename = os.path.join( self._sh.get_basedir(), self.relative_filename )
-        self.meta = shyaml.yaml_load(filename, ordered=True)
+        self.meta = shyaml.yaml_load(filename, ordered=False)
+
+        self.parameters = None
+        self._paramlist = []
+        self.itemdefinitions = None
+        self._itemdeflist = []
+
         if self.meta != None:
+            # read paramter and item definition sections
             if self._addon_type == 'module':
                 self.parameters = self.meta.get(META_MODULE_PARAMETER_SECTION)
             else:
                 self.parameters = self.meta.get(META_PLUGIN_PARAMETER_SECTION)
-            if self.parameters != None:
+                self.itemdefinitions = self.meta.get(META_PLUGIN_ITEMATTRIBUTE_SECTION)
+
+            # test validity of paramter definition section
+            if self.parameters is not None:
                 self._paramlist = list(self.parameters.keys())
                 logger.info(self._log_premsg+"Metadata paramlist = '{}'".format( str(self._paramlist) ) )
-            
-        # Test parameter definitions for validity
-        for param in self._paramlist:
-            logger.debug(self._log_premsg+"param = '{}'".format( str(param) ) )
-            if self.parameters[param] != None:
-                typ = str(self.parameters[param].get('type', FOO)).lower()
-                # to be implemented: timeframe
-                self.parameters[param]['listtype'] = ''
-                if not (typ in META_DATA_TYPES):
-                    # test for list with specified datatype
-                    if typ.startswith('list(') and typ.endswith(')'):
-                        self.parameters[param]['type'] = 'list'
-                        subtyp = typ[5:]
-                        subtyp = subtyp[:-1].strip()
-                        if subtyp in META_DATA_TYPES:
-                            self.parameters[param]['listtype'] = subtyp
-                        else:
-                            self.parameters[param]['listtype'] = FOO
-                    else:
-                        logger.error(self._log_premsg+"Invalid definition in metadata file '{}': type '{}' for parameter '{}' -> using type '{}' instead".format( self.relative_filename, typ, param, FOO ) )
-                        self.parameters[param]['type'] = FOO
+            if  self.parameters is not None:
+                self._test_definitions(self._paramlist, self.parameters)
             else:
-#                self.parameters[param]['type'] = FOO
-                pass
+                logger.info(self._log_premsg+"has no parameter definitions in metadata")
+
+            # test validity of item definition section
+            if self.itemdefinitions != None:
+                self._itemdeflist = list(self.itemdefinitions.keys())
+                logger.info(self._log_premsg+"Metadata itemdeflist = '{}'".format( str(self._itemdeflist) ) )
+            if  self.itemdefinitions is not None:
+                self._test_definitions(self._itemdeflist, self.itemdefinitions)
+            else:
+                logger.info(self._log_premsg+"has no item definitions in metadata")
             
         # Read global metadata for addon
-        
         if self.meta != None:
             self.addon_metadata = self.meta.get(addon_type)
         else:
             self.addon_metadata = None
         
+        return
+        
+    
+    def _test_definitions(self, definition_list, definition_dict):
+        """
+        Test parameter or item-attribute definitions for validity
+        """
+        definition_list = list(definition_dict.keys())
+#        logger.warning(self._log_premsg+"Metadata definition_list = '{}'".format( definition_list ) )
+        for definition in definition_list:
+            if definition_dict[definition] != None:
+                typ = str(definition_dict[definition].get('type', FOO)).lower()
+                # to be implemented: timeframe
+                definition_dict[definition]['listtype'] = [FOO]
+                definition_dict[definition]['listlen'] = 0
+                if definition_dict[definition].get('type', FOO) == 'list':
+                    logger.debug(self._log_premsg+"definition = '{}' of type '{}'".format(definition, str(definition_dict[definition].get('type', FOO)).lower() ) )
+                if not (typ in META_DATA_TYPES):
+                    # test for list with specified datatype
+                    if typ.startswith('list(') and typ.endswith(')'):
+                        logger.debug(self._log_premsg+"definition = '{}' of type '{}'".format(definition, str(definition_dict[definition].get('type', FOO)).lower() ) )
+                        definition_dict[definition]['type'] = 'list'
+                        listparam = typ[5:]
+                        listparam = listparam[:-1].strip().split(',')
+                        if len(listparam) > 0:
+                            if Utils.is_int(listparam[0]):
+                                l = int(listparam[0])
+                                if l < 0:
+                                    l = 0
+                                definition_dict[definition]['listlen'] = l
+                                listparam.pop(0)
+                            if len(listparam) == 0:
+                                listparam = [FOO]
+                        subtyp = ''
+                        if len(listparam) > 0:
+                            listparam2 = []
+                            for i in range(0,len(listparam)):
+                                if listparam[i] in META_DATA_TYPES:
+                                    listparam2.append(listparam[i])
+                                else:
+                                    listparam2.append(FOO)
+                                    logger.error(self._log_premsg+"definition = '{}': Invalid subtype '{}' specified, using '{}' instead".format(definition, listparam[i], FOO))
+                            listparam = listparam2
+
+                        definition_dict[definition]['listtype'] = listparam
+                        
+                    else:
+                        logger.error(self._log_premsg+"Invalid definition in metadata file '{}': type '{}' for parameter '{}' -> using type '{}' instead".format( self.relative_filename, typ, definition, FOO ) )
+                        definition_dict[definition]['type'] = FOO
+                
+                if definition_dict[definition].get('type', FOO) == 'list':
+                    logger.debug(self._log_premsg+"definition = '{}' list of subtype_list = {}, listlen={}".format(definition, definition_dict[definition]['listtype'], definition_dict[definition]['listlen'] ) )                      
+                else:
+                    logger.debug(self._log_premsg+"definition = '{}' list of listparam = >{}<, listlen={}".format(definition, definition_dict[definition]['listtype'], definition_dict[definition]['listlen'] ) )                      
+            else:
+                logger.info(self._log_premsg+"definition = '{}'".format( definition ) )
+        return
+
     
     def _strip_quotes(self, string):
         if type(string) is str:
@@ -261,6 +317,7 @@ class Metadata():
         """
         Returns True, if the value can be converted to the specified type
         """
+#        logger.warning(self._log_premsg+"_test_valuetype-list: typ={}, subtype={}, value={}".format(typ, subtype, value))
         if typ == 'bool':
             return (Utils.to_bool(value, default='?') != '?')
         elif typ == 'int':
@@ -278,23 +335,33 @@ class Metadata():
             if subtype != '' and subtype != FOO:
                 result = True
                 if isinstance(value, list):
-                    for val in value:
-                        if not self._test_valuetype(subtype, '', val):
+                    for i in range(0, len(value)):
+                        if i < len(subtype):
+                            sub = subtype[i]
+                        else:
+                            sub = subtype[len(subtype)-1]
+                        if not self._test_valuetype(sub, '', value[i]):
                             result = False
-#                            logger.warning("_test_valuetype: val = {}, result = False".format(val))
+#                            logger.warning("_test_valuetype: value[{}] = {}, sub = {}, result = False".format(i, value[i], sub))
 #                    logger.warning("_test_valuetype: value = {}, type(value) = {}, typ = {}, subtype = {}".format(value, type(value), typ, subtype))
                 return result
             return (type(value) is list)
         elif typ == 'dict':
             return (type(value) is dict)
         elif typ == 'ip':
-            if Utils.is_ip(value):
+            if Utils.is_ipv4(value):
+                return True
+            if Utils.is_ipv6(value):
                 return True
             return Utils.is_hostname(value)
         elif typ == 'ipv4':
-            return Utils.is_ip(value)
+            return Utils.is_ipv4(value)
+        elif typ == 'ipv6':
+            return Utils.is_ipv6(value)
         elif typ == 'mac':
             return Utils.is_mac(value)
+        elif typ == 'knx_ga':
+            return Utils.is_knx_groupaddress(value)
         elif typ == FOO:
             return True
 
@@ -306,6 +373,8 @@ class Metadata():
         if param in self._paramlist:
             typ = self.get_parameter_type(param)
             subtype = self.get_parameter_subtype(param)
+#            if subtype != '':
+#                logger.warning("_test_value '{}': before _test_valuetype(): typ = {}, subtype = {}, value = {}".format(param, typ, subtype, value))
             return self._test_valuetype(typ, subtype, value)
         return False
     
@@ -344,7 +413,9 @@ class Metadata():
                 result = [value]
         elif typ == 'dict':
             result = dict(value)
-        elif typ in ['ip', 'ipv4', 'mac']:
+        elif typ in ['ip', 'ipv4', 'ipv6', 'mac']:
+            result = str(value)
+        elif typ in ['knx_ga']:
             result = str(value)
         elif typ == FOO:
             result = value
@@ -403,7 +474,14 @@ class Metadata():
                                 result = valid_max
                             else:
                                 result = valid_max
-        
+            elif self.parameters[param].get('type') in ['list']:
+                 if self.parameters[param]['listlen'] > 0:
+                     if self.parameters[param]['listlen'] != len(value):
+                        logger.warning(self._log_premsg+"Invalid value '{}' in plugin configuration file for parameter '{}' -> length of list is not {}".format( value, param, self.parameters[param]['listlen'] ) )
+                        while len(value) < self.parameters[param]['listlen']:
+                            value.append('')
+                        result = value
+
         if self.parameters[param] == None:
             logger.warning(self._log_premsg+"_test_validity: param {}".format(param))
         else:
@@ -477,7 +555,7 @@ class Metadata():
         result = str(self.parameters[param].get('type', FOO)).lower()
         sub = ''
         if result == 'list':
-            sub =  self.parameters[param].get('listtype', '?')
+            sub =  self.parameters[param].get('listtype', ['?'])
         return sub
         
         
@@ -615,7 +693,7 @@ class Metadata():
                         allparams_ok = False
                     else:
                         addon_params[param] = self.get_parameter_defaultvalue(param)
-                        logger.error(self._log_premsg+"Found invalid value '{}' for parameter '{}' in /etc/{}, using default value '{}' instead".format(value, param, self._addon_type+YAML_FILE, str(addon_params[param])))
+                        logger.error(self._log_premsg+"Found invalid value '{}' for parameter '{}' (type {}) in /etc/{}, using default value '{}' instead".format(value, param, self.parameters[param]['type'], self._addon_type+YAML_FILE, str(addon_params[param])))
 
         return (addon_params, allparams_ok)
         

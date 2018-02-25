@@ -102,6 +102,8 @@ def yaml_load(filename, ordered=False, ignore_notfound=False):
         if ("while scanning a simple key" in estr) and ("could not found expected ':'" in estr):
             estr = estr[estr.find('column'):estr.find('could not')]
             estr = 'The colon (:) following a key has to be followed by a space. The space is missing!\nError in ' + estr
+        if '(line: ' in estr:
+            estr += '\nNOTE: To find correct line numbers: add 1 to line and divide by 2'
         if "[Errno 2]" in estr:
             if not ignore_notfound:
                 logger.warning("YAML-file not found: {}".format(filename))

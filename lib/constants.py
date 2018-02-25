@@ -30,10 +30,10 @@ ITEM_DEFAULTS= __defaults = {'num': 0, 'str': '', 'bool': False, 'list': [], 'di
 FOO = 'foo'
 
 #metadata types
-META_DATA_TYPES=['bool', 'int', 'float', 'str', 'list', 'dict', 'num', 'scene', 'ip', 'ipv4', 'mac', 'foo']
+META_DATA_TYPES=['bool', 'int', 'float', 'num', 'scene', 'str', 'list', 'dict', 'ip', 'ipv4', 'ipv6', 'mac', 'knx_ga', 'foo']
 META_DATA_DEFAULTS={'bool': False, 'int': 0, 'float': 0.0, 'str': '', 
                     'list': [], 'dict': {}, 'OrderedDict': {}, 'num': 0, 'scene': 0, 
-                    'ip': '0.0.0.0', 'ipv4': '0.0.0.0', 'mac': '00:00:00:00:00:00', 'foo': None}
+                    'ip': '0.0.0.0', 'ipv4': '0.0.0.0', 'ipv6': '', 'mac': '00:00:00:00:00:00', 'knx_ga': '', 'foo': None}
 
 #config params for items
 KEY_ENFORCE_UPDATES = 'enforce_updates'
