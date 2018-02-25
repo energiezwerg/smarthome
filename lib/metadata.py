@@ -510,10 +510,17 @@ class Metadata():
         :return: List of strings with parameter names
         :rtype: list of str
         """
-        result = []
-        for param in self._paramlist:
-            result.append(param)
-        return result
+        return self._paramlist
+        
+        
+    def get_itemdefinitionlist(self):
+        """
+        Returns the list of item attribute definitions
+        
+        :return: List of strings with item attribute names
+        :rtype: list of str
+        """
+        return self._itemdeflist
         
         
     def get_parameter_type(self, param):
@@ -559,6 +566,27 @@ class Metadata():
         return sub
         
         
+    def get_parameter_listlen(self, param):
+        """
+        Returns the len of a parameter of type list of a parameter
+        
+        :param param: Name of the parameter
+        :type param: str
+        
+        :return: subtype of the parameter
+        :rtype: str or None
+        """
+        if self.parameters == None:
+            return FOO
+        if self.parameters[param] == None:
+            return FOO
+        result = str(self.parameters[param].get('type', FOO)).lower()
+        llen = 0
+        if result == 'list':
+            llen =  self.parameters[param].get('listlen', ['?'])
+        return llen
+        
+        
     def get_parameter_type_with_subtype(self, param):
         """
         Returns the datatype of a parameter with subtype (if subtype exists)
@@ -580,6 +608,11 @@ class Metadata():
         result = str(self.parameters[param].get('type', FOO)).lower()
         sub = self.get_parameter_subtype(param)
         if sub != '':
+            llen = self.get_parameter_listlen(param)
+            if llen > 0:
+                sub = str(llen)+','+ str.join(',', sub)
+            else:
+                sub = str.join(',', sub)
             result = result+'(' + sub + ')'
         return result
         
