@@ -1,7 +1,9 @@
 .. index:: Logiken; Persistente Variablen
 
-Persistente Variablen in Logiken
-================================
+.. role:: bluesup
+
+Persistente Variablen :bluesup:`update`
+=======================================
 
 Normale Variablen innerhalb von Logiken sind zur für den jeweiligen Lauf gültig. Es ist jedoch 
 in einigen Fällen notwendig, Werte zwischen verschiedenen Läufen einer Logik zu übergeben.
@@ -10,12 +12,17 @@ Solche persistente Variablen sind in in Logiken von SmartHomeNG möglich, es sin
 Dinge zu beachten:
 
 - Diese Variablen sind über mehrere Läufe von Logiken persistent. Allerdings gilt das nur während 
-  des Laufs von SmartHomeNG. Bei einem Neustart von SmartHomeNG gehen diese Werte vrloren. 
+  des Laufs von SmartHomeNG. Bei einem Neustart von SmartHomeNG gehen diese Werte verloren. 
+  Der Wert einer sochen Variablen geht auch verloren, wenn die Logik über das Backend während 
+  der Laufzeit von SmartHomeNG gespeichert und neu geladen wird.
 - Beim 1. Lauf einer Logik nach dem Start von SmartHomeNG existieren diese Variablen nicht. Der 
   erste Zugriff innerhalb einer Logik muss deshalb in einen **if not hasattr():** Ausdruck 
   eingebunden werden.
-- Diese Variablen sind lokal zur Logik. Sie stehen außerhalb nicht zur Verfügung. Wenn die Daten
-  auch außerhalb der Logik verwendet werden, müssen sie in Items abgelegt werden.
+- Diese Variablen sind **lokal zur Logik**. Sie stehen außerhalb der Logik die sie definiert hat 
+  nicht zur Verfügung. Wenn die Daten auch außerhalb der Logik verwendet werden, müssen sie in 
+  Items abgelegt werden. (Ein Sonderfall sind Werte, die zwar außerhalb der definirenden Logik
+  verwendet werden sollen, aber nur in Logiken. Hier gibt es eine weitere Möglichkeit, die
+  weiter unten beschrieben wird).
 - Es dürfen einige Namen nicht verwendet werden, da sie interne Variablen des Logik Objektes
   überschreiben würden.
   
@@ -80,4 +87,43 @@ Neustart von SmartHomeNG verloren.
    Variablennamen dürfen nicht gleich einem Namen der Attribute sein, die auf der Seite 
    :doc:`./objekteundmethoden` beschrieben sind.
 
+
+Einrichten einer persistenten Variablen (Logik übergreifend)
+------------------------------------------------------------
+
+Statt eine persistende lokale Variable einzurichten:
+
+.. code-block:: python
+   :caption: persistent, lokal zu definierenden Logik
+   
+   logic.myvar = 'my Value'
+
+kann eine Variable Logik-übergreifend eingerichtet werden. Dann ist als Präfix statt *logic.* 
+der Präfix *logics.* zu verwenden:
+
+.. code-block:: python
+   :caption: persistent, für alle Logiken zugreifbar
+   
+   logics.myvar = 'my Value'
+
+Analog zur lokalen persistenten Variable muss die Existenz folgendermaßen sichergestellt werden:
+
+.. code-block:: python
+   :caption: Sicherstellen, dass die Variable existiert
+   
+   if not hasattr(logics, 'myvar'):
+       logics.myvar = None
+
+
+Unterschiede zu lokalen persistenten Variablen
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Eine einmal initialisierte Logik-übergreifende persistente Variable behält ihren Wert bis 
+zum Neustart von SmartHomeNG.
+
+.. attention::
+
+   Da die Variable ihren Wert auch behält, wenn die Logik die sie initialisiert hat neu geladen 
+   wird, kann es zu unerwarteten Ergebnissen kommen, da sich die Logik nun evtl. bei einem Neustart
+   der Logik anders verhält, als beim Neustart von SmartHomeNG!
 

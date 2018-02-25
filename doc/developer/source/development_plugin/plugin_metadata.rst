@@ -1,5 +1,8 @@
-Plugin Metadata
-===============
+
+.. role:: bluesup
+
+Plugin Metadata :bluesup:`update`
+=================================
 
 Plugins are configured in ``etc/plugin.yaml``. The parameters are described in the README.md
 files of the plugins.

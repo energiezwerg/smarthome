@@ -21,5 +21,5 @@ Am Beispiel des Trenners **``Tests``** zeigt die folgende Konfiguration, wie Tre
             sv_widget = "{{ basic.switch('wohnung.buero.tv', 'wohnung.buero.tv', icon0~'control_on_off.png', icon0~'control_standby.png') }} <br> {{ basic.switch('wohnung.buero.computer', 'wohnung.buero.computer', icon0~'control_on_off.png', icon0~'control_standby.png') }} <br> {{ basic.switch('wohnung.buero.schrank', 'wohnung.buero.schrank', icon0~'control_on_off.png', icon0~'control_standby.png') }} <br> {{ basic.switch('wohnung.buero.steckdose_tuer', 'wohnung.buero.steckdose_tuer', icon0~'control_on_off.png', icon0~'control_standby.png') }}"
 ```
 
-``sv_blocksize`` dient zur Einstellung der (minimalen) Blockhöhe und dasrf die Werte 1, 2 oder 3 annehmen. Wird ``sv_blocksize ``nicht angegeben, so wird der Default-Wert **2** benutzt.
+``sv_blocksize`` dient zur Einstellung der (minimalen) Blockhöhe und darf die Werte 1, 2 oder 3 annehmen. Wird ``sv_blocksize ``nicht angegeben, so wird der Default-Wert **2** benutzt.
 

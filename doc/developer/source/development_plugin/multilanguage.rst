@@ -1,7 +1,9 @@
 .. index:: New; Multi-Language Support
 
-Multi-Language Support :sup:`new`
-=================================
+.. role:: redsup
+
+Multi-Language Support :redsup:`new`
+====================================
 
 This documentation is valid vor SmartHomeNG versions beyond v1.4.2. It does not work on v1.4.2
 and below.

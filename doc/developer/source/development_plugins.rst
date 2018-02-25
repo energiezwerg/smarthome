@@ -38,11 +38,11 @@ A plugin consists of a minimum of three files (without user- and developer docum
 | **README.md** or         | A basic documentation file (in English language) - The documentation |
 | **README.rst**           | can be written in **markdown** or **restructured text** format       |
 +--------------------------+----------------------------------------------------------------------+
-| **user_doc.rst** or      | Optional, a user documentation file (in German language). It         |
-| **user_doc.rst**         | will be included in the navigation of the user documentation.        |
+| **user_doc.rst**         | Optional, a user documentation file (in German language). It         |
+|                          | will be included in the navigation of the user documentation.        |
 +--------------------------+----------------------------------------------------------------------+
-| **developer_doc.rst** or | Optional, a developer documentation file (in English language).      |
-| **developer_doc.rst**    | It will be included in the navigation of the developer documentation |
+| **developer_doc.rst**    | Optional, a developer documentation file (in English language).      |
+|                          | It will be included in the navigation of the developer documentation |
 +--------------------------+----------------------------------------------------------------------+
    
 If one of the documentation files (**user_doc.\*** or **developer_doc.\***) should include images or 
