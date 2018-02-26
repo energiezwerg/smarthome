@@ -1,44 +1,49 @@
 global_translations:
     # Translations for the plugin specially for the web interface
-    'Ja':            {'de': '=', 'en': 'Yes', 'fr': 'Qui'}
-    'Nein':          {'de': '=', 'en': 'No', 'fr': 'Non'}
-    'Aktualisieren': {'de': '=', 'en': 'Update', 'fr': 'Recharger'}
-    'Schließen':     {'de': '=', 'en': 'Close', 'fr': 'Fermer'}
-    'Aktiv':         {'de': '=', 'en': 'Active', 'fr': 'Actif'}
-    'Gestoppt':      {'de': '=', 'en': 'Stopped', 'fr': 'Arrêté'}
-    'aktiviert':     {'de': '=', 'en': 'enabled'}
-    'deaktiviert':   {'de': '=', 'en': 'disabled'}
-    'Benutzer':      {'de': '=', 'en': 'User', 'fr': 'Utilisateur'}
-    'Passwort':      {'de': '=', 'en': 'Password'}
-    'Verbunden':     {'de': '=', 'en': 'Connected'}
-    'Laufzeit':      {'de': '=', 'en': 'Uptime'}
-    'Firmware':      {'de': '=', 'en': '=', 'fr': 'Micrologiciel'}
-    'Name':          {'de': '=', 'en': '=', 'fr': 'Nom'}
-    'Version':       {'de': '=', 'en': '=', 'fr': '='}
+    'Ja':              {'de': '=', 'en': 'Yes', 'fr': 'Qui'}
+    'Nein':            {'de': '=', 'en': 'No', 'fr': 'Non'}
+    'Aktualisieren':   {'de': '=', 'en': 'Update', 'fr': 'Recharger'}
+    'Schließen':       {'de': '=', 'en': 'Close', 'fr': 'Fermer'}
+    'Aktiv':           {'de': '=', 'en': 'Active', 'fr': 'Actif'}
+    'Gestoppt':        {'de': '=', 'en': 'Stopped', 'fr': 'Arrêté'}
+    'aktiviert':       {'de': '=', 'en': 'enabled'}
+    'deaktiviert':     {'de': '=', 'en': 'disabled'}
+    'Benutzer':        {'de': '=', 'en': 'User', 'fr': 'Utilisateur'}
+    'Passwort':        {'de': '=', 'en': 'Password'}
+    'Verbunden':       {'de': '=', 'en': 'Connected'}
+    'Laufzeit':        {'de': '=', 'en': 'Uptime'}
+    'Firmware':        {'de': '=', 'en': '=', 'fr': 'Micrologiciel'}
+    'Name':            {'de': '=', 'en': '=', 'fr': 'Nom'}
+    'Version':         {'de': '=', 'en': '=', 'fr': '='}
 
-    'Tag':           {'de': '=', 'en': 'day', 'fr': 'jour'}
-    'Stunde':        {'de': '=', 'en': 'hour', 'fr': 'heure'}
-    'Minute':        {'de': '=', 'en': 'minute', 'fr': 'minute'}
-    'Sekunde':       {'de': '=', 'en': 'second', 'fr': 'seconde'}
-    'Tage':          {'de': '=', 'en': 'days', 'fr': 'jours'}
-    'Stunden':       {'de': '=', 'en': 'hours', 'fr': 'heures'}
-    'Minuten':       {'de': '=', 'en': 'minutes', 'fr': 'minutes'}
-    'Sekunden':      {'de': '=', 'en': 'seconds', 'fr': 'secondes'}
+    'Tag':             {'de': '=', 'en': 'day', 'fr': 'jour'}
+    'Stunde':          {'de': '=', 'en': 'hour', 'fr': 'heure'}
+    'Minute':          {'de': '=', 'en': 'minute', 'fr': 'minute'}
+    'Sekunde':         {'de': '=', 'en': 'second', 'fr': 'seconde'}
+    'Tage':            {'de': '=', 'en': 'days', 'fr': 'jours'}
+    'Stunden':         {'de': '=', 'en': 'hours', 'fr': 'heures'}
+    'Minuten':         {'de': '=', 'en': 'minutes', 'fr': 'minutes'}
+    'Sekunden':        {'de': '=', 'en': 'seconds', 'fr': 'secondes'}
     
-    'Host':          {'de': '=', 'en': '=', 'fr': 'Hôte'}
-    'Port':          {'de': '=', 'en': '=', 'fr': '='}
-    'IP':            {'de': '=', 'en': '=', 'fr': '='}
-    'Protokoll':     {'de': '=', 'en': 'Protocol', 'fr': 'Protocole'}
-    'Kanal':         {'de': '=', 'en': 'Channel', 'fr': 'Canal'}
-    'Knoten':        {'de': '=', 'en': 'Node', 'fr': 'noeud'}
-    'Funktion':      {'de': '=', 'en': 'Function', 'fr': 'Fonction'}
-    'Browser':       {'de': '=', 'en': '=', 'fr': 'Navigateur'}
-    'Adresse':       {'de': '=', 'en': 'Address', 'fr': 'Adresse'}
-    'Gerät':         {'de': '=', 'en': 'Device', 'fr': 'Appareil'}
-    'Geräte':        {'de': '=', 'en': 'Devices', 'fr': 'Appareils'}
+    'Host':            {'de': '=', 'en': '=', 'fr': 'Hôte'}
+    'Port':            {'de': '=', 'en': '=', 'fr': '='}
+    'IP':              {'de': '=', 'en': '=', 'fr': '='}
+    'Protokoll':       {'de': '=', 'en': 'Protocol', 'fr': 'Protocole'}
+    'Kanal':           {'de': '=', 'en': 'Channel', 'fr': 'Canal'}
+    'Knoten':          {'de': '=', 'en': 'Node', 'fr': 'noeud'}
+    'Funktion':        {'de': '=', 'en': 'Function', 'fr': 'Fonction'}
+    'Browser':         {'de': '=', 'en': '=', 'fr': 'Navigateur'}
+    'Adresse':         {'de': '=', 'en': 'Address', 'fr': 'Adresse'}
+    'Gerät':           {'de': '=', 'en': 'Device', 'fr': 'Appareil'}
+    'Geräte':          {'de': '=', 'en': 'Devices', 'fr': 'Appareils'}
 
-    'Typ':           {'de': '=', 'en': 'Type', 'fr': 'Type'}
-    'Wert':          {'de': '=', 'en': 'Value', 'fr': 'Valeur'}
+    'Typ':             {'de': '=', 'en': 'Type', 'fr': 'Type'}
+    'Wert':            {'de': '=', 'en': 'Value', 'fr': 'Valeur'}
 
-    'Item':          {'de': '=', 'en': '=', 'fr': '=', 'fr': 'Objet'}
-    'Items':         {'de': '=', 'en': '=', 'fr': '=', 'fr': 'Objets'}
+    'Pfad':            {'de': '=', 'en': 'Path', 'fr': ''}
+    'Item':            {'de': '=', 'en': '=', 'fr': '=', 'fr': 'Objet'}
+    'Items':           {'de': '=', 'en': '=', 'fr': '=', 'fr': 'Objets'}
+
+    'Letztes Update':  {'de': '=', 'en': 'Last Update', 'fr': ''}
+    'Letzter Change':  {'de': '=', 'en': 'Last Change', 'fr': ''}
+    

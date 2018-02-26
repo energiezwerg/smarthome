@@ -307,6 +307,19 @@ class Plugins():
             return _plugins_instance
 
 
+    def return_plugin(self, name):
+        """
+        Returns (the object of) one loaded plugin with given name
+
+        :param name: name of the plugin to get
+        :type name: str
+
+        :return: object of the plugin
+        :rtype: object
+        """
+        return self._plugins[name]
+
+
     def return_plugins(self):
         """
         Returns a list with the instances of all loaded plugins
@@ -453,13 +466,14 @@ class PluginWrapper(threading.Thread):
 #        logger.debug("Plugin '{}' using arguments {}".format(str(classpath).split('.')[1], arglist))
 
         self.get_implementation()._init_complete = False
-        (plugin_params, params_ok) = self.meta.check_parameters(args)
+        (plugin_params, params_ok, hide_params) = self.meta.check_parameters(args)
         if params_ok == True:
             if plugin_params != {}:
                 # initialize parameters the old way
                 argstring = ",".join(["{}={}".format(name, '"'+str(plugin_params.get(name,''))+'"') for name in arglist])
             # initialize parameters the new way: Define a dict within the instance
             self.get_implementation()._parameters = plugin_params
+            self.get_implementation()._hide_parameters = hide_params
             self.get_implementation()._metadata = self.meta
  
             # initialize the loaded instance of the plugin

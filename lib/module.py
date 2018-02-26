@@ -227,7 +227,7 @@ class Modules():
         argstring = ",".join(["{}={}".format(name, args[name]) for name in arglist])
 
         self.loadedmodule._init_complete = False
-        (module_params, params_ok) = self.meta.check_parameters(args)
+        (module_params, params_ok, hide_params) = self.meta.check_parameters(args)
         if params_ok == True:
             if module_params != {}:
                 # initialize parameters the old way

@@ -246,6 +246,28 @@ class SmartPlugin(SmartObject, Utils):
         return self._parameters.get(parameter_name, None)
         
     
+    def get_parameter_value_for_display(self, parameter_name):
+        """
+        Returns the configured value for the given parameter name
+        
+        If the parameter is not defined, None is returned
+        If the parameter is marked as 'hide', only '*'s are returned
+        
+        :param parameter_name: Name of the parameter for which the value should be retrieved
+        :type parameter_name: str
+        
+        :return: Configured value
+        :rtype: depends on the type of the parameter definition
+        """
+        param = self._parameters.get(parameter_name, None)
+        if param == '' or param is None:
+            return ''
+        if self._hide_parameters.get(parameter_name, False):
+            return '******'
+        else:
+            return param
+
+
 #    def has_parameter_value(self, key):
 #        """
 #        Returns True, if a value is configured for the given parameter name
