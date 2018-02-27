@@ -41,6 +41,12 @@ class Shtime:
     
     def __init__(self, smarthome):
         global _shtime_instance
+        if _shtime_instance is not None:
+            import inspect
+            curframe = inspect.currentframe()
+            calframe = inspect.getouterframes(curframe, 4)
+            logger.critical("A second 'shtime' object has been created. There should only be ONE instance of class 'Shtime'!!! Called from: {} ({})".format(calframe[1][1], calframe[1][3]))
+
         _shtime_instance = self
         
         self._starttime = datetime.datetime.now()

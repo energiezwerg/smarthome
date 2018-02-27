@@ -75,7 +75,14 @@ class Modules():
     def __init__(self, smarthome, configfile):
         self._sh = smarthome
 #        self._sh._moduledict = {}
+
         global _modules_instance
+        if _modules_instance is not None:
+            import inspect
+            curframe = inspect.currentframe()
+            calframe = inspect.getouterframes(curframe, 4)
+            logger.critical("A second 'modules' object has been created. There should only be ONE instance of class 'Modules'!!! Called from: {} ({})".format(calframe[1][1], calframe[1][3]))
+
         _modules_instance = self
 
         # read module configuration (from etc/module.yaml)

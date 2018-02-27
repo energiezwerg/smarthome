@@ -102,8 +102,16 @@ class Logics():
         self._logics = {}
         self._bytecode = {}
         self.alive = True
+
         global _logics_instance
+        if _logics_instance is not None:
+            import inspect
+            curframe = inspect.currentframe()
+            calframe = inspect.getouterframes(curframe, 4)
+            logger.critical("A second 'logics' object has been created. There should only be ONE instance of class 'Logics'!!! Called from: {} ({})".format(calframe[1][1], calframe[1][3]))
+
         _logics_instance = self
+
         self.scheduler = Scheduler.get_instance()
         
         _config = {}

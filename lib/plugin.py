@@ -76,7 +76,14 @@ class Plugins():
     
     def __init__(self, smarthome, configfile):
         self._sh = smarthome
+
         global _plugins_instance
+        if _plugins_instance is not None:
+            import inspect
+            curframe = inspect.currentframe()
+            calframe = inspect.getouterframes(curframe, 4)
+            logger.critical("A second 'plugins' object has been created. There should only be ONE instance of class 'Plugins'!!! Called from: {} ({})".format(calframe[1][1], calframe[1][3]))
+
         _plugins_instance = self
 
         # until Backend plugin is modified

@@ -72,7 +72,14 @@ class Items():
     def __init__(self, smarthome):
         self._sh = smarthome
 #        self._sh._moduledict = {}
+
         global _items_instance
+        if _items_instance is not None:
+            import inspect
+            curframe = inspect.currentframe()
+            calframe = inspect.getouterframes(curframe, 4)
+            logger.critical("A second 'items' object has been created. There should only be ONE instance of class 'Items'!!! Called from: {} ({})".format(calframe[1][1], calframe[1][3]))
+
         _items_instance = self
 
 

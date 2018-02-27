@@ -53,8 +53,16 @@ class Scenes():
 
     def __init__(self, smarthome):
         self._sh = smarthome
+        
         global _scenes_instance
+        if _scenes_instance is not None:
+            import inspect
+            curframe = inspect.currentframe()
+            calframe = inspect.getouterframes(curframe, 2)
+            logger.critical("A second 'scenes' object has been created. There should only be ONE instance of class 'Scenes'!!! Called from: {} ({})".format(calframe[1][1], calframe[1][3]))
+
         _scenes_instance = self
+
         self.items = Items.get_instance()
 
         self._scenes = {}

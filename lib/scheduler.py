@@ -99,8 +99,16 @@ class Scheduler(threading.Thread):
         self._sh = smarthome
         self._lock = threading.Lock()
         self._runc = threading.Condition()
+        
         global _scheduler_instance
+        if _scheduler_instance is not None:
+            import inspect
+            curframe = inspect.currentframe()
+            calframe = inspect.getouterframes(curframe, 4)
+            logger.critical("A second 'scheduler' object has been created. There should only be ONE instance of class 'Scheduler'!!! Called from: {} ({})".format(calframe[1][1], calframe[1][3]))
+
         _scheduler_instance = self
+        
         self.shtime = Shtime.get_instance()
         self.items = Items.get_instance()
 
