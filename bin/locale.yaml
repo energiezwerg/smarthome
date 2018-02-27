@@ -37,13 +37,32 @@ global_translations:
     'Gerät':           {'de': '=', 'en': 'Device', 'fr': 'Appareil'}
     'Geräte':          {'de': '=', 'en': 'Devices', 'fr': 'Appareils'}
 
-    'Typ':             {'de': '=', 'en': 'Type', 'fr': 'Type'}
-    'Wert':            {'de': '=', 'en': 'Value', 'fr': 'Valeur'}
+    'Client':                {'de': '=', 'en': '=', 'fr': ''}
+    'Clients':               {'de': '=', 'en': '=', 'fr': ''}
+    'Status':                {'de': '=', 'en': '=', 'fr': ''}
 
-    'Pfad':            {'de': '=', 'en': 'Path', 'fr': ''}
-    'Item':            {'de': '=', 'en': '=', 'fr': '=', 'fr': 'Objet'}
-    'Items':           {'de': '=', 'en': '=', 'fr': '=', 'fr': 'Objets'}
+    'Typ':                   {'de': '=', 'en': 'Type', 'fr': 'Type'}
+    'Wert':                  {'de': '=', 'en': 'Value', 'fr': 'Valeur'}
 
-    'Letztes Update':  {'de': '=', 'en': 'Last Update', 'fr': ''}
-    'Letzter Change':  {'de': '=', 'en': 'Last Change', 'fr': ''}
+    'Pfad':                  {'de': '=', 'en': 'Path', 'fr': ''}
+
+    'Dienst':                {'de': '=', 'en': 'Service', 'fr': ''}
+    'Dienste':               {'de': '=', 'en': 'Services', 'fr': ''}
+    'Item':                  {'de': '=', 'en': '=', 'fr': 'Objet'}
+    'Items':                 {'de': '=', 'en': '=', 'fr': 'Objets'}
+    'Logik':                 {'de': '=', 'en': 'Logic', 'fr': ''}
+    'Logiken':               {'de': '=', 'en': 'Logics', 'fr': ''}
+    'Scheduler':             {'de': '=', 'en': 'Scheduler', 'fr': ''}
+    'Scheduler (plural)':    {'de': 'Scheduler', 'en': 'Schedulers', 'fr': ''}
+    'Plugin':                {'de': '=', 'en': '=', 'fr': ''}
+    'Plugins':               {'de': '=', 'en': '=', 'fr': ''}
+    'Szene':                 {'de': '=', 'en': 'Scene', 'fr': ''}
+    'Szenen':                {'de': '=', 'en': 'Scenes', 'fr': ''}
+    'Thread':                {'de': '=', 'en': '=', 'fr': ''}
+    'Threads':               {'de': '=', 'en': '=', 'fr': ''}
+    'Logging':               {'de': '=', 'en': '=', 'fr': ''}
+    'Urheberrechtshinweise': {'de': '=', 'en': 'Disclosure', 'fr': ''}
+
+    'Letztes Update':        {'de': '=', 'en': 'Last Update', 'fr': ''}
+    'Letzter Change':        {'de': '=', 'en': 'Last Change', 'fr': ''}
     
