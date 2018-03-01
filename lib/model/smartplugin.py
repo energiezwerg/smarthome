@@ -481,7 +481,7 @@ class SmartPlugin(SmartObject, Utils):
         """
         This methods adds a scheduler entry for a plugin-scheduler
         
-        A plugin identifiction is added to the scheduler name
+        A plugin identification is added to the scheduler name
          
         The parameters are identical to the scheduler.add method from lib.scheduler
         """
@@ -505,7 +505,7 @@ class SmartPlugin(SmartObject, Utils):
         
     def scheduler_remove(self, name):
         """
-        This methods rmoves a scheduler entry of a plugin-scheduler
+        This methods removes a scheduler entry of a plugin-scheduler
         
         A plugin identifiction is added to the scheduler name
          
@@ -516,6 +516,21 @@ class SmartPlugin(SmartObject, Utils):
         name = self._pluginname_prefix+self.get_fullname()+name
         self.logger.debug("scheduler_remove: name = {}".format(name))
         self._sh.scheduler.remove(name, from_smartplugin=True)
+
+
+    def scheduler_get(self, name):
+        """
+        This methods gets a scheduler entry of a plugin-scheduler
+
+        A plugin identifiction is added to the scheduler name
+
+        The parameters are identical to the scheduler.get method from lib.scheduler
+        """
+        if name != '':
+            name = '.' + name
+        name = self._pluginname_prefix + self.get_fullname() + name
+        self.logger.debug("scheduler_get: name = {}".format(name))
+        return self._sh.scheduler.get(name, from_smartplugin=True)
 
 
     def run(self):

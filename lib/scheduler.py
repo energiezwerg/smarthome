@@ -365,11 +365,11 @@ class Scheduler(threading.Thread):
             self._next_time(name, offset)
         self._lock.release()
 
-    def get(self, name):
+    def get(self, name, from_smartplugin=False):
         """
         takes a given name for a scheduler and returns either the matching scheduler or None
         """
-        name = self.check_caller(name)
+        name = self.check_caller(name, from_smartplugin)
         if name in self._scheduler:
             return self._scheduler[name]
         else:
