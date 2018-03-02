@@ -191,7 +191,7 @@ class Logics():
             del self._logics[name]
 
 
-    def _return_logics(self):
+    def return_logics(self):
         """
         Returns a list with the names of all loaded logics
 
