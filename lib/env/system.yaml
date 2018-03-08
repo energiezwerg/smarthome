@@ -8,6 +8,7 @@ env:
         load:
             type: num
             sqlite: init
+            database: init
 
         name:
             type: str
