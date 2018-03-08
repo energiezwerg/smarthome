@@ -50,6 +50,7 @@ KEY_THRESHOLD = 'threshold'
 KEY_AUTOTIMER = 'autotimer'
 KEY_ON_UPDATE = 'on_update'
 KEY_ON_CHANGE = 'on_change'
+KEY_LOG_CHANGE = 'log_change'
 
 #config params for plugins
 KEY_INSTANCE = 'instance'

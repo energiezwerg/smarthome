@@ -66,6 +66,11 @@ Attribute ist in der Dokumentation des jeweiligen Plugins nachzulesen.
 | on_change       | Ermöglicht das setzen des Wertes anderer Items, wenn der Wert des aktuellen  |
 |                 | Items verändert wird. **Ab SmartHomeNG v1.4**                                |
 +-----------------+------------------------------------------------------------------------------+
+| log_change      | Ermöglicht das Loggen jeder Veränderung des Item-Wertes. **log_change** muss |
+|                 | dazu den Namen des zu verwendeten Loggers enthalten. In **logging.yaml**     |
+|                 | muss der Logger als **items.<name>** konfiguriert sein.                      |
+|                 | **Ab SmartHomeNG v1.5**                                                      |
++-----------------+------------------------------------------------------------------------------+
 
 
 .. toctree::

@@ -489,6 +489,10 @@ class PluginWrapper(threading.Thread):
             # initialize the loaded instance of the plugin
             exec("self.plugin.__init__(smarthome{0}{1})".format("," if len(arglist) else "", argstring))
 
+            # set level to make logger appear in internal list of loggers (if not configured by logging.yaml)
+            if self.get_implementation().logger.level == 0:
+                self.get_implementation().logger.setLevel('WARNING')
+
         # set the initialization complete status for the wrapper instance
         self._init_complete = self.get_implementation()._init_complete
         if self.get_implementation()._init_complete == True:

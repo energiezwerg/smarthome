@@ -38,7 +38,7 @@ from lib.shtime import Shtime
 import lib.utils
 from lib.constants import (ITEM_DEFAULTS, FOO, KEY_ENFORCE_UPDATES, KEY_CACHE, KEY_CYCLE, KEY_CRONTAB, KEY_EVAL,
                            KEY_EVAL_TRIGGER, KEY_NAME,KEY_TYPE, KEY_VALUE, KEY_INITVALUE, PLUGIN_PARSE_ITEM,
-                           KEY_AUTOTIMER, KEY_ON_UPDATE, KEY_ON_CHANGE, KEY_THRESHOLD, CACHE_FORMAT, CACHE_JSON, CACHE_PICKLE,
+                           KEY_AUTOTIMER, KEY_ON_UPDATE, KEY_ON_CHANGE, KEY_LOG_CHANGE, KEY_THRESHOLD, CACHE_FORMAT, CACHE_JSON, CACHE_PICKLE,
                            KEY_ATTRIB_COMPAT, ATTRIB_COMPAT_V12, ATTRIB_COMPAT_LATEST)
 
 
@@ -318,6 +318,8 @@ class Item():
         self._on_change = None				# -> KEY_ON_CHANGE eval expression
         self._on_update_dest_var = None		# -> KEY_ON_UPDATE destination var
         self._on_change_dest_var = None		# -> KEY_ON_CHANGE destination var
+        self._log_change = None
+        self._log_change_logger = None
         self._fading = False
         self._items_to_trigger = []
         self.__last_change = self.shtime.now()
@@ -410,6 +412,13 @@ class Item():
                         dest_var_list.append(dest_item)
                     setattr(self, '_' + attr, val_list)
                     setattr(self, '_' + attr + '_dest_var', dest_var_list)
+                elif attr in [KEY_LOG_CHANGE]:
+                    if value != '':
+                        setattr(self, '_log_change', value)
+                        self._log_change_logger = logging.getLogger('items.'+value)
+                        # set level to make logger appear in internal list of loggers (if not configured by logging.yaml)
+                        if self._log_change_logger.level == 0:
+                            self._log_change_logger.setLevel('INFO')
                 elif attr == KEY_AUTOTIMER:
                     time, value, compat = _split_duration_value_string(value)
                     timeitem = None
@@ -890,6 +899,14 @@ class Item():
                 self._fading = False
                 self._lock.notify_all()
                 self._change_logger("Item {} = {} via {} {} {}".format(self._path, value, caller, source, dest))
+                if self._log_change_logger is not None:
+                    log_src = ''
+                    if source is not None:
+                        log_src += ' (' + source + ')'
+                    log_dst = ''
+                    if dest is not None:
+                        log_dst += ', dest: ' + dest
+                    self._log_change_logger.info("Item Change: {} = {}  -  caller: {}{}{}".format(self._path, value, caller, log_src, log_dst))
         self._lock.release()
         # ms: call run_on_update() from here
         self.__run_on_update(value)
