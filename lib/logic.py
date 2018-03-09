@@ -906,7 +906,8 @@ class Logic():
     def __init__(self, smarthome, name, attributes, logics):
         self._sh = smarthome
         self.name = name
-        self._logics = logics   # access to the logics api
+        self.lname = "Logic '"+name+"'"   # string is to be used in item assignements sh.xxx(<value>, logic.lname)
+        self._logics = logics             # access to the logics api
         self.shtime = self._logics.shtime
         self.enabled = True if 'enabled' not in attributes else Utils.to_bool(attributes['enabled'])
         self.crontab = None

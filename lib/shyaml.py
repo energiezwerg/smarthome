@@ -311,6 +311,18 @@ def get_commentedseq(l):
    return yaml.comments.CommentedSeq( l )
        
 
+def yaml_dump_roundtrip(data):
+    """
+    Dump yaml to a string using the RoundtripDumper and correct linespacing in output file
+
+    :param data: data structure to save
+    """
+
+    sdata = yaml.dump(data, Dumper=yaml.RoundTripDumper, version=yaml_version, indent=indent_spaces, block_seq_indent=block_seq_indent, width=12288, allow_unicode=True)
+    sdata = _format_yaml_dump2( sdata )
+    return sdata
+
+
 def yaml_save_roundtrip(filename, data, create_backup=False):
     """
     Dump yaml using the RoundtripDumper and correct linespacing in output file
@@ -322,15 +334,12 @@ def yaml_save_roundtrip(filename, data, create_backup=False):
     if not EDITING_ENABLED:
         return
     sdata = yaml.dump(data, Dumper=yaml.RoundTripDumper, version=yaml_version, indent=indent_spaces, block_seq_indent=block_seq_indent, width=12288, allow_unicode=True)
-
-#    with open(filename+'_raw'+YAML_FILE, 'w') as outfile:
-#        outfile.write( sdata )
+    sdata = _format_yaml_dump2( sdata )
     
     if create_backup:
         if os.path.isfile(filename+YAML_FILE):
             shutil.copy2(filename+YAML_FILE, filename+'.bak')
         
-    sdata = _format_yaml_dump2( sdata )
     with open(filename+YAML_FILE, 'w') as outfile:
         outfile.write( sdata )
 
