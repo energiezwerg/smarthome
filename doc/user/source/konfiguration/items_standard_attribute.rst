@@ -2,8 +2,10 @@
 .. index:: Items; Standardattribute
 .. index:: Standardattribute
 
-Standard Attribute
-==================
+.. role:: bluesup
+
+Standard Attribute :bluesup:`update`
+====================================
 
 
 In SmartHomeNG werden eine Reihe von Standard Attributen unterstützt. Diese sind in der folgenden 

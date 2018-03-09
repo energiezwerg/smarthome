@@ -62,6 +62,7 @@ Logik Code im Verzeichnis *../logics*
    :hidden:
 
    konfigurationsdateien_aufbau.md
+   konfigurationsdateien_yaml_syntax.rst
    konfigurationsdateien_smarthome.rst
    konfigurationsdateien_module.rst
    konfigurationsdateien_plugin.rst
