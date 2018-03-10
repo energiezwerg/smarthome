@@ -55,12 +55,12 @@ Beispiel:
 
    itemA1:
        # eine einzelne Zuweisung
-       on_update: itemB = 1                  # bei jedem Update von itemA1
+       on_update: itemB = 1                  # bei jedem Update von itemA1 (mit oder ohne Wertänderung)
 
    itemA2:
        # eine Liste mehrerer Zuweisungen
-       on_update:
-       - itemC = False                       # nur wenn sich der Wert von itemA ändert
+       on_change:
+       - itemC = False                       # nur wenn sich der Wert von itemA2 ändert
        - itemD = sh.itemB()                  # 
        - itemE = sh.itemB() if value else 0  # 
        ...
@@ -83,7 +83,7 @@ Im .conf Format (deprecated) sieht das Beispiel folgendermaßen aus:
 
    [itemA2]
        # eine Liste mehrerer Zuweisungen
-       on_update = itemC = False | itemD = sh.itemB() | itemE = sh.itemB() if value else 0
+       on_change = itemC = False | itemD = sh.itemB() | itemE = sh.itemB() if value else 0
        ...
 
    [itemB]

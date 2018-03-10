@@ -132,4 +132,9 @@ kann eine Zuordnung folgendermaßen aussehen:
      - Hell
 
 
+Kommentare
+~~~~~~~~~~
+
+YAML Dateien können Kommentare enthalten. Kommentare beginnen mit einem #-Zeichen und reichen 
+immer bis zum Ende der Zeile.
 
