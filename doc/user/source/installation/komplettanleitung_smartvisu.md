@@ -31,9 +31,12 @@ sudo service apache2 restart
 ```
 
 ### SmartVISU Quellcode laden 
-Stand 3. Oktober 2016 ist SmartVISU 2.8 die letzte verfügbare Master-Version.
-Da das Projekt fortgeführt wird, 
-sollte vor dem Installieren [auf der Projektseite](http://www.smartvisu.de/) nachschaut und der Pfad gegebenfalls angepasst werden.
+Stand 18. Februar 2018 wird die letzte verfügbare Master-Version 2.8 der SmartVISU geladen.
+Seit Dezember 2017 steht die Version 2.9 in den Startlöchern.
+Diese Dokumentation ist nicht tagesaktuell, daher bitte vor dem Installieren
+[auf der Projektseite](http://www.smartvisu.de/) prüfen, welches der aktuelle Master ist.
+Eine alternative Installation der SmartVISU 2.9 ist möglich, es sollten aber
+idealerweise **git** Kenntnisse vorhanden sein.
 Die Dateien der SmartVISU werden in einem Unterverzeichnis ab, das für den Apache2 zugänglich ist:
 
 <!--
@@ -83,6 +86,21 @@ sudo find . -type d -exec chmod g+rwsx {} +
 sudo find . -type f -exec chmod g+r {} +
 ```
 
+#### Alternativ: SmartVISU 2.9 develop
+
+Optional umschalten auf die SmartVISU 2.9 develop Version geht über eine Shell
+im Verzeichnis der smartVISU mit
+
+```
+git checkout develop
+```
+
+ein zurückwechseln auf den masterbranch entsprechend mit
+
+```
+git checkout master
+```
+
 ### Zugriff auf die SmartVISU testen
 
 Mit einem Browser kann nun erstmals auf die SmartVISU zugegriffen werden:
@@ -91,17 +109,39 @@ Hierbei ist ``<ip-des-servers>`` natürlich mit der IP oder dem Hostnamen deines
 Bei **Checking your configuration** sollte alles mit einem grünen Häckchen versehen sein.
 Über den Knopf **Config** kommt man ins SmartVISU Interface direkt auf die Config Seite.
 
-Bei I/O Connection **Smarthome.py** auswählen.
-Bei Adresse (URL / IP) die IP Adresse des Servers oder den DNS Namen eingeben auf dem SmartHomeNG installiert ist. 
-Bei Port ist standardmäßig ``2424`` einzugeben. 
+Bei I/O Connection **Smarthome.py** auswählen. [Ab SmartVISU 2.9 **SmartHomeNG** auswählen].
+Bei Adresse (URL / IP) die IP Adresse des Servers oder den DNS Namen eingeben auf dem SmartHomeNG installiert ist.
+Bei Port ist standardmäßig ``2424`` einzugeben.
 
-**ACHTUNG**: Hier **NICHT** ***localhost*** oder ***127.0.0.1*** eingeben, denn diese Adresse wird vom Client Browser benutzt (Javascripts) um aktuelle Daten über einen Websocket direkt von SmartHomeNG abzufragen. 
+**ACHTUNG**: 
+Hier **NICHT** ***localhost*** oder ***127.0.0.1*** eingeben, 
+denn diese Adresse wird vom Client Browser benutzt (Javascripts) 
+um aktuelle Daten über einen Websocket direkt von SmartHomeNG abzufragen. 
 
-Im Tab **Interfaces** muß noch die anzuzeigende Visuseite eingestellt werden. Dort kann unter anderem gewählt werden zwischen verschiedenen Demoseiten.
+Im Tab **Interfaces** muß noch die anzuzeigende Visuseite eingestellt werden.
+Dort kann unter anderem gewählt werden zwischen verschiedenen Demoseiten.
 
-Um mit der SmartVISU eine eigene Visu anzulegen, muß innerhalt des pages Ordners der Visu ein neues Verzeichnis angelegt werden, in dem dann die eigenen Seiten z.B. für Räume abgelegt werden. Es existiert dort ein Ordner ``_template``. Wenn man diesen kopiert und umbenennt, kan man recht schnell damit eigene Schritte zur Visu machen.
+Um die Einstellungen zu sichern bitte Save auswählen.
+[In älteren Visuversionen mußte zweimal auf Save gedrückt werden,
+das sollte mit SV 2.9 behoben sein.]
 
-Alternativ bietet SmartHomeNG mit dem Plugin ***visu_smartvisu*** eine automatische Erstellung der Visuseiten an. Dazu bitte beim entsprechenden Plugin die Doku lesen.
+#### Eigene Visuseiten anlegen
 
-Um die Einstellungen zu sichern bitte Save auswählen. [In älteren Visuversionen mußte zweimal auf Save gedrückt werden, das sollte mit SV 2.9 behoben sein.]
+Um mit der SmartVISU eine eigene Visu anzulegen, muß innerhalb des Ordners
+``pages`` der SmartVISU ein neues Verzeichnis angelegt werden,
+in dem dann die eigenen Seiten z.B. für Räume oder Funktionsbereich abgelegt werden.
+Es existiert im Ordner ``pages`` bereits ein Unterordner ``_template``.
+Dieser wird als Basis der neuen Visu einfach kopiert ``cp _template <meineneuevisu>``.
+Für <meineneuevisu> sollte ***nicht smarthome*** gewählt werden wenn später
+die Visu vom SmartHomeNG Plugin **visu_smartvisu** erstellt werden soll.
+Die manuell erstellten Seiten könnten sonst einfach von SmartHomeNG überschrieben werden.
+Die Dateien für die SmartVISU sind einfache HTML Dateien. Die einzelnen Schalter, Buttons, Anzeigen (sogenannte Widgets) sind Makros die mit der Makrosprache TWIG definiert sind.
+Die HTML können auf eigene Bedürfnisse beliebig angepasst werden.
+Im einzelnen ist das [auf der Projektseite](http://www.smartvisu.de/) nachzulesen.
 
+### SmartHomeNG Plugin __visu_smartvisu__
+
+Mit dem Plugin ***visu_smartvisu*** können aus der Definition der Items in
+SmartHomeNG automatisch Visuseiten erstellt werden. Diese Visuseiten werden
+im Verzeichnis ``smarthome`` erstellt.
+Dazu bitte beim entsprechenden Plugin die Doku lesen.
