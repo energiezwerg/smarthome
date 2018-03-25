@@ -994,7 +994,7 @@ class SmartHome():
         """
 
         self._deprecated_warning('Plugins-API')
-        return self.plugins.get_module(name)
+        return self.plugins.return_plugins()
 #        for plugin in self.plugins:
 #            yield plugin
 
