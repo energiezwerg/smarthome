@@ -595,7 +595,7 @@ class SmartPluginWebIf():
     def __init__(self, **kwargs):
         pass
 
-    def init_template_ennvironment(self):
+    def init_template_environment(self):
         """
         Initialize the Jinja2 template engine environment
         
