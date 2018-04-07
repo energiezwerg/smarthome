@@ -209,15 +209,18 @@ def build_pluginlist( plugin_type='all' ):
             if plugin_yaml != '':
                 section_dict = plugin_yaml.get('plugin')
                 if section_dict != None:
-                    if section_dict.get('type').lower() in plugin_types:
-                        plgtype = section_dict.get('type').lower()
-                        plg_dict['name'] = metaplugin.lower()
-                        plg_dict['type'] = plgtype
-                        plg_dict['desc'] = get_description(section_dict, 85, language)
-                        plg_dict['maint'] = get_maintainer(section_dict, 15)
-                        plg_dict['test'] = get_tester(section_dict, 15)
-                        plg_dict['doc'] = html_escape(section_dict.get('documentation', ''))
-                        plg_dict['sup'] = html_escape(section_dict.get('support', ''))
+                    if section_dict.get('type') ! None:
+                        if section_dict.get('type').lower() in plugin_types:
+                            plgtype = section_dict.get('type').lower()
+                            plg_dict['name'] = metaplugin.lower()
+                            plg_dict['type'] = plgtype
+                            plg_dict['desc'] = get_description(section_dict, 85, language)
+                            plg_dict['maint'] = get_maintainer(section_dict, 15)
+                            plg_dict['test'] = get_tester(section_dict, 15)
+                            plg_dict['doc'] = html_escape(section_dict.get('documentation', ''))
+                            plg_dict['sup'] = html_escape(section_dict.get('support', ''))
+                        else:
+                            plgtype = type_unclassified
                     else:
                         plgtype = type_unclassified
                         if plugin_type == type_unclassified:
