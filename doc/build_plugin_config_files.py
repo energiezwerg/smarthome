@@ -209,7 +209,7 @@ def build_pluginlist( plugin_type='all' ):
             if plugin_yaml != '':
                 section_dict = plugin_yaml.get('plugin')
                 if section_dict != None:
-                    if section_dict.get('type') ! None:
+                    if section_dict.get('type') != None:
                         if section_dict.get('type').lower() in plugin_types:
                             plgtype = section_dict.get('type').lower()
                             plg_dict['name'] = metaplugin.lower()
