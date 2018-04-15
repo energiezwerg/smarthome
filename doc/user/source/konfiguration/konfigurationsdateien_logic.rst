@@ -19,15 +19,6 @@ in der Datei **../etc/logic.yaml** konfiguriert werden:
        crontab: init
        watch_item: mydoorcontact
 
-.. code-block:: ini
-   :caption: logic.conf (deprecated)
-   
-   # /usr/local/smarthome/etc/plugin.conf (deprecated)
-   [MyLogic]
-       filename = logic.py
-       crontab = init
-       watch_item = mydoorcontact
-
 Mit dem Beispiel oben, würde SmartHomeNG in ``/usr/local/smarthome/logics/`` nach der Datei
 ``logic.py`` suchen. Die Logik würde einmal beim Start von SmartHomeNG ausgeführt und wenn sich 
 der Wert des Items `watch_item` ändert.
