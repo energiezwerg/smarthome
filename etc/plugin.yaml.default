@@ -1,17 +1,15 @@
 %YAML 1.1
 ---
 BackendServer:
-    class_name: BackendServer
-    class_path: plugins.backend
-    user: admin
-    password: very_secure_password
+    plugin_name: backend
+    #updates_allowed: False
 
-# cli:
-#     class_name: CLI
-#     class_path: plugins.cli
-#     ip: 0.0.0.0
-#     update: 'True'
-#     hashed_password: 1245a9633edf47b7091f37c4d294b5be5a9936c81c5359b16d1c4833729965663f1943ef240959c53803fedef7ac19bd59c66ad7e7092d7dbf155ce45884607d
+cli:
+    plugin_name: cli
+    ip: 0.0.0.0
+    #port: 2323
+    update: True
+    #hashed_password: 1245a9633edf47b7091f37c4d294b5be5a9936c81c5359b16d1c48337$
 
 # memlog:
 #     class_name: MemLog
@@ -37,14 +35,13 @@ BackendServer:
 #     port: 4304
 
 # Bereitstellung eines Websockets zur Kommunikation zwischen SmartVISU und SmartHomeNG
-#visu:
-#    class_name: WebSocket
-#    class_path: plugins.visu_websocket
-#    # ip: 0.0.0.0
-#    # port: 2424
-#    # tls: no
-#    wsproto: 4
-#    acl: rw
+websocket:
+    plugin_name: visu_websocket
+    #ip: 0.0.0.0
+    #port: 2424
+    #tls: no
+    #wsproto: 4
+    #acl: rw
 
 # Autogenerierung von Webseiten für SmartVISU
 #smartvisu:
