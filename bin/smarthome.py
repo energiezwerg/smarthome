@@ -217,6 +217,15 @@ class SmartHome():
         self._plugin_conf_basename = os.path.join(self._etc_dir,'plugin')
         self._log_conf_basename = os.path.join(self._etc_dir,'logging')
 
+        # Test if plugins are installed
+        if not os.path.isdir(os.path.join(self._base_dir, 'plugins')):
+            self._logger.error("Plugin folder does not exist!\nPlease create folder '{}' and install plugins.\n\nAborting".format(os.path.join(self._base_dir, 'plugins')))
+            exit(1)
+        if not os.path.isdir(os.path.join(self._base_dir, 'plugins', 'backend')):
+            self._logger.error("No plugins found. Please install plugins.\n\nAborting".format(os.path.join(self._base_dir, 'plugins')))
+            exit(1)
+
+
         # check config files
         self.checkConfigFiles()
 
