@@ -1,4 +1,2 @@
 # ignore everything
 *
-# except .gitignore
-!.gitignore
