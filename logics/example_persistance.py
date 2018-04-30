@@ -10,7 +10,10 @@
 # - Diese Logik erneut triggern
 # - die Einträge in ../var/log/smarthome-details.log prüfen
 
-# to be completed...
+if not hasattr(logic, 'mycounter'):
+    logic.mycounter = 0
 
-#logger.info("Logik '{}' (filename '{}') wurde getriggert (INFO)".format(logic.name, logic.filename))
+logic.mycounter += 1
+
+logger.info("Logik '{}' (filename '{}'): mycounter = {}".format(logic.name, logic.filename, logic.mycounter))
 
