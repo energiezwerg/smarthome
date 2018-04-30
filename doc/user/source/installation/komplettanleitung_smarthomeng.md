@@ -49,10 +49,13 @@ SmartHomeNG Dateien vom github holen:
 
 ```
 cd /usr/local
-sudo git clone --recursive git://github.com/smarthomeNG/smarthome.git
+sudo mkdir smarthome
 sudo chown -R smarthome:smarthome /usr/local/smarthome
-cd /usr/local/smarthome/etc
-touch logic.yaml
+cd smarthome
+git clone git://github.com/smarthomeNG/smarthome.git .
+
+cd plugins
+git clone git://github.com/smarthomeNG/plugins.git .
 ```
 
 ### Erstmalige Konfiguration erstellen

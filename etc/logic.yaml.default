@@ -1,0 +1,10 @@
+%YAML 1.1
+---
+# 
+# etc/logic.yaml
+# 
+example_logic:
+    filename: example_logic.py
+    cycle: 600
+    enabled: false
+

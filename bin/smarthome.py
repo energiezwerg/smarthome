@@ -371,9 +371,10 @@ class SmartHome():
         - logging.yaml
         - plugin.yaml / plugin.conf
         - module.yaml / module.conf
+        - logic.yaml / logic.conf
 
         """
-        configs = ['logging', 'smarthome', 'module', 'plugin']
+        configs = ['logging', 'smarthome', 'module', 'plugin', 'logic']
 
         for c in configs:
             default = os.path.join(self._base_dir, 'etc', c + YAML_FILE + DEFAULT_FILE)
