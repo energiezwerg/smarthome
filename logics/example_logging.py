@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-# logics/example_logic.py
+# logics/example_logging.py
 
-# Diese Logik zeigt, wie Logeinträge verschiedener Levels in die Logdateien eingetragen werden.
+# Diese Beispiel-Logik zeigt, wie Logeinträge verschiedener Levels in die Logdateien eingetragen werden.
 #
 # Dazu:
-# - Diese Logik aktivieren
-# - Diese Logik triggern (anschließend kann die Logik wieder deaktiviert werden
+# - Diese Logik triggern
 # - die Einträge in ../var/log/smarthome-warnings.log und ../var/log/smarthome-details.log prüfen
 
 logger.warning("Logik '{}' (filename '{}') wurde getriggert (WARNING)".format(logic.name, logic.filename))

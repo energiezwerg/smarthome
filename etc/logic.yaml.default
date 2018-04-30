@@ -3,10 +3,9 @@
 # 
 # etc/logic.yaml
 # 
-example_logic:
-    filename: example_logic.py
+ex_logging:
+    filename: example_logging.py
 
-#example_logic2:
-#    filename: example_logic.py
-#    cycle: 600
-#    enabled: false
+ex_persist:
+    filename: example_persistance.py
+

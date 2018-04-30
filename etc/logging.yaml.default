@@ -145,10 +145,14 @@ loggers:
     # Loggers for SmartHomeNG logics
     # ------------------------------
 
-    logics.example_logic:
+    logics.ex_logging:
         handlers: [shng_details_file]
         level: INFO
-        
+
+    logics.ex_persist:
+        handlers: [shng_details_file]
+        level: INFO
+
 root:
     level: WARNING
     handlers: [shng_warnings_file]
