@@ -55,6 +55,7 @@ sudo chown -R smarthome:smarthome /usr/local/smarthome
 cd smarthome
 git clone git://github.com/smarthomeNG/smarthome.git .
 
+mkdir plugins
 cd plugins
 git clone git://github.com/smarthomeNG/plugins.git .
 ```
