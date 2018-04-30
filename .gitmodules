@@ -1,5 +1,5 @@
 [submodule "plugins"]
-	path = plugins
+	path = plugins_off
 	url = https://github.com/smarthomeNG/plugins
 	branch = develop
 	ignore = all
