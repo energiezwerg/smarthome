@@ -5,6 +5,8 @@
 # 
 example_logic:
     filename: example_logic.py
-    cycle: 600
-    enabled: false
 
+#example_logic2:
+#    filename: example_logic.py
+#    cycle: 600
+#    enabled: false

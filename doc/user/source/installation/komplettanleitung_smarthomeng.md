@@ -51,12 +51,15 @@ SmartHomeNG Dateien vom github holen:
 cd /usr/local
 sudo mkdir smarthome
 sudo chown -R smarthome:smarthome /usr/local/smarthome
+
 cd smarthome
 git clone git://github.com/smarthomeNG/smarthome.git .
 
 cd plugins
 git clone git://github.com/smarthomeNG/plugins.git .
 ```
+Bitte auf den Punkt am Ende der **git clone** Kommandos achten!
+
 
 ### Erstmalige Konfiguration erstellen
 
