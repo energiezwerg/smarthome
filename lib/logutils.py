@@ -2,6 +2,7 @@
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
 # Copyright 2016 Christian Straßburg
+# Copyright 2018 Bernd Meiners                      Bernd.Meiners@mail.de
 #########################################################################
 #  This file is part of SmartHomeNG.    
 #
@@ -20,12 +21,15 @@
 #########################################################################
 
 """
-This module contains utilis to be used in logging
+This module contains utils to be used in logging
 """
 
 class Filter(object):
     """
     This class builds a filter to be used in logging.yaml to configure logging
+    
+    Returning True tells logging to suppress this logentry,
+    whereas False will include the record into further processing and eventual output
     """
     def __init__(self, name=''):
         self.name = name
@@ -38,3 +42,29 @@ class Filter(object):
             return False
         else: 
             return True
+
+class DuplicateFilter(object):
+    """
+    This class builds a filter to be used in logging.yaml to configure logging
+    Since Python 3.2 it only needs to provide a filter function taking a 
+    LogRecord object as argument.
+    The filter function here will remember module, levelno and msg of the 
+    current record until next call. If a record immediately following provides
+    the same entries, then it won't be displayed.
+    It is useful to suppress the generation of huge logs due to a non captured 
+    error that is only of time limited nature such as connection problems to
+    other devices.
+    This will however not work if there are two interchanging records.
+    The size of a logfile should then be limited as a seconds measurement
+    Returning True tells logging to suppress this logentry, 
+    whereas False will include the record into further processing and eventual output
+    """
+    def __init__(self):
+        self.last_log = None
+
+    def filter(self, record):
+        current_log = (record.module, record.levelno, record.msg)
+        if current_log != self.last_log:
+            self.last_log = current_log
+            return True
+        return False
