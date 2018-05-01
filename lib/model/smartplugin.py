@@ -44,6 +44,7 @@ class SmartPlugin(SmartObject, Utils):
 
     __instance = ''     #: Name of this instance of the plugin
     _sh = None          #: Variable containing a pointer to the main SmartHomeNG object; is initialized during loading of the plugin; :Warning: Don't change it
+    _configname = ''    #: Configname of the plugin; is initialized during loading of the plugin; :Warning: Don't change it
     _shortname = ''     #: Shortname of the plugin; is initialized during loading of the plugin; :Warning: Don't change it
     _classname = ''     #: Classname of the plugin; is initialized during loading of the plugin; :Warning: Don't change it
     shtime = None       #: Variable containing a pointer to the SmartHomeNG time handling object; is initialized during loading of the plugin; :Warning: Don't change it
@@ -55,6 +56,40 @@ class SmartPlugin(SmartObject, Utils):
     logger = logging.getLogger(__name__)
     
     
+    def deinit(self):
+        """
+        If the Plugin needs special code to be executed before it is unloaded, this method
+        has to be overwirtten with the code needed for de-initialization
+        """
+        pass
+
+
+    def get_configname(self):
+        """
+        return the name of the plugin instance as defined in plugin.yaml (section name)
+        
+        :note: Only available in SmartHomeNG versions **beyond** v1.4
+        
+        :return: name of the plugin instance as defined in plugin.yaml
+        :rtype: str
+        """
+        return self._configname
+                
+        
+    def _set_configname(self, configname):
+        """
+        set the name of the plugin instance as defined in plugin.yaml (section name)
+                
+        :Note: Usually **you don't need to call this method**, since it is called during loading of the plugin
+
+        :note: Only available in SmartHomeNG versions **beyond** v1.4
+        
+        :param configname: name of the plugin instance as defined in plugin.yaml
+        :type configname: str
+        """
+        self._configname = configname
+        
+
     def get_shortname(self):
         """
         return the shortname of the plugin (name of it's directory)

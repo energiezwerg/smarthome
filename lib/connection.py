@@ -207,11 +207,14 @@ class Connections(Base):
             sys.exit(0)
 
     def close(self):
-        for fileno in self._connections:
-            try:
-                self._connections[fileno].close()
-            except:
-                pass
+        try:
+            for fileno in self._connections:
+                try:
+                    self._connections[fileno].close()
+                except:
+                    pass
+        except:
+            pass
 
 
 class Server(Base):

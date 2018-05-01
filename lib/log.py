@@ -53,3 +53,4 @@ class Log(collections.deque):
             if entry[0] > dt:
                 self.append(entry)
                 return
+    

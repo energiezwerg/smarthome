@@ -345,5 +345,10 @@ class Modules():
         for module in self.return_modules():
             logger.debug('Stopping {} Module'.format(module))
             self.m = self.get_module(module)
-            self.m.stop()
+            try:
+                self.m.stop()
+            except:
+                pass
+#            except Exception as e:
+#                logger.warning("Error while stopping module '{}'\n{}".format(module, e))
 

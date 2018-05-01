@@ -33,7 +33,7 @@ sh.env.system.load(round(l5, 2), logic.lname)
 
 # Diskusage
 if sys.version_info > (3, 3):
-    pathname = sh.get_basedir()
+    pathname = os.path.dirname(sys.argv[0])
     du = shutil.disk_usage(os.path.abspath(pathname))
     sh.env.system.diskfree(du.free, logic.lname)
     sh.env.system.disksize(du.total, logic.lname)

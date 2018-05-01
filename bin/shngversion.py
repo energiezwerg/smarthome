@@ -31,8 +31,9 @@ import subprocess
 # Update auf 1.4b wg. Kennzeichnung des Stands als "nach dem v1.4.1 Release"
 # Update auf 1.4.2
 # Update auf 1.4c wg. Kennzeichnung des Stands als "nach dem v1.4.2 Release"
+# Update auf 1.4d wg. SmartPlugin Anpassung (get_configname())"
 
-shNG_version = '1.4c'
+shNG_version = '1.4d'
 
 # ---------------------------------------------------------------------------------
 FileBASE = None

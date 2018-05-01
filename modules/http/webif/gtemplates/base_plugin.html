@@ -34,13 +34,13 @@
 			<div class="m-3">
 			<br>
 			</div>
-			<h5>Plugin : <strong>{{ p.get_shortname() }}</strong> v{{ p.get_version() }}</h5>
+			<h5>{{ _('Plugin') }} : <strong>{{ p.get_shortname() }}</strong> v{{ p.get_version() }}</h5>
 			{% if p.get_instance_name() != '' %}
-				<h5>Instanz: {{ p.get_instance_name() }}</h5>
+				<h5>{{ _('Instanz') }}: {{ p.get_instance_name() }}</h5>
 			{% else %}
 				<br>
 			{% endif %}
-			<h6>Plugin &nbsp; &nbsp; : {% if p.alive %}{{_('Aktiv')}}{% else %}{{_('Gestoppt')}}{% endif %}</h6>
+			<h6>{{ _('Plugin') }} &nbsp; &nbsp; : {% if p.alive %}{{_('Aktiv')}}{% else %}{{_('Gestoppt')}}{% endif %}</h6>
 		</div>
 
 		<div class="col-sm-7">

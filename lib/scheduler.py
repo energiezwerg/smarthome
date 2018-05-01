@@ -710,6 +710,7 @@ class Scheduler(threading.Thread):
         # Check for intervals, e.g. "*/2", "9-17/2"
         elif '/' in entry:
              spec_range, interval = entry.split('/')
+             logger.error('Cron spec interval {} {}'.format(entry, interval))
              result = self._range(spec_range, low, high)[::int(interval)]
 
         # Check for numeric ranges, e.g. "9-17"

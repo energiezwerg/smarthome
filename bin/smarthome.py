@@ -174,7 +174,6 @@ class SmartHome():
     __logs = {}
     __event_listeners = {}
     __all_listeners = []
-    _use_modules = 'True'
     modules = []
 #    _moduledict = {}
 #    _plugins = []
@@ -217,15 +216,6 @@ class SmartHome():
         self._plugin_conf_basename = os.path.join(self._etc_dir,'plugin')
         self._log_conf_basename = os.path.join(self._etc_dir,'logging')
 
-        # Test if plugins are installed
-        if not os.path.isdir(os.path.join(self._base_dir, 'plugins')):
-            self._logger.error("Plugin folder does not exist!\nPlease create folder '{}' and install plugins.\n\nAborting".format(os.path.join(self._base_dir, 'plugins')))
-            exit(1)
-        if not os.path.isdir(os.path.join(self._base_dir, 'plugins', 'backend')):
-            self._logger.error("No plugins found. Please install plugins.\n\nAborting".format(os.path.join(self._base_dir, 'plugins')))
-            exit(1)
-
-
         # check config files
         self.checkConfigFiles()
 
@@ -234,6 +224,20 @@ class SmartHome():
 
         # setup logging
         self.init_logging(self._log_conf_basename, MODE)
+        self._logger.warning("--------------------   Init SmartHomeNG {0}   --------------------".format(VERSION))
+        
+        # Test if plugins are installed
+        if not os.path.isdir(os.path.join(self._base_dir, 'plugins')):
+            self._logger.critical("Plugin folder does not exist!")
+            self._logger.critical("Please create folder '{}' and install plugins.".format(os.path.join(self._base_dir, 'plugins')))
+            self._logger.critical("Aborting")
+            exit(1)
+        if not os.path.isdir(os.path.join(self._base_dir, 'plugins', 'backend')):
+            self._logger.critical("No plugins found. Please install plugins.".format(os.path.join(self._base_dir, 'plugins')))
+            self._logger.critical("Aborting")
+            exit(1)
+
+
         self._logger.info("Using config dir: {}".format(self._extern_conf_dir))
 
         # Fork process and write pidfile
@@ -249,7 +253,6 @@ class SmartHome():
         # Check Time
         while datetime.date.today().isoformat() < '2016-03-16':  # XXX update date
             time.sleep(5)
-#            print("Waiting for updated time.")
             self._logger.info("Waiting for updated time.")
 
         #############################################################
@@ -278,20 +281,8 @@ class SmartHome():
         if hasattr(self, '_tz'):
             self.shtime.set_tz(self._tz)
             del(self._tz)
-#            tzinfo = gettz(self._tz)
-#            if tzinfo is not None:
-#                TZ = tzinfo
-#                self.tz = self._tz
-#                os.environ['TZ'] = self.tz
-##                self._tzinfo = TZ
-#                self.shtime.set_tzinfo(TZ)
-#            else:
-#                self._logger.warning("Problem parsing timezone: {}. Using UTC.".format(self._tz))
-#            del(self._tz, tzinfo)
 
-        self._logger.warning("--------------------   Init SmartHomeNG {0}   --------------------".format(VERSION))
         self._logger.debug("Python {0}".format(sys.version.split()[0]))
-#        self._starttime = datetime.datetime.now()
 
         # test if a valid locale is set in the operating system
         try:
@@ -401,11 +392,12 @@ class SmartHome():
         if conf_basename == '':
             conf_basename = self._log_conf_basename
         fo = open(conf_basename + YAML_FILE, 'r')
-        doc = lib.shyaml.yaml_load(conf_basename + YAML_FILE, False)
+        doc = lib.shyaml.yaml_load(conf_basename + YAML_FILE, True)
         if doc == None:
             print()
             print("ERROR: Invalid logging configuration in file 'logging.yaml'")
             exit(1)
+        self.logging_config = doc
         logging.config.dictConfig(doc)
         fo.close()
         if MODE == 'interactive':  # remove default stream handler
@@ -461,12 +453,9 @@ class SmartHome():
         #############################################################
         # Init and start loadable Modules
         #############################################################
-        if not(lib.utils.Utils.to_bool(self._use_modules) == False):
-            self._logger.info("Init loadable Modules")
-            self.modules = lib.module.Modules(self, configfile=self._module_conf_basename)
-            self.modules.start()
-        else:
-            self._logger.info("Loadable Modules are disabled")
+        self._logger.info("Init loadable Modules")
+        self.modules = lib.module.Modules(self, configfile=self._module_conf_basename)
+        self.modules.start()
 
         #############################################################
         # Init Item-Wrapper
@@ -485,34 +474,6 @@ class SmartHome():
         #############################################################
         self._logger.info("Start initialization of items")
         self.items.load_itemdefinitions(self._env_dir, self._items_dir)
-
-#        self._logger.warning("__children = {}".format(self.__children))
-        
-#        item_conf = None
-#        item_conf = lib.config.parse_itemsdir(self._env_dir, item_conf)
-#        item_conf = lib.config.parse_itemsdir(self._items_dir, item_conf, addfilenames=True)
-#        
-#        for attr, value in item_conf.items():
-#            if isinstance(value, dict):
-#                child_path = attr
-#                try:
-#                    child = lib.item.Item(self, self, child_path, value)
-#                except Exception as e:
-#                    self._logger.error("Item {}: problem creating: ()".format(child_path, e))
-#                else:
-#                    vars(self)[attr] = child
-##                    self.add_item(child_path, child)
-#                    self.items.add_item(child_path, child)
-#                    self.__children.append(child)
-#        del(item_conf)  # clean up
-
-##        for item in self.return_items():
-#        for item in self.items.return_items():
-#            item._init_prerun()
-##        for item in self.return_items():
-#        for item in self.items.return_items():
-#            item._init_run()
-##        self.item_count = len(self.__items)
 
         self.item_count = self.items.item_count()
         self._logger.info("Items initialization finished, {} items loaded".format(self.items.item_count()))
@@ -563,30 +524,11 @@ class SmartHome():
         self.alive = False
         self._logger.info("stop: Number of Threads: {}".format(threading.activeCount()))
 
-#        for item in self.__items:
-#            self.__item_dict[item]._fading = False
         self.items.stop()
-        
-        try:
-            self.scheduler.stop()
-        except:
-            pass
-
-        try:
-            self.plugins.stop()
-        except:
-            pass
-
-        if not(lib.utils.Utils.to_bool(self._use_modules) == False):
-            try:
-                self.modules.stop()
-            except:
-                pass
-
-        try:
-            self.connections.close()
-        except:
-            pass
+        self.scheduler.stop()
+        self.plugins.stop()
+        self.modules.stop()
+        self.connections.close()
 
         for thread in threading.enumerate():
             if thread.name != 'Main':
@@ -606,7 +548,7 @@ class SmartHome():
             if header_logged:
                 self._logger.warning("SmartHomeNG stopped")
         else:
-            self._logger.info("SmartHomeNG stopped")
+            self._logger.warning("SmartHomeNG stopped")
 
         lib.daemon.remove_pidfile(PIDFILE)
 
@@ -966,10 +908,6 @@ class SmartHome():
         """
         self._deprecated_warning('Modules-API')
         return self.modules.return_modules()
-#        l = []
-#        for module_key in self._moduledict.keys():
-#            l.append(module_key)
-#        return l
 
 
     def get_module(self, name):
@@ -987,7 +925,6 @@ class SmartHome():
         """
         self._deprecated_warning('Modules-API')
         return self.modules.get_module(name)
-#        return self._moduledict.get(name)
 
 
     #################################################################
@@ -1005,8 +942,6 @@ class SmartHome():
 
         self._deprecated_warning('Plugins-API')
         return self.plugins.return_plugins()
-#        for plugin in self.plugins:
-#            yield plugin
 
 
     #################################################################
@@ -1020,8 +955,6 @@ class SmartHome():
         """
         self._deprecated_warning('Logics-API')
         self.logics.reload_logics()
-#        for logic in self._logics:
-#            self._logics[logic]._generate_bytecode()
 
 
     def return_logic(self, name):
@@ -1038,7 +971,6 @@ class SmartHome():
         """
         self._deprecated_warning('Logics-API')
         self.logics.return_logic()
-#        return self._logics[name]
 
 
     def return_logics(self):
@@ -1052,8 +984,6 @@ class SmartHome():
         """
         self._deprecated_warning('Logics-API')
         self.logics.return_logics()
-#        for logic in self._logics:
-#            yield logic
 
 
     #################################################################
@@ -1070,7 +1000,6 @@ class SmartHome():
         """
 
         self._deprecated_warning('Shtime-API')
-#        return datetime.datetime.now(self._tzinfo)
         return sh.shtime.now()
 
     def tzinfo(self):
@@ -1084,7 +1013,6 @@ class SmartHome():
         """
 
         self._deprecated_warning('Shtime-API')
-#        return self._tzinfo
         return self.shtime.tzinfo()
         
 
@@ -1099,7 +1027,6 @@ class SmartHome():
         """
 
         self._deprecated_warning('Shtime-API')
-#        return datetime.datetime.now(self._utctz)
         return sh.shtime.utcnow()
 
 
@@ -1115,7 +1042,6 @@ class SmartHome():
 
         self._deprecated_warning('Shtime-API')
         return sh.shtime.utcinfo()
-#        return self._utctz
 
 
     def runtime(self):
@@ -1130,7 +1056,6 @@ class SmartHome():
 
         self._deprecated_warning('Shtime-API')
         return self.shtime.runtime()
-#        return datetime.datetime.now() - self._starttime
 
 
 

@@ -314,9 +314,9 @@ class Plugins():
             return _plugins_instance
 
 
-    def return_plugin(self, name):
+    def return_plugin(self, configname):
         """
-        Returns (the object of) one loaded plugin with given name
+        Returns (the object of) one loaded plugin with given configname
 
         :param name: name of the plugin to get
         :type name: str
@@ -324,7 +324,11 @@ class Plugins():
         :return: object of the plugin
         :rtype: object
         """
-        return self._plugins[name]
+        for plugin in self._plugins:
+            if plugin.get_configname() == configname:
+                return plugin
+        return None
+#        return self._plugins[name]
 
 
     def return_plugins(self):
@@ -346,6 +350,36 @@ class Plugins():
         return self._plugin_conf_filename
         
 
+    def unload_plugin(self, configname):
+        """
+        Unloads (the object of) one loaded plugin with given configname
+
+        :param name: name of the plugin to unload
+        :type name: str
+
+        :return: success or failure
+        :rtype: bool
+        """
+#        logger.warning("Plugins._plugins ({}) = {}".format(len(self._plugins), self._plugins))
+#        logger.warning("Plugins._threads ({}) = {}".format(len(self._threads), self._threads))
+
+        myplugin = self.return_plugin(configname)
+        mythread = self.get_pluginthread(configname)
+        if myplugin.alive:
+            myplugin.stop()
+
+        logger.warning("unload_plugin: configname = {}, myplugin = {}".format(configname, myplugin))
+
+        # execute de-initialization code of the plugin
+        myplugin.deinit()
+
+        self._plugins.remove(myplugin)
+        self._threads.remove(mythread)
+#        logger.warning("Plugins._plugins ({}) = {}".format(len(self._plugins), self._plugins))
+#        logger.warning("Plugins._threads ({}) = {}".format(len(self._threads), self._threads))
+        return False
+
+    
 
     # ------------------------------------------------------------------------------------
 
@@ -372,11 +406,14 @@ class Plugins():
                 logger.debug("Stopping plugin '{}'{}".format(plugin.get_implementation().get_shortname(), instance))
             except:
                 logger.debug("Stopping classic-plugin from section '{}'".format(plugin.name))
-            plugin.stop()
+            try:
+                plugin.stop()
+            except:
+                logger.warning("Error while stopping plugin '{}'{}'".format(plugin.get_implementation().get_shortname(), instance))
         logger.info('Stop of plugins finished')
 
 
-    def get_plugin(self, name):
+    def get_pluginthread(self, configname):
         """
         Returns one plugin with given name 
         
@@ -384,7 +421,7 @@ class Plugins():
         :rtype: object
         """
         for thread in self._threads:
-            if thread.name == name:
+            if thread.name == configname:
                return thread
         return None
 
@@ -442,7 +479,8 @@ class PluginWrapper(threading.Thread):
         if isinstance(self.get_implementation(), SmartPlugin):
             self.get_implementation()._gtranslations = gtranslations
             self.get_implementation()._ptranslations = self._ptrans
-            self.get_implementation()._config_section = name
+            self.get_implementation()._set_configname(name)
+#            self.get_implementation()._config_section = name
             self.get_implementation()._set_shortname(str(classpath).split('.')[1])
             self.get_implementation()._classpath = classpath
             self.get_implementation()._set_classname(classname)
