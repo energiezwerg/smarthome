@@ -52,6 +52,7 @@ class SmartPlugin(SmartObject, Utils):
     _pluginname_prefix = 'plugins.'
 
     _parameters = {}    # Dict for storing the configuration parameters read from /etc/plugin.yaml
+    alive = False
     
     logger = logging.getLogger(__name__)
     
