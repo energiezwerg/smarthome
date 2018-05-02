@@ -43,6 +43,10 @@ They can be used the following way: To call eg. **xxx()**, use the following syn
 :Warning: This library is part of the core of SmartHomeNG. It **should not be called directly** from plugins!
 
 """
+import gc
+import ctypes
+import sys
+
 import logging
 import threading
 import inspect
@@ -350,6 +354,10 @@ class Plugins():
         return self._plugin_conf_filename
         
 
+    class PyObject(ctypes.Structure):
+        _fields_ = [("refcnt", ctypes.c_long)]
+
+
     def unload_plugin(self, configname):
         """
         Unloads (the object of) one loaded plugin with given configname
@@ -360,23 +368,34 @@ class Plugins():
         :return: success or failure
         :rtype: bool
         """
-#        logger.warning("Plugins._plugins ({}) = {}".format(len(self._plugins), self._plugins))
-#        logger.warning("Plugins._threads ({}) = {}".format(len(self._threads), self._threads))
+        logger.info("Plugins._plugins ({}) = {}".format(len(self._plugins), self._plugins))
+        logger.info("Plugins._threads ({}) = {}".format(len(self._threads), self._threads))
 
         myplugin = self.return_plugin(configname)
         mythread = self.get_pluginthread(configname)
         if myplugin.alive:
             myplugin.stop()
 
-        logger.warning("unload_plugin: configname = {}, myplugin = {}".format(configname, myplugin))
+        logger.info("unload_plugin: configname = {}, myplugin = {}".format(configname, myplugin))
 
         # execute de-initialization code of the plugin
         myplugin.deinit()
 
         self._plugins.remove(myplugin)
         self._threads.remove(mythread)
-#        logger.warning("Plugins._plugins ({}) = {}".format(len(self._plugins), self._plugins))
-#        logger.warning("Plugins._threads ({}) = {}".format(len(self._threads), self._threads))
+        logger.info("Plugins._plugins nach remove ({}) = {}".format(len(self._plugins), self._plugins))
+        logger.info("Plugins._threads nach remove ({}) = {}".format(len(self._threads), self._threads))
+ 
+        myplugin_address = id(myplugin)
+        logger.info("myplugin sizeof   = {}".format(sys.getsizeof(myplugin)))
+        logger.info("myplugin refcnt   = {}".format(self.PyObject.from_address(myplugin_address).refcnt))
+        logger.info("myplugin refereer = {}".format(gc.get_referrers(myplugin)))
+        del mythread
+        del myplugin
+        logger.warning("myplugin refcnt = {}".format(self.PyObject.from_address(myplugin_address).refcnt))
+    
+        logger.info("Plugins._plugins nach del ({}) = {}".format(len(self._plugins), self._plugins))
+        logger.info("Plugins._threads nach del ({}) = {}".format(len(self._threads), self._threads))
         return False
 
     
@@ -495,7 +514,8 @@ class PluginWrapper(threading.Thread):
             self.get_implementation()._plgtype = self.meta.get_string('type')
         else:
             # classic plugin
-            self.get_implementation()._config_section = name
+#            self.get_implementation()._config_section = name
+            self.get_implementation()._configname = name
             self.get_implementation()._shortname = str(classpath).split('.')[1]
             self.get_implementation()._classpath = classpath
             self.get_implementation()._classname = classname
