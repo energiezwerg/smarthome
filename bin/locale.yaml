@@ -28,6 +28,7 @@ global_translations:
     'Host':            {'de': '=', 'en': '=', 'fr': 'Hôte'}
     'Port':            {'de': '=', 'en': '=', 'fr': '='}
     'IP':              {'de': '=', 'en': '=', 'fr': '='}
+    'Instanz':         {'de': '=', 'en': 'Instance', 'fr': '='}
     'Protokoll':       {'de': '=', 'en': 'Protocol', 'fr': 'Protocole'}
     'Kanal':           {'de': '=', 'en': 'Channel', 'fr': 'Canal'}
     'Knoten':          {'de': '=', 'en': 'Node', 'fr': 'noeud'}
