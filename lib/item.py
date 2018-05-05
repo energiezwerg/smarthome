@@ -521,7 +521,10 @@ class Item():
             if hasattr(plugin, PLUGIN_PARSE_ITEM):
                 update = plugin.parse_item(self)
                 if update:
-                    plugin._append_to_itemlist(self)
+                    try:
+                        plugin._append_to_itemlist(self)
+                    except:
+                        pass
                     self.add_method_trigger(update)
 
 
