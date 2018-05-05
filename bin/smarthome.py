@@ -222,10 +222,33 @@ class SmartHome():
         if MODE == 'unittest':
             return
 
+        #############################################################
+        # Reading smarthome.yaml
+
+        config = lib.config.parse_basename(self._smarthome_conf_basename, configtype='SmartHomeNG')
+        if config != {}:
+            for attr in config:
+                if not isinstance(config[attr], dict):  # ignore sub items
+                    vars(self)['_' + attr] = config[attr]
+            del(config)  # clean up
+
+        if hasattr(self, '_module_paths'):
+            sys.path.extend(self._module_paths if type(self._module_paths) is list else [self._module_paths])
+
+        #############################################################
+        # Setting (local) tz if set in smarthome.yaml
+        if hasattr(self, '_tz'):
+            self.shtime.set_tz(self._tz)
+            del(self._tz)
+
         # setup logging
         self.init_logging(self._log_conf_basename, MODE)
         self._logger.warning("--------------------   Init SmartHomeNG {0}   --------------------".format(VERSION))
+
+        self._logger.info("Using config dir: {}".format(self._extern_conf_dir))
+
         
+        #############################################################
         # Test if plugins are installed
         if not os.path.isdir(os.path.join(self._base_dir, 'plugins')):
             self._logger.critical("Plugin folder does not exist!")
@@ -238,8 +261,7 @@ class SmartHome():
             exit(1)
 
 
-        self._logger.info("Using config dir: {}".format(self._extern_conf_dir))
-
+        #############################################################
         # Fork process and write pidfile
         if MODE == 'default':
             lib.daemon.daemonize(PIDFILE)
@@ -260,27 +282,8 @@ class SmartHome():
         sys.excepthook = self._excepthook
 
         #############################################################
-        # Reading smarthome.yaml
-
-        config = lib.config.parse_basename(self._smarthome_conf_basename, configtype='SmartHomeNG')
-        if config != {}:
-            for attr in config:
-                if not isinstance(config[attr], dict):  # ignore sub items
-                    vars(self)['_' + attr] = config[attr]
-            del(config)  # clean up
-
-        if hasattr(self, '_module_paths'):
-            sys.path.extend(self._module_paths if type(self._module_paths) is list else [self._module_paths])
-
-        #############################################################
         # Setting debug level and adding memory handler
         self.initMemLog()
-
-        #############################################################
-        # Setting (local) tz if set in smarthome.yaml
-        if hasattr(self, '_tz'):
-            self.shtime.set_tz(self._tz)
-            del(self._tz)
 
         self._logger.debug("Python {0}".format(sys.version.split()[0]))
 
