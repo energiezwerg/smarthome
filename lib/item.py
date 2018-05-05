@@ -517,9 +517,11 @@ class Item():
         #############################################################
 #        for plugin in self._sh.return_plugins():
         for plugin in self.plugins.return_plugins():
+            #plugin.xxx = []  # Empty reference list list of items
             if hasattr(plugin, PLUGIN_PARSE_ITEM):
                 update = plugin.parse_item(self)
                 if update:
+                    plugin._append_to_itemlist(self)
                     self.add_method_trigger(update)
 
 

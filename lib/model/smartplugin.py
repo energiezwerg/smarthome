@@ -51,11 +51,22 @@ class SmartPlugin(SmartObject, Utils):
 
     _pluginname_prefix = 'plugins.'
 
+    _itemlist = []		# List of items, that trigger update methods of this plugin (filled by lib.item); :Warning: Don't change!
+
+
     _parameters = {}    # Dict for storing the configuration parameters read from /etc/plugin.yaml
     
     logger = logging.getLogger(__name__)
     
     
+    def _append_to_itemlist(self, item):
+        self._itemlist.append(item)
+        
+        
+    def _get_itemlist(self):
+        return self._itemlist
+                
+        
     def deinit(self):
         """
         If the Plugin needs special code to be executed before it is unloaded, this method

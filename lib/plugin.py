@@ -64,6 +64,9 @@ logger = logging.getLogger(__name__)
 
 _plugins_instance = None    # Pointer to the initialized instance of the Plugins class (for use by static methods)
 
+def namestr(obj, namespace):
+    return [name for name in namespace if namespace[name] is obj]
+
 
 class Plugins():
     """
@@ -368,8 +371,7 @@ class Plugins():
         :return: success or failure
         :rtype: bool
         """
-        logger.info("Plugins._plugins ({}) = {}".format(len(self._plugins), self._plugins))
-        logger.info("Plugins._threads ({}) = {}".format(len(self._threads), self._threads))
+        logger.info("unload_plugin -------------------------------------------------")
 
         myplugin = self.return_plugin(configname)
         mythread = self.get_pluginthread(configname)
@@ -378,22 +380,37 @@ class Plugins():
 
         logger.info("unload_plugin: configname = {}, myplugin = {}".format(configname, myplugin))
 
+        logger.info("Plugins._plugins ({}) = {}".format(len(self._plugins), self._plugins))
+        logger.info("Plugins._threads ({}) = {}".format(len(self._threads), self._threads))
+
         # execute de-initialization code of the plugin
         myplugin.deinit()
 
-        self._plugins.remove(myplugin)
         self._threads.remove(mythread)
+        self._plugins.remove(myplugin)
         logger.info("Plugins._plugins nach remove ({}) = {}".format(len(self._plugins), self._plugins))
         logger.info("Plugins._threads nach remove ({}) = {}".format(len(self._threads), self._threads))
  
         myplugin_address = id(myplugin)
-        logger.info("myplugin sizeof   = {}".format(sys.getsizeof(myplugin)))
-        logger.info("myplugin refcnt   = {}".format(self.PyObject.from_address(myplugin_address).refcnt))
-        logger.info("myplugin refereer = {}".format(gc.get_referrers(myplugin)))
+        logger.info("myplugin sizeof       = {}".format(sys.getsizeof(myplugin)))
+        logger.info("myplugin refcnt       = {}".format(self.PyObject.from_address(myplugin_address).refcnt))
+        logger.info("myplugin referrer     = {}".format(gc.get_referrers(myplugin)))
+        logger.info("myplugin referrer cnt = {}".format(len(gc.get_referrers(myplugin))))
+        for r in gc.get_referrers(myplugin):
+            logger.info("myplugin referrer     = {} / {} / {}".format(r, namestr(r, globals()), namestr(r, locals())))
+        gc.collect()
+        logger.info("myplugin referrer cnt2= {}".format(len(gc.get_referrers(myplugin))))
+        
         del mythread
         del myplugin
-        logger.warning("myplugin refcnt = {}".format(self.PyObject.from_address(myplugin_address).refcnt))
-    
+        logger.warning("myplugin refcnt nach del    = {}".format(self.PyObject.from_address(myplugin_address).refcnt))
+        try:
+            logger.info("myplugin referrer cnt = {}".format(len(gc.get_referrers(myplugin))))
+            for r in gc.get_referrers(myplugin):
+                logger.info("myplugin referrer     = {}".format(r))
+        except:
+            pass
+
         logger.info("Plugins._plugins nach del ({}) = {}".format(len(self._plugins), self._plugins))
         logger.info("Plugins._threads nach del ({}) = {}".format(len(self._threads), self._threads))
         return False
@@ -520,6 +537,7 @@ class PluginWrapper(threading.Thread):
             self.get_implementation()._classpath = classpath
             self.get_implementation()._classname = classname
             self.get_implementation()._plgtype = ''
+        self.get_implementation()._itemlist = []
 
         # get arguments defined in __init__ of plugin's class to self.args
         exec("self.args = inspect.getargspec({0}.{1}.__init__)[0][1:]".format(classpath, classname))
