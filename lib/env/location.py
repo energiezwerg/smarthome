@@ -8,7 +8,7 @@ if sh.sun:
         sh.env.location.sunrise(sunrise, logic.lname)
     except Exception as e:
         logger.error("ephem error while calculating sun rise: {}".format(e))
-        
+
     azimut_rise_radians, elevation_rise_radians = sh.sun.pos(dt=sunrise)
     azimut_rise_degrees, elevation_rise_degrees = sh.sun.pos(dt=sunrise, degree=True)
     sh.env.location.sunrise.azimut.degrees(round(azimut_rise_degrees, 2), logic.lname)
@@ -30,16 +30,18 @@ if sh.sun:
     sh.env.location.sunset.azimut.radians(round(azimut_set_radians,2), logic.lname)
     sh.env.location.sunset.elevation.radians(round(elevation_set_radians,2), logic.lname)
 
-    # setting altitude/azimut
-    azimut, elevation = sh.sun.pos()
-
-    time = datetime.datetime.utcnow()
-    azimut_radians, elevation_radians = sh.sun.pos(dt=time)
-    azimut_degrees, elevation_degrees = sh.sun.pos(dt=time, degree=True)
-    sh.env.location.sun_position.azimut.degrees(round(azimut_degrees, 2), logic.lname)
-    sh.env.location.sun_position.elevation.degrees(round(elevation_degrees, 2), logic.lname)
-    sh.env.location.sun_position.azimut.radians(round(azimut_radians,2), logic.lname)
-    sh.env.location.sun_position.elevation.radians(round(elevation_radians,2), logic.lname)
+    # moved into sunpos.py
+    # # setting altitude/azimut
+    #
+    # azimut, elevation = sh.sun.pos()
+    #
+    # time = datetime.datetime.utcnow()
+    # azimut_radians, elevation_radians = sh.sun.pos(dt=time)
+    # azimut_degrees, elevation_degrees = sh.sun.pos(dt=time, degree=True)
+    # sh.env.location.sun_position.azimut.degrees(round(azimut_degrees, 2), logic.lname)
+    # sh.env.location.sun_position.elevation.degrees(round(elevation_degrees, 2), logic.lname)
+    # sh.env.location.sun_position.azimut.radians(round(azimut_radians,2), logic.lname)
+    # sh.env.location.sun_position.elevation.radians(round(elevation_radians,2), logic.lname)
 
     try:
 #        sh.env.location.moonrise(sh.moon.rise().astimezone(sh.tzinfo()))

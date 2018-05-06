@@ -18,4 +18,18 @@ env_loc:
       - sunset+1m
       - sunrise-5
       - sunset-7
+    # the sun position will be calculated within env_sunpos.py
     cycle: 1800
+
+env_sunpos:
+    filename: sunpos.py
+    crontab:
+      - init
+    # based on the fact that the azimuth of sun position changes 360° per 24h
+    # one can assume to have around 15° per hour or approximately 1° every 4 minutes
+    # thus it should be fine to calc the sun position with a 240 seconds interval
+    # The elevation won't be so fast so the change will be less than 1° per 4 minutes
+    # which is sufficient
+    # increase it if it is needed. But be aware that calculation of sun position with ephem takes time
+    # especially on raspi 1 or 2
+    cycle: 240
