@@ -11,23 +11,36 @@
 	<br>
 	<br>
 	<br>
-	<br>
-	<br>
     <div class="row">
-        <div align="center" class="col-md-7 col-md-offset-2 panel panel-default">
+        <div align="center" class="col-md-10 col-md-offset-2 panel panel-default">
 			<h1 class="margin-base-vertical">
-			<img src="static/img/logo_big.png" width="150" height="75">
+			<img src="gstatic/img/logo_big.png" width="150" height="75">
 			&nbsp; SmartHomeNG</h1>
 
-			<p align="center">
-				Willkommen bei SmartHomeNG.
-			</p>
+            <br>
+			<h4>
+				http-Modul von SmartHomeNG.
+			</h4>
+            <p align="center">
+                Diese Seite wird angezeigt, da (noch) keine Weiterleitung in <strong>{{ '../etc/module.yaml' }}</strong> festgelegt wurde
+            </p>
 			<br>
-			<h3>Plugins:</h3>
+
+            <table align="center" border="1" cellpadding="10">
+            <th colspan="2">
+                <h3>Plugins mit Web-Interface:</h3>
+            </th>
 			{% for webif in webinterfaces.keys() %}
-				<br>
-				<li class="nav-item"><a href="/{{ webif }}">{{ webinterfaces[webif].Webifname }} {{ webinterfaces[webif].Instance }} - {{ webinterfaces[webif].Description }}</a></li>
+				<tr>
+				    <td>
+                        <a href="/{{ webif }}">{{ webinterfaces[webif].Webifname }}</a>
+                    </td>
+                    <td>
+                        {{ webinterfaces[webif].Description }}
+                    </td>
+                </tr>
 			{% endfor %}
+            </table>
 			<br>
 			<br>
 			<br>
