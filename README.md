@@ -14,14 +14,16 @@ Additional information / documentation can be found in the [SmartHomeNG Wiki](ht
 | ---     | :--- |
 |bin 	    | the main python file is based here |
 |dev 	    | if you plan to create a plugin then this is the folder you want to have a closer look at |
-|etc 	    | the three basic configuration files smarthome.conf, plugin.conf and logic.conf are located here, you will edit these files to reflect your basic settings|
+|doc 	    | Source files for the user- and developer documentation |
+|etc 	    | the three basic configuration files smarthome.yaml, module.yaml, plugin.yaml, logic.yaml and logging.yaml are located here, you will edit these files to reflect your basic settings|
 |examples |	some examples of items, etc. this is only for informational purpose |
 |items 	  | put here your own files for your items |
 |lib 	    | some more core python modules are in this directory. You won't need to change anything here
 |logics   |	here your logic files are put
 |modules  | here are all loadable core-modules located (one subdirectory for every module)
-|plugins  | here are all plugins located (one subdirectory for every plugin)
+|plugins  | here are all plugins located (one subdirectory for every plugin). The plugins have to be installed from a separate repository (smarthomeNG/plugins)
 |scenes   | the scenes are stored here
+| tests   | The code for the automated travis tests is stored here
 |tools    | there are some tools which help you for creating an initial configuration
 |var 	    | everything that is changed by smarthome is put here, e.g. logfiles, cache, sqlite database etc.
 
