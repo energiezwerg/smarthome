@@ -44,6 +44,11 @@ parameters:
         description:
             de: hashed Version des Passworts für den Zugriff auf Webservices, ersetzt den Parameter 'password'
             en: hashed version of the password for the access to webervices, supersedes the parameter 'password'
+    ip:
+        type: ipv4
+        description:
+            de: IP Adresse auf der das http Modul aktiv sein soll - muss normalerweise nicht angegeben werden
+            en: IP adress on which the http module should operate - not deeded, has only to be specified for special configurations
     port:
         type: int
         default: 8383

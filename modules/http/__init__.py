@@ -76,6 +76,7 @@ class Http():
             self._password = self._parameters['password']
             self._hashed_password = self._parameters['hashed_password']
             self._realm = 'shng_http_webif'
+            self._ip = self._parameters['ip']
             self._port = self._parameters['port']
 
             self._service_user = self._parameters['service_user']
@@ -128,7 +129,8 @@ class Http():
             self._servicesport = self._port
 
 #        self._basic_auth = False
-        self._ip = self._get_local_ip_address()
+        if self._ip == '0.0.0.0':
+            self._ip = self._get_local_ip_address()
 
         # ------------------------------------------------------------------------
         # Setting up webinterface environment
