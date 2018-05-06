@@ -11,20 +11,10 @@ cli:
     update: True
     #hashed_password: 1245a9633edf47b7091f37c4d294b5be5a9936c81c5359b16d1c48337$
 
-#database:
-#    plugin_name: database
-#    driver: sqlite3
-#    connect:
-#    - database:/usr/local/shng_dev/var/db/smarthomeng.db
-#    - check_same_thread:0
-#    # prefix: log
-
-# homematic:
-#     plugin_name: homematic
-#     host: 10.0.0.185
-#     learnmode_length: 60
-#     # username: admin
-#     # password: xxx
+# memlog:
+#     class_name: MemLog
+#     class_path: plugins.memlog
+#     name: alert
 
 # knx:
 #     class_name: KNX
@@ -38,28 +28,11 @@ cli:
 #     readonly: True    ## don't write to knx bus, default false"
 #     instance: default
 
-# memlog:
-#     class_name: MemLog
-#     class_path: plugins.memlog
-#     name: alert
-
 # ow:
 #     class_name: OneWire
 #     class_path: plugins.onewire
 #     host: 127.0.0.1
 #     port: 4304
-
-# Autogenerierung von Webseiten für SmartVISU
-smartvisu_pages:
-    plugin_name: visu_smartvisu
-    # '"neue" Linux Versionen (z.B. Debian > 8.x, Ubuntu > 14.x)'
-    smartvisu_dir: /var/www/html/smartvisu
-    # für 'alte' Linux-Variationen
-    # smartvisu_dir: /var/www/smartvisu
-    generate_pages: 'True'
-    handle_widgets: 'True'
-    overwrite_templates: 'Yes'
-    visu_style: blk
 
 # Bereitstellung eines Websockets zur Kommunikation zwischen SmartVISU und SmartHomeNG
 websocket:
@@ -69,6 +42,24 @@ websocket:
     #tls: no
     #wsproto: 4
     #acl: rw
+
+# Autogenerierung von Webseiten für SmartVISU
+#smartvisu:
+#    class_name: SmartVisu
+#    class_path: plugins.visu_smartvisu
+#    # '"neue" Linux Versionen (z.B. Debian > 8.x, Ubuntu > 14.x)'
+#    smartvisu_dir: /var/www/html/smartVISU
+#
+#    # nur \"alte\" Linux-Variationen
+#    # smartvisu_dir: /var/www/smartVISU
+#    # generate_pages: True
+#    # handle_widgets: True
+#    # overwrite_templates: Yes
+#    # visu_style: blk
+
+# sql:
+#     class_name: SQL
+#     class_path: plugins.sqlite
 
 # apcups:
 #     class_name: APCUPS
@@ -131,7 +122,64 @@ websocket:
 #     logpatterns: csv:{time};{item};{value}\n
 #     cycle: 300
 
+# dlms:
+#     class_name: DLMS
+#     class_path: plugins.dlms
+#     serialport: /dev/ttyO1
+#     baudrate: 300    # default 300
+#     update_cycle: 20    # default 20
+#     use_checksum: no    # default no
+#     reset_baudrate: no    # default no
+#     no_waiting: yes    # default yes
+
+# dmx:
+#     class_name: DMX
+#     class_path: plugins.dmx
+#     tty: /dev/usbtty...
+#     interface: nanodmx
+
+# DuW:
+#     class_name: DuW
+#     class_path: plugins.drexelundweiss
+#     tty: /dev/ttyUSB0
+#     Busmonitor: 1
+#     LU_ID: 130
+#     WP_ID: 140
+
+# squeezebox:
+#     class_name: Squeezebox
+#     class_path: plugins.squeezebox
+#     host: squeezeserver
+#     # port: <port>
+
+# uzsu:
+#     class_name: UZSU
+#     class_path: plugins.uzsu
+
+# simulation:
+#     class_name: Simulation
+#     class_path: plugins.simulation
+#     data_file: /usr/local/smarthome/var/db/simulation.txt
+
+# nw:
+#     class_name: Network
+#     class_path: plugins.network
+#     ip: 0.0.0.0
+#     port: 2727
+#     http: 8765
+#     tcp_acl:
+#       - 127.0.0.1
+#       - 192.168.0.34
+#     udp: 'no'
+#     udp_acl: '*'
+
 # wol:
 #     class_name: WakeOnLan
 #     class_path: plugins.wol
+
+# homematic:
+#     class_name: Homematic
+#     class_path: plugins.homematic
+#     host: 192.168.50.250
+#     port: 2001
 
