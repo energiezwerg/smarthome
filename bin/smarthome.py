@@ -175,12 +175,7 @@ class SmartHome():
     __event_listeners = {}
     __all_listeners = []
     modules = []
-#    _moduledict = {}
-#    _plugins = []
-#    __items = []
-#    __item_dict = {}
     __children = []
-#    _utctz = TZ
     _logger = logging.getLogger(__name__)
     _default_language = 'de'
 
@@ -195,13 +190,8 @@ class SmartHome():
         self._extern_conf_dir = extern_conf_dir
         
         # set default timezone to UTC
-#        global TZ
         self.shtime = Shtime(self)
-#        self.tz = 'UTC'
-#        os.environ['TZ'] = self.tz
-##        self._tzinfo = TZ
-#        self.shtime.set_tzinfo(TZ)
-        
+
         threading.currentThread().name = 'Main'
         self.alive = True
         self.version = VERSION
