@@ -33,12 +33,17 @@ sh.env.system.load(round(l5, 2), logic.lname)
 
 # Diskusage
 if sys.version_info > (3, 3):
-    pathname = os.path.dirname(sys.argv[0])
-    du = shutil.disk_usage(os.path.abspath(pathname))
-    sh.env.system.diskfree(du.free, logic.lname)
-    sh.env.system.disksize(du.total, logic.lname)
-    sh.env.system.diskusage(du.used, logic.lname)
-    sh.env.system.diskusagepercent(round(du.used / du.total * 100.0, 2), logic.lname)
+    #pathname = os.path.dirname(sys.argv[0])
+    absolute_pathname = sh.get_basedir()
+    #du = shutil.disk_usage(os.path.abspath(pathname))
+    try:
+        du = shutil.disk_usage(absolute_pathname)
+        sh.env.system.diskfree(du.free, logic.lname)
+        sh.env.system.disksize(du.total, logic.lname)
+        sh.env.system.diskusage(du.used, logic.lname)
+        sh.env.system.diskusagepercent(round(du.used / du.total * 100.0, 2), logic.lname)
+    except:
+        logger.error("Statistics could not be read using base directory {}".format(absolute_pathname))
 
 if sh.moon:
     sh.env.location.moonlight(sh.moon.light(), logic.lname)
