@@ -2,7 +2,7 @@
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
 # Copyright 2011-2014 Marcus Popp                          marcus@popp.mx
-# Copyright 2016-     Christian Strassburg            c.strassburg@gmx.de
+# Copyright 2016      Christian Strassburg            c.strassburg@gmx.de
 # Copyright 2016-     Martin Sinn                           m.sinn@gmx.de
 #########################################################################
 #  This file is part of SmartHomeNG.
@@ -124,7 +124,6 @@ class _LogHandler(logging.StreamHandler):
         self._shtime = shtime
 
     def emit(self, record):
-#        timestamp = datetime.datetime.fromtimestamp(record.created, TZ)
         timestamp = datetime.datetime.fromtimestamp(record.created, self._shtime.tzinfo())
         self._log.add([timestamp, record.threadName, record.levelname, record.message])
 
@@ -395,6 +394,8 @@ class SmartHome():
         fo.close()
         if MODE == 'interactive':  # remove default stream handler
             logging.getLogger().disabled = True
+        elif MODE == 'verbose':
+            logging.getLogger().setLevel(logging.INFO)
         elif MODE == 'debug':
             logging.getLogger().setLevel(logging.DEBUG)
         elif MODE == 'quiet':
@@ -779,9 +780,6 @@ class SmartHome():
         """
         self._deprecated_warning('Items-API')
         return self.items.add_item(path, item)
-#        if path not in self.__items:
-#            self.__items.append(path)
-#        self.__item_dict[path] = item
 
 
     def return_item(self, string):
@@ -798,8 +796,6 @@ class SmartHome():
         """
         self._deprecated_warning('Items-API')
         return self.items.return_item(string)
-#        if string in self.__items:
-#            return self.__item_dict[string]
 
 
     def return_items(self):
@@ -813,8 +809,6 @@ class SmartHome():
         """
         self._deprecated_warning('Items-API')
         return self.items.return_items()
-#        for item in self.__items:
-#            yield self.__item_dict[item]
 
 
     def match_items(self, regex):
@@ -858,9 +852,6 @@ class SmartHome():
         """
         self._deprecated_warning('Items-API')
         return self.items.find_items(conf)
-#        for item in self.__items:
-#            if conf in self.__item_dict[item].conf:
-#                yield self.__item_dict[item]
 
 
     def find_children(self, parent, conf):
@@ -879,12 +870,6 @@ class SmartHome():
         """
         self._deprecated_warning('Items-API')
         return self.items.find_children(parent, conf)
-#        children = []
-#        for item in parent:
-#            if conf in item.conf:
-#                children.append(item)
-#            children += self.find_children(item, conf)
-#        return children
 
 
     #################################################################
@@ -1081,7 +1066,7 @@ if __name__ == '__main__':
     # argument handling
     argparser = argparse.ArgumentParser()
     arggroup = argparser.add_mutually_exclusive_group()
-    arggroup.add_argument('-v', '--verbose', help='DEPRECATED use logging.config (verbose (debug output) logging to the logfile)', action='store_true')
+    arggroup.add_argument('-v', '--verbose', help='verbose (info output) logging to the logfile - DEPRECATED use logging.config', action='store_true')
     arggroup.add_argument('-d', '--debug', help='stay in the foreground with verbose output', action='store_true')
     arggroup.add_argument('-i', '--interactive', help='open an interactive shell with tab completion and with verbose logging to the logfile', action='store_true')
     arggroup.add_argument('-l', '--logics', help='reload all logics', action='store_true')
@@ -1138,6 +1123,7 @@ if __name__ == '__main__':
     elif args.quiet:
         pass
     elif args.verbose:
+        MODE = 'verbose'
         pass
 
     # check for pid file
