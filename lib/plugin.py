@@ -432,6 +432,7 @@ class Plugins():
             plugin.start()
         logger.info('Start of plugins finished')
 
+
     def stop(self):
         logger.info('Stop plugins')
         for plugin in self._threads:

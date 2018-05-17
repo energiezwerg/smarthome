@@ -1086,6 +1086,7 @@ if __name__ == '__main__':
     arggroup.add_argument('-i', '--interactive', help='open an interactive shell with tab completion and with verbose logging to the logfile', action='store_true')
     arggroup.add_argument('-l', '--logics', help='reload all logics', action='store_true')
     arggroup.add_argument('-s', '--stop', help='stop SmartHomeNG', action='store_true')
+    arggroup.add_argument('-r', '--restart', help='restart SmartHomeNG', action='store_true')
     arggroup.add_argument('-q', '--quiet', help='DEPRECATED use logging config (reduce logging to the logfile)', action='store_true')
     arggroup.add_argument('-V', '--version', help='show SmartHomeNG version', action='store_true')
     arggroup.add_argument('--start', help='start SmartHomeNG and detach from console (default)', default=True, action='store_true')
@@ -1129,6 +1130,9 @@ if __name__ == '__main__':
     elif args.stop:
         lib.daemon.kill(PIDFILE, 30)
         exit(0)
+    elif args.restart:
+        lib.daemon.kill(PIDFILE, 30)
+        pass
     elif args.debug:
         MODE = 'debug'
     elif args.quiet:
