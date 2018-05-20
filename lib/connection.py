@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 #########################################################################
 #  Copyright 2013 Marcus Popp                              marcus@popp.mx
+#  Copyright 2018 Bernd Meiners                     Bernd.Meiners@Mail.de
 #########################################################################
 #  This file is part of SmartHomeNG.    https://github.com/smarthomeNG//
 #
@@ -23,6 +24,11 @@
 This library is softly on it's way out. In the future network classes for SmartHomeNG
 will be implemented trough the network library lib.network, which is still in development.
 
+The following modules use an import lib.connection as of April 2018:
+smarthome.py for an object of Connections()
+Plugins:
+russound, network, visu_websocket, asterisk, knx, squeezebox, nuki, mpd, raumfeld, cli, speech, xbmc, lirc
+
 """
 import logging
 import socket
@@ -36,6 +42,12 @@ logger = logging.getLogger(__name__)
 
 
 class Base():
+    """
+    provides same base class for class Connections(), class Server(),
+    class Stream() and thus also to class Client() which inherits from Stream()
+
+    some lookup dicts for protocol family like TCP or UDP flavours and the like for protocol type
+    """
 
     _poller = None
     _family = {'UDP': socket.AF_INET, 'UDP6': socket.AF_INET6, 'TCP': socket.AF_INET, 'TCP6': socket.AF_INET6}
@@ -54,6 +66,15 @@ class Base():
 
 
 class Connections(Base):
+    """
+    Within SmartHome.py there is one instance of this class
+
+    The filenumber of a connection is the key to the contained dicts of
+    _connections and _servers
+    Additionally the filenumber is used for either epoll or kqueue depending
+    on the environment found for select.
+    A filenumber of value -1 is an error value.
+    """
 
     _connections = {}
     _servers = {}
@@ -70,6 +91,9 @@ class Connections(Base):
             self._kqueue = select.kqueue()
 
     def register_server(self, fileno, obj):
+        if fileno == -1:
+            logger.error("{} tried to register a server with filenumber == -1".format(obj))
+            return
         self._servers[fileno] = obj
         self._connections[fileno] = obj
         if hasattr(select, 'epoll'):
@@ -83,6 +107,9 @@ class Connections(Base):
             self._kqueue.control(event, 0, 0)
 
     def register_connection(self, fileno, obj):
+        if fileno == -1:
+            logger.error("tried to register a connection with filenumber == -1")
+            return
         self._connections[fileno] = obj
         if hasattr(select, 'epoll'):
             self._epoll.register(fileno, self._ro)
@@ -95,12 +122,23 @@ class Connections(Base):
             self._kqueue.control(event, 0, 0)
 
     def unregister_connection(self, fileno):
+        if fileno == -1:
+            logger.error("tried to unregister a connection with filenumber == -1")
+            return
         try:
             if hasattr(select, 'epoll'):
                 self._epoll.unregister(fileno)
-            del(self._connections[fileno])
-            del(self._servers[fileno])
         except Exception as e:
+            logger.error("unregister a connection with filenumber == {} for epoll failed".format(fileno))
+
+        try:
+            del(self._connections[fileno])
+        except:
+            pass
+
+        try:
+            del(self._servers[fileno])
+        except:
             pass
 
     def monitor(self, obj):
@@ -112,6 +150,9 @@ class Connections(Base):
                 obj.connect()
 
     def trigger(self, fileno):
+        if fileno == -1:
+            logger.error("tried to trigger a connection with filenumber == -1")
+            return
         if self._connections[fileno].outbuffer:
             if hasattr(select, 'epoll'):
                 self._epoll.modify(fileno, self._rw)
@@ -128,13 +169,43 @@ class Connections(Base):
         if not self._connections:
             time.sleep(1)
             return
+
+        if -1 in self._connections:
+            logger.error("fileno -1 was found, please report to SmartHomeNG team")
+            del( self._connections[-1])
+
         for fileno in self._connections:
             if fileno not in self._servers:
                 if hasattr(select, 'epoll'):
                     if self._connections[fileno].outbuffer:
-                        self._epoll.modify(fileno, self._rw)
+                        try:
+                            self._epoll.modify(fileno, self._rw)
+                        except OSError as e:
+                            # as with python 3.6 an OSError will be raised when a socket is already closed like with a settimeout
+                            # the socket will need to be recreated then
+                            logger.error("OSError {} for epoll.modify(RW) with fileno {} for object {}, please report to SmartHomeNG team".format(e, fileno, self._connections[fileno]))
+                            # here we could try to get rid of the connection that causes the headache
+                        except PermissionError as e:
+                            logger.error("PermissionError {} for epoll.modify(RW) with fileno {} for object {}, please report to SmartHomeNG team".format(e, fileno, self._connections[fileno]))
+                            # here we could try to get rid of the connection that causes the headache
+                        except FileNotFoundError as e:
+                            logger.error("FileNotFoundError {} for epoll.modify(RW) with fileno {} for object {}, please report to SmartHomeNG team".format(e, fileno, self._connections[fileno]))
+                            # here we could try to get rid of the connection that causes the headache
                     else:
-                        self._epoll.modify(fileno, self._ro)
+                        try:
+                            self._epoll.modify(fileno, self._ro)
+                        except OSError as e:
+                            # as with python 3.6 an OSError will be raised when a socket is already closed like with a settimeout
+                            # the socket will need to be recreated then
+                            logger.error("OSError {} for epoll.modify(RO) with fileno {} for object {}, please report to SmartHomeNG team".format(e, fileno, self._connections[fileno]))
+                            # here we could try to get rid of the connection that causes the headache
+                        except PermissionError as e:
+                            logger.error("PermissionError {} for epoll.modify(RO) with fileno {} for object {}, please report to SmartHomeNG team".format(e, fileno, self._connections[fileno]))
+                            # here we could try to get rid of the connection that causes the headache
+                        except FileNotFoundError as e:
+                            logger.error("FileNotFoundError {} for epoll.modify(RO) with fileno {} for object {}, please report to SmartHomeNG team".format(e, fileno, self._connections[fileno]))
+                            # here we could try to get rid of the connection that causes the headache
+
                 elif hasattr(select, 'kqueue'):
                     event = []
                     if self._connections[fileno].outbuffer:
@@ -207,6 +278,9 @@ class Connections(Base):
             sys.exit(0)
 
     def close(self):
+        if -1 in self._connections:
+            logger.error("Connections.close() tried to close a filenumber == -1")
+
         try:
             for fileno in self._connections:
                 try:
@@ -464,7 +538,7 @@ class Client(Stream):
             self.socket.settimeout(2)
             self.socket.connect(sockaddr)
             self.socket.setblocking(0)
-#           self.socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+            # self.socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         except Exception as e:
             self._connection_attempts -= 1
             if self._connection_attempts <= 0:
