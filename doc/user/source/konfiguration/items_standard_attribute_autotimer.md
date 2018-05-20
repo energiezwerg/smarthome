@@ -1,12 +1,6 @@
 # *autotimer*
 Das Attribut setzt den Wert des Items nach einer Zeitspanne auf einen bestimmten Wert. Der Timer beginnt zu laufen, wenn dem Item ein Wert zugewiesen wird. Wenn während der Autotimer läuft dem Item erneut ein Wert zugewiesen wird, beginnt der Timer erneut zu laufen. Damit lässt sich z.B. ein Treppenhauslicht realisieren.
 
-```ini
-[item]
-    type = num
-    autotimer = 5m = 0
-```
-
 ```yaml
 item:
     type: num
@@ -15,11 +9,6 @@ item:
 setzt nach 5 Minuten den Wert des Items auf 0.
 
 Das allgemeine Format für die Angabe des **autotimer** Attributs ist:
-
-```ini
-[item]
-    autotimer = <dauer> = <wert>
-```
 
 ```yaml
 item:
@@ -36,14 +25,6 @@ Bitte beachten: [Datentyp der Wertzuweisung](#datentyp-der-wertzuweisung)
 ***Ab SmartHomeNG v1.3*** werden die Konfigurationsmöglichkeiten erweitert:
 
 Alternativ zur Angabe von absoluten Werten für *dauer* und *wert*, können nun auch Items als *dauer* und/oder *wert* angegeben werden:
-
-```
-[item]
-    type = num
-    autotimer = sh.item.dauer() = 0
-    [[dauer]]
-        value = 45
-```
 
 ```yaml
 item:
@@ -87,22 +68,12 @@ Falls eine Umstellung nicht installationsweit erfolgen soll, kann der Modus bei 
 
 Die Angabe des Kompatibilitätsmodus erfolgt folgendermaßen:
 
-```
-[item]
-    autotimer = <dauer> = <wert> = <kompatibilität>
+```yaml
+item:
+    autotimer: <dauer> = <wert> = <kompatibilität>
 ```
 
 Beispiel:
-
-```ini
-[item]
-    type = num
-    autotimer = 5m = 0 = compat_1.2
-
-[item2]
-    type = bool
-    autotimer = 5m = true = latest
-```
 
 ```yaml
 item:

@@ -5,7 +5,8 @@ Attribut *on_update*
 ====================
 
 Ermöglicht das setzen des Wertes anderer Items, wenn das aktuelle Item ein Update erhält (auch 
-wenn sich der Wert des aktuellen Items dabei nicht ändert). **Ab SmartHomeNG v1.4**
+wenn sich der Wert des aktuellen Items dabei nicht ändert). Das ist der Unterschied zu **on_change**, welches nur ausgelöst
+wird wenn sich bei einem Update der Wert des Items auch ändert. **Ab SmartHomeNG v1.4**
 
 Der Syntax ist folgender:
 
@@ -72,32 +73,12 @@ Beispiel:
        ...
 
 
-Im .conf Format (deprecated) sieht das Beispiel folgendermaßen aus:
-
-.. code-block:: none
-   :caption: ../items/<filename>.conf (Ausschnitt) (deprecated)
-
-   [itemA1]
-       # eine einzelne Zuweisung
-       on_update = itemB = 1                  # bei jedem Update von itemA1
-
-   [itemA2]
-       # eine Liste mehrerer Zuweisungen
-       on_change = itemC = False | itemD = sh.itemB() | itemE = sh.itemB() if value else 0
-       ...
-
-   [itemB]
-       ...
-
-   [itemC]
-       ...
-
-
 Attribut *on_change*
 ====================
 
 Ermöglicht das setzen des Wertes anderer Items, wenn der Wert des aktuellen Items verändert 
-wird. **Ab SmartHomeNG v1.4**
+wird. Im Gegensatz zu **on_update** wird **on_change** nur ausgelöst, wenn sich beim Update eines Items der Wert auch ändert.
+**Ab SmartHomeNG v1.4**
 
 Der Syntax ist äquivalent zum Attribut **on_update**.
 
