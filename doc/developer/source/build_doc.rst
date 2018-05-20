@@ -45,7 +45,29 @@ Build the documentation:
 
 This script creates a subdirectory **work** in which the build process takes place and the results are stored.
 
-After the script has finished, the user documentation is stored in /usr/local/smarthome/doc/build_doc/work/doc/user/build/html
-and the develper documentation is stored in /usr/local/smarthome/doc/build_doc/work/doc/developer/build/html.
+After the script has finished, the user documentation is stored in
+
+  /usr/local/smarthome/doc/build_doc/work/doc/user/build/html
+
+and the develper documentation is stored in
+
+  /usr/local/smarthome/doc/build_doc/work/doc/developer/build/html
 
 Each documentation can be viewed by opening the corresponding index.html file in a browser.
+
+
+---------------------------
+Options of the build script
+---------------------------
+
+The script build_doc.sh has some options that are helpfull if the documentation is built repeatedly.
+
+If you start the build script a second time, it will build the documentation from the files, that have been checked out
+from git on the first run. If the files should be copied from git again, build_doc.sh has to be started with the option **-f**
+(f = force checkout).
+
+If only one of the documentations (user or developer) should be build, the options **-u** or **-d** can be used.
+
+If the documentation should be built from the master branch, the option **-m** can be used. It should be combined with **-f** to
+ensure that the right files are checked out.
+
