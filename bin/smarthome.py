@@ -322,7 +322,7 @@ class SmartHome():
         """
         Function to return the base directory of the running SmartHomeNG installation
 
-        :return: Bas directory as an absolute path
+        :return: Base directory as an absolute path
         :rtype: str
         """
         return self._base_dir
@@ -344,7 +344,7 @@ class SmartHome():
 
         **getBaseDir()** is deprecated. Use method get_basedir() instead.
 
-        :return: Bas directory as an absolute path
+        :return: Base directory as an absolute path
         :rtype: str
         """
         self._deprecated_warning('sh.get_basedir()')
