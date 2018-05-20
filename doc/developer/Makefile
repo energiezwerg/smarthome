@@ -50,8 +50,8 @@ html:
 	@test ! -L "source/modules" && echo "creating a link to the module directory" && ln ../../../modules source/modules -s || echo "link to modules directory already exists"
 	@test ! -L "source/dev" && echo "creating a link to the dev directory" && ln ../../../dev source/dev -s || echo "link to dev directory already exists"
 	@echo
-	@python -V
-	@python ../build_plugin_rst_files.py
+	@python3 -V
+	@python3 ../build_plugin_rst_files.py
 	@echo
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
 	@echo

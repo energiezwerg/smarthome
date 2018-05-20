@@ -76,6 +76,7 @@ if [ "${DOC,,}" == "user" ]; then
   echo ==================================================
 fi
 echo
+python3 -V
 python3 -c "import sphinx" 2> /dev/null
 if [ "$?" == "1" ]; then
   echo Vor Ausführung dieses Skriptes zum Erstellen der $ACCOUNT/$REPO Doku
@@ -84,6 +85,7 @@ if [ "$?" == "1" ]; then
   echo Die Installation vorn Sphinx kann mit folgendem Kommando durchgeführt werden:
   echo
   echo -e "\t $ sudo pip3 install sphinx sphinx_rtd_theme recommonmark"
+  echo -e "\t $ sudo pip3 install 'ruamel.yaml>=0.13.7,<=0.15'
   echo
   exit
 fi
