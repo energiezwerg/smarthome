@@ -137,6 +137,8 @@ if [ "${GIT_CHECKOUT,,}" == "true" ]; then
 
   echo
   echo Auschecken der Plugins von github:
+
+  mkdir plugins >nul
   cd plugins
   git clone -b $DESTBRANCH https://github.com/$ACCOUNT/plugins.git .
 

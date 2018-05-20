@@ -47,6 +47,7 @@ sudo python3 -m pip install --upgrade pip
 
 SmartHomeNG Dateien vom github holen:
 
+Die folgenden Kommandos am besten mit dem User Account (smarthome) durchführen unter dem später SmartHomeNG laufen soll.
 ```
 cd /usr/local
 sudo mkdir smarthome

@@ -74,10 +74,11 @@ import psutil
 BASE = os.path.sep.join(os.path.realpath(__file__).split(os.path.sep)[:-2])
 sys.path.insert(0, BASE)
 PIDFILE= os.path.join(BASE,'var','run','smarthome.pid')
+
 #####################################################################
 # Import 3rd Party Modules
 #####################################################################
-from dateutil.tz import gettz
+#from dateutil.tz import gettz
 
 #####################################################################
 # Import SmartHomeNG Modules
@@ -204,6 +205,8 @@ class SmartHome():
         self._module_conf_basename = os.path.join(self._etc_dir,'module')
         self._plugin_conf_basename = os.path.join(self._etc_dir,'plugin')
         self._log_conf_basename = os.path.join(self._etc_dir,'logging')
+
+        self._pidfile = PIDFILE
 
         # check config files
         self.checkConfigFiles()
@@ -1116,6 +1119,7 @@ if __name__ == '__main__':
         lib.daemon.kill(PIDFILE, 30)
         exit(0)
     elif args.restart:
+        time.sleep(5)
         lib.daemon.kill(PIDFILE, 30)
         pass
     elif args.debug:
