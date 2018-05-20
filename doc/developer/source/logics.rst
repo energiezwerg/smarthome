@@ -110,7 +110,7 @@ Like Unix crontab with the following options:
    -  minute: single value from 0 to 59, or comma separated list, or * (every minute)
    -  hour: single value from 0 to 23, or comma separated list, or * (every hour)
    -  day: single value from 0 to 28, or comma separated list, or * (every day)
-      Please note: dont use days greater than 28 in the moment.
+   Please note: dont use days greater than 28 in the moment.
    -  wday: weekday, single value from 0 to 6 (0 = Monday), or comma separated list, or * (every day)
 
 ``crontab: sunrise``

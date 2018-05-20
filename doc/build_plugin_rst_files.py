@@ -236,8 +236,9 @@ def build_pluginlist( plugin_type='all' ):
                     plg_dict['test'] = get_tester(section_dict, 15)
                     plg_dict['doc'] = html_escape(section_dict.get('documentation', ''))
                     plg_dict['sup'] = html_escape(section_dict.get('support', ''))
-                    print("unclassified: metafile = {}, plg_dict = {}".format(metafile, str(plg_dict)))
-                    
+                    print("")
+                    print("> unclassified plugin: metafile = {}, plg_dict = {}".format(metafile, str(plg_dict)))
+
                 plg_dict['desc'].append('')
             else:
                 plgtype = type_unclassified

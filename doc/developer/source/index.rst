@@ -41,6 +41,7 @@ any way you want and can.
    user_doc.rst
    requirements.rst
    install
+   build_doc
 
 
 .. toctree::

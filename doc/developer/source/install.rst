@@ -44,7 +44,7 @@ For development, the latest development version is about to installed. This is d
    cd plugins
    git clone -b develop git://github.com/smarthomeNG/plugins.git .
 
-Please notice the dot at the eind of the **git** commands!
+Please notice the dot at the end of the **git** commands!
 
 
 Required Python modules
