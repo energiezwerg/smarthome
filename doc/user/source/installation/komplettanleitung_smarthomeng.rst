@@ -153,16 +153,31 @@ Jetzt sollten jede Menge Logging-Meldungen über den Bildschirm laufen, die sehe
 
 .. code-block:: text
 
-   2017-08-05  00:00:07 DEBUG    M:lib.scheduler  T:Scheduler    IT.SwitchB next time: 2017-01-05 00:02:07+01:00
-   2017-08-05  00:00:14 WARNING  M:plugins.dlms   T:DLMS         update is alrady running, maybe it really takes very long or you should use longer query interval time
-   2017-08-05  00:00:14 DEBUG    M:lib.scheduler  T:Scheduler    DLMS next time: 2017-01-05 00:01:44+01:00
+   2018-05-21  00:10:38 WARNING  __main__            --------------------   Init SmartHomeNG 1.4   --------------------
+   2018-05-21  00:10:38 INFO     lib.scheduler       Init Scheduler
+   2018-05-21  00:10:40 INFO     plugins.backend     WebInterface: Running from '/usr/local/shng_dev/plugins/backend/webif'
+   2018-05-21  00:10:40 INFO     plugins.backend     BackendSysteminfo __init__
+   2018-05-21  00:10:40 INFO     plugins.backend     BackendServices __init__
+   2018-05-21  00:10:40 INFO     plugins.backend     BackendItems __init__ <lib.item.Items object at 0x7fc4e61d84a8>
+   2018-05-21  00:10:40 INFO     plugins.backend     BackendLogics __init__ self.logics = None
+   2018-05-21  00:10:40 INFO     plugins.backend     BackendLogics __init__ self.plugins = <lib.plugin.Plugins object at 0x7fc4e61d8898>
+   2018-05-21  00:10:40 INFO     plugins.backend     BackendLogics __init__ self.scheduler = <Scheduler(Scheduler, started 140483646863104)>
+   2018-05-21  00:10:40 INFO     plugins.backend     BackendSchedulers __init__ self.scheduler = <Scheduler(Scheduler, started 140483646863104)>
+   2018-05-21  00:10:40 INFO     plugins.backend     BackendPlugins __init__ self.plugins = <lib.plugin.Plugins object at 0x7fc4e61d8898>
+   2018-05-21  00:10:40 INFO     plugins.backend     BackendScenes __init__
+   2018-05-21  00:10:40 INFO     plugins.backend     BackendThreads __init__
+   2018-05-21  00:10:40 INFO     plugins.backend     BackendLogging __init__
+   2018-05-21  00:10:40 WARNING  lib.shyaml          YAML-file not found: /usr/local/shng_dev/plugins/logconf/plugin.yaml
+   2018-05-21  00:10:40 ERROR    lib.plugin          Plugins, section logconf: class_name is not defined
+   2018-05-21  00:11:00 WARNING  plugins.knx         Using busmonitor (L) = 'logger'
+   2018-05-21  00:11:01 INFO     plugins.mqtt        Connecting to broker. Starting mqtt client 'SmartHomeNG'
 
 
-Vorne steht Datum und Uhrzeit, dann der Loglevel (DEBUG, ERROR, WARNING, INFO), dann je nach Setup in der Datei logging.yaml
-noch Modul, Thread und ein Meldungstext der den Logeintrag beschreibt.
+Vorne steht Datum und Uhrzeit, dann der Loglevel (ERROR, WARNING, INFO), dann je nach Setup in der Datei logging.yaml
+noch Name bzw. Modul oder Thread und ein Meldungstext der den Logeintrag beschreibt.
 
-Wir schauen nach ERROR und WARNING und versuchen diese zu vermeiden.
-ToDo: Erweitern.
+Wir schauen nach CRITICAL, ERROR und WARNING und versuchen diese zu vermeiden.
+Meldungen der Level INFO und DEBUG sind normal und brauchen erstmal nicht weiter beachtet zu werden.
 
 
 Backend Plugin nutzen
@@ -178,13 +193,16 @@ Der Backendserver ist unabhängig von der smartVISU und funktioniert auch dann, 
 
 Hier sind ein paar Bilder vom Backendserver, um einen Eindruck zu vermitteln:
 
-Der Item-Tree:
 
 .. image:: assets/Backend_Items.png
 
-Die Dienste/Tools Seite:
+   Der Item-Tree
+
 
 .. image:: assets/Backend_Dienste.jpg
+
+   Die Dienste/Tools Seite:
+
 
 Die Logik-Liste:
 
@@ -195,17 +213,3 @@ Die Szenen Übersicht:
 .. image:: assets/Backend_Szenen.jpg
 
 
-
- ----------------------------------------
-
-Der Item-Tree:
-![Backend Items](assets/Backend_Items.png)
-
-Die Dienste/Tools Seite:
-![Backend Dienste](assets/Backend_Dienste.jpg)
-
-Die Logik-Liste:
-![Backend Logiken](assets/Backend_Logiken.jpg)
-
-Die Szenen Übersicht:
-![Backend Logiken](assets/Backend_Szenen.jpg)
