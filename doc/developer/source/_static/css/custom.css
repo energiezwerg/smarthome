@@ -73,6 +73,10 @@ p {
     min-height: 100%
 }
 
+.wy-nav-top {
+    background:#2269aa;
+}
+
 /* background: #2980B9; RTD Blau */
 /* background: #2269aa; shng blau */
 /* background: #CEE3F6; */
