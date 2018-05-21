@@ -194,18 +194,19 @@ Der Backendserver ist unabhängig von der smartVISU und funktioniert auch dann, 
 Hier sind ein paar Bilder vom Backendserver, um einen Eindruck zu vermitteln:
 
 
+Der Item-Tree:
 .. image:: assets/Backend_Items.png
-   :caption: Der Item-Tree
 
+
+Die Dienste/Tools Seite:
 
 .. image:: assets/Backend_Dienste.jpg
-
-   :caption: Die Dienste/Tools Seite:
 
 
 Die Logik-Liste:
 
 .. image:: assets/Backend_Logiken.jpg
+
 
 Die Szenen Übersicht:
 
