@@ -60,7 +60,6 @@ p {
     position: fixed;
     top: 0;
     bottom: 0;
-    left: 0;
     padding-bottom: 2em;
     width: 300px;
     overflow-x: hidden;
@@ -70,11 +69,12 @@ p {
     z-index: 200
 }
 .wy-nav-content-wrap {
-    margin-left: 300px;
     background: #FAFAFA;
     min-height: 100%
 }
+
 /* background: #2980B9; RTD Blau */
+/* background: #2269aa; shng blau */
 /* background: #CEE3F6; */
 
 .redsup  {
