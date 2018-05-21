@@ -8,8 +8,9 @@ Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
 Unterstützte Python Versionen
 =============================
 
-Bitte beachten: Ab SmartHomeNG Release 1.5 wollen wir die aktive Unterstützung älterer Python
-Versionen einstellen. Die älteste unterstützte Python Version wird dann Python 3.4 sein.
+Bitte beachten: Seit SmartHomeNG Release 1.4 wollen wir die aktive Unterstützung älterer Python
+Versionen einstellen. Die älteste unterstützte Python Version wird dann Python 3.4 sein. Es kann jedoch sein,
+dass Plugins Funktionalitäten implementieren (z.B. Async IO), die Python 3.5 voraussetzen
 (Siehe *Hard- u. Software Anforderungen* im Abschnitt *Installation* zu unterstützten Python Versionen)
 
 Das bedeutet nicht unbedingt, dass SmartHomeNG ab Release 1.5 nicht mehr unter älteren Python

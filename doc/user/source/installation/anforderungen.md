@@ -77,7 +77,7 @@ Einige Libraries in SmartHomeNG benutzen noch Bibliotheken, die ein Unix-artiges
 
 ## weitere Software
 
-Die aktuelle Version 1.3 von SmartHomeNG setzt Python der Version 3.3 oder neuer voraus.
+Die aktuelle Version 1.5 von SmartHomeNG setzt Python der Version 3.4 oder neuer voraus.
 
 Die Grundregel nach der sich der Support für Python Versionen richten soll ist folgende:
 
@@ -92,6 +92,7 @@ Zur Verdeutlichung:
 | v1.3           | Python 3.5                       | Python 3.3, 3.4, 3.5          |
 | v1.4           | Python 3.6                       | Python 3.4, 3.5, 3.6          |
 | v1.5           | Python 3.6                       | Python 3.4, 3.5, 3.6          |
+| v1.6           | Python 3.7                       | Python 3.5, 3.6, 3.7          |
 ```
 
 Das bedeutet nich automatisch, dass SmartHomeNG auf älteren Versionen von Python nicht mehr funktioniert. Die Entwicklung wird nur nicht mehr gegen die älteren Versionen getestet.
