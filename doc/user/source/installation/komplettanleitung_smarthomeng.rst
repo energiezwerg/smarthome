@@ -18,17 +18,6 @@ zusätzliche Pakete installieren
 -------------------------------
 
 Zunächst müssen einige zusätzlichen Pakete erfüllt werden:
-<!---
-apt-get update nicht notwendig
-openssh-server apache2  git-core wget bereits installiert
---->
-
-<!---
-```
-sudo apt-get -y install dialog openntpd python3 python3-dev python3-setuptools unzip build-essential
-sudo easy_install3 pip
-```
---->
 
 .. code-block:: bash
 
@@ -75,7 +64,7 @@ smarthome.yaml
 
 In der **smarthome.yaml** stehen die allgemeinen Konfigurationseinstellungen der SmartHomeNG Installation, wie z.B. die
 Koordinaten des Standortes. Die Koordinaten werden benötigt um unter anderem Sonnenaufgang / -untergang zu berechnen.
-Die Koordinaten für einen Standort kann man z.B. [hier](http://www.mapcoordinates.net/de) ermitteln.
+Die Koordinaten für einen Standort kann man z.B. auf http://www.mapcoordinates.net/de ermitteln.
 
 Wenn keine Datei **smarthome.yaml** existiert, wird beim ersten Start von SmartHomeNG die mitgelieferte Datei **smarthome.yaml.default**
 kopiert. Anschießend kann **smarthome.yaml** bearbeitet werden. Damit die Änderungen wirksam werden, muss SmartHomeNG im
@@ -162,7 +151,7 @@ Dafür ausführen:
 
 Jetzt sollten jede Menge Logging-Meldungen über den Bildschirm laufen, die sehen in etwa so aus:
 
-.. code-block::
+.. code-block:: text
 
    2017-08-05  00:00:07 DEBUG    M:lib.scheduler  T:Scheduler    IT.SwitchB next time: 2017-01-05 00:02:07+01:00
    2017-08-05  00:00:14 WARNING  M:plugins.dlms   T:DLMS         update is alrady running, maybe it really takes very long or you should use longer query interval time
@@ -180,25 +169,36 @@ Backend Plugin nutzen
 ---------------------
 
 Wenn jetzt erstmal SmartHomeNG am Laufen ist, sollte auch das Backend funktionieren. Dazu prüfen wir im Browser unter der
-Adresse **`http://<IP vom SmartHomeNG>:8383`** den Zugriff.
+Adresse **http://<IP vom SmartHomeNG>:8383** den Zugriff.
 
 Initial ist SmartHomeNG ohne Benutzer Anmeldung konfiguriert. Wenn ein Zugriff nur mit User/Password möglich sein soll,
 muss dieses im Abschnitt **http:** in **../etc/module.yaml** konfiguriert werden.
 
 Der Backendserver ist unabhängig von der smartVISU und funktioniert auch dann, wenn kein visu Plugin geladen ist.
 
-Ein paar Bilder vom Backendserver:
+Hier sind ein paar Bilder vom Backendserver, um einen Eindruck zu vermitteln:
 
 Der Item-Tree:
+
 .. image:: assets/Backend_Items.png
 
 Die Dienste/Tools Seite:
+
 .. image:: assets/Backend_Dienste.jpg
 
+Die Logik-Liste:
+
+.. image:: assets/Backend_Logiken.jpg
+
+Die Szenen Übersicht:
+
+.. image:: assets/Backend_Szenen.jpg
 
 
-![Backend Dienste](assets/Backend_Dienste.jpg)
 
+ ----------------------------------------
+
+Der Item-Tree:
 ![Backend Items](assets/Backend_Items.png)
 
 Die Dienste/Tools Seite:
