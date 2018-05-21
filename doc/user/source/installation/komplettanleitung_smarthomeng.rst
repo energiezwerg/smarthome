@@ -6,12 +6,12 @@ SmartHomeNG installieren :bluesup:`update`
 ##########################################
 
 - Schritte der Installation:
-    - [zusätzliche Pakete installieren](#zusätzliche-pakete-installieren-1)
-    - [Quellcode laden](#quellcode-laden)
-    - [Erstmalige Konfiguration erstellen](#erstmalige-konfiguration-erstellen)
-    - [Zusätzliche Python Module](#zusätzliche-python-module)
-    - [SmartHomeNG starten](#smarthomeng-starten)
-    - [Backend Plugin nutzen](#backend-plugin-nutzen)
+    - zusätzliche Pakete installieren
+    - Quellcode laden
+    - Erstmalige Konfiguration erstellen
+    - Zusätzliche Python Module installieren
+    - SmartHomeNG starten
+    - Backend Plugin nutzen
 
 
 zusätzliche Pakete installieren
@@ -112,8 +112,8 @@ Die Konfiguration weitere Plugins ist auskommentiert vorhanden, um die Nutzung d
 gestalten.
 
 
-Zusätzliche Python Module
--------------------------
+Zusätzliche Python Module installieren
+--------------------------------------
 
 Für den ersten Start müssen noch einige Module nachgeladen werden, dazu wird für den Core die mitgelieferte **requirements/base.txt** genutzt:
 
@@ -195,13 +195,12 @@ Hier sind ein paar Bilder vom Backendserver, um einen Eindruck zu vermitteln:
 
 
 .. image:: assets/Backend_Items.png
-
-   Der Item-Tree
+   :caption: Der Item-Tree
 
 
 .. image:: assets/Backend_Dienste.jpg
 
-   Die Dienste/Tools Seite:
+   :caption: Die Dienste/Tools Seite:
 
 
 Die Logik-Liste:
