@@ -26,7 +26,8 @@ den Verbindungsmodus "bridged".
 
    komplettanleitung_debian.md
    komplettanleitung_knx.md
-   komplettanleitung_smarthomeng.md
+   komplettanleitung_mosquitto
+   komplettanleitung_smarthomeng
    komplettanleitung_smartvisu.md
    komplettanleitung_onewire.md
    komplettanleitung_samba.md
