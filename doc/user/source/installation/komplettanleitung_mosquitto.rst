@@ -53,7 +53,7 @@ Der Service kann dann mit den folgenden Befehlen gestartet, gestoppt und restart
 
 
 Nach der Installation ist der Broker für jeden MQTT Client nutzbar. Wenn eine Authentifizierung gewünscht wird, muss Mosquitto
-entsprechend der Dokumentation (https://mosquitto.org/man/mosquitto-5.html) konfiguriert und neu gestartet werden.
+entsprechend der Dokumentation (https://mosquitto.org/man/mosquitto-conf-5.html) konfiguriert und neu gestartet werden.
 
 Gleiches gilt, wenn zusätzlich zum MQTT Protokoll (auf Port 1883) auch noch Websockets genutzt werden sollen.
 
