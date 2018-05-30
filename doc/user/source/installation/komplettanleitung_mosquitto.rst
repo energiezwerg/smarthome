@@ -2,7 +2,7 @@
 .. role:: redsup
 
 ######################################
-MQTT Broker installieren :redsup:`new`
+MQTT Broker installieren :redsup:`neu`
 ######################################
 
 Um MQTT zu nutzen, muss ein Broker verwendet werden, mit dem die MQTT Clients kommunizieren. Wenn im Netzwerk noch kein
@@ -30,16 +30,16 @@ Anschließend kann mit dem Befehl
 
 .. code-Block:: bash
 
-● mosquitto.service - LSB: mosquitto MQTT v3.1 message broker
-   Loaded: loaded (/etc/init.d/mosquitto; generated; vendor preset: enabled)
-   Active: active (running) since Wed 2018-05-30 13:39:47 CEST; 5min ago
-     Docs: man:systemd-sysv-generator(8)
-   CGroup: /system.slice/mosquitto.service
-           └─3548 /usr/sbin/mosquitto -c /etc/mosquitto/mosquitto.conf
+    ● mosquitto.service - LSB: mosquitto MQTT v3.1 message broker
+       Loaded: loaded (/etc/init.d/mosquitto; generated; vendor preset: enabled)
+       Active: active (running) since Wed 2018-05-30 13:39:47 CEST; 5min ago
+         Docs: man:systemd-sysv-generator(8)
+       CGroup: /system.slice/mosquitto.service
+               └─3548 /usr/sbin/mosquitto -c /etc/mosquitto/mosquitto.conf
 
-Mai 30 13:39:47 SmartHomeNG systemd[1]: Starting LSB: mosquitto MQTT v3.1 messag
-Mai 30 13:39:47 SmartHomeNG mosquitto[3543]: Starting network daemon:: mosquitto
-Mai 30 13:39:47 SmartHomeNG systemd[1]: Started LSB: mosquitto MQTT v3.1 message
+    Mai 30 13:39:47 SmartHomeNG systemd[1]: Starting LSB: mosquitto MQTT v3.1 messag
+    Mai 30 13:39:47 SmartHomeNG mosquitto[3543]: Starting network daemon:: mosquitto
+    Mai 30 13:39:47 SmartHomeNG systemd[1]: Started LSB: mosquitto MQTT v3.1 message
 
 
 Der Service kann dann mit den folgenden Befehlen gestartet, gestoppt und restartet werden:
@@ -53,7 +53,8 @@ Der Service kann dann mit den folgenden Befehlen gestartet, gestoppt und restart
 
 
 Nach der Installation ist der Broker für jeden MQTT Client nutzbar. Wenn eine Authentifizierung gewünscht wird, muss Mosquitto
-entsprechend der Dokumentation (https://mosquitto.org/man/mosquitto-5.html#) konfiguriert und neu gestartet werden.
+entsprechend der Dokumentation (https://mosquitto.org/man/mosquitto-5.html) konfiguriert und neu gestartet werden.
 
-Gleiches gilt, wenn zusätzlich zum MQTT Protokoll auf Port 1883 auch noch Websockets genutzt werden sollen.
+Gleiches gilt, wenn zusätzlich zum MQTT Protokoll (auf Port 1883) auch noch Websockets genutzt werden sollen.
+
 
