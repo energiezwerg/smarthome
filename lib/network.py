@@ -24,7 +24,7 @@
 
 |  *** ATTENTION: This is early work in progress. Interfaces are subject to change. ***
 |  *** DO NOT USE IN PRODUCTION until you know what you are doing ***
-|  *** This library is foreseen for SHNG v1.5 release ***
+|  *** This library is foreseen for SHNG v1.6 release ***
 |
 
 This library contains the future network classes for SmartHomeNG.
@@ -709,8 +709,11 @@ class _Client(object):
 
     def _process_IAC(self, msg):
         """ Processes incomming IAC messages. Does nothing for now except logging them in clear text """
-        string = self._iac_to_string(msg)
-        self.logger.debug("Received IAC telnet command: '{}'".format(string))
+        if len(msg) >= 3:
+            string = self._iac_to_string(msg[:3])
+            self.logger.debug("Received IAC telnet command: '{}'".format(string))
+            msg = msg[3:]
+        return msg
 
     def close(self):
         """ Client socket closes itself """
@@ -726,7 +729,8 @@ class _Client(object):
             if char in iac:
                 string += iac[char] + ' '
             else:
-                string += '<UNKNOWN> '
+                #string += '<UNKNOWN> '
+                string += chr(char)
         return string.rstrip()
 
 
@@ -885,13 +889,15 @@ class Tcp_server(object):
         while True:
             try:
                 if self.mode == self.MODE_TEXT_LINE:
-                    self.logger.debug("***")
+                    # self.logger.debug("***")
                     data = await reader.readline()
                 else:
                     data = await reader.read(4096)
             except:
                 data = None
 
+            if data and data[0] == 0xFF and client.process_iac:
+                data = client._process_IAC(data)                
             if data:
                 try:
                     string = str.rstrip(str(data, 'utf-8'))
@@ -900,8 +906,6 @@ class Tcp_server(object):
                     client._data_received_callback and client._data_received_callback(self, client, string)
                 except:
                     self.logger.debug("Received undecodable bytes from {}".format(client.name))
-                    if data[0] == 0xFF and client.process_iac:
-                        client._process_IAC(data)                
             else:
                 try:
                     self.__close_client(client)
