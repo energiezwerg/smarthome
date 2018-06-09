@@ -37,7 +37,7 @@ from lib.shtime import Shtime
 
 import lib.utils
 from lib.constants import (ITEM_DEFAULTS, FOO, KEY_ENFORCE_UPDATES, KEY_CACHE, KEY_CYCLE, KEY_CRONTAB, KEY_EVAL,
-                           KEY_EVAL_TRIGGER, KEY_NAME,KEY_TYPE, KEY_VALUE, KEY_INITVALUE, PLUGIN_PARSE_ITEM,
+                           KEY_EVAL_TRIGGER, KEY_TRIGGER, KEY_CONDITION, KEY_NAME, KEY_TYPE, KEY_VALUE, KEY_INITVALUE, PLUGIN_PARSE_ITEM,
                            KEY_AUTOTIMER, KEY_ON_UPDATE, KEY_ON_CHANGE, KEY_LOG_CHANGE, KEY_THRESHOLD, CACHE_FORMAT, CACHE_JSON, CACHE_PICKLE,
                            KEY_ATTRIB_COMPAT, ATTRIB_COMPAT_V12, ATTRIB_COMPAT_LATEST)
 
@@ -71,7 +71,6 @@ class Items():
 
     def __init__(self, smarthome):
         self._sh = smarthome
-#        self._sh._moduledict = {}
 
         global _items_instance
         if _items_instance is not None:
@@ -86,8 +85,6 @@ class Items():
     def load_itemdefinitions(self, env_dir, items_dir):
     
         item_conf = None
-#        item_conf = lib.config.parse_itemsdir(self._env_dir, item_conf)
-#        item_conf = lib.config.parse_itemsdir(self._items_dir, item_conf, addfilenames=True)
         item_conf = lib.config.parse_itemsdir(env_dir, item_conf)
         item_conf = lib.config.parse_itemsdir(items_dir, item_conf, addfilenames=True)
         
@@ -95,26 +92,19 @@ class Items():
             if isinstance(value, dict):
                 child_path = attr
                 try:
-#                    child = lib.item.Item(self, self, child_path, value)
 #                              (smarthome, parent, path, config):
                     child = Item(self._sh, self, child_path, value)
                 except Exception as e:
-#                    self._logger.error("Item {}: problem creating: ()".format(child_path, e))
                     logger.error("load_itemdefinitions: Item {}: problem creating: ()".format(child_path, e))
                 else:
                     vars(self)[attr] = child
                     vars(self._sh)[attr] = child
-#                    self.add_item(child_path, child)
-#                    self.items.add_item(child_path, child)
                     self.add_item(child_path, child)
                     self._children.append(child)
-#                    self._sh._SmartHome__children.append(child)
         del(item_conf)  # clean up
 
-#        for item in self.return_items():
         for item in self.return_items():
             item._init_prerun()
-#        for item in self.return_items():
         for item in self.return_items():
             item._init_run()
 #        self.item_count = len(self.__items)
@@ -175,10 +165,8 @@ class Items():
         :type item: object
         """
 
-#        if path not in self._sh._SmartHome__items:
         if path not in self.__items:
             self.__items.append(path)
-#        self._sh._SmartHome__item_dict[path] = item
         self.__item_dict[path] = item
 
 
@@ -441,9 +429,16 @@ class Item():
                     self.__th_high = float(high.strip())
                     logger.debug("Item {}: set threshold => low: {} high: {}".format(self._path, self.__th_low, self.__th_high))
                 elif attr == '_filename':
+                    # name of file, which defines this item
                     setattr(self, attr, value)
                 else:
-                    self.conf[attr] = value
+                    # plugin specific attribute
+                    if value == '..':
+                        self.conf[attr] = self.get_attr_from_parent(attr)
+                    elif value == '...':
+                        self.conf[attr] = self.get_attr_from_grandparent(attr)
+                    else:
+                        self.conf[attr] = value
         #############################################################
         # Child Items
         #############################################################
@@ -456,7 +451,6 @@ class Item():
                     logger.exception("Item {}: problem creating: {}".format(child_path, e))
                 else:
                     vars(self)[attr] = child
-#                    smarthome.add_item(child_path, child)
                     _items_instance.add_item(child_path, child)
                     self.__children.append(child)
         #############################################################
@@ -465,7 +459,6 @@ class Item():
         if self._cache:
             self._cache = self._sh._cache_dir + self._path
             try:
-#                self.__last_change, self._value = _cache_read(self._cache, _items_instance._tzinfo)
                 self.__last_change, self._value = _cache_read(self._cache, self.shtime.tzinfo())
                 self.__last_update = self.__last_change
                 self.__prev_change = self.__last_change
@@ -479,8 +472,6 @@ class Item():
         #############################################################
         #__defaults = {'num': 0, 'str': '', 'bool': False, 'list': [], 'dict': {}, 'foo': None, 'scene': 0}
         if self._type is None:
-#            logger.debug("Item {}: no type specified.".format(self._path))
-#            return
             self._type = FOO  # MSinn
         if self._type not in ITEM_DEFAULTS:
             logger.error("Item {}: type '{}' unknown. Please use one of: {}.".format(self._path, self._type, ', '.join(list(ITEM_DEFAULTS.keys()))))
@@ -515,7 +506,6 @@ class Item():
         #############################################################
         # Plugins
         #############################################################
-#        for plugin in self._sh.return_plugins():
         for plugin in self.plugins.return_plugins():
             #plugin.xxx = []  # Empty reference list list of items
             if hasattr(plugin, PLUGIN_PARSE_ITEM):
@@ -742,7 +732,23 @@ class Item():
             rootpath = rootpath.replace('.self', '')
         rootpath = rootpath.replace('.self.', '.')
         return rootpath
-    
+
+    def get_attr_from_parent(self, attr):
+        pitem = self.return_parent()
+        pattr_value = pitem.conf[attr]
+        #        logger.warning("get_attr_from_parent Item {}: for attr '{}'".format(self._path, attr))
+        #        logger.warning("get_attr_from_parent Item {}: for parent '{}', pattr_value '{}'".format(self._path, pitem._path, pattr_value))
+        return pattr_value
+
+
+    def get_attr_from_grandparent(self, attr):
+        pitem = self.return_parent()
+        gpitem = pitem.return_parent()
+        gpattr_value = pitem.conf[attr]
+#        logger.warning("get_attr_from_parent Item {}: for attr '{}'".format(self._path, attr))
+#        logger.warning("get_attr_from_parent Item {}: for grandparent '{}', gpattr_value '{}'".format(self._path, gpitem._path, gpattr_value))
+        return gpattr_value
+
 
     def __call__(self, value=None, caller='Logic', source=None, dest=None):
         if value is None or self._type is None:
@@ -776,7 +782,6 @@ class Item():
         if self._eval_trigger:
             _items = []
             for trigger in self._eval_trigger:
-#                _items.extend(self._sh.match_items(trigger))
                 _items.extend(_items_instance.match_items(trigger))
             for item in _items:
                 if item != self:  # prevent loop
@@ -840,7 +845,6 @@ class Item():
             if dest_value is not None:
                 # expression computes and does not result in None
                 if on_dest != '':
-#                    dest_item = self._sh.return_item(on_dest)
                     dest_item = _items_instance.return_item(on_dest)
                     if dest_item is not None:
                         dest_item.__update(dest_value, caller=attr, source=self._path)

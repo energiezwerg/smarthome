@@ -166,7 +166,7 @@ def remove_comments(ydata):
 
 def remove_digits(ydata):
     '''
-    Removes digit keys from a dict or OrderedDict structure
+    Removes keys starting with digits from a dict or OrderedDict structure
 
     :param ydata: configuration (sub)tree to work on
     :type ydata: OrderedDict
@@ -177,7 +177,7 @@ def remove_digits(ydata):
 
 def remove_reserved(ydata):
     '''
-    Removes reserved keywords from a dict or OrderedDict structure
+    Removes keys that are reserved keywords from a dict or OrderedDict structure
 
     :param ydata: configuration (sub)tree to work on
     :type ydata: OrderedDict
@@ -188,7 +188,7 @@ def remove_reserved(ydata):
 
 def remove_keyword(ydata):
     '''
-    Removes reserved Python keywords from a dict or OrderedDict structure
+    Removes keys that are reserved Python keywords from a dict or OrderedDict structure
 
     :param ydata: configuration (sub)tree to work on
     :type ydata: OrderedDict
