@@ -525,7 +525,10 @@ class Tcp_client(object):
                     try:
                         self.__connect_threadlock.release()
                         self._connected_callback and self._connected_callback(self)
-                        self.__receive_thread = threading.Thread(target=self.__receive_thread_worker, name='TCP_Receive')
+                        _name='TCP_Client'
+                        if self.name is not None:
+                            _name += '_' + self.name
+                        self.__receive_thread = threading.Thread(target=self.__receive_thread_worker, name=_name)
                         self.__receive_thread.daemon = True
                         self.__receive_thread.start()
                     except:
