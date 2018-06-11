@@ -11,8 +11,8 @@ Standard Attribute :bluesup:`update`
 In SmartHomeNG werden eine Reihe von Standard Attributen unterstützt. Diese sind in der folgenden 
 Liste aufgeführt. Die Bedeutung und Verwendung der Attribute wird auf den folgenden Seiten beschrieben.
 
-Zusätzlich können Plugins Attribute definieren. Die Bedeutung und Verwendung dieser zusätzlichen 
-Attribute ist in der Dokumentation des jeweiligen Plugins nachzulesen.
+Zusätzlich können Plugins eigene Attribute definieren. Die Bedeutung und Verwendung dieser zusätzlichen
+plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins nachzulesen.
 
 +-----------------+------------------------------------------------------------------------------+
 | **Attribut**    | **Beschreibung**                                                             |
