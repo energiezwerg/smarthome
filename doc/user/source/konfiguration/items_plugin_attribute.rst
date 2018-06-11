@@ -4,8 +4,8 @@
 
 .. role:: bluesup
 
-Plugin-spezifische Attribute :redsup:`update`
-=============================================
+Plugin-spezifische Attribute :bluesup:`update`
+==============================================
 
 
 In SmartHomeNG werden außer den Standard Attributen weiter Attribute unterstützt, die von Plugins
