@@ -10,7 +10,7 @@ Items
 
    initiale_itemkonfiguration
    items_standard_attribute.rst
-   items_plugin_arrtibute.rst
+   items_plugin_attribute.rst
    items_attributes_relative_referenzen.rst
    items_attributes_eval_ausdruecke.rst
    items_funktionen.rst

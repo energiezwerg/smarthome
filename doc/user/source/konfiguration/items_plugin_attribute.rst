@@ -21,17 +21,17 @@ Beispiele für Kürzel, die kennzeichnen zu welchem Plugin die jeweiligen Attrib
 +-----------------+------------------+-----------------------------------------------------------+
 | **Kürzel**      | **Plugin**       | **Attribut-Beispiele**                                    |
 +-----------------+------------------+-----------------------------------------------------------+
-| knx_            | knx              | knx_dpt, knx_cache, knx_listen, knx_send                  |
+| knx\_           | knx              | knx_dpt, knx_cache, knx_listen, knx_send                  |
 +-----------------+------------------+-----------------------------------------------------------+
-| hm_             | homematic        | hm_address, hm_function                                   |
+| hm\_            | homematic        | hm_address, hm_function                                   |
 +-----------------+------------------+-----------------------------------------------------------+
-| sv_             | visu_smartvisu   | sv_page, sv_img, sv_nav_aside, sv_nav_aside2, sv_widget   |
+| sv\_            | visu_smartvisu   | sv_page, sv_img, sv_nav_aside, sv_nav_aside2, sv_widget   |
 +-----------------+------------------+-----------------------------------------------------------+
-| hue_            | hue              | hue_lamp_id, hue_lamp_type, hue_listen, hue_send          |
+| hue\_           | hue              | hue_lamp_id, hue_lamp_type, hue_listen, hue_send          |
 +-----------------+------------------+-----------------------------------------------------------+
-| avm_            | avm              | avm_data_type, avm_identifier                             |
+| avm\_           | avm              | avm_data_type, avm_identifier                             |
 +-----------------+------------------+-----------------------------------------------------------+
-| enigma2_        | enigma           | enigma2_data_type, enigma2_page                           |
+| enigma2\_       | enigma           | enigma2_data_type, enigma2_page                           |
 +-----------------+------------------+-----------------------------------------------------------+
 
 Vererbung von Attributen
