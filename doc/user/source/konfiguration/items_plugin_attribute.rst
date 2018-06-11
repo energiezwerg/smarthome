@@ -34,8 +34,9 @@ Beispiele für Kürzel, die kennzeichnen zu welchem Plugin die jeweiligen Attrib
 | enigma2\_       | enigma           | enigma2_data_type, enigma2_page                           |
 +-----------------+------------------+-----------------------------------------------------------+
 
-.. role:: redsup
 
+.. index:: Vererbung von Attributen
+.. role:: redsup
 
 Vererbung von Attributen :redsup:`neu`
 --------------------------------------
