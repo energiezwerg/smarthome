@@ -2,10 +2,10 @@
 .. index:: Items; plugin-spezifische Attribute
 .. index:: plugin-spezifische Attribute
 
-.. role:: redsup
+.. role:: bluesup
 
-Plugin-spezifische Attribute :redsup:`neu`
-==========================================
+Plugin-spezifische Attribute :redsup:`update`
+=============================================
 
 
 In SmartHomeNG werden außer den Standard Attributen weiter Attribute unterstützt, die von Plugins
@@ -34,8 +34,11 @@ Beispiele für Kürzel, die kennzeichnen zu welchem Plugin die jeweiligen Attrib
 | enigma2\_       | enigma           | enigma2_data_type, enigma2_page                           |
 +-----------------+------------------+-----------------------------------------------------------+
 
-Vererbung von Attributen
-------------------------
+.. role:: redsup
+
+
+Vererbung von Attributen :redsup:`neu`
+--------------------------------------
 
 Bei einigen Plugins ist es notwendig, bei jedem Item einen Identifier anzugeben. Beispiele sind das
 homematic Plugin und das hue Plugin. Hier ist es hilfreich, den Identifier (z.B. die **hm_address**
@@ -44,9 +47,9 @@ oder die **hue_lamp_id**) nur an einer Stelle konfigurieren zu müssen.
 Das hue Plugin hat eine Vererbung der hue_lamp_id von übergeordneten Items im Plugin implementiert,
 indem das Plugin immer prüft, ob das Attribut in übergeordneten Items definiert wurde.
 
-Inzwischen gibt es einen Standardmechanismus, der es möglich macht selektiv den Wert aus einem
-übergeordneten Item zu erben. Dieser Mechanismus funktioniert **nur** bei plugin-spezifischen
-Attributen.
+Ab der Version 1.5 von SmartHomeNG gibt es einen Standardmechanismus der es möglich macht, selektiv
+den Wert aus einem übergeordneten Item zu erben. Dieser Mechanismus funktioniert **nur** bei
+plugin-spezifischen Attributen.
 
 Um den Wert eines Attributes von dem übergeordnetem Item (Parent-Item) zu erben, muss in der
 Konfiguration das Attribut mit dem Wert '..' konfiguriert werden:
@@ -73,3 +76,7 @@ Der Vorteil wird besonders sichtbar, wenn man mehrere Fenstergriffe hat. Dann ka
 einfach kopieren und muss nur dem Item einen neuen Namen geben (z.B. fenstergriff_bad) und die
 **hm_adress** an einer Stelle abzuändern.
 
+Diese Vererbung ist nicht kaskadierbar.
+
+Um den Wert eines Attributes von dem übergeordnetem Item des Parent-Items (Grandparent-Item) zu erben,
+muss in der Konfiguration das Attribut mit dem Wert '...' konfiguriert werden.
