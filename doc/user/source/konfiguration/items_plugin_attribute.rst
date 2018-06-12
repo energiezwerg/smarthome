@@ -53,7 +53,7 @@ den Wert aus einem übergeordneten Item zu erben. Dieser Mechanismus funktionier
 plugin-spezifischen Attributen.
 
 Um den Wert eines Attributes von dem übergeordnetem Item (Parent-Item) zu erben, muss in der
-Konfiguration das Attribut mit dem Wert '..' konfiguriert werden:
+Konfiguration das Attribut mit dem Wert <code>..</code> konfiguriert werden:
 
 .. code-block:: yaml
 
@@ -77,7 +77,9 @@ Der Vorteil wird besonders sichtbar, wenn man mehrere Fenstergriffe hat. Dann ka
 einfach kopieren und muss nur dem Item einen neuen Namen geben (z.B. fenstergriff_bad) und die
 **hm_adress** an einer Stelle abzuändern.
 
-Diese Vererbung ist nicht kaskadierbar.
+Um direkt den Wert eines Attributes von dem übergeordnetem Item des Parent-Items (Grandparent-Item)
+zu erben, kann in der Konfiguration das Attribut mit dem Wert <code>...</code> konfiguriert werden.
 
-Um den Wert eines Attributes von dem übergeordnetem Item des Parent-Items (Grandparent-Item) zu erben,
-muss in der Konfiguration das Attribut mit dem Wert '...' konfiguriert werden.
+Die Vererbung ist so implmentiert, dass der Attribut Wert während der Initialisierung der Items beim
+Start von SmartHomeNG kopiert wird. Im Backend wird in den Item Details des Child-Items also nicht
+<code>..</code> oder <code>...</code> angezeigt, sondern der kopierte Wert.
