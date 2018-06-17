@@ -24,12 +24,12 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
 +-----------------+------------------------------------------------------------------------------+
 | remark          | ein optionaler Kommentar für das Item. Es ist sinnvoll Kommentare zu einem   |
 |                 | Item als **remark** Attribut zu erfassen und nicht als Kommentar ( **#** )   |
-|                 | in die Konfigurationsdatei zu schreiben. Dadurch können Kommentare bei einer |
-|                 | kommenden Umstellung des Formates der Konfigurationsdateien automatisch      |
-|                 | konvertiert werden.                                                          |
+|                 | in die Konfigurationsdatei zu schreiben. Dadurch können Kommentare in einer  |
+|                 | später kommenden graphischen Konfigurationsoberfläche angezeigt und gepflegt |
+|                 | werden.                                                                      |
 +-----------------+------------------------------------------------------------------------------+
-| initial_value,  | Ein optionaler Startwert für dieses Item                                     |
-| value           |                                                                              |
+| initial_value,  | Ein optionaler Startwert für dieses Item. Es wird empfohlen **initial_value**|
+| value           | anstelle des bisherigen Attributnamens **value** zu verwenden.               |
 +-----------------+------------------------------------------------------------------------------+
 | cache           | Wenn 'Yes', dann wird der Wert des Items zwischengespeichert und beim        |
 |                 | erneuten Start von SmartHomeNG wird der alte Wert aus dem Zwischenspeicher   |

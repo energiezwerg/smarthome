@@ -8,20 +8,20 @@ enforce_updates :bluesup:`update`
 =================================
 
 Die Wirkungsweise von *enforce_updates* erschließt sich nicht sofort. Zum Verständnis was *enforce_updates* bewirkt, ist es
-wichtig erstmal in **Items** zu denken und Plugins oder Logiken für einen Moment zu vergessen.
+wichtig erstmal "in **Items** zu denken" und Plugins oder Logiken für einen Moment zu vergessen.
 
 Wenn sich der Wert eines Items ändert, löst das eine Reihe von Aktionen aus:
 
-    - eval Statements in anderen Items werden getriggert, wenn in anderen in den Items ein eval_trigger auf das geänderte Item verweist.
-    - on_change Definitionen des Items werden ausgewertet
-    - on_update Definitionen des Items werden ausgewertet
+    - *eval* Statements in anderen Items werden getriggert, wenn in anderen in den Items ein *eval_trigger* auf das geänderte Item verweist.
+    - *on_change* Definitionen des Items werden ausgewertet
+    - *on_update* Definitionen des Items werden ausgewertet
     - Logiken werden getriggert, wenn der Trigger der Logik (in ../etc/logoc.yaml) auf das geänderte Item verweist.
     - Plugins, die mit diesem Item verbunden sind, erhalten eine Info über den neuen Wert
 
 
 Wenn ein Item ein Update erhält, welches identisch zu dem bisherigen Wert ist, passiert nur folgendes;
 
-    - on_update Definitionen des Items werden ausgewertet
+    - *on_update* Definitionen des Items werden ausgewertet
 
 Wenn jetzt in SmartHomeNG ein Item z.B. den Wert **True** erhält (und vorher **False** war), passiert genau das im ersten Fall beschriebene.
 
