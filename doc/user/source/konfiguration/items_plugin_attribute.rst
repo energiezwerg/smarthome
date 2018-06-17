@@ -31,7 +31,7 @@ Beispiele für Kürzel, die kennzeichnen zu welchem Plugin die jeweiligen Attrib
 +-----------------+------------------+-----------------------------------------------------------+
 | avm\_           | avm              | avm_data_type, avm_identifier                             |
 +-----------------+------------------+-----------------------------------------------------------+
-| enigma2\_       | enigma           | enigma2_data_type, enigma2_page                           |
+| enigma2\_       | enigma2          | enigma2_data_type, enigma2_page                           |
 +-----------------+------------------+-----------------------------------------------------------+
 
 
@@ -59,7 +59,7 @@ Konfiguration das Attribut mit dem Wert :code:`..` konfiguriert werden:
 
    fenstergriff_kueche:
        type: num
-       hm_address: 12345678
+       hm_address: OEQ1234567
 
        sabotage:
           type: bool

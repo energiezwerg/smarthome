@@ -80,6 +80,7 @@ plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins na
    :hidden:
 
    items_standard_attribute_type
+   items_standard_attribute_enforce_updates
    items_standard_attribute_eval
    items_standard_attribute_crontab
    items_standard_attribute_cycle
