@@ -1,4 +1,4 @@
-list-group-item.py-2.node-tree.node-selected {
+plusIconlist-group-item.py-2.node-tree.node-selected {
 	background-color: #c3daee;
 }
 
@@ -18,16 +18,16 @@ list-group-item.py-2.node-tree.node-selected {
 .minusIcon {
   position: relative;
   display: inline-block;
-  height: 12px;
-  width: 12px;
+  height: 22px;
+  width: 22px;
   background-image: url("/backend/static/img/minus.png");
 }
 
 .plusIcon {
   position: relative;
   display: inline-block;
-  width: 12px;
-  height: 12px;
+  width: 22px;
+  height: 22px;
   background-image: url("/backend/static/img/plus.png");
 }
 
