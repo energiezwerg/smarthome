@@ -22,6 +22,7 @@
 
 import logging
 import os
+import time
 from collections import OrderedDict
 
 import cherrypy
@@ -333,8 +334,19 @@ class Http():
         """
         import socket
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("10.10.10.10", 80))
-        return s.getsockname()[0]
+        connected = False
+        count = 0
+        while (not connected) and (count < 5):
+            try:
+                s.connect(("10.10.10.10", 80))
+                connected = True
+            except:
+                count += 1
+                time.sleep(5)
+        if connected:
+            return s.getsockname()[0]
+        else:
+            return None
 
  
     def get_local_ip_address(self):

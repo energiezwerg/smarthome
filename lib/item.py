@@ -286,6 +286,13 @@ class Item():
     _itemname_prefix = 'items.'     # prefix for scheduler names
 
     def __init__(self, smarthome, parent, path, config):
+        self._sh = smarthome
+        self._use_conditional_triggers = False
+        try:
+            if self._sh._use_conditional_triggers.lower() == 'true':
+                self._use_conditional_triggers = True
+        except: pass
+
         self.plugins = Plugins.get_instance()
         self.shtime = Shtime.get_instance()
 
@@ -302,6 +309,9 @@ class Item():
         self._enforce_updates = False
         self._eval = None				    # -> KEY_EVAL
         self._eval_trigger = False
+        self._trigger = False
+        self._trigger_condition_raw = []
+        self._trigger_condition = None
         self._on_update = None				# -> KEY_ON_UPDATE eval expression
         self._on_change = None				# -> KEY_ON_CHANGE eval expression
         self._on_update_dest_var = None		# -> KEY_ON_UPDATE destination var
@@ -376,13 +386,22 @@ class Item():
                     if isinstance(value, str):
                         value = [value, ]
                     setattr(self, '_' + attr, value)
-                elif attr in [KEY_EVAL_TRIGGER]:  # cast to list
+                elif attr in [KEY_EVAL_TRIGGER] or (self._use_conditional_triggers and attr in [KEY_TRIGGER]):  # cast to list
                     if isinstance(value, str):
                         value = [value, ]
                     expandedvalue = []
                     for path in value:
-                        expandedvalue.append(self.get_absolutepath(path, KEY_EVAL_TRIGGER))
-                    setattr(self, '_' + attr, expandedvalue)
+                        expandedvalue.append(self.get_absolutepath(path, attr))
+                    self._trigger = expandedvalue
+                elif (attr in [KEY_CONDITION]) and self._use_conditional_triggers:  # cast to list
+                    if isinstance(value, list):
+                        cond_list = []
+                        for cond in value:
+                            cond_list.append(dict(cond))
+                        self._trigger_condition = self._build_trigger_condition_eval(cond_list)
+                        self._trigger_condition_raw = cond_list
+                    else:
+                        logger.warning("Item __init__: {}: Invalid trigger_condition specified! Must be a list".format(self._path))
                 elif attr in [KEY_ON_CHANGE, KEY_ON_UPDATE]:
                     if isinstance(value, str):
                         value = [ value ]
@@ -434,9 +453,9 @@ class Item():
                 else:
                     # plugin specific attribute
                     if value == '..':
-                        self.conf[attr] = self.get_attr_from_parent(attr)
+                        self.conf[attr] = self._get_attr_from_parent(attr)
                     elif value == '...':
-                        self.conf[attr] = self.get_attr_from_grandparent(attr)
+                        self.conf[attr] = self._get_attr_from_grandparent(attr)
                     else:
                         self.conf[attr] = value
         #############################################################
@@ -701,7 +720,7 @@ class Item():
         Builds an absolute item path relative to the current item
 
         :param relativepath: string with the relative item path
-        :param attribute: string with the name of the item's attribute, which contains the relative path
+        :param attribute: string with the name of the item's attribute, which contains the relative path (for log entries)
         
         :return: string with the absolute item path
         """
@@ -733,21 +752,81 @@ class Item():
         rootpath = rootpath.replace('.self.', '.')
         return rootpath
 
-    def get_attr_from_parent(self, attr):
+
+    def _get_attr_from_parent(self, attr):
+        """
+        Get value from parent
+
+        :param attr: Get the value from this attribute of the parent item
+        :return: value from attribute of parent item
+        """
         pitem = self.return_parent()
         pattr_value = pitem.conf[attr]
-        #        logger.warning("get_attr_from_parent Item {}: for attr '{}'".format(self._path, attr))
-        #        logger.warning("get_attr_from_parent Item {}: for parent '{}', pattr_value '{}'".format(self._path, pitem._path, pattr_value))
+        #        logger.warning("_get_attr_from_parent Item {}: for attr '{}'".format(self._path, attr))
+        #        logger.warning("_get_attr_from_parent Item {}: for parent '{}', pattr_value '{}'".format(self._path, pitem._path, pattr_value))
         return pattr_value
 
 
-    def get_attr_from_grandparent(self, attr):
+    def _get_attr_from_grandparent(self, attr):
+        """
+        Get value from grandparent
+
+        :param attr: Get the value from this attribute of the grandparent item
+        :return: value from attribute of grandparent item
+        """
         pitem = self.return_parent()
         gpitem = pitem.return_parent()
         gpattr_value = pitem.conf[attr]
-#        logger.warning("get_attr_from_parent Item {}: for attr '{}'".format(self._path, attr))
-#        logger.warning("get_attr_from_parent Item {}: for grandparent '{}', gpattr_value '{}'".format(self._path, gpitem._path, gpattr_value))
+#        logger.warning("_get_attr_from_parent Item {}: for attr '{}'".format(self._path, attr))
+#        logger.warning("_get_attr_from_parent Item {}: for grandparent '{}', gpattr_value '{}'".format(self._path, gpitem._path, gpattr_value))
         return gpattr_value
+
+
+    def _build_trigger_condition_eval(self, trigger_condition):
+        """
+        Build conditional eval expression from trigger_condition attribute
+
+        :param trigger_condition: list of condition dicts
+        :return:
+        """
+        wrk_eval = []
+        for or_cond in trigger_condition:
+            for ckey in or_cond:
+                if ckey.lower() == 'value':
+                    pass
+                else:
+                    and_cond = []
+                    for cond in or_cond[ckey]:
+                        wrk = cond
+                        if (wrk.find('=') != -1) and (wrk.find('==') == -1) and \
+                                (wrk.find('<=') == -1) and (wrk.find('>=') == -1) and \
+                                (wrk.find('=<') == -1) and (wrk.find('=>') == -1):
+                            wrk = wrk.replace('=', '==')
+
+                        p = wrk.lower().find('true')
+                        if p != -1:
+                            wrk = wrk[:p]+'True'+wrk[p+4:]
+                        p = wrk.lower().find('false')
+                        if p != -1:
+                            wrk = wrk[:p]+'False'+wrk[p+5:]
+
+                        # expand relative item pathes
+                        wrk = self.get_stringwithabsolutepathes(wrk, 'sh.', '(', KEY_CONDITION)
+
+                        and_cond.append(wrk)
+
+                    wrk = ') and ('.join(and_cond)
+                    if len(or_cond[ckey]) > 1:
+                        wrk = '(' + wrk + ')'
+                    wrk_eval.append(wrk)
+
+    #                wrk_eval.append(str(or_cond[ckey]))
+                    result = ') or ('.join(wrk_eval)
+
+        if len(trigger_condition) > 1:
+            result = '(' + result + ')'
+
+        return result
 
 
     def __call__(self, value=None, caller='Logic', source=None, dest=None):
@@ -778,15 +857,23 @@ class Item():
     def __repr__(self):
         return "Item: {}".format(self._path)
 
+
     def _init_prerun(self):
-        if self._eval_trigger:
+        """
+        Build eval expressions from special functions and triggers before first run
+
+        Called from load_itemdefinitions
+        """
+        if self._trigger:
+            # Only if item has an eval_trigger
             _items = []
-            for trigger in self._eval_trigger:
+            for trigger in self._trigger:
                 _items.extend(_items_instance.match_items(trigger))
             for item in _items:
                 if item != self:  # prevent loop
                         item._items_to_trigger.append(self)
             if self._eval:
+                # Build eval statement from trigger items (joined by given function)
                 items = ['sh.' + x.id() + '()' for x in _items]
                 if self._eval == 'and':
                     self._eval = ' and '.join(items)
@@ -801,31 +888,54 @@ class Item():
                 elif self._eval == 'min':
                     self._eval = 'min({0})'.format(','.join(items))
 
+
     def _init_run(self):
-        if self._eval_trigger:
+        """
+        Run initial eval to set an initial value for the item
+
+        Called from load_itemdefinitions
+        """
+        if self._trigger:
+            # Only if item has an eval_trigger
             if self._eval:
+                # Only if item has an eval expression
                 self._sh.trigger(name=self._path, obj=self.__run_eval, by='Init', value={'value': self._value, 'caller': 'Init'})
+
 
     def __run_eval(self, value=None, caller='Eval', source=None, dest=None):
         """
-        eavuate the 'eval' entry of the actual item
+        evaluate the 'eval' entry of the actual item
         """
         if self._eval:
-            if self._path == 'wohnung.flur.szenen_helper':
-                logger.info("__run_eval: item = {}, value = {}, self._eval = {}".format(self._path, value, self._eval))
-            sh = self._sh  # noqa
-            shtime = self.shtime
-            try:
-                value = eval(self._eval)
-            except Exception as e:
-                logger.warning("Item {}: problem evaluating {}: {}".format(self._path, self._eval, e))
+            # Test if a conditional trigger is defined
+            if self._trigger_condition is not None:
+#                logger.warning("Item {}: Evaluating trigger condition {}".format(self._path, self._trigger_condition))
+                try:
+                    sh = self._sh
+                    cond = eval(self._trigger_condition)
+                    logger.warning("Item {}: Condition result '{}' evaluating trigger condition {}".format(self._path, cond, self._trigger_condition))
+                except Exception as e:
+                    logger.warning("Item {}: problem evaluating trigger condition {}: {}".format(self._path, self._trigger_condition, e))
+                    return
             else:
-                if value is None:
-                    logger.debug("Item {}: evaluating {} returns None".format(self._path, self._eval))
+                cond = True
+
+            if cond == True:
+    #            if self._path == 'wohnung.flur.szenen_helper':
+    #                logger.info("__run_eval: item = {}, value = {}, self._eval = {}".format(self._path, value, self._eval))
+                sh = self._sh  # noqa
+                shtime = self.shtime
+                try:
+                    value = eval(self._eval)
+                except Exception as e:
+                    logger.warning("Item {}: problem evaluating {}: {}".format(self._path, self._eval, e))
                 else:
-                    if self._path == 'wohnung.flur.szenen_helper':
-                        logger.info("__run_eval: item = {}, value = {}".format(self._path, value))
-                    self.__update(value, caller, source, dest)
+                    if value is None:
+                        logger.debug("Item {}: evaluating {} returns None".format(self._path, self._eval))
+                    else:
+                        if self._path == 'wohnung.flur.szenen_helper':
+                            logger.info("__run_eval: item = {}, value = {}".format(self._path, value))
+                        self.__update(value, caller, source, dest)
 
 
     # New for on_update / on_change

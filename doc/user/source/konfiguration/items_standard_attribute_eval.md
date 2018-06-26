@@ -31,12 +31,16 @@ Temperatur:
 Weiter ist es möglich, direkt die Werte der eval_trigger im eval entsprechend auszuwerten:
 
 ```
-| keyword | Beschreibung                                             |
-| ------- | -------------------------------------------------------- |
-| **sum** | Errechnet die Summe aller eval_trigger Items.
-| **avg** | Errechnet den Mittelwert aller Items auf die sich eval_trigger bezieht.
-| **and** | Setzt den Wert des Items auf True, wenn alle Items auf die sich eval_triggers bezieht den Wert True haben.
-| **or**  | Setzt den Wert des Items auf True, wenn eines der Items auf die sich eval_triggers bezieht den Wert True haben.
+| keyword | Beschreibung                                                            |
+| ------- | ----------------------------------------------------------------------- |
+|   sum   | Errechnet die Summe aller eval_trigger Items.                           |
+|   avg   | Errechnet den Mittelwert aller Items auf die sich eval_trigger bezieht. |
+|   min   | Errechnet den Minimalwert aller Items auf die sich eval_trigger bezieht.|
+|   max   | Errechnet den Maximalwert aller Items auf die sich eval_trigger bezieht.|
+|   and   | Setzt den Wert des Items auf True, wenn alle Items auf die sich         |
+|         | eval_triggers bezieht den Wert True haben.                              |
+|   or    | Setzt den Wert des Items auf True, wenn eines der Items auf die sich    |
+|         | eval_triggers bezieht den Wert True haben.                              |
 ```
 
 Beispiel:
