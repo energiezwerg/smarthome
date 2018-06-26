@@ -33,9 +33,8 @@ class SamplePlugin(SmartPlugin):
     Main class of the Plugin. Does all plugin specific stuff and provides
     the update functions for the items
     """
-    
-    PLUGIN_VERSION='1.4.0'
 
+    PLUGIN_VERSION = '1.4.0'
 
     def __init__(self, sh, *args, **kwargs):
         """
@@ -58,7 +57,7 @@ class SamplePlugin(SmartPlugin):
 
         # get the parameters for the plugin (as defined in metadata plugin.yaml):
         #   self.param1 = self.get_parameter_value('param1')
-        
+
         # Initialization code goes here
 
         # On initialization error use:
@@ -67,19 +66,17 @@ class SamplePlugin(SmartPlugin):
 
         if not self.init_webinterface():
             self._init_complete = False
-            
-        return
 
+        return
 
     def run(self):
         """
         Run method for the plugin
-        """        
+        """
         self.logger.debug("Plugin '{}': run method called".format(self.get_fullname()))
         self.alive = True
         # if you want to create child threads, do not make them daemon = True!
         # They will not shutdown properly. (It's a python bug)
-
 
     def stop(self):
         """
@@ -87,7 +84,6 @@ class SamplePlugin(SmartPlugin):
         """
         self.logger.debug("Plugin '{}': stop method called".format(self.get_fullname()))
         self.alive = False
-
 
     def parse_item(self, item):
         """
@@ -109,7 +105,6 @@ class SamplePlugin(SmartPlugin):
         # if interesting item for sending values:
         #   return update_item
 
-
     def parse_logic(self, logic):
         """
         Default plugin parse_logic method
@@ -117,7 +112,6 @@ class SamplePlugin(SmartPlugin):
         if 'xxx' in logic.conf:
             # self.function(logic['name'])
             pass
-
 
     def update_item(self, item, caller=None, source=None, dest=None):
         """
@@ -131,7 +125,9 @@ class SamplePlugin(SmartPlugin):
         # change 'foo_itemtag' into your attribute name
         if item():
             if self.has_iattr(item.conf, 'foo_itemtag'):
-                self.logger.debug("Plugin '{}': update_item ws called with item '{}' from caller '{}', source '{}' and dest '{}'".format(self.get_fullname(), item, caller, source, dest))
+                self.logger.debug(
+                    "Plugin '{}': update_item ws called with item '{}' from caller '{}', source '{}' and dest '{}'".format(
+                        self.get_fullname(), item, caller, source, dest))
             pass
 
         # PLEASE CHECK CODE HERE. The following was in the old skeleton.py and seems not to be 
@@ -140,7 +136,6 @@ class SamplePlugin(SmartPlugin):
         # if caller != 'plugin':  
         #    logger.info("update item: {0}".format(item.id()))
 
-
     def init_webinterface(self):
         """"
         Initialize the web interface for this plugin
@@ -148,13 +143,14 @@ class SamplePlugin(SmartPlugin):
         This method is only needed if the plugin is implementing a web interface
         """
         try:
-            self.mod_http = Modules.get_instance().get_module('http')   # try/except to handle running in a core version that does not support modules
+            self.mod_http = Modules.get_instance().get_module(
+                'http')  # try/except to handle running in a core version that does not support modules
         except:
-             self.mod_http = None
+            self.mod_http = None
         if self.mod_http == None:
             self.logger.error("Plugin '{}': Not initializing the web interface".format(self.get_shortname()))
             return False
-        
+
         # set application configuration for cherrypy
         webif_dir = self.path_join(self.get_plugin_dir(), 'webif')
         config = {
@@ -166,14 +162,14 @@ class SamplePlugin(SmartPlugin):
                 'tools.staticdir.dir': 'static'
             }
         }
-        
+
         # Register the web interface as a cherrypy app
-        self.mod_http.register_webif(WebInterface(webif_dir, self), 
-                                     self.get_shortname(), 
-                                     config, 
+        self.mod_http.register_webif(WebInterface(webif_dir, self),
+                                     self.get_shortname(),
+                                     config,
                                      self.get_classname(), self.get_instance_name(),
                                      description='')
-                                   
+
         return True
 
 
@@ -184,8 +180,8 @@ class SamplePlugin(SmartPlugin):
 import cherrypy
 from jinja2 import Environment, FileSystemLoader
 
-class WebInterface:
 
+class WebInterface:
 
     def __init__(self, webif_dir, plugin):
         """
@@ -199,8 +195,7 @@ class WebInterface:
         self.logger = logging.getLogger(__name__)
         self.webif_dir = webif_dir
         self.plugin = plugin
-        self.tplenv = Environment(loader=FileSystemLoader(self.plugin.path_join( self.webif_dir, 'templates' ) ))
-
+        self.tplenv = Environment(loader=FileSystemLoader(self.plugin.path_join(self.webif_dir, 'templates')))
 
     @cherrypy.expose
     def index(self):
@@ -212,5 +207,5 @@ class WebInterface:
         :return: contents of the template after beeing rendered 
         """
         tmpl = self.tplenv.get_template('index.html')
-        return tmpl.render(plugin_shortname=self.plugin.get_shortname(), plugin_version=self.plugin.get_version(), plugin_info=self.plugin.get_info())
-
+        return tmpl.render(plugin_shortname=self.plugin.get_shortname(), plugin_version=self.plugin.get_version(),
+                           plugin_info=self.plugin.get_info(), p=self.plugin)
