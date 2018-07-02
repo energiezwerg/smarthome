@@ -4,6 +4,6 @@ Release 1.5 - July xxnd, 2018
 
 There are some bugfixes and new features for the core of SmartHomeNG and the plugins.
 
-The detailed release notes can be found in the user documentation under `https://www.smarthomeNG.de/user/release <../user/release/>`_
-and in the SmartHomeNG blog under `https://www.smarthomeNG.de/blog <../blog/>`_
+The detailed release notes can be found in the user documentation under `https://www.smarthomeNG.de/user/release <https://www.smarthomeNG.de/user/release/1_5/>`_
+and in the SmartHomeNG blog under `https://www.smarthomeNG.de/blog <https://www.smarthomeNG.de/blog/>`_
 
