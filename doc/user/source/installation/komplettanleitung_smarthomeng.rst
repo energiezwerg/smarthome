@@ -176,15 +176,15 @@ Jetzt sollten jede Menge Logging-Meldungen über den Bildschirm laufen, die sehe
 Vorne steht Datum und Uhrzeit, dann der Loglevel (ERROR, WARNING, INFO), dann je nach Setup in der Datei logging.yaml
 noch Name bzw. Modul oder Thread und ein Meldungstext der den Logeintrag beschreibt.
 
-Wir schauen nach CRITICAL, ERROR und WARNING und versuchen diese zu vermeiden.
+Wichtig ist es nach CRITICAL, ERROR und WARNING zu schauen und zu versuchen diese zu vermeiden.
 Meldungen der Level INFO und DEBUG sind normal und brauchen erstmal nicht weiter beachtet zu werden.
 
 
 Backend Plugin nutzen
 ---------------------
 
-Wenn jetzt erstmal SmartHomeNG am Laufen ist, sollte auch das Backend funktionieren. Dazu prüfen wir im Browser unter der
-Adresse **http://<IP vom SmartHomeNG>:8383** den Zugriff.
+Wenn jetzt erstmal SmartHomeNG am Laufen ist, sollte auch das Backend funktionieren. Dazu kann man im Browser unter der
+Adresse **http://<IP vom SmartHomeNG>:8383** den Zugriff prüfen.
 
 Initial ist SmartHomeNG ohne Benutzer Anmeldung konfiguriert. Wenn ein Zugriff nur mit User/Password möglich sein soll,
 muss dieses im Abschnitt **http:** in **../etc/module.yaml** konfiguriert werden.
@@ -197,7 +197,7 @@ Hier sind ein paar Bilder vom Backendserver, um einen Eindruck zu vermitteln:
 Der Item-Tree
 ~~~~~~~~~~~~~
 
-.. image:: assets/Backend_Items.png
+.. image:: assets/Backend_Items.jpg
 
 
 Die Dienste/Tools Seite

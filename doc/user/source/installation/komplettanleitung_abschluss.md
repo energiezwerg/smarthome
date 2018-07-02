@@ -51,7 +51,13 @@ apt-get install rlwrap
 
 
 ## SmartHomeNG als Dienst einrichten
-Um SmartHomeNG als Dienst zu betreiben muß dazu noch eine Startup-Datei für systemd erstellt werden. Dazu den Texteditor anwerfen mit
+Um SmartHomeNG als Dienst zu betreiben muß dazu noch eine Startup-Datei für systemd erstellt werden. 
+
+.. note::
+   Bevor man ale *Neuuser* SmartHomeNG als Dienst einrichtet, sollte man das System verstanden haben und es 
+   sollte einigermaßen fehlerfrei laufen.
+
+Zum Einrichten den Texteditor anwerfen mit
 ```
 sudo nano /lib/systemd/system/smarthome.service
 ```
