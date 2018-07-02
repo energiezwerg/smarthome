@@ -37,18 +37,23 @@ Neue Funktionen im CORE
 * Rework des Core: Diverse Methoden von bin/smarthome.py in die adäquaten libs verschoben
 * lib.shtime eingefügt und das Zeit- u. Zeitzonen Handling in der lib konzentriert
 * Items:
+
   * Added option to copy attribute values from parent or grandparent item. For plugin specific attributes only! Configure the child's attribute to '..' to copy from the parent's attribute (with the same name). Use '...' to copy from grandparent.
 * Logiken:
+
   * Bugfix für das Triggern von Methoden, die via `add_method_trigger()` hinterlegt wurden, bei deaktivierten Logiken
 * Plugins:
+
   * Bugfix für das Laden von vorangegangenen Versionen eines Plugins, falls'plugin_name' und nicht 'class_path' genutzt wurde.
   * SmartPlugin: get_version() liefert als erweitertes Format die Version Nummer gefolgt von'(pv)' zurück, falls die geladene Version nicht die aktuellste Version ist.
   * Einführung eines Standards für Web GUIs von Plugins, siehe auch https://www.smarthomeng.de/jetzt-wird-es-bunt-wie-man-ein-plugin-webinterface-schreibt
   * Metadaten:
+
     * Datentypen ipv6 und knx_ga hinzugefügt
     * Komplexe Listendefinitionen für Parameter/Attribute von Typ **list** implementiert
     * Lesen der Item Attribut Definitionen aus der plugin.yaml des Plugins implementiert
 * Module http:
+
   * Zentrale Basic Auth Konfiguration für alle Webinterfaces von Plugins (incl. Backend)
   * exportiert ein gstatic Verzeichnis, welches zentral Images und Bibliotheken (z.B. bootstrap und jquery) zur Verfügung stellt. -> Default dabei und für Plugins nutzbar: Bootstrap 4 inkl. Datepicker, JQuery 3.3.1, Codemirror 5.39.0, Font Awesome 5.1.0
   * Stellt ein gtemplates Verzeichnis zur Verfügung, dessen Inhalt in Webinterfaces von der Template Engine Jinja genutzt werden kann.
