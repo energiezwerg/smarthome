@@ -57,6 +57,7 @@ Neue Funktionen im CORE
   * Zentrale Basic Auth Konfiguration für alle Webinterfaces von Plugins (incl. Backend)
   * exportiert ein gstatic Verzeichnis, welches zentral Images und Bibliotheken (z.B. bootstrap und jquery) zur Verfügung stellt. -> Default dabei und für Plugins nutzbar: Bootstrap 4 inkl. Datepicker, JQuery 3.3.1, Codemirror 5.39.0, Font Awesome 5.1.0
   * Stellt ein gtemplates Verzeichnis zur Verfügung, dessen Inhalt in Webinterfaces von der Template Engine Jinja genutzt werden kann.
+
     * Stellt Bootstrap 4 für die Webinterfaces zur Verfügung (inkl. Treeview und Datepicker Erweiterung)
     * Stellt JQuery 3.3.1 für die Webinterfaces zur Verfügung
     * Stellt aktuelle Codemirror Version für die Webinterfaces zur Verfügung
@@ -86,27 +87,35 @@ Neue Plugins und Plugin-Erweiterungen
 -------------------------------------
 
 * AVDevice:
+
   * Kommando für "standby" korrigiert
 * AVM:
+
   * Web GUI incl. Multi-Language Unterstützung
   * Ausbau des Debug-Loggings für den MonitoringService - da dieser bei einigen Usern sich widersprüchlich verhält
   * kleinere Bugfixes
 * Backend:
+
   * Komplettüberarbeitung der GUI auf Basis Bootstrap 4
   * Beseitung überflüssiger Abhängigkeiten (Google Prettify, bootstrap-refresh, etc.)
   * Usabilityverbesserungen:
+
     * Querverlinkung "watch items" -> Item-Details und Item-Details -> Logik
     * Nutzung des gesamten Browserfensters für Item-Tree, Logfile-Viewer, etc.
   * Seite Plugins:
+
     * Beim Aufklappen der Listeinträge werden die Attribut-Definition der Items zu dem Plugin angezeigt. (Aus den Metadaten)
   * Seite 'visu' entfernt. Funktionalität i die Web GUI des Plugins überführt
-* Database
+* Database:
+
   * Web GUI incl. Multi-Language Unterstützung, CSV Export, Werte-Anzeige und der Möglichkeit, einzelne historische Wert oder die gesamte Wertehistorie eines Items zu löschen
   * Prüfung auf laufende Datenbank und, falls keine läuft, verspäteter Verbindungsaufbau
 * EnOcean:
+
   * Dokumentation und Plugin-Konfiguration vervollständigt
   * Verbesserungen, Bugfixes, neue Funktionen (z.B. für Rolläden)
 * HomeMatic:
+
   * Vollständig neu geschriebenes Plugin für HomeMatic CCU2
   * Multi-Instance fähig
   * Web GUI incl. Multi-Language Unterstützung
@@ -117,48 +126,62 @@ Neue Plugins und Plugin-Erweiterungen
   * HomeMaticIP Devices werden unterstützt (Anlernen nur über die CCU2)
   * Detaillierte Anzeige der Parameter der HomeMatic Devices, die zur Item Konfiguration genutzt werden können
 * JVC D-ILA Control Plugin (neu)
-* KNX
+* KNX:
+
   * Web GUI incl. Multi-Language Unterstützung
-* Mail
+* Mail:
+
   * Neue Funktion "extended": Multipart Nachrichten können versenden werden (bspw. um Bilder mitzuschicken)
 * MPD:
+
   * weitere Kommandos implementiert (Pause, Play, Mute, etc.)
   * Statusabfragen refaktoriert (z.B. Volume, Time, Song, etc.)
   * Datenbankfunktionen implementiert (z.B. Update, Rescan)
   * weitere Abfragemögichkeiten implementiert/refaktoriert  (z.B. File, Artist, Album, etc.)
-* MQTT
+* MQTT:
+
   * Web GUI incl. Multi-Language Unterstützung
   * Re-subscribe zu den Topics nach einem Broker-Restart
   * Topics mit Init-Option: Re-publish Topics nach einem Broker-Restart
   * Handling nach fehlgeschlagener Anmeldung am Broker verbessert
-* Nokia Health
+* Nokia Health:
+
   * neues Item - Textuelle Beschreibungen der BMI Werte in Deutsch
   * Überarbeitung des Plugins für "nokia" PyPi Paket und Access Token (OAuth sollte nun wieder funktionieren)
   * Web GUI
-* Simulation
+* Simulation:
+
   * Web GUI incl. Multi-Language Unterstützung
   * Beispiel für SV2.9 Widget in README
   * Löschen und Anzeigen der Inhalte der Datendatei über WebGUI möglich
 * SMA EM:
+
   * Web GUI
   * Erweiterung auf folgende Werte - pregard, pregardcounter, psurplus, psurpluscounter, sregard, sregardcounter, ssurplus, ssurpluscounter, qregard, qregardcounter, qsurplus, qsurpluscounter, cosphi, p1regard, p1regardcounter, p1surplus, p1surpluscounter, s1regard, s1regardcounter, s1surplus, s1surpluscounter, q1regard, q1regardcounter, q1surplus, q1surpluscounter, v1, thd1, cosphi1, p2regard, p2regardcounter, p2surplus, p2surpluscounter, s2regard, s2regardcounter, s2surplus, s2surpluscounter, q2regard, q2regardcounter, q2surplus, q2surpluscounter, v2, thd2, cosphi2, p3regard, p3regardcounter, p3surplus, p3surpluscounter, s3regard, s3regardcounter, s3surplus, s3surpluscounter, q3regard, q3regardcounter, q3surplus, q3surpluscounter, v3, thd3, cosphi3
 * Sonos:
+
   * Unsubscribe Kommondo fehlertolleranter gemacht
-* Squeezebox
+* Squeezebox:
+
   * Korrektur von Play, Pause, Stop
-* Tankerkönig
+* Tankerkönig:
+
   * Fehlerbehebungen bei nicht vorhandenen IDs
 * Telegram:
+
   * Unterstützng mehrerer Chats (via `chat_id` Parameter)
   * Unterstützung für den Versand von Bildern
   * Neues Konfigurationsattribut: `telegram_info`
   * Neue Kommandos um Logiken zu listen (`/lo`) und anzustoßen (`/tr`)
-* visu_websocket
+* visu_websocket:
+
   * Web GUI incl. Multi-Language Unterstützung
   * Web GUI ersetzt auch die bisherige Seite im Backend
-* Wunderground
+* Wunderground:
+
   * Web GUI incl. Multi-Language Unterstützung
-* Xiaomi
+* Xiaomi:
+
   * Update-Anpassungen für Version 0.4 des miflora Pypi Pakets (requirements.txt hat sich geändert!) - Auslesen von Werten ist jetzt deutlich stabiler.
 
 
@@ -166,17 +189,21 @@ Neue Plugins und Plugin-Erweiterungen
 Entfernte Plugins
 -----------------
 
-Bisher keine
+* DWD:
+
+  * Der deutsche Wetterdienst hat die Publikation der Weeterinfomationen im bisherigen Format eingestellt.
 
 
 Dokumentation
 -------------
 
 * Anwender Dokumentation
+
   * Diverse URLs in Komplettanleitungen sowie in HW/SW Anforderungen korrigiert
   * Dokumentation an diversen Stellen erweitert
 
 * Entwickler Dokumentation
+
   * Web GUI Implementierung hinzugefügt
   * Multi-Language Unterstützung dokumentiert
 
