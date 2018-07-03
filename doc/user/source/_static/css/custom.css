@@ -97,13 +97,13 @@ p {
 }
 
 .screenshot {
-  border: solid 1 px;
-  color: #2269aa;
-
+    border-color: #2269aa;
+    border-style: solid;
+    border-width: 1px;
 }
 
 img.screenshot {
-  border: solid 1 px;
-  color: #2269aa;
-
+    border-color: #FAFAFA;
+    border-style: solid;
+    border-width: 1px;
 }
