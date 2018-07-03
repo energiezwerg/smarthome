@@ -198,14 +198,14 @@ Der Item-Tree
 ~~~~~~~~~~~~~
 
 .. figure:: assets/Backend_Items.jpg
-   :figclass: border: solid 1 px
+   :figclass: {border: solid 1 px}
 
 
 Die Dienste/Tools Seite
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 .. figure:: assets/Backend_Dienste.jpg
-   :figclass: border: solid 1 px
+   :figclass: {border: solid 1 px}
 
 
 Die Logik-Liste
