@@ -16,6 +16,7 @@ Logik Liste
 Die Logik Liste zeigt die Übersicht aller Logiken mit Informationen zu ihrer Konfiguration an.
 
 .. image:: assets/backend_logikliste.jpg
+   :class: screenshot
 
 Aus dieser Liste heraus kann man die Logiken triggern, neu laden, aktivieren bzw. deaktivieren, 
 entladen und löschen. Ein Klick auf den Dateinamen führt in den Logik Editor.
@@ -31,4 +32,5 @@ Im Logik Editor können die Konfigurationsparameter einer Logik angepasst werden
 der Logik kann editiert werden.
 
 .. image:: assets/backend_logik_editor.jpg
+   :class: screenshot
 

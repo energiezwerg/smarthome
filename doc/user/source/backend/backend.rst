@@ -56,6 +56,7 @@ Ein Beispiel Schirm mit allgemeinen Informationen über SmartHomeNG und das Syst
 SmartHomeNG läuft:
 
 .. image:: assets/backend_systeminfo.jpg
+   :class: screenshot
 
 
 
