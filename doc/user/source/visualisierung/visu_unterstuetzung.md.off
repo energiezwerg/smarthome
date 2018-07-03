@@ -5,7 +5,7 @@
 Im Release 1.2 wurde die Unterstützung für die smartVISU weiterentwickelt. Dabei wurde das visu Plugin durch zwei neue Plugins ersetzt. 
 
 - Das erste Plugin (**``visu_websocket``**) implementiert das Websocket Protokoll über das smartVISU mit SmartHomeNG kommunziert.
-- Das zweite Plugin (**``visu_smartvisu``**) implementiert die aus den bisherigen Releases bekannte Möglichkeit zur automatischen Generierung von smartVISU Seiten. Diese Funktion wurde stark erweitert. Weiterhin ermöglicht dieses Plugin die Installation von Widgets in die smartVISU, die die Entwickler von smarthomeNG Plugins geschrieben und ihren Plugins beigefügt haben.
+- Das zweite Plugin (**``visu_smartvisu``**) implementiert die aus den bisherigen Releases bekannte Möglichkeit zur automatischen Generierung von smartVISU Seiten. Diese Funktion wurde stark erweitert. Weiterhin ermöglicht dieses Plugin die Installation von Widgets in die smartVISU, die die Entwickler von SmartHomeNG Plugins geschrieben und ihren Plugins beigefügt haben.
 
 Das smartVISU Plugin implementiert:
 
@@ -13,9 +13,9 @@ Das smartVISU Plugin implementiert:
 - die Fähigkeit zur [Widget Installation in die smartVISU](https://github.com/smarthomeNG/smarthome/wiki/visu_smartvisu_widget_handling_in_v1.2), die es Plugin Entwicklern ermöglicht, mit ihrem  Plugin smartVISU Widgets auszuliefern.
 
 
-## Änderungen in der Konfiguration im Release 1.2 von smarthomeNG
+## Änderungen in der Konfiguration im Release 1.2 von SmartHomeNG
 
-In den bisherigen Releases von smarthome bzw. smarthomeNG wurde die Visualisierungsunterstützung in der Datei ``/etc/plugin.conf`` folgendermaßen konfiguriert:
+In den bisherigen Releases von smarthome.py bzw. SmartHomeNG wurde die Visualisierungsunterstützung in der Datei ``/etc/plugin.conf`` folgendermaßen konfiguriert:
 
 ```
 [visu]
