@@ -102,3 +102,8 @@ p {
 
 }
 
+img.screenshot {
+  border: solid 1 px;
+  color: #2269aa;
+
+}

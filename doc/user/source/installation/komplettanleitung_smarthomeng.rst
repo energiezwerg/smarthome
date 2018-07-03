@@ -197,22 +197,19 @@ Hier sind ein paar Bilder vom Backendserver, um einen Eindruck zu vermitteln:
 Der Item-Tree
 ~~~~~~~~~~~~~
 
-.. image:: assets/Backend_Items.jpg
-   :class: screenshot
+.. figure:: assets/Backend_Items.jpg
 
 
 Die Dienste/Tools Seite
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-.. image:: assets/Backend_Dienste.jpg
-   :class: screenshot
+.. figure:: assets/Backend_Dienste.jpg
 
 
 Die Logik-Liste
 ~~~~~~~~~~~~~~~
 
-.. image:: assets/Backend_Logiken.jpg
-   :class: screenshot
+.. figure:: assets/Backend_Logiken.jpg
 
 
 Die Szenen Übersicht
@@ -220,5 +217,4 @@ Die Szenen Übersicht
 
 .. image:: assets/Backend_Szenen.jpg
    :class: screenshot
-
 
