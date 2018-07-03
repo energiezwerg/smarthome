@@ -12,10 +12,11 @@
    /dev/README.md
    /dev/sample_plugin/README.md
    /dev/sample_plugin_old_v1_1/README.md
+   /dev/sample_plugin_1_5/README.md
    /dev/sample_plugin_webif/README.md
    /modules/dummy/README.md
    /modules/http/README.md
-   
+
 .. toctree::
    :maxdepth: 2
    :glob:
@@ -25,4 +26,6 @@
    /plugins/alexa/nginx.md
    /plugins/buderus/TODO.md
    /plugins/buderus/URLs.md
-   
+   /plugins/dwd/README.md
+   /plugins/knx/pv_1_3_4/README.md
+
