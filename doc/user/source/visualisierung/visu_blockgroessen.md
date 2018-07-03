@@ -4,7 +4,7 @@
 
 Die smartVISU unterstützt Blöcke mit drei unterschiedlichen Größen. Gemeint ist hierbei die Mindestgröße des Blocks. Wenn in dem Block Widgets platziert werden, die mit dem Platz nicht auskommen, wird der Block automatisch höher. Die Blockhöhen unterscheiden sich in etwa um die Höhe der Heading-Zeile.
 
-In den bisherigen Releases von smarthome/smarthomeNG wurden beim automatischen generieren von smartVISU Seiten immer Blöcke der Größe **2** (mittel) verwendet.
+In den bisherigen Releases von smarthome.py/SmartHomeNG wurden beim automatischen generieren von smartVISU Seiten immer Blöcke der Größe **2** (mittel) verwendet.
 
 Im aktuellen Release können auch Blöcke der Größen **1** (groß) und **3** (klein) in die Seiten generiert werden.
 
