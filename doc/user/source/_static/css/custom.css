@@ -80,6 +80,11 @@ p {
 /* background: #2980B9; RTD Blau */
 /* background: #2269aa; shng blau */
 /* background: #CEE3F6; */
+/* border: #FAFAFA; */
+/* border: #F2F2F2; */
+/* border: #E6E6E6; */
+/* border: #D8D8D8; */
+/* border: #BDBDBD; */
 
 .redsup  {
   color: #e74c3c; !important;
@@ -96,14 +101,8 @@ p {
   position: relative; top: -0.5em; font-size: 80%; !important;
 }
 
-.screenshot {
-    border-color: #2269aa;
-    border-style: solid;
-    border-width: 1px;
-}
-
 img.screenshot {
-    border-color: #27ae60;
+    border-color: #bdbdbd;
     border-style: solid;
     border-width: 1px;
 }
