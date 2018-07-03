@@ -95,6 +95,6 @@ unterstützt.)
    **Ab SmartHomeNG v1.3** wird ein neues Dateiformat für Konfigurationsdateien 
    unterstützt. Das bisherige Format der Konfigurationsdateien wird vorerst weiter unterstützt. 
 
-   Informationen zum :doc:`neuen Dateiformat <./konfigurationsdateien_aufbau>` 
+   Informationen zum :doc:`alten und neuen Dateiformat <./konfigurationsdateien_aufbau>`
    finden Sie :doc:`hier <./konfigurationsdateien_aufbau>`.
 

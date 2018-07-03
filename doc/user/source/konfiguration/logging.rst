@@ -15,40 +15,10 @@ Die Datei **../etc/logging.yaml** befindet sich bereits vorkonfiguriert in dem V
 
 Die Datei sieht so aus:
 
-.. code-block:: yaml
+.. literalinclude:: ../../../../etc/logging.yaml.default
    :caption: ../etc/logging.yaml
-   
-   version: 1
-   disable_existing_loggers: False
-   formatters:
-     simple:
-       format: '%(asctime)s %(levelname)-8s %(threadName)-12s %(message)s'
-       datefmt: '%Y-%m-%d  %H:%M:%S'
-     detail:
-       format: '%(asctime)s %(levelname)-8s %(module)-12s %(threadName)-12s %(message)s -- %(filename)s:%(funcName)s:%(lineno)d'
-       datefmt: '%Y-%m-%d %H:%M:%S'
-   handlers:
-     console:
-       class: logging.StreamHandler
-       formatter: simple
-       stream: ext://sys.stdout
-     file:
-       class: logging.handlers.TimedRotatingFileHandler
-       level: DEBUG
-       formatter: detail
-       when: midnight
-       backupCount: 7
-       filename: ./var/log/smarthome.log
-   loggers:
-     plugins.knx:
-       level: DEBUG
-   #  lib.scheduler:
-   #    level: DEBUG
-   #  plugins.cli:
-   #    level: DEBUG
-   root:
-       level: INFO
-       handlers: [file, console]
+   :language: yaml
+
 
 
 In die Konfigurationsmöglichkeiten des Phyton Loggings kann sich hier eingelesen werden:
@@ -106,19 +76,20 @@ Pluginentwicklung
 
 Für die Entwickler von Plugins:
 Der Logger sollte nun nicht global mit logging.getLogger('') instanziert werden sondern innerhalb 
-der &#95;&#95;init&#95;&#95; Methode mit:
+der `__init__` Methode mit:
 
 .. code-block:: python
 
    self.logger = logging.getLogger(__name__)
 
 
-Wobei &#95;&#95;name&#95;&#95; ein sogenanntes magic ist. Dies bedeutet, dass python 
-aus &#95;&#95;name&#95;&#95; den Namen des Plugins macht. 
+Wobei `__name__` ein sogenanntes magic ist. Dies bedeutet, dass Python
+aus `__name__` den Namen des Plugins macht.
 
 So wird aus plugins/cli/ der Name „plugins.cli“, aus lib/scheduler.py wird „lib.scheduler“
 Daher muss dann in der Konfiguration des Loggings der Name „plugin.cli“ angegeben werden.
-Verwendet man zur Instanziierung einen eigenen Namen wie z.B. 
+
+Verwendet man zur Instanziierung einen eigenen Namen (nicht empfohlen), wie z.B.
 
 .. code-block:: python
 

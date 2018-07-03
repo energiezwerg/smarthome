@@ -211,6 +211,6 @@ Beispiel muss die Datei den Namen **wohnung.buero.szenen.yaml** tragen.
    :caption: Beispiel der Szenen Item-Definition in der items.yaml
    
    szenen:
-    wohnung:
-     buero:
-      type: scene
+       wohnung:
+           buero:
+               type: scene

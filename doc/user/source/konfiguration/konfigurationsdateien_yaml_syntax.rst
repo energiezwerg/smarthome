@@ -11,7 +11,7 @@ YAML steht für "YAML Ain't Markup Language" und wird in SmartHomeNG für Konfig
 verwendet.
 
 YAML ist im Grunde ein lesbares strukturiertes Datenformat. Es ist weniger komplex und unhandlich 
-als XML oder JSON, bietet jedoch ähnliche Funktionen. Im Wesentlichen ermöglicht es Ihnen, 
+als XML oder JSON, bietet jedoch ähnliche Funktionen. Im Wesentlichen ermöglicht es,
 leistungsstarke Konfigurationseinstellungen bereitzustellen, ohne einen komplexeren Codetyp 
 wie CSS, JavaScript und PHP erlernen zu müssen.
 

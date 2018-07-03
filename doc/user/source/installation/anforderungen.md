@@ -10,7 +10,7 @@ Ein beliebiger Rechner mit x86 or x64 CPU sollte funktionieren, genauso wie Rech
 
 Häufig verwendete Hardware ist:
 
-- Raspberry 1, Raspberry 2, Raspberry 3 (der Letztere wird aufgrund der besseren Hardware **unbedingt empfohlen**)
+- Raspberry Pi 1, Raspberry Pi 2 oder Raspberry Pi 3 (der Letztere wird aufgrund der besseren Hardware **unbedingt empfohlen**)
   Der Großteil der Nutzer verwendet diese Hardware, siehe [Umfrage](https://knx-user-forum.de/forum/supportforen/smarthome-py/1112952-welche-hardware-nutzt-ihr-f%C3%BCr-euer-smarthomeng)
 - Intel NUC (Empfohlen für Stabilität und Geschwindigkeit, auch wenn diese Rechner mehr Leistung haben, als benötigt wird. Unterstützt normale SATA Festplatten, was ein Vorteil gegenüber den Raspberry Pis mit ihren SD-Karten ist)
 - ODroid
