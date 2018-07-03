@@ -83,8 +83,8 @@ p {
 /* border: #FAFAFA; */
 /* border: #F2F2F2; */
 /* border: #E6E6E6; */
-/* border: #D8D8D8; */
-/* border: #BDBDBD; */
+/* border: #d8d8d8; */
+/* border: #bdbdbd; */
 
 .redsup  {
   color: #e74c3c; !important;
@@ -102,7 +102,7 @@ p {
 }
 
 img.screenshot {
-    border-color: #bdbdbd;
+    border-color: #d8d8d8;
     border-style: solid;
     border-width: 1px;
 }
