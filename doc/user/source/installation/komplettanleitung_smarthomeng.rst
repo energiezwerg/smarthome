@@ -198,23 +198,27 @@ Der Item-Tree
 ~~~~~~~~~~~~~
 
 .. image:: assets/Backend_Items.jpg
+   :class: screenshot
 
 
 Die Dienste/Tools Seite
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 .. image:: assets/Backend_Dienste.jpg
+   :class: screenshot
 
 
 Die Logik-Liste
 ~~~~~~~~~~~~~~~
 
 .. image:: assets/Backend_Logiken.jpg
+   :class: screenshot
 
 
 Die Szenen Übersicht
 ~~~~~~~~~~~~~~~~~~~~
 
 .. image:: assets/Backend_Szenen.jpg
+   :class: screenshot
 
 
