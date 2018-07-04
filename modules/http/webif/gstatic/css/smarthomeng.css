@@ -20,7 +20,7 @@ plusIconlist-group-item.py-2.node-tree.node-selected {
   display: inline-block;
   height: 22px;
   width: 22px;
-  background-image: url("/backend/static/img/minus.png");
+  background-image: url("/gstatic/img/minus.png");
 }
 
 .plusIcon {
@@ -28,7 +28,7 @@ plusIconlist-group-item.py-2.node-tree.node-selected {
   display: inline-block;
   width: 22px;
   height: 22px;
-  background-image: url("/backend/static/img/plus.png");
+  background-image: url("/gstatic/img/plus.png");
 }
 
 .navBorder {
