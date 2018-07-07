@@ -24,8 +24,7 @@
 #########################################################################
 
 from lib.module import Modules
-
-from lib.model.smartplugin import SmartPlugin
+from lib.model.smartplugin import *
 
 
 class SamplePlugin(SmartPlugin):
@@ -180,13 +179,13 @@ class SamplePlugin(SmartPlugin):
 import cherrypy
 from jinja2 import Environment, FileSystemLoader
 
+class WebInterface(SmartPluginWebIf):
 
-class WebInterface:
 
     def __init__(self, webif_dir, plugin):
         """
         Initialization of instance of class WebInterface
-        
+
         :param webif_dir: directory where the webinterface of the plugin resides
         :param plugin: instance of the plugin
         :type webif_dir: str
@@ -195,16 +194,17 @@ class WebInterface:
         self.logger = logging.getLogger(__name__)
         self.webif_dir = webif_dir
         self.plugin = plugin
-        self.tplenv = Environment(loader=FileSystemLoader(self.plugin.path_join(self.webif_dir, 'templates')))
+        self.tplenv = self.init_template_environment()
+
 
     @cherrypy.expose
     def index(self):
         """
         Build index.html for cherrypy
-        
+
         Render the template and return the html file to be delivered to the browser
-            
-        :return: contents of the template after beeing rendered 
+
+        :return: contents of the template after beeing rendered
         """
         tmpl = self.tplenv.get_template('index.html')
         return tmpl.render(plugin_shortname=self.plugin.get_shortname(), plugin_version=self.plugin.get_version(),
