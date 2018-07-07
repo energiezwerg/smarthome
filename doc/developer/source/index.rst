@@ -28,7 +28,7 @@ any way you want and can.
 .. note::
 
    Place **remarks** und **wishes for changes** regarding this developer documentation on 
-   `this wiki page <https://github.com/smarthomeNG/smarthome/wiki/Developer-Documentation---Comments>`_ .
+   `this feedback page <https://www.smarthomeng.de/feedback-zur-dokumentation>`_ .
 
 .. [#f1] SmartHomeNG © Copyright 2016-2018 SmartHomeNG Team, is based on smarthome.py © 2011-2014 Marcus Popp.
 

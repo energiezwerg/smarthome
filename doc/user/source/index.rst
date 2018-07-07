@@ -34,7 +34,7 @@ oder im `Chat auf gitter.im <https://gitter.im/smarthomeNG/smarthome>`_ .
 .. note::
 
    **Anmerkungen** und **Änderungswünsche** zu dieser Anwenderdokumentation bitte auf  
-   `dieser Wiki Seite <https://github.com/smarthomeNG/smarthome/wiki/Anwender-Dokumentation---Kommentare>`_ hinterlassen.
+   `dieser Feedback Seite <https://www.smarthomeng.de/feedback-zur-dokumentation>`_ hinterlassen.
 
 .. [#f1] SmartHomeNG © Copyright 2016-2018 SmartHomeNG Team, basiert auf smarthome.py © 2011-2014 Marcus Popp.
 
