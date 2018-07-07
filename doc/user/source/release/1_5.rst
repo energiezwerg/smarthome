@@ -52,21 +52,23 @@ Neue Funktionen im CORE
     * Datentypen ipv6 und knx_ga hinzugefügt
     * Komplexe Listendefinitionen für Parameter/Attribute von Typ **list** implementiert
     * Lesen der Item Attribut Definitionen aus der plugin.yaml des Plugins implementiert
-* Module http:
+* Module:
 
-  * Zentrale Basic Auth Konfiguration für alle Webinterfaces von Plugins (incl. Backend)
-  * exportiert ein gstatic Verzeichnis, welches zentral Images und Bibliotheken (z.B. bootstrap und jquery) zur Verfügung stellt. -> Default dabei und für Plugins nutzbar: Bootstrap 4 inkl. Datepicker, JQuery 3.3.1, Codemirror 5.39.0, Font Awesome 5.1.0
-  * Stellt ein gtemplates Verzeichnis zur Verfügung, dessen Inhalt in Webinterfaces von der Template Engine Jinja genutzt werden kann.
+  *http:
 
-    * Stellt Bootstrap 4 für die Webinterfaces zur Verfügung (inkl. Treeview und Datepicker Erweiterung)
-    * Stellt JQuery 3.3.1 für die Webinterfaces zur Verfügung
-    * Stellt aktuelle Codemirror Version für die Webinterfaces zur Verfügung
-    * Stellt aktuelle Font Awesome Version für die Webinterfaces zur Verfügung
-  * Die IP Adresse auf der das http Modul "lauscht" kann jetzt in module.yaml konfiguriert werden, für den Fall dass die automatische Erkennung nicht zum gewünschten Ergebnis führt.
-  * JQuery aktualisiert auf v3.3.1
-  * Font Awesome aktualisiert auf v5.1.0
-  * Bootstrap aktualisiert auf v4.1.1
-  * CodeMirror aktualisiert auf v5.39.0
+    * Zentrale Basic Auth Konfiguration für alle Webinterfaces von Plugins (incl. Backend)
+    * exportiert ein gstatic Verzeichnis, welches zentral Images und Bibliotheken (z.B. bootstrap und jquery) zur Verfügung stellt. -> Default dabei und für Plugins nutzbar: Bootstrap 4 inkl. Datepicker, JQuery 3.3.1, Codemirror 5.39.0, Font Awesome 5.1.0
+    * Stellt ein gtemplates Verzeichnis zur Verfügung, dessen Inhalt in Webinterfaces von der Template Engine Jinja genutzt werden kann.
+
+      * Stellt Bootstrap 4 für die Webinterfaces zur Verfügung (inkl. Treeview und Datepicker Erweiterung)
+      * Stellt JQuery 3.3.1 für die Webinterfaces zur Verfügung
+      * Stellt aktuelle Codemirror Version für die Webinterfaces zur Verfügung
+      * Stellt aktuelle Font Awesome Version für die Webinterfaces zur Verfügung
+    * Die IP Adresse auf der das http Modul "lauscht" kann jetzt in module.yaml konfiguriert werden, für den Fall dass die automatische Erkennung nicht zum gewünschten Ergebnis führt.
+    * JQuery aktualisiert auf v3.3.1
+    * Font Awesome aktualisiert auf v5.1.0
+    * Bootstrap aktualisiert auf v4.1.1
+    * CodeMirror aktualisiert auf v5.39.0
 * Neue Default Konfiguration für das Logging
 * Submodule Konfiguration auf github entfernt. Das plugins Repository ist nun unabhängig und kann/muss separat von github installiert werden (siehe Komplettanleitung)
 * Überprüfung ob SmartHomeNG läuft verbessert, indem zusätzlich ein File-Locking verwendet wird
@@ -125,7 +127,9 @@ Neue Plugins und Plugin-Erweiterungen
   * Anlernen neuer HomeMatic Devices an der CCU2 durch die Web GUI möglich
   * HomeMaticIP Devices werden unterstützt (Anlernen nur über die CCU2)
   * Detaillierte Anzeige der Parameter der HomeMatic Devices, die zur Item Konfiguration genutzt werden können
-* JVC D-ILA Control Plugin (neu)
+* JVC D-ILA Control:
+
+   * neu
 * KNX:
 
   * Web GUI incl. Multi-Language Unterstützung
