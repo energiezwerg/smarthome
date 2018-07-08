@@ -16,6 +16,7 @@ if [ "$1" == "-h" ]; then
   echo   -f  -  Github Repos erneut auschecken \(auch wenn bereits lokale Clones vorhanden sind\)
   echo   -u  -  Nur die Anwender Dokumentation erzeugen
   echo   -d  -  Nur die Entwickler Dokumentation erzeugen
+  echo   -m  -  Die Dokumentation aus dem master Branch bauen (statt aus dem develop Branch)
   echo
   exit
 fi
@@ -76,6 +77,7 @@ if [ "${DOC,,}" == "user" ]; then
   echo ==================================================
 fi
 echo
+python3 -V
 python3 -c "import sphinx" 2> /dev/null
 if [ "$?" == "1" ]; then
   echo Vor Ausführung dieses Skriptes zum Erstellen der $ACCOUNT/$REPO Doku
@@ -84,6 +86,7 @@ if [ "$?" == "1" ]; then
   echo Die Installation vorn Sphinx kann mit folgendem Kommando durchgeführt werden:
   echo
   echo -e "\t $ sudo pip3 install sphinx sphinx_rtd_theme recommonmark"
+  echo -e "\t $ sudo pip3 install 'ruamel.yaml>=0.13.7,<=0.15'
   echo
   exit
 fi
@@ -137,6 +140,8 @@ if [ "${GIT_CHECKOUT,,}" == "true" ]; then
 
   echo
   echo Auschecken der Plugins von github:
+
+  mkdir plugins >nul
   cd plugins
   git clone -b $DESTBRANCH https://github.com/$ACCOUNT/plugins.git .
 
@@ -155,8 +160,8 @@ if [ "${DOC,,}" == "developer" ] || [ "${DOC,,}" == "all" ]; then
   echo
   echo Bau der Entwickler-Dokumentation:
   cd $DEVELOPDOC
-  make clean
-  make html
+  make clean || exit
+  make html || exit
   echo
   echo Bau der Entwickler-Dokumentation ist abgeschlossen!
 fi
@@ -168,8 +173,8 @@ if [ "${DOC,,}" == "user" ] || [ "${DOC,,}" == "all" ]; then
   echo
   echo Bau der Anwender-Dokumentation:
   cd $USERDOC
-  make clean
-  make html
+  make clean || exit
+  make html || exit
   echo
   echo Bau der Anwender-Dokumentation ist abgeschlossen!
 fi

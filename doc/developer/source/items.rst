@@ -4,87 +4,77 @@ Items
 Overview
 --------
 
-Items can be defined with a ``.conf`` (deprecated) file. Starting with SmartHomeNG 1.3 items may also be defined
-within one or more ``.yaml``-files. If there are filenames with the same base name then the ``.yaml`` file
-will be read instead of the ``.conf`` (deprecated) file.
-
-The following still describes the old-fashioned way with a ``.conf`` file, but also the new way with a ``.yaml`` 
-file. Indentation may be used for legibility purposes but is neither necessary nor mandatory.
+Items can be defined with within a ``.yaml`` file though the deprecated
+``.conf`` file format will still be accepted.
+If there are filenames with the same base name then the ``.yaml`` file
+will be read instead of the ``.conf`` file.
 
 For any item name only the characters ``A-Z`` and ``a-z`` should be used.
-An underscore ``_`` or a digit ``0-9`` may be used within the item name but not as a first character.
-Item names like ``[1w_Bus]``, ``[42]`` or ``[_Bus]`` should not be used.
-Any Python reserved names like e.g. ``get`` or ``set`` also should be avoided.
+An underscore ``_`` or a digit ``0-9`` may be used within the item name
+but not as a first character.
+Item names like ``1w_Bus``, ``42`` or ``_Bus`` should not be used as well as
+any Python reserved names like e.g. ``get`` or ``set``.
 
-Items can be build up in a hierarchical manner. An item can have children that may have children as well and so on.
-The level of an item is shown by the number of square parentheses used. The more parentheses around the item name,
-the lower in the hierarchy.
+Items build upon others in a hierarchical manner.
+An item can have children that may have children themselves as well and so on.
+The level of an item depends upon the indentation relative to the file.
+In the following code three items will be defined:
 
-.. code-block:: text
-   :caption: myitem.conf (deprecated)
-
-   [grandfather]
-      [[daddy]]
-         [[[kid]]]
+* grandfather
+* grandfather.daddy
+* grandfather.daddy.kid
 
 .. code-block:: text
    :caption: myitem.yaml
 
    grandfather:
-
        daddy:
            kid:
 
-It is advised to use nested items to build a tree representing your environment:
+It is easy to shift the whole definition by some spaces and thus add another level.
+In the example below are now the following items defined:
+
+* adam
+* adam.grandfather
+* adam.grandfather.daddy
+* adam.grandfather.daddy.kid
 
 .. code-block:: text
-   :caption: /usr/local/smarthome/items/living.conf (deprecated)
+   :caption: myitem.yaml
 
-   [living]
-       [[light]]
-           type = bool
-           name = Livingroom main light
-       [[tv]]
-           type = bool
+   adam:
+     grandfather:
+         daddy:
+             kid:
 
-           [[[current]]]
-               type = num
-   [kitchen]
-       [[light]]
-           type = bool
-           name = kitchen table light
-       [[temp]]
-           type = num
-       [[presence]]
-           type = bool
+Within logics and also later in SmartVISU these itemnames will be used just like
+shown above, e.g. ``adam.grandfather.daddy``
+
+It is a good idea to build a tree representing your environment:
 
 .. code-block:: text
    :caption: /usr/local/smarthome/items/living.yaml
 
    living:
-
        light:
            type: bool
            name: Livingroom main light
-
        tv:
            type: bool
-
            current:
                type: num
 
    kitchen:
-
        light:
            type: bool
            name: kitchen table light
-
        temp:
            type: num
-
        presence:
            type: bool
 
+The reference for the light in the kitchen within SmartVISU or would be ``kitchen.light``
+in the example above.
 
 Item Attributes
 ~~~~~~~~~~~~~~~
@@ -156,15 +146,8 @@ Value:                  in case an ItemPath was specified the item will be set t
                         or stop (specify 'stop' as value).
 ======================= ================================================================================================
 
-.. code-block:: text
-   :caption: items/example.conf (deprecated)
 
-   [example]
-       type = scene
-   [otheritem]
-       type = num
-   
-.. code-block:: text
+.. code-block:: yaml
    :caption: items/example.yaml
 
    example:
@@ -173,14 +156,6 @@ Value:                  in case an ItemPath was specified the item will be set t
    otheritem:
        type: num
 
-.. code-block:: text
-   :caption: scenes/example.conf
-
-   0 otheritem 2
-   1 otheritem 20
-   1 LogicName run
-   2 otheritem 55
-   3 LogicName stop
 
 eval
 ^^^^
@@ -188,14 +163,7 @@ eval
 This attribute is useful for small evaluations and corrections. The
 input value is accessible with ``value``.
 
-.. code-block:: text
-   :caption: items/level.conf (deprecated)
-
-   [level]
-       type = num
-       eval = value * 2 - 1  # if you call sh.level(3) sh.level will be evaluated and set to 5
-
-.. code-block:: text
+.. code-block:: yaml
    :caption: items/level.yaml
 
    level:
@@ -204,20 +172,7 @@ input value is accessible with ``value``.
 
 Trigger the evaluation of an item with ``eval_trigger``:
 
-.. code-block:: text
-   :caption: items/room.conf (deprecated)
-
-   [room]
-       [[temp]]
-           type = num
-       [[hum]]
-           type = num
-       [[dew]]
-           type = num
-           eval = sh.tools.dewpoint(sh.room.temp(), sh.room.hum())
-           eval_trigger = room.temp | room.hum  # every change of temp or hum would trigger the evaluation of dew.
-
-.. code-block:: text
+.. code-block:: yaml
    :caption: items/room.yaml
 
    room:
@@ -246,32 +201,7 @@ Eval keywords to use with the ``eval_trigger``:
 ``or``  set the item to True if one of the specified ``eval_trigger`` items  is True.
 ======= =============================================================================
 
-.. code-block:: text
-   :caption:  items/rooms.conf (deprecated)
-
-   [living]
-       [[temp]]
-           type = num
-       [[presence]]
-           type = bool
-   [kitchen]
-       [[temp]]
-           type = num
-       [[presence]]
-           type = bool
-   [rooms]
-       [[temp]]
-           type = num
-           name = average temperature
-           eval = avg
-           eval_trigger = living.temp | kitchen.temp
-       [[presence]]
-           type = bool
-           name = movement in on the rooms
-           eval = or
-           eval_trigger = living.presence | kitchen.presence
-
-.. code-block:: text
+.. code-block:: yaml
    :caption:  items/rooms.yaml
 
    living:

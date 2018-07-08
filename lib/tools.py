@@ -22,7 +22,7 @@
 # Error Item für Verbindungsfehler bei fetch_url
 
 """
-This library contails the Tools-class from the original smarthome.py
+This library contains the Tools-class from the original smarthome.py
 
 :Note: These functions **should be concidered deprecated**. New helper-functions are going to be implemented in the utils.lib.
 

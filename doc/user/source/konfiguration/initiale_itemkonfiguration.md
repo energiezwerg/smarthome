@@ -2,7 +2,7 @@
 
 ## Beispiele für erstmaliges Setup
 
-Das Rückgrat von smarthomeNG bilden die Items. Jedes Item kann (muss aber nicht) bestimmte Eigenschaften haben. 
+Das Rückgrat von SmartHomeNG bilden die Items. Jedes Item kann (muss aber nicht) bestimmte Eigenschaften haben. 
 Eigenschaften (Attribute) sind z.B. welcher Datentyp ein Item ist oder wie das Item gelesen oder geschrieben werden kann. Wie welches Item gelesen und geschrieben werden kann, hängt von den installierten Plugins ab.
 
 Ein kleines Beispiel: Du möchtest eine Lampe über KNX ein- und ausschalten. Dazu brauchst du zwei Schritte:

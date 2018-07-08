@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # vim: set encoding=utf-8 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
 #########################################################################
-#  Copyright 2016       Christian Strassburg      c.strassburg(a)gmx.de
 #  Copyright 2017-      Martin Sinn                       m.sinn@gmx.de
-# 
+#  Copyright 2016       Christian Strassburg      c.strassburg(a)gmx.de
 #########################################################################
 #  This file is part of SmartHomeNG
 #
@@ -24,6 +23,9 @@
 #import lib.scheduler
 
 from lib.model.smartobject import SmartObject
+
+from lib.shtime import Shtime
+from lib.module import Modules
 from lib.utils import Utils
 
 import logging
@@ -38,18 +40,67 @@ class SmartPlugin(SmartObject, Utils):
     In adition the methods implemented in lib.utils.Utils are inhereted.
     """
     
+    ALLOW_MULTIINSTANCE = None
+
     __instance = ''     #: Name of this instance of the plugin
     _sh = None          #: Variable containing a pointer to the main SmartHomeNG object; is initialized during loading of the plugin; :Warning: Don't change it
+    _configname = ''    #: Configname of the plugin; is initialized during loading of the plugin; :Warning: Don't change it
     _shortname = ''     #: Shortname of the plugin; is initialized during loading of the plugin; :Warning: Don't change it
     _classname = ''     #: Classname of the plugin; is initialized during loading of the plugin; :Warning: Don't change it
+    shtime = None       #: Variable containing a pointer to the SmartHomeNG time handling object; is initialized during loading of the plugin; :Warning: Don't change it
 
     _pluginname_prefix = 'plugins.'
+
+    _itemlist = []		# List of items, that trigger update methods of this plugin (filled by lib.item); :Warning: Don't change!
+
 
     _parameters = {}    # Dict for storing the configuration parameters read from /etc/plugin.yaml
     
     logger = logging.getLogger(__name__)
     
     
+    def _append_to_itemlist(self, item):
+        self._itemlist.append(item)
+        
+        
+    def _get_itemlist(self):
+        return self._itemlist
+                
+        
+    def deinit(self):
+        """
+        If the Plugin needs special code to be executed before it is unloaded, this method
+        has to be overwirtten with the code needed for de-initialization
+        """
+        pass
+
+
+    def get_configname(self):
+        """
+        return the name of the plugin instance as defined in plugin.yaml (section name)
+        
+        :note: Only available in SmartHomeNG versions **beyond** v1.4
+        
+        :return: name of the plugin instance as defined in plugin.yaml
+        :rtype: str
+        """
+        return self._configname
+                
+        
+    def _set_configname(self, configname):
+        """
+        set the name of the plugin instance as defined in plugin.yaml (section name)
+                
+        :Note: Usually **you don't need to call this method**, since it is called during loading of the plugin
+
+        :note: Only available in SmartHomeNG versions **beyond** v1.4
+        
+        :param configname: name of the plugin instance as defined in plugin.yaml
+        :type configname: str
+        """
+        self._configname = configname
+        
+
     def get_shortname(self):
         """
         return the shortname of the plugin (name of it's directory)
@@ -95,9 +146,9 @@ class SmartPlugin(SmartObject, Utils):
         :param instance: Name of this instance of the plugin
         :type instance: str
         """
-        if self.ALLOW_MULTIINSTANCE:
+        if hasattr(self, 'ALLOW_MULTIINSTANCE') and self.ALLOW_MULTIINSTANCE:
             self.__instance = instance
-        else: 
+        elif hasattr(self, 'ALLOW_MULTIINSTANCE') and not self.ALLOW_MULTIINSTANCE:
             self.logger.warning("Plugin '{}': Only multi-instance capable plugins allow setting a name for an instance".format(self.get_shortname()))
 
 
@@ -143,16 +194,39 @@ class SmartPlugin(SmartObject, Utils):
         self._classname = classname
         
         
-    def get_version(self):
+    def get_version(self, extended=False):
         """
         Return plugin version
+        
+        :param extended: If True, returned version string contains (pv) if not the latest version is loaded 
+        :type extended: bool
         
         :return: plugin version
         :rtype: str
         """
-        return self.PLUGIN_VERSION
-        
+        if extended and ('_pv_' in self._plugin_dir):
+            return self.PLUGIN_VERSION + ' (pv)'
+        else:
+            return self.PLUGIN_VERSION
     
+
+    def _set_multi_instance_capable(self, mi):
+        """
+        Sets information if plugin is capable of multi instance handling (derived from metadate),
+        but only, if ALLOW_MULTIINSTANCE is not set in source code
+        
+        :param mi: True, if plugin is multiinstance capable
+        :type mi: bool 
+        :return: True, if success or ALLOW_MULTIINSTANCE == mi
+        :rtype: bool
+        """
+        if hasattr(self, 'ALLOW_MULTIINSTANCE') and (self.ALLOW_MULTIINSTANCE != None):
+            return (self.ALLOW_MULTIINSTANCE == mi)
+        else:
+            self.ALLOW_MULTIINSTANCE = mi
+        return True
+        
+
     def is_multi_instance_capable(self):
         """
         Returns information if plugin is capable of multi instance handling
@@ -180,10 +254,10 @@ class SmartPlugin(SmartObject, Utils):
         
     def _set_plugin_dir(self, dir):
         """
-        Set the object's local variable `_sh` to the main smarthomeNG object.
-        You can reference the main object of SmartHmeNG by using self._sh.
+        Set the object's local variable `_plugin_dir` to root directory of the plugins.
+        You can reference the main object of SmartHmeNG by using self._plugin_dir.
         
-        :Note: Usually **you don't need to call this method**, since it is called during loading of the plugin
+        :Note: Usually **you don't need to call this method**, since it is called during loading of the plugin by PluginWrapper
 
         :note: Only available in SmartHomeNG versions **beyond** v1.3
         
@@ -218,6 +292,28 @@ class SmartPlugin(SmartObject, Utils):
         return self._parameters.get(parameter_name, None)
         
     
+    def get_parameter_value_for_display(self, parameter_name):
+        """
+        Returns the configured value for the given parameter name
+        
+        If the parameter is not defined, None is returned
+        If the parameter is marked as 'hide', only '*'s are returned
+        
+        :param parameter_name: Name of the parameter for which the value should be retrieved
+        :type parameter_name: str
+        
+        :return: Configured value
+        :rtype: depends on the type of the parameter definition
+        """
+        param = self._parameters.get(parameter_name, None)
+        if param == '' or param is None:
+            return ''
+        if self._hide_parameters.get(parameter_name, False):
+            return '******'
+        else:
+            return param
+
+
 #    def has_parameter_value(self, key):
 #        """
 #        Returns True, if a value is configured for the given parameter name
@@ -373,6 +469,9 @@ class SmartPlugin(SmartObject, Utils):
         :type smarthome: object
         """
         self._sh = smarthome
+        
+        if self.shtime is None:
+            self.shtime = Shtime.get_instance()
 
 
     def get_module(self, modulename):
@@ -380,7 +479,7 @@ class SmartPlugin(SmartObject, Utils):
         Test if module http is loaded and if loaded, return a handle to the module
         """
         try:
-            mymod = self.get_sh().get_module(modulename)
+            mymod = Modules.get_instance().get_module(modulename)
         except:
              mymod = None
         if mymod == None:
@@ -417,11 +516,18 @@ class SmartPlugin(SmartObject, Utils):
         pass
 
 
+    def now(self):
+        """
+        Returns SmartHomeNGs current time (timezone aware)
+        """
+        return self.shtime.now()
+        
+    
     def scheduler_add(self, name, obj, prio=3, cron=None, cycle=None, value=None, offset=None, next=None):
         """
         This methods adds a scheduler entry for a plugin-scheduler
         
-        A plugin identifiction is added to the scheduler name
+        A plugin identification is added to the scheduler name
          
         The parameters are identical to the scheduler.add method from lib.scheduler
         """
@@ -445,7 +551,7 @@ class SmartPlugin(SmartObject, Utils):
         
     def scheduler_remove(self, name):
         """
-        This methods rmoves a scheduler entry of a plugin-scheduler
+        This methods removes a scheduler entry of a plugin-scheduler
         
         A plugin identifiction is added to the scheduler name
          
@@ -456,6 +562,21 @@ class SmartPlugin(SmartObject, Utils):
         name = self._pluginname_prefix+self.get_fullname()+name
         self.logger.debug("scheduler_remove: name = {}".format(name))
         self._sh.scheduler.remove(name, from_smartplugin=True)
+
+
+    def scheduler_get(self, name):
+        """
+        This methods gets a scheduler entry of a plugin-scheduler
+
+        A plugin identifiction is added to the scheduler name
+
+        The parameters are identical to the scheduler.get method from lib.scheduler
+        """
+        if name != '':
+            name = '.' + name
+        name = self._pluginname_prefix + self.get_fullname() + name
+        self.logger.debug("scheduler_get: name = {}".format(name))
+        return self._sh.scheduler.get(name, from_smartplugin=True)
 
 
     def run(self):
@@ -475,3 +596,96 @@ class SmartPlugin(SmartObject, Utils):
         """
         raise NotImplementedError("'Plugin' subclasses should have a 'stop()' method")
         
+
+    def _get_translation(self, translation_lang, txt):
+        """
+        Returns translated text for a specified language - This is a DUMMY at the moment
+        """
+        translations = self._ptranslations.get(txt, {})
+        if translations == {}:
+            translations = self._gtranslations.get(txt, {})
+        return translations.get(translation_lang, '')
+        
+
+    def translate(self, txt):
+        """
+        Returns translated text
+        """        
+        txt = str(txt)
+        
+        translation_lang = self.get_sh().get_defaultlanguage()
+        translated_txt = self._get_translation(translation_lang, txt)
+        if translated_txt == '=':
+            translated_txt = txt
+        elif translated_txt == '':
+            translated_txt = self._get_translation('en', txt)
+            if translated_txt == '=':
+                translated_txt = txt
+            elif translated_txt == '':
+                translated_txt = txt
+                if self._ptranslations != {}:
+                    self.logger.info("translate: Text '{}' to language '{}' -> no translation ('{}' or 'en') found".format(txt, translation_lang, translation_lang))
+            else:
+                self.logger.info("translate: Text '{}' to language '{}' -> no translation found".format(txt, translation_lang))
+
+        return translated_txt
+
+
+
+from jinja2 import Environment, FileSystemLoader
+from lib.module import Modules
+
+
+class SmartPluginWebIf():
+
+    def __init__(self, **kwargs):
+        pass
+
+    def init_template_environment(self):
+        """
+        Initialize the Jinja2 template engine environment
+        
+        :return: Jinja2 template engine environment
+        :rtype: object
+        """
+        mytemplates = self.plugin.path_join( self.webif_dir, 'templates' )
+        globaltemplates = self.plugin.mod_http.gtemplates_dir
+        tplenv = Environment(loader=FileSystemLoader([mytemplates,globaltemplates]))
+
+        tplenv.globals['isfile'] = self.is_staticfile
+        tplenv.globals['_'] = self.translate
+        return tplenv
+        
+        
+    def is_staticfile(self, path):
+        """
+        Method tests, if the given pathname points to an existing file in the webif's static
+        directory or the global static directory gstatic in the http module
+
+        This method extends the jinja2 template engine
+        
+        :param path: path to test
+        :param type: str
+        
+        :return: True if the file exists
+        :rtype: bool
+        """
+        if path.startswith('/gstatic/'):
+#            complete_path = self.plugin.path_join(Modules.get_instance().get_module('http')._gstatic_dir, path[len('/gstatic/'):])
+            complete_path = self.plugin.path_join(self.plugin.mod_http.gstatic_dir, path[len('/gstatic/'):])
+        else:
+            complete_path = self.plugin.path_join(self.webif_dir, path)
+        from os.path import isfile as isfile
+        result = isfile(complete_path)
+        self.logger.debug("is_staticfile: path={}, complete_path={}, result={}".format(path, complete_path, result))
+        return result
+
+
+    def translate(self, txt, block=''):
+        """
+        Returns translated text
+    
+        This method extends the jinja2 template engine
+        """
+        return self.plugin.translate(txt)
+

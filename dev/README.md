@@ -14,7 +14,7 @@ If you don't get along with the commandline version of the git software, SourceT
 
 SmartHomeNG is located in two repositories:
 
-* **smarthomeNG/smarthome** contains the cor of SmartHomeNG
+* **smarthomeNG/smarthome** contains the core of SmartHomeNG
 * **smarthomeNG/plugins** contains the plugins of SmartHomeNG
 
 Each repositry consist of two main branches:

@@ -11,11 +11,14 @@ env:
         memory:
             type: num
             sqlite: init
+            database: init
 
         threads:
             type: num
             sqlite: init
+            database: init
 
         garbage:
             type: num
             sqlite: init
+            database: init

@@ -2,7 +2,7 @@
 
 ## Möglichkeiten
 
-Die smartVISU unterstützt Blöcke zusätzlich zu den Standard-Blöcken auch Blöcke mit "2 Seiten", die in den bisherigen Releases von smarthome/smarthomeNG nicht unterstützt wurden.
+Die smartVISU unterstützt Blöcke zusätzlich zu den Standard-Blöcken auch Blöcke mit "2 Seiten", die in den bisherigen Releases von smarthome.py/SmartHomeNG nicht unterstützt wurden.
 
 Im aktuellen Release können auch diese Dual-Blöcke in der automatischen Seitengenerierung verwendet werden.
 

@@ -62,7 +62,8 @@ html_add_permalinks = ""
 #project = u'SmartHomeNG'
 project = u'Developer Documentation'
 #copyright = u'2011-2013, Marcus Popp; since 2016 SmartHomeNG Team'
-copyright = u'2016-2017 SmartHomeNG Team, based on smarthome.py © 2011-2014 Marcus Popp'
+#copyright = u'2016-2017 SmartHomeNG Team, based on smarthome.py © 2011-2014 Marcus Popp'
+copyright = u'2016-2018 SmartHomeNG Team, SmartHomeNG is based on smarthome.py © Marcus Popp'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -70,12 +71,18 @@ copyright = u'2016-2017 SmartHomeNG Team, based on smarthome.py © 2011-2014 Mar
 #
 # The short X.Y version.
 #version = '1.3c'
-version = shngversion.get_shng_main_version()
-# The full version, including alpha/beta/rc tags.
-#release = '1.3a dev (as of 13. October 2017)'  13. October 2017 is replaced by makefile with a date in the form of '2. September 2017'
-#release = '1.3c dev (as of 13. October 2017)'
-release = shngversion.get_shng_docversion() + ' (as of ' + today
-commit, commit_short, branch, describe = shngversion._get_git_data()
+if os.path.isfile(os.getcwd()+'/doc_version.flg'):
+    release = '1.4.x'
+    with open(os.getcwd()+'/doc_version.flg') as f:
+        release = f.readline()
+    branch = 'master'
+    commit = ''
+    comit_short = ''
+    describe = ''
+else:
+    release = shngversion.get_shng_docversion()
+    commit, commit_short, branch, describe = shngversion._get_git_data()
+release += ' (as of ' + today
 if branch != 'master':
     release += ', commit '+commit_short
 release += ')'
@@ -99,7 +106,7 @@ release += ')'
 # directories to ignore when looking for source files.
 #exclude_patterns = ['plugins/backend_shng_1_3', 'plugins/backend/static', '._*']
 #exclude_patterns = ['plugins/deprecated_plugins', 'plugins/backend_shng_1_3/static', 'plugins/backend/static', '**/._*md']
-exclude_patterns = ['plugins/deprecated_plugins', 'plugins/backend*/static', 'plugins/blockly/webif/static', '**/_pv_*', '**/._*md', '**/user_doc.*']
+exclude_patterns = ['plugins/deprecated_plugins', 'modules/http/webif/gstatic', 'plugins/blockly/webif/static', 'plugins/*/_pv_*', '**/_pv_*', '**/._*md', '**/user_doc.*']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -136,7 +143,7 @@ html_theme = 'sphinx_rtd_theme'
 html_theme_options = {
     'collapse_navigation': False,
     'display_version': False,
-    'navigation_depth': 3,
+    'navigation_depth': 4,
 }
 
 

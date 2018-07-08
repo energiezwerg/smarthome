@@ -28,8 +28,10 @@ import logging
 import os.path
 import csv
 
-from lib.utils import Utils
+from lib.item import Items
 from lib.logic import Logics
+
+from lib.utils import Utils
 import lib.shyaml as yaml
 
 logger = logging.getLogger(__name__)
@@ -51,8 +53,18 @@ class Scenes():
 
     def __init__(self, smarthome):
         self._sh = smarthome
+        
         global _scenes_instance
+        if _scenes_instance is not None:
+            import inspect
+            curframe = inspect.currentframe()
+            calframe = inspect.getouterframes(curframe, 2)
+            logger.critical("A second 'scenes' object has been created. There should only be ONE instance of class 'Scenes'!!! Called from: {} ({})".format(calframe[1][1], calframe[1][3]))
+
         _scenes_instance = self
+
+        self.items = Items.get_instance()
+
         self._scenes = {}
         self._learned_values = {}
         self._scenes_dir = smarthome.base_dir + '/scenes/'
@@ -60,7 +72,8 @@ class Scenes():
             logger.warning("Directory scenes not found. Ignoring scenes.".format(self._scenes_dir))
             return
 
-        for item in smarthome.return_items():
+     #   for item in smarthome.return_items():
+        for item in self.items.return_items():
             if item.type() == 'scene':
                 scene_file = os.path.join(self._scenes_dir, item.id())
 
@@ -243,8 +256,8 @@ class Scenes():
         """
         logger.debug("_add_scene_entry: item = {}, state = {}, ditem = {}, value = {}, learn = {}, name = {}".format(item.id(), state, ditemname, value, learn, name))
         value = item.get_stringwithabsolutepathes(value, 'sh.', '(', 'scene')
-#        ditem = self._sh.return_item(ditemname)
-        ditem = self._sh.return_item(item.get_absolutepath(ditemname, attribute='scene'))
+#        ditem = self._sh.return_item(item.get_absolutepath(ditemname, attribute='scene'))
+        ditem = self.items.return_item(item.get_absolutepath(ditemname, attribute='scene'))
 
         if learn:
             rvalue = self._eval(value)

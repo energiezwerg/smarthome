@@ -209,15 +209,18 @@ def build_pluginlist( plugin_type='all' ):
             if plugin_yaml != '':
                 section_dict = plugin_yaml.get('plugin')
                 if section_dict != None:
-                    if section_dict.get('type').lower() in plugin_types:
-                        plgtype = section_dict.get('type').lower()
-                        plg_dict['name'] = metaplugin.lower()
-                        plg_dict['type'] = plgtype
-                        plg_dict['desc'] = get_description(section_dict, 85, language)
-                        plg_dict['maint'] = get_maintainer(section_dict, 15)
-                        plg_dict['test'] = get_tester(section_dict, 15)
-                        plg_dict['doc'] = html_escape(section_dict.get('documentation', ''))
-                        plg_dict['sup'] = html_escape(section_dict.get('support', ''))
+                    if section_dict.get('type') != None:
+                        if section_dict.get('type').lower() in plugin_types:
+                            plgtype = section_dict.get('type').lower()
+                            plg_dict['name'] = metaplugin.lower()
+                            plg_dict['type'] = plgtype
+                            plg_dict['desc'] = get_description(section_dict, 85, language)
+                            plg_dict['maint'] = get_maintainer(section_dict, 15)
+                            plg_dict['test'] = get_tester(section_dict, 15)
+                            plg_dict['doc'] = html_escape(section_dict.get('documentation', ''))
+                            plg_dict['sup'] = html_escape(section_dict.get('support', ''))
+                        else:
+                            plgtype = type_unclassified
                     else:
                         plgtype = type_unclassified
                         if plugin_type == type_unclassified:
@@ -233,8 +236,9 @@ def build_pluginlist( plugin_type='all' ):
                     plg_dict['test'] = get_tester(section_dict, 15)
                     plg_dict['doc'] = html_escape(section_dict.get('documentation', ''))
                     plg_dict['sup'] = html_escape(section_dict.get('support', ''))
-                    print("unclassified: metafile = {}, plg_dict = {}".format(metafile, str(plg_dict)))
-                    
+                    print("")
+                    print("> unclassified plugin: metafile = {}, plg_dict = {}".format(metafile, str(plg_dict)))
+
                 plg_dict['desc'].append('')
             else:
                 plgtype = type_unclassified
@@ -348,6 +352,8 @@ def write_rstfile(plgtype='All', plgtype_print='', heading=''):
         for plg in plglist:
             plg_readme_link = ':doc:`'+plg['name']+' </plugins/'+plg['name']+'/README.md>`'
             plg_readme_link = ':doc:`'+plg['name']+' <../plugins/'+plg['name']+'/README>`'
+            if os.path.isfile(plugin_rst_dir+'/'+'plugins_doc/config/'+plg['name']+'.rst'):
+                plg_readme_link = ':doc:`'+plg['name']+' <config/'+plg['name']+'>`'
             
 #            fh.write('   | {plg:<65.65} | {desc:<165.165} | {maint:<15.15} | {test:<15.15} |\n'.format(plg=plg['name'], desc=plg['desc'][0], maint=plg['maint'][0], test=plg['test'][0]))
             fh.write('   | {plg:<65.65} | {desc:<165.165} | {maint:<15.15} | {test:<15.15} |\n'.format(plg=plg_readme_link, desc=plg['desc'][0], maint=plg['maint'][0], test=plg['test'][0]))

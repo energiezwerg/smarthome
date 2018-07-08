@@ -83,7 +83,7 @@ Die Verzeichnisse sind im Hauptverzeichnis von smarthome zu finden, für gewöhn
 +-------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
 |doc          | Wird einmal die Dokumentation enthalten                                                                                                       |
 +-------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-|etc          | enthält mindestens **smarthome.conf**, **plugin.conf** und **logic.conf**. In diesen Dateien befindet sich die Konfiguration des Grundsystems |
+|etc          | enthält mindestens **smarthome.yaml**, **plugin.yaml** und **logic.yaml**. In diesen Dateien befindet sich die Konfiguration des Grundsystems |
 +-------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
 |examples     | Beispiele für Items                                                                                                                           |
 +-------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
@@ -108,31 +108,15 @@ Die Verzeichnisse sind im Hauptverzeichnis von smarthome zu finden, für gewöhn
 Dateien im Verzeichnis *../etc*
 -------------------------------
 
-Während der Installation sind im Unterverzeichnis **etc** bereits drei Dateien erstellt worden: **smarthome.conf**, **plugin.conf** und **logic.conf**. 
+Während der Installation sind im Unterverzeichnis **etc** bereits drei Dateien erstellt worden: 
+**smarthome.yaml**, **plugin.yaml** und **logic.yaml**. 
 
 
-smarthome.yaml / smarthome.conf
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+smarthome.yaml
+^^^^^^^^^^^^^^
 
-In der **smarthome.conf** wird notiert, wo sich die Installation befindet und welche Zeitzone als Basis genommen werden soll:
-
-.. code-block:: none
-   :caption: ../etc/smarthome.conf (deprecated)
-
-   # smarthome.conf
-   lat = 50.123
-   lon = 14.67
-   elev = 36
-   tz = 'Europe/Berlin'
-
-   # Version 1.3
-   # module_paths = /usr/local/python/lib    # Format: /path/one | /path/two
-
-   # Version 1.3: control type casting when assiging values to items
-   #assign_compatibility = latest            # latest or compat_1.2 (compat_1.2 is default for shNG v1.3)
-
-
-Die gleiche Konfiguration im neuen Dateiformat für Konfigurationsdateien:
+In der Datei **smarthome.yaml** wird notiert, wo sich die Installation befindet und welche 
+Zeitzone als Basis genommen werden soll:
 
 .. code-block:: yaml
    :caption: ../etc/smarthome.yaml
@@ -143,50 +127,28 @@ Die gleiche Konfiguration im neuen Dateiformat für Konfigurationsdateien:
    elev: 36
    tz: Europe/Berlin
 
-   # Version 1.3
+   # ab Version 1.3
    # module_paths = /usr/local/python/lib    # list of path-entries is possible
 
-   # Version 1.3: control type casting when assiging values to items
+   # ab Version 1.3: control type casting when assiging values to items
    # assign_compatibility = latest            # latest or compat_1.2 (compat_1.2 is default for shNG v1.3)
 
 
-Mit dieser Version können auch zusätzliche Modulpfade konfiguriert werden, in denen Drittanbieter-Bibliotheken abgelegt sind (`module_paths` Einstellung). Somit können Bibliotheken, beispielsweise in Logiken, verwendet werden die nicht direkt mit ausgeliefert bzw. installiert werden. Es kann ein oder mehrere absolute Pfade angegeben werden.
+Mit dieser Version können auch zusätzliche Modulpfade konfiguriert werden, in denen Drittanbieter-Bibliotheken 
+abgelegt sind (`module_paths` Einstellung). Somit können Bibliotheken, beispielsweise in Logiken, verwendet 
+werden die nicht direkt mit ausgeliefert bzw. installiert werden. Es kann ein oder mehrere absolute Pfade 
+angegeben werden.
 
-Außerdem kann der Datentyp einer Wertzuweisung bei der Nutzung von `autotimer` und `cycle` beeinflusst werden. 
-Weiterführende Informationen gibt es im Abschnitt **Datentyp der Wertzuweisung** auf der Seite :doc:`items_standard_attribute_autotimer`
+Außerdem kann der Datentyp einer Wertzuweisung bei der Nutzung von `autotimer` und `cycle` beeinflusst 
+werden. Weiterführende Informationen gibt es im Abschnitt **Datentyp der Wertzuweisung** auf der 
+Seite :doc:`items_standard_attribute_autotimer`
 
 
 
-plugin.yaml / plugin.conf
-^^^^^^^^^^^^^^^^^^^^^^^^^
+plugin.yaml
+^^^^^^^^^^^
 
-Die **plugin.conf** enthält die Konfigurationsanweisungen für alle Plugins, die benutzt werden sollen.
-
-.. code-block:: none
-   :caption: ../etc/plugin.conf (deprecated)
-
-   # plugin.conf
-   [knx]
-      class_name = KNX
-      class_path = plugins.knx
-      host = 127.0.0.1
-      port = 6720
-   #   send_time = 600 # update date/time every 600 seconds, default none
-   #   time_ga = 1/1/1 # default none
-   #   date_ga = 1/1/2 # default none
-   [visu]
-       class_name = WebSocket
-       class_path = plugins.visu_websocket
-   [cli]
-       class_name = CLI
-       class_path = plugins.cli
-       ip = 0.0.0.0
-       update = True
-   [sql]
-       class_name = SQL
-       class_path = plugins.sqlite
-
-Im neuen Dateiformat sieht das obige Beispiel folgendermaßen aus:
+Die Datei **plugin.yaml** enthält die Konfigurationsanweisungen für alle Plugins, die benutzt werden sollen.
 
 .. code-block:: yaml
    :caption: ../etc/plugin.yaml
@@ -213,25 +175,9 @@ Im neuen Dateiformat sieht das obige Beispiel folgendermaßen aus:
        class_path: plugins.sqlite
 
 
-Seit Version 1.2 (Master Branch) gibt es ein neues Plugin (Backend) für SmartHomeNG. Dabei kann man über 
-einen Browser das gleiche erreichen, wie früher über das CLI-Plugin. Das Backend bindet man 
-dann ein über:
-
-.. code-block:: none
-   :caption: Auszug aus ../etc/plugin.conf (deprecated)
-
-   [BackendServer]
-       class_name = BackendServer
-       class_path = plugins.backend
-       updates_allowed = True
-       user = admin
-       password = xxxx
-       language = de    
-       threads = 8
-       #ip = 0.0.0.0
-       #port = 8383
-
-Im neuen Dateiformat sieht das obige Beispiel folgendermaßen aus:
+Seit Version 1.2 (Master Branch) gibt es ein neues Plugin (Backend) für SmartHomeNG. Dabei kann 
+man über einen Browser das gleiche (und mehr) erreichen, wie früher über das CLI-Plugin. Das 
+Backend Plugin bindet man folgendermaßen ein:
 
 .. code-block:: yaml
    :caption: Auszug aus ../etc/plugin.yaml
@@ -251,30 +197,13 @@ Im neuen Dateiformat sieht das obige Beispiel folgendermaßen aus:
 Die weitere Einrichtung und Konfiguration von Plugins ist unter `Plugins <plugins.html>`_ beschrieben.
 
 
-logic.yaml / logic.conf
-^^^^^^^^^^^^^^^^^^^^^^^
+logic.yaml
+^^^^^^^^^^
 
-In der **logic.yaml** bzw. **logic.conf** werden die Logiken eingetragen. Der Name jeder Logik kommt 
+In der Datei **logic.yaml** werden die Logiken eingetragen. Der Name jeder Logik kommt 
 zwischen zwei eckige Klammern, der Eintrag **filename** verweist auf die Python-Datei die dann aufgerufen 
 wird, wenn die Logik abgearbeitet werden soll. **crontab** schreibt fest, dass die Logik zu bestimmten 
 Zeiten ausgeführt werden soll. watch_item bestimmt, welche Items die Logik aufrufen können:
-
-.. code-block:: none
-   :caption: ../etc/logic.conf (deprecated)
-
-   # logic.conf
-   [InitSmarthomeNG]
-       filename = InitSmartHomeNG.py
-       crontab = init
-    
-   [Beispiellogik]
-       # Umgebungsvariablen des Systems werden aktualisiert, z.B. Diskusage
-       filename = Beispiel.py
-       watch_item = *:Logikaufruf | item1.* | parent.item2
-       crontab = init | 0,5,10,15,20,25,30,35,40,45,50,55 * * * # run every 5 minutes
-
-
-Im neuen Dateiformat sieht das obige Beispiel folgendermaßen aus:
 
 .. code-block:: yaml
    :caption: ../etc/logic.yaml
@@ -305,8 +234,8 @@ Für die weitere Konfiguration von Logiken geht es unter :doc:`logiken` weiter.
 Weitere Dateien
 ^^^^^^^^^^^^^^^
 
-Zusätzlich sind ab der Version 1.2 auch noch **logging.yaml**, **plugin.conf.default** und 
-**smarthome.conf.default** zu finden. Während sich der Inhalt der **.default** Dateien als 
+Zusätzlich sind ab der Version 1.2 auch noch **logging.yaml**, **plugin.yaml.default** und 
+**smarthome.yaml.default** zu finden. Während sich der Inhalt der **.default** Dateien als 
 Beispieldatei selbst erklärt, ist die **logging.yaml** noch erklärungsbedürftig: 
 Im gesamten Programmcode sind Anweisungen verteilt, die bestimmte Programmzustände loggen, 
 also mit notieren. 
@@ -329,22 +258,22 @@ Dateien im Verzeichnis *../items*
 ---------------------------------
 
 Hier finden sich die Dateien mit den Items. Es ist egal, wie viele Dateien hier abgelegt wurden. 
-Alle Dateien die die Endung .conf besitzen, werden beim Start von SmartHomeNG gelesen und in die 
+Alle Dateien die die Endung .yaml besitzen, werden beim Start von SmartHomeNG gelesen und in die 
 Struktur von SmartHomeNG eingebaut.
 Eine genaue Beschreibung des Aufbaus findet sich unter :doc:`items_standard_attribute_eval` .
 
-**Aus Gründen der Übersichtlichkeit macht es durchaus Sinn, die .conf-Dateien nach Räumen oder 
+**Aus Gründen der Übersichtlichkeit macht es durchaus Sinn, die .yaml-Dateien nach Räumen oder 
 nach thematischen Gesichtspunkten aufzusplitten und die jeweiligen Items dort zu parametrieren.**
 
 **Beispielsweise:**
 
-* eg_kueche.conf
-* eg_wohnzimmer.conf
-* og_schlafzimmer_eltern.conf
-* og_schlafzimmer_ryan.conf
-* terrasse.conf
-* kwl.conf
-* zentralheizung.conf
+* eg_kueche.yaml
+* eg_wohnzimmer.yaml
+* og_schlafzimmer_eltern.coyamlf
+* og_schlafzimmer_ryan.yaml
+* terrasse.yaml
+* kwl.yaml
+* zentralheizung.yaml
 * ...
 
 **Wichtig: Wenn eine Item-Datei oder eine Logic-Datei neu erstellt oder geändert worden ist 

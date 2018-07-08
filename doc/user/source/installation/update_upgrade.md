@@ -21,10 +21,12 @@ git pull
 
 eingeben. Daraufhin sollte der Update-Vorgang starten. 
 
-Nachdem SmartHomeNG aktualisiert wurde, müssen noch die als Submodule eingebundenen **Plugins aktualisiert** werden. Dazu das folgende Kommando eingeben:
+Nachdem SmartHomeNG aktualisiert wurde, müssen noch die **Plugins aktualisiert** werden. 
+Dazu in das **plugins** Verzeichnis wechseln und einen Pull durchführen:
 
 ```
-git submodule update --init
+cd plugins
+git pull
 ```
 
 

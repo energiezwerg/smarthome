@@ -36,15 +36,3 @@ should be written in English.
 .. literalinclude:: /dev/sample_plugin_webif/README.md
     :caption: README.md
 
-
-
-.. literalinclude:: ../dev/sample_plugin_webif/__init__.py
-    :caption: __init__.py
-
-
-The following file outlines the minimum documentation a plugin should have. This README file
-should be written in English.
-
-.. literalinclude:: ../dev/sample_plugin_webif/README.md
-    :caption: README.md
-

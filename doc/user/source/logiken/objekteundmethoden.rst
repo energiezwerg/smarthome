@@ -107,6 +107,8 @@ Zugriff auf das Logics-API:
 | logics.set_config_section_key() | Setzt den Wert eines Schlüssels für eine angegebene Logik (Abschnitt) permanent in ../etc/logic.yaml    |
 +---------------------------------+---------------------------------------------------------------------------------------------------------+
 
+Der vollständige Syntax der Methoden kann der `Entwickler Dokumentation <https://www.smarthomeng.de/developer/lib/logic.html#>`_ entnommen werden.
+
 
 Geladene Python Module
 ----------------------

@@ -5,11 +5,14 @@ import datetime
 import dateutil.tz
 import logging
 
-import lib.item
-import lib.plugin
 import lib.config
 import lib.connection
 
+import lib.item
+import lib.plugin
+from lib.shtime import Shtime
+from lib.module import Modules
+import lib.utils
 from lib.model.smartplugin import SmartPlugin
 from lib.constants import (YAML_FILE, CONF_FILE, DEFAULT_FILE)
 
@@ -64,22 +67,47 @@ class MockSmartHome():
 #    _log_config = os.path.join(_etc_dir,'logging'+YAML_FILE)
 #    _smarthome_conf_basename = None
 
+    # the APIs available though the smarthome object instance:
+    shtime = None
+
+    plugins = None
+    items = None
+    logics = None
+    scheduler = None
+
+    _SmartHome__items = []
+
 
     def __init__(self):
-        VERSION = '1.3c.'
+        VERSION = '1.4c.'
         VERSION += '0.man'
         self.version = VERSION
         self.__logs = {}
-        self.__item_dict = {}
-        self.__items = []
+#        self.__item_dict = {}
+#        self.__items = []
         self.children = []
         self._use_modules = 'True'
         self._modules = []
         self._moduledict = {}
         self._plugins = []
-        self._tzinfo = dateutil.tz.tzutc()
+        self.shtime = Shtime(self)
+#        self._tzinfo = dateutil.tz.tzutc()
+
+#        self.shtime.set_tzinfo(dateutil.tz.tzutc())
+#        TZ = dateutil.tz.gettz('UTC')
+        TZ = dateutil.tz.gettz('Europe/Berlin')
+        self.shtime.set_tzinfo(TZ)
+
         self.scheduler = MockScheduler()
         self.connections = lib.connection.Connections()
+        
+        self.shtime = Shtime(self)
+        # Start()
+#        self.scheduler = lib.scheduler.Scheduler(self)
+        self.modules = lib.module.Modules(self, configfile=self._module_conf_basename)
+        self.items = lib.item.Items(self)
+        self.plugins = lib.plugin.Plugins(self, configfile=self._plugin_conf_basename)
+        
 
     def get_defaultlanguage(self):
         return self._default_language
@@ -126,46 +154,64 @@ class MockSmartHome():
     def add_log(self, name, log):
         self.__logs[name] = log
 
+    # ------------------------------------------------------------
+    #  Deprecated methods
+    # ------------------------------------------------------------
+    
     def now(self):
-        return datetime.datetime.now()
+#        return datetime.datetime.now()
+        return self.shtime.now()
 
     def tzinfo(self):
-        return self._tzinfo
+#        return self._tzinfo
+        return self.shtime.tzinfo()
 
     def add_item(self, path, item):
-        if path not in self.__items:
-            self.__items.append(path)
-        self.__item_dict[path] = item
+#        if path not in self.__items:
+#            self.__items.append(path)
+#        self.__item_dict[path] = item
+        return self.items.add_item(path, item)
 
     def return_item(self, string):
-        if string in self.__items:
-            return self.__item_dict[string]
+#        if string in self.__items:
+#            return self.__item_dict[string]
+        return self.items.return_item(string)
 
     def return_items(self):
-        for item in self.__items:
-            yield self.__item_dict[item]
+#        for item in self.__items:
+#            yield self.__item_dict[item]
+        return self.items.return_items()
 
     def return_plugins(self):
-        for plugin in self._plugins:
-            yield plugin
+#        for plugin in self._plugins:
+#            yield plugin
+        return self.plugins.get_module(name)
 
     def return_modules(self):
-        l = []
-        for module_key in self._moduledict.keys():
-            l.append(module_key)
-        return l
+#        l = []
+#        for module_key in self._moduledict.keys():
+#            l.append(module_key)
+#        return l
+        return self.modules.return_modules()
 
     def get_module(self, name):
-        return self._moduledict.get(name)
+#        return self._moduledict.get(name)
+        return self.modules.get_module(name)
+
+
 
     def string2bool(self, string):
-        if isinstance(string, bool):
-            return string
-        if string.lower() in ['0', 'false', 'n', 'no', 'off']:
-            return False
-        if string.lower() in ['1', 'true', 'y', 'yes', 'on']:
-            return True
-        else:
+#        if isinstance(string, bool):
+#            return string
+#        if string.lower() in ['0', 'false', 'n', 'no', 'off']:
+#            return False
+#        if string.lower() in ['1', 'true', 'y', 'yes', 'on']:
+#            return True
+#        else:
+#            return None
+        try:
+            return lib.utils.Utils.to_bool(string)
+        except Exception as e:
             return None
 
 

@@ -12,32 +12,27 @@ Additional information / documentation can be found in the [SmartHomeNG Wiki](ht
 
 | directory | description|
 | ---     | :--- |
-|bin 	  | the main python file is based here |
-|dev 	  | if you plan to create a plugin then this is the folder you want to have a closer look at |
-|etc 	  | the three basic configuration files smarthome.conf, plugin.conf and logic.conf are located here, you will edit these files to reflect your basic settings|
+|bin 	    | the main python file is based here |
+|dev 	    | if you plan to create a plugin then this is the folder you want to have a closer look at |
+|doc 	    | Source files for the user- and developer documentation |
+|etc 	    | the three basic configuration files smarthome.yaml, module.yaml, plugin.yaml, logic.yaml and logging.yaml are located here, you will edit these files to reflect your basic settings|
 |examples |	some examples of items, etc. this is only for informational purpose |
 |items 	  | put here your own files for your items |
-|lib 	  | some more core python modules are in this directory. You won't need to change anything here
+|lib 	    | some more core python modules are in this directory. You won't need to change anything here
 |logics   |	here your logic files are put
 |modules  | here are all loadable core-modules located (one subdirectory for every module)
-|plugins  | here are all plugins located (one subdirectory for every plugin)
+|plugins  | here are all plugins located (one subdirectory for every plugin). The plugins have to be installed from a separate repository (smarthomeNG/plugins)
 |scenes   | the scenes are stored here
-|tools    | there are some tools which help you for creating an initial configuration 
-|var 	  | everything that is changed by smarthome is put here, e.g. logfiles, cache, sqlite database etc.
+| tests   | The code for the automated travis tests is stored here
+|tools    | there are some tools which help you for creating an initial configuration
+|var 	    | everything that is changed by smarthome is put here, e.g. logfiles, cache, sqlite database etc.
 
 ## Some more detailed info on the configuration files
 
-### etc/smarthome.conf (deprecated) / etc/smarthome.yaml
-Upon installation you will need to create this file and specify your location.
+As of Version 1.5 the old conf format will still be valid but will be moved out of the docs since it's deprecated now for some time.
 
-```
-# smarthome.conf (deprecated)
-# look e.g. at http://www.mapcoordinates.net/de
-lat = 52.52
-lon = 13.40
-elev = 36
-tz = 'Europe/Berlin'
-```
+### etc/smarthome.yaml
+Upon installation you will need to create this file and specify your location.
 
 ```yaml
 # smarthome.yaml
@@ -48,40 +43,12 @@ elev: 36
 tz: Europe/Berlin
 ```
 
-### etc/plugin.conf (deprecated) / etc/plugin.yaml
-Upon installation you will need to create this file and configure the plugins and their attributes. 
+### etc/plugin.yaml
+Upon installation you will need to create this file and configure the plugins and their attributes.
 An example is shown below
 
-```
-[knx]
-   class_name = KNX
-   class_path = plugins.knx
-   host = 127.0.0.1
-   port = 6720
-#   send_time = 600 # update date/time every 600 seconds, default none
-#   time_ga = 1/1/1 # default none
-#   date_ga = 1/1/2 # default none
-[ow]
-    class_name = OneWire
-    class_path = plugins.onewire
-[visu]
-    class_name = WebSocket
-    class_path = plugins.visu_websocket
-[smartvisu]
-    class_name = SmartVisu
-    class_path = plugins.visu_smartvisu
-    smartvisu_dir = /var/www/html/smartVISU
-[cli]
-    class_name = CLI
-    class_path = plugins.cli
-    ip = 0.0.0.0
-    update = True
-[sql]
-    class_name = SQL
-    class_path = plugins.sqlite
-```
-
 ```yaml
+# plugin.yaml
 knx:
     class_name: KNX
     class_path: plugins.knx
@@ -115,15 +82,8 @@ sql:
     class_path: plugins.sqlite
 ```
 
-### etc/logic.conf (deprecated) / etc/logic.yaml
+### etc/logic.yaml
 In the logic.conf you specify your logics and when they will be run. An example is shown below
-
-```
-# etc/logic.conf (deprecated)
-[AtSunset]
-    filename = sunset.py
-    crontab = sunset
-```
 
 ```yaml
 # etc/logic.yaml
@@ -133,15 +93,9 @@ AtSunset:
 ```
 
 ### items/
-This directory contains one or more item configuration files. The filename does not matter, except it has to end with '.conf'.
+This directory contains one or more item configuration files.
+The filename does not matter, except it has to end with '.yaml'.
 
-```
-# items/global.conf (deprecated)
-[global]
-    [[sun]]
-        type = bool
-        attribute = foo
-```
 
 ```yaml
 # items/global.yaml
@@ -160,4 +114,3 @@ If you want to read an item call `sh.item.path()` or to set an item `sh.item.pat
 if sh.global.sun():       # if sh.global.sun() == True:
     sh.gloabl.sun(False)  # set it to False
 ```
-

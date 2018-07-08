@@ -16,5 +16,6 @@ Der Item Tree ermöglicht die Ansicht der Attribute aller Items. Außerdem ist e
 Wert des jeweiligen Items zu setzen.
 
 .. image:: assets/backend_itemtree.jpg
+   :class: screenshot
 
 

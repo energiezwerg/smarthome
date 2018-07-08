@@ -67,6 +67,25 @@ def editing_is_enabled():
 #   Routines to handle yaml files
 #
 
+def convert_linenumber(s, occ=1):
+    if occ == 1:
+        s2 = s[s.find('line: ')+6:]
+    elif occ == 2:
+        p = s.find('line: ')+6
+        s2 = s[s.find('line: ',p) + 6:]
+    else:
+        return '*' + s
+    lineold = s2[:s2.find(')')]
+    linenew = str(int((int(lineold)+1)/2))
+    lo = 'line '+lineold
+    ln = 'line '+linenew
+    lo2 = '(line: '+lineold+')'
+    ln2 = '(line: '+linenew+')'
+    s = s.replace(lo, ln)
+    s = s.replace(lo2, ln2)
+    return s
+
+
 def yaml_load(filename, ordered=False, ignore_notfound=False):
     """
     Load contents of a configuration file into an dict/OrderedDict structure. The configuration file has to be a valid yaml file
@@ -102,6 +121,12 @@ def yaml_load(filename, ordered=False, ignore_notfound=False):
         if ("while scanning a simple key" in estr) and ("could not found expected ':'" in estr):
             estr = estr[estr.find('column'):estr.find('could not')]
             estr = 'The colon (:) following a key has to be followed by a space. The space is missing!\nError in ' + estr
+        if '(line: ' in estr:
+            line = convert_linenumber(estr)
+            line = convert_linenumber(line, 2)
+#            estr += '\nNOTE: To find correct line numbers: add 1 to line and divide by 2 -> '+line
+            estr = line
+            estr += '\nNOTE: Look for the error at the expected <block end>, near the second specified line number'
         if "[Errno 2]" in estr:
             if not ignore_notfound:
                 logger.warning("YAML-file not found: {}".format(filename))
@@ -309,6 +334,18 @@ def get_commentedseq(l):
    return yaml.comments.CommentedSeq( l )
        
 
+def yaml_dump_roundtrip(data):
+    """
+    Dump yaml to a string using the RoundtripDumper and correct linespacing in output file
+
+    :param data: data structure to save
+    """
+
+    sdata = yaml.dump(data, Dumper=yaml.RoundTripDumper, version=yaml_version, indent=indent_spaces, block_seq_indent=block_seq_indent, width=12288, allow_unicode=True)
+    sdata = _format_yaml_dump2( sdata )
+    return sdata
+
+
 def yaml_save_roundtrip(filename, data, create_backup=False):
     """
     Dump yaml using the RoundtripDumper and correct linespacing in output file
@@ -320,15 +357,12 @@ def yaml_save_roundtrip(filename, data, create_backup=False):
     if not EDITING_ENABLED:
         return
     sdata = yaml.dump(data, Dumper=yaml.RoundTripDumper, version=yaml_version, indent=indent_spaces, block_seq_indent=block_seq_indent, width=12288, allow_unicode=True)
-
-#    with open(filename+'_raw'+YAML_FILE, 'w') as outfile:
-#        outfile.write( sdata )
+    sdata = _format_yaml_dump2( sdata )
     
     if create_backup:
         if os.path.isfile(filename+YAML_FILE):
             shutil.copy2(filename+YAML_FILE, filename+'.bak')
         
-    sdata = _format_yaml_dump2( sdata )
     with open(filename+YAML_FILE, 'w') as outfile:
         outfile.write( sdata )
 

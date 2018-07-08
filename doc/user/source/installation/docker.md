@@ -1,12 +1,12 @@
 # Installation über Docker
 
 ## Einführung
-Docker erlaubt das Verpacken von Applikationen inklusive aller Abhängigkeiten (z.B. python) in einem Container -vergleichbar vielleicht zu einer APK-Datei auf Android. Viele NAS Hersteller verwenden Docker genau für diesen Zweck, so dass smarthome-ng auf einem NAS sozusagen aus dem App-Store geladen werden kann.
+Docker erlaubt das Verpacken von Applikationen inklusive aller Abhängigkeiten (z.B. python) in einem Container -vergleichbar vielleicht zu einer APK-Datei auf Android. Viele NAS Hersteller verwenden Docker genau für diesen Zweck, so dass SmartHomeNG auf einem NAS sozusagen aus dem App-Store geladen werden kann.
 
 Dabei ist jeder Container für sich abgeschlossen und vom Host-System (das System auf dem Docker läuft) isoliert. Benötigt z.B. eine Applikation zwingend python 3.5.1 und die andere python 3.4.1, so ist dies in unterschiedlichen Containern ohne weiteres möglich. Dies ähnelt auf dem ersten Blick vielleicht einer Virtualisierung, doch ist ein wesentlicher Unterschied, dass die Applikation direkt auf der Hardware des Host-Systems läuft -nur isoliert.
 
 Darüber hinaus, bzw. dadurch ist die Installation einer Anwendung ähnlich einfach, wie auf dem Handy.
-Für Smarthome.py reicht z.B. ein 
+Für SmartHomeNG reicht z.B. ein 
 
 `docker pull henfri/smarthome-ng`
 

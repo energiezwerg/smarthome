@@ -54,11 +54,15 @@ from collections import OrderedDict
 import ast
 
 import lib.config
+from lib.shtime import Shtime
 import lib.shyaml as shyaml
 from lib.utils import Utils
+
 from lib.constants import PLUGIN_PARSE_LOGIC
 from lib.constants import (YAML_FILE, CONF_FILE)
 
+from lib.item import Items
+from lib.plugin import Plugins
 from lib.scheduler import Scheduler
 
 logger = logging.getLogger(__name__)
@@ -72,13 +76,22 @@ class Logics():
     This is the main class for the implementation og logics in SmartHomeNG. It implements the API for the
     handling of those logics.
     """
-    
+
+    plugins = None
+    scheduler = None
+        
     _config_type = None
     _logicname_prefix = 'logics.'     # prefix for scheduler names
 
 
+
     def __init__(self, smarthome, userlogicconf, envlogicconf):
         logger.info('Start Logics')
+        self.shtime = Shtime.get_instance()
+        self.items = Items.get_instance()
+        self.plugins = Plugins.get_instance()
+        self.scheduler = Scheduler.get_instance()
+
         self._sh = smarthome
         self._userlogicconf = userlogicconf
         self._env_dir = smarthome._env_dir
@@ -89,8 +102,16 @@ class Logics():
         self._logics = {}
         self._bytecode = {}
         self.alive = True
+
         global _logics_instance
+        if _logics_instance is not None:
+            import inspect
+            curframe = inspect.currentframe()
+            calframe = inspect.getouterframes(curframe, 4)
+            logger.critical("A second 'logics' object has been created. There should only be ONE instance of class 'Logics'!!! Called from: {} ({})".format(calframe[1][1], calframe[1][3]))
+
         _logics_instance = self
+
         self.scheduler = Scheduler.get_instance()
         
         _config = {}
@@ -140,7 +161,8 @@ class Logics():
         else:
             return False
         # plugin hook
-        for plugin in self._sh._plugins:
+#        for plugin in self._sh._plugins:
+        for plugin in self.plugins.return_plugins():
             if hasattr(plugin, PLUGIN_PARSE_LOGIC):
                 update = plugin.parse_logic(logic)
                 if update:
@@ -150,7 +172,8 @@ class Logics():
             if isinstance(logic.watch_item, str):
                 logic.watch_item = [logic.watch_item]
             for entry in logic.watch_item:
-                for item in self._sh.match_items(entry):
+#                for item in self._sh.match_items(entry):
+                for item in self.items.match_items(entry):
                     item.add_logic_trigger(logic)
         return True
         
@@ -168,7 +191,7 @@ class Logics():
             del self._logics[name]
 
 
-    def _return_logics(self):
+    def return_logics(self):
         """
         Returns a list with the names of all loaded logics
 
@@ -219,7 +242,7 @@ class Logics():
             name = '.'+name
         name = self._logicname_prefix+self.get_fullname()+name
         self.logger.debug("scheduler_add: name = {}".format(name))
-        self._sh.scheduler.add(name, obj, prio, cron, cycle, value, offset, next, from_smartplugin=True)
+        self.scheduler.add(name, obj, prio, cron, cycle, value, offset, next, from_smartplugin=True)
 
 
     def scheduler_change(self, name, **kwargs):
@@ -230,7 +253,7 @@ class Logics():
             name = '.'+name
         name = self._logicname_prefix+self.get_fullname()+name
         self.logger.debug("scheduler_change: name = {}".format(name))
-        self._sh.scheduler.change(name, kwargs)
+        self.scheduler.change(name, kwargs)
         
         
     def scheduler_remove(self, name):
@@ -245,7 +268,7 @@ class Logics():
             name = '.'+name
         name = self._logicname_prefix+self.get_fullname()+name
         self.logger.debug("scheduler_remove: name = {}".format(name))
-        self._sh.scheduler.remove(name, from_smartplugin=False) 
+        self.scheduler.remove(name, from_smartplugin=False) 
 
 
     def get_logics_dir(self):
@@ -271,6 +294,13 @@ class Logics():
         """
         return self._etc_dir
 
+
+    def _get_logic_conf_basename(self):
+        """
+        Returns the basename of the logic configuration file 
+        """
+#        return self._sh._logic_conf_basename
+        return self._userlogicconf        
 
     def reload_logics(self):
         """
@@ -417,10 +447,7 @@ class Logics():
         """
         logger.debug("trigger_logic: Trigger logic = '{}'".format(name))
         if name in self.return_loaded_logics():
-            if self.is_logic_enabled(name):
-                self.scheduler.trigger(self._logicname_prefix+name, by='Backend')
-            else:
-                logger.warning("trigger_logic: Logic '{}' not triggered because it is disabled".format(name))
+            self.scheduler.trigger(self._logicname_prefix+name, by='Backend')
         else:
             logger.warning("trigger_logic: Logic '{}' not found/loaded".format(name))
 
@@ -454,7 +481,7 @@ class Logics():
         if self.is_logic_loaded(name):
             self.unload_logic(name)
 
-        _config = self._read_logics(self._sh._logic_conf_basename, self.get_logics_dir())
+        _config = self._read_logics(self._get_logic_conf_basename(), self.get_logics_dir())
         if not (name in _config):
             logger.warning("load_logic: FAILED: Logic '{}', _config = {}".format( name, str(_config) ))
             return False
@@ -490,7 +517,8 @@ class Logics():
                 mylogic.watch_item = [mylogic.watch_item]
             for entry in mylogic.watch_item:
                 # item hook
-                for item in self._sh.match_items(entry):
+#                for item in self._sh.match_items(entry):
+                for item in self.items.match_items(entry):
                     try:
                         item.remove_logic_trigger(mylogic)
                     except:
@@ -878,7 +906,9 @@ class Logic():
     def __init__(self, smarthome, name, attributes, logics):
         self._sh = smarthome
         self.name = name
-        self._logics = logics   # access to the logics api
+        self.lname = "Logic '"+name+"'"   # string is to be used in item assignements sh.xxx(<value>, logic.lname)
+        self._logics = logics             # access to the logics api
+        self.shtime = self._logics.shtime
         self.enabled = True if 'enabled' not in attributes else Utils.to_bool(attributes['enabled'])
         self.crontab = None
         self.cycle = None
@@ -945,12 +975,15 @@ class Logic():
         
         This method is called by the scheduler
         """
-        self._last_run = self._sh.now()
+#        self._last_run = self._sh.now()
+        self._last_run = self.shtime.now()
         
 
     def trigger(self, by='Logic', source=None, value=None, dest=None, dt=None):
         if self.enabled:
             self.scheduler.trigger(self._logicname_prefix+self.name, self, prio=self.prio, by=by, source=source, dest=dest, value=value, dt=dt)
+        else:
+            logger.warning("trigger: Logic '{}' not triggered because it is disabled".format(self.name))
 
     def _generate_bytecode(self):
         if hasattr(self, 'pathname'):

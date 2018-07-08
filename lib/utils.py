@@ -153,8 +153,8 @@ class Utils(object):
         :return: IPv4 address as a string
         :rtype: string
         """
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             s.connect(('10.255.255.255', 1))
             IP = s.getsockname()[0]
         except:
@@ -172,8 +172,8 @@ class Utils(object):
         :return: IPv6 address as a string
         :rtype: string
         """
-        s = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
         try:
+            s = socket.socket(socket.AF_INET6, socket.SOCK_DGRAM)
             s.connect(('2001:4860:4860::8888', 1))
             IP = s.getsockname()[0]
         except:
@@ -181,6 +181,40 @@ class Utils(object):
         finally:
             s.close()
         return IP
+
+
+    @staticmethod
+    def is_knx_groupaddress(groupaddress):
+        """
+        Checks if the passed string is a valid knx goup address
+
+        The checked format is:
+           main group (0-31 = 5 bits)
+           middle group (0-7 = 3 bits)
+           subgroup (0-255 = 8 bits)
+
+        :param groupaddress: String to check
+        :type groupaddress: str
+
+        :return: True if a groupaddress can be recognized, false otherwise.
+        :rtype: bool
+        """
+        if groupaddress == '':
+            return True
+
+        g = groupaddress.split('/')
+        if len(g) != 3:
+            return False
+        if not(Utils.is_int(g[0]) and Utils.is_int(g[1]) and Utils.is_int(g[2])):
+            return False
+        if (int(g[0]) < 0) or (int(g[0]) > 31):
+            return False
+        if (int(g[1]) < 0) or (int(g[1]) > 7):
+            return False
+        if (int(g[2]) < 0) or (int(g[2]) > 255):
+            return False
+        return True
+
 
     @staticmethod
     def is_timeframe(string):
@@ -202,35 +236,6 @@ class Utils(object):
             return bool(TIMEFRAME_REGEX.search(string))
         except TypeError:
             return False
-
-    @staticmethod
-    def is_knx_groupaddress(groupaddress):
-        """
-        Checks if the passed string is a valid knx goup address
-
-        The checked format is:
-           main group (0-31 = 5 bits)
-           middle group (0-7 = 3 bits)
-           subgroup (0-255 = 8 bits)
-
-        :param groupaddress: String to check
-        :type groupaddress: str
-
-        :return: True if a groupaddress can be recognized, false otherwise.
-        :rtype: bool
-        """
-        g = groupaddress.split('/')
-        if len(g) != 3:
-            return False
-        if not(Utils.is_int(g[0]) and Utils.is_int(g[1]) and Utils.is_int(g[2])):
-            return False
-        if (int(g[0]) < 0) or (int(g[0]) > 31):
-            return False
-        if (int(g[1]) < 0) or (int(g[1]) > 7):
-            return False
-        if (int(g[2]) < 0) or (int(g[2]) > 255):
-            return False
-        return True
 
     @staticmethod
     def to_timeframe(value):

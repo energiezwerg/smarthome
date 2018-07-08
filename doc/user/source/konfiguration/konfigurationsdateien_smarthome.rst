@@ -31,15 +31,6 @@ Die Datei sollte folgendermaßen aussehen:
    default_language: de # default language for use with the backend plugin and multi-language entries in metadata
 
    
-.. code-block:: text
-   :caption: smarthome.conf (deprecated)
-
-   # /usr/local/smarthome/etc/smarthome.conf (deprecated)
-   lat = 51.1633        # latitude
-   lon = 10.4476        # longitude
-   elev = 500           # elevation
-   tz = 'Europe/Berlin' # timezone, the example will be fine for most parts of central Europe
-
 Die Koordinaten können mit Hilfe von GPS eines Mobiltelefons oder über eine entsprechende 
 (z.B. http://www.mapcoordinates.net/) bestimmt werden.
 

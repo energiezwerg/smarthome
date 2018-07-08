@@ -6,7 +6,7 @@ Automatische Generierung
 Überblick
 =========
 
-Im Vergleich zum Visu Plugin der vorhergehenden smarthome/smarthomeNG Releases, wurden die 
+Im Vergleich zum Visu Plugin der vorhergehenden smarthome.py/SmartHomeNG Releases, wurden die
 Möglichkeiten zur automatischen Generierung von Seiten für die smartVISU stark erweitert. 
 Unterstützt werden smartVISU v2.7 und v2.8.
 

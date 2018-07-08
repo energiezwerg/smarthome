@@ -2,12 +2,6 @@
 
 Das Attribut definiert ein regelmäßiges Aufrufen des Items (und damit der verknüpften Logik oder Eval-Funktion). 
 
-```ini
-[item]
-    cycle = 10
-    enforce_updates = true
-```
-
 ```yaml
 item:
     cycle: 10
@@ -16,13 +10,6 @@ item:
 
 ruft das Itemm alle 10 Sekunden auf und sorgt dadurch für das triggern von verknüpften Logiken und/oder 
 Eval-Funktionen. Dazu muss `enforce_updates` auf `true`stehen, damit das Triggern erfolgt, auch wenn sich der Wert des Items nicht ändert.
-
-```ini
-[item]
-    type = num
-    cycle = 10 = 0
-#    enforce_updates = true
-```
 
 ```yaml
 item:
@@ -70,22 +57,12 @@ Falls eine Umstellung nicht installationsweit erfolgen soll, kann der Modus bei 
 
 Die Angabe des Kompatibilitätsmodus erfolgt folgendermaßen:
 
-```
-[item]
-    autotimer = <dauer> = <wert> = <kompatibilität>
+```yaml
+item:
+    autotimer: <dauer> = <wert> = <kompatibilität>
 ```
 
 Beispiel:
-
-```ini
-[item]
-    type = num
-    autotimer = 5m = 0 = compat_1.2
-
-[item2]
-    type = bool
-    autotimer = 5m = true = latest
-```
 
 ```yaml
 item:

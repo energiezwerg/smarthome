@@ -1,4 +1,4 @@
-:tocdepth: 5
+:tocdepth: 7
 
 ###########
 SmartHomeNG
@@ -7,7 +7,7 @@ SmartHomeNG
 Developer Documentation
 =======================
 
-SmartHomeNG is a software that serves a basis for home automation.
+SmartHomeNG [#f1]_ is a software that serves a basis for home automation.
 It interconnects multiple devices using plugins to access their specific interfaces. 
 
 This documentation reflects the current Release |release|.
@@ -28,22 +28,24 @@ any way you want and can.
 .. note::
 
    Place **remarks** und **wishes for changes** regarding this developer documentation on 
-   `this wiki page <https://github.com/smarthomeNG/smarthome/wiki/Developer-Documentation---Comments>`_ .
+   `this feedback page <https://www.smarthomeng.de/feedback-zur-dokumentation>`_ .
 
+.. [#f1] SmartHomeNG © Copyright 2016-2018 SmartHomeNG Team, is based on smarthome.py © 2011-2014 Marcus Popp.
 
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 6
    :hidden:
    :titlesonly:
    
    user_doc.rst
    requirements.rst
    install
+   build_doc
 
 
 .. toctree::
-   :maxdepth: 5
+   :maxdepth: 6
    :hidden:
 
    config
@@ -53,13 +55,13 @@ any way you want and can.
 
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 6
    :hidden:
    :titlesonly:
    
    logging
    tools
-   development_plugins
-   development_core
+   development
    release
    genindex
+   impressum

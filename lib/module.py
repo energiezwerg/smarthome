@@ -74,8 +74,15 @@ class Modules():
     
     def __init__(self, smarthome, configfile):
         self._sh = smarthome
-        self._sh._moduledict = {}
+#        self._sh._moduledict = {}
+
         global _modules_instance
+        if _modules_instance is not None:
+            import inspect
+            curframe = inspect.currentframe()
+            calframe = inspect.getouterframes(curframe, 4)
+            logger.critical("A second 'modules' object has been created. There should only be ONE instance of class 'Modules'!!! Called from: {} ({})".format(calframe[1][1], calframe[1][3]))
+
         _modules_instance = self
 
         # read module configuration (from etc/module.yaml)
@@ -95,8 +102,7 @@ class Modules():
                     except Exception as e:
                         logger.exception("Module {0} exception: {1}".format(module, e))
 
-        self._sh._moduledict = self._moduledict
-        logger.warning('Loaded Modules: {}'.format( str( self._sh.return_modules() ) ) )
+        logger.info('Loaded Modules: {}'.format( str( self.return_modules() ) ) )
 
         # clean up (module configuration from module.yaml)
         del(_conf)  # clean up
@@ -228,7 +234,7 @@ class Modules():
         argstring = ",".join(["{}={}".format(name, args[name]) for name in arglist])
 
         self.loadedmodule._init_complete = False
-        (module_params, params_ok) = self.meta.check_parameters(args)
+        (module_params, params_ok, hide_params) = self.meta.check_parameters(args)
         if params_ok == True:
             if module_params != {}:
                 # initialize parameters the old way
@@ -278,7 +284,7 @@ class Modules():
             modules.xxx()
 
         
-        :return: logics instance
+        :return: modules instance
         :rtype: object of None
         """
         if _modules_instance == None:
@@ -322,9 +328,9 @@ class Modules():
         """
         logger.info('Start Modules')
 
-        for module in self._sh.return_modules():
+        for module in self.return_modules():
             logger.debug('Starting {} Module'.format(module))
-            self.m = self._sh.get_module(module)
+            self.m = self.get_module(module)
             self.m.start()
 
 
@@ -334,10 +340,15 @@ class Modules():
         
         Call stop routine of module to clean up in case the module has started any threads
         """
-        logger.warning('Stop Modules')
+        logger.info('Stop Modules')
     
-        for module in self._sh.return_modules():
+        for module in self.return_modules():
             logger.debug('Stopping {} Module'.format(module))
-            self.m = self._sh.get_module(module)
-            self.m.stop()
+            self.m = self.get_module(module)
+            try:
+                self.m.stop()
+            except:
+                pass
+#            except Exception as e:
+#                logger.warning("Error while stopping module '{}'\n{}".format(module, e))
 

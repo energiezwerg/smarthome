@@ -3,7 +3,7 @@
 #########################################################################
 # Copyright 2012-2013 Marcus Popp                          marcus@popp.mx
 #########################################################################
-#  This file is part of SmartHomeNG.    https://github.com/smarthomeNG//
+#  This file is part of SmartHomeNG.    
 #
 #  SmartHomeNG is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -26,6 +26,9 @@ import time
 class Log(collections.deque):
 
     def __init__(self, smarthome, name, mapping, maxlen=50):
+        """
+        Class to implement a log (deprecated? -> old logging!)
+        """
         collections.deque.__init__(self, maxlen=maxlen)
         self.mapping = mapping
         self.update_hooks = []
@@ -53,3 +56,4 @@ class Log(collections.deque):
             if entry[0] > dt:
                 self.append(entry)
                 return
+    

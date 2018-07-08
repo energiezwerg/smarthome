@@ -1,19 +1,11 @@
 #  *crontab*
 Das Item wird zum Start von SmarthomeNG aktualisiert und triggert dadurch unter Umständen eine zugewiesene Logik:
 
-```ini
-crontab = init
-```
-
 ```yaml
 crontab: init
 ```
 
 Hier kann auch zusätzlich ein Offset angegeben werden um den tatsächlichen Zeitpunkt zu verschieben:
-
-```ini
-crontab = init+10    # 10 Sekunden nach Start
-```
 
 ```yaml
 crontab: init+10    # 10 Sekunden nach Start
@@ -21,8 +13,8 @@ crontab: init+10    # 10 Sekunden nach Start
 
 Das Item soll zu bestimmten Zeitpunkten aktualisiert werden:
 
-```
-crontab = Minute Stunde Tag Wochentag
+```yaml
+crontab: <Minute> <Stunde> <Tag> <Wochentag>
 ```
 
 Für jede dieser Zeiteinheiten (Minuten, Stunde, Tag, Wochentag) werden folgende Muster unterstützt (Beispiel jeweils ohne Quotes verwenden):
@@ -48,12 +40,6 @@ Ausser diesem Muster wird noch ein weiteres Muster in Bezug auf den Sonnenauf- s
 
 Das Item soll zu einem bestimmten Sonnenstand aktualisiert werden:
 
-```ini
-crontab = sunrise-10m
-crontab = sunset+6
-crontab = sunset
-```
-
 ```yaml
 crontab: sunrise-10m
 crontab: sunset+6
@@ -61,10 +47,6 @@ crontab: sunset
 ```
 
 Sämtliche Optionen können in *.conf durch '|' kombiniert werden oder in einer *.yaml durch Listenbildung erstellt. Durch Anhängen eines weiteren '=' wird der aufzurufenden Logik der entsprechende Wert mitgesendet. Das Beispiel setzt den Wert des Items täglich um Mitternacht auf 20:
-
-```ini
-crontab = 0 0 * * = 20 | sunrise
-```
 
 ```yaml
 crontab:

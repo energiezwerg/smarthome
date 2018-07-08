@@ -1,0 +1,11 @@
+%YAML 1.1
+---
+# 
+# etc/logic.yaml
+# 
+ex_logging:
+    filename: example_logging.py
+
+ex_persist:
+    filename: example_persistance.py
+

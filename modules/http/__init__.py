@@ -22,6 +22,7 @@
 
 import logging
 import os
+import time
 from collections import OrderedDict
 
 import cherrypy
@@ -32,7 +33,7 @@ from lib.utils import Utils
 
 class Http():
 
-    version = '1.4.5'
+    version = '1.4.6'
     _shortname = ''
     _longname = 'CherryPy http module for SmartHomeNG'
     
@@ -45,6 +46,10 @@ class Http():
     _hostmap = {}
     _hostmap_webifs = {}
     _hostmap_services = {}
+    
+    _gstatic_dir = ''
+    gtemplates_dir = ''
+    gstatic_dir = ''
 
     
     def __init__(self, sh, port=None, servicesport=None, ip='', threads=8, starturl='', 
@@ -72,6 +77,7 @@ class Http():
             self._password = self._parameters['password']
             self._hashed_password = self._parameters['hashed_password']
             self._realm = 'shng_http_webif'
+            self._ip = self._parameters['ip']
             self._port = self._parameters['port']
 
             self._service_user = self._parameters['service_user']
@@ -124,12 +130,15 @@ class Http():
             self._servicesport = self._port
 
 #        self._basic_auth = False
-        self._ip = self._get_local_ip_address()
+        if self._ip == '0.0.0.0':
+            self._ip = self._get_local_ip_address()
 
         # ------------------------------------------------------------------------
         # Setting up webinterface environment
         #
         self.webif_dir = os.path.dirname(os.path.abspath(__file__)) + '/webif'
+        self.gtemplates_dir = self.webif_dir + '/gtemplates'
+        self.gstatic_dir = self.webif_dir + '/gstatic'
 
         self.logger.info("Module 'http': ip address = {}, hostname = '{}'".format(self.get_local_ip_address(), self.get_local_hostname()))
         
@@ -168,6 +177,8 @@ class Http():
         
         self.tplenv = Environment(loader=FileSystemLoader(os.path.join( self.webif_dir, 'templates' ) ))
 
+        self._gstatic_dir = self.webif_dir + '/gstatic'
+        
         self.module_conf = {
             '/': {
                 'tools.staticdir.root': self.webif_dir,
@@ -175,6 +186,10 @@ class Http():
                 'tools.trailing_slash.on': False,
                 'log.screen': False,
                 'request.dispatch': cherrypy.dispatch.VirtualHost(**self._hostmap),
+            },
+            '/gstatic': {
+                'tools.staticdir.on': True,
+                'tools.staticdir.dir': 'gstatic',
             },
             '/static': {
                 'tools.staticdir.on': True,
@@ -185,6 +200,10 @@ class Http():
         self.msg_conf = {
             '/': {
                 'tools.staticdir.root': self.webif_dir,
+            },
+            '/gstatic': {
+                'tools.staticdir.on': True,
+                'tools.staticdir.dir': 'gstatic',
             },
             '/static': {
                 'tools.staticdir.on': True,
@@ -214,6 +233,10 @@ class Http():
             '/static': {
                 'tools.staticdir.on': True,
                 'tools.staticdir.dir': 'static'
+            },
+            '/gstatic': {
+                'tools.staticdir.on': True,
+                'tools.staticdir.dir': 'gstatic',
             }
         }
         config_services = {
@@ -311,8 +334,19 @@ class Http():
         """
         import socket
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("10.10.10.10", 80))
-        return s.getsockname()[0]
+        connected = False
+        count = 0
+        while (not connected) and (count < 5):
+            try:
+                s.connect(("10.10.10.10", 80))
+                connected = True
+            except:
+                count += 1
+                time.sleep(5)
+        if connected:
+            return s.getsockname()[0]
+        else:
+            return None
 
  
     def get_local_ip_address(self):
@@ -499,8 +533,12 @@ class Http():
         
         """
         pluginname = pluginname.lower()
+        instance = instance.lower()
         if webifname == '':
             webifname = pluginname
+        if instance != '':
+            webifname = webifname + '_' + instance
+        
         mount = '/' + webifname
         if description == '':
            description = 'Webinterface {} of plugin {}'.format(webifname, pluginname)
@@ -510,13 +548,19 @@ class Http():
             conf['/']['tools.auth_basic.realm'] = self._realm
             conf['/']['tools.auth_basic.checkpassword'] = self.validate_password
             
+        conf['/gstatic'] = {}
+        conf['/gstatic']['tools.staticdir.on'] = True
+        conf['/gstatic']['tools.staticdir.dir'] = self._gstatic_dir
+
         self.logger.info("Module http: Registering webinterface '{}' of plugin '{}' from pluginclass '{}' instance '{}'".format( webifname, pluginname, pluginclass, instance ) )
         self.logger.info(" - conf dict: '{}'".format( conf ) )
         if pluginclass != '':
-            if instance == '':
-                webif_key = webifname
-            else:
-                webif_key = instance + '@' + webifname
+            webif_key = webifname
+            # statt:
+#            if instance == '':
+#                webif_key = webifname
+#            else:
+#                webif_key = instance + '@' + webifname
             self._applications[webif_key] = {'Mount': mount, 'Pluginclass': pluginclass, 'Webifname': webifname, 'Pluginname': pluginname, 'Instance': instance, 'Conf': conf, 'Description': description}
             self.logger.info("self._applications['{}'] = {}".format(webif_key, self._applications[webif_key]))
         if len(self._hostmap_services) > 0:
@@ -562,8 +606,12 @@ class Http():
 
         """
         pluginname = pluginname.lower()
+        instance = instance.lower()
         if servicename == '':
             servicename = pluginname
+        if instance != '':
+            servicename = servicename + '_' + instance
+
         mount = '/' + servicename
         if description == '':
            description = 'Service {} of plugin {}'.format(servicename, pluginname)
@@ -576,10 +624,12 @@ class Http():
         self.logger.info("Module http: Registering service '{}' of plugin '{}' from pluginclass '{}' instance '{}'".format( servicename, pluginname, pluginclass, instance ) )
         self.logger.info(" - conf dict: '{}'".format( conf ) )
         if pluginclass != '':
-            if instance == '':
-                service_key = servicename
-            else:
-                service_key = instance + '@' + servicename
+            service_key = servicename
+            # statt:
+#            if instance == '':
+#                service_key = servicename
+#            else:
+#                service_key = instance + '@' + servicename
             self._services[servicename] = {'Mount': mount, 'Pluginclass': pluginclass, 'Servicename': servicename, 'Pluginname': pluginname, 'Instance': instance, 'Conf': conf, 'Description': description}
             self.logger.info("self._services['{}'] = {}".format(service_key, self._services[service_key]))
         if len(self._hostmap_webifs) > 0:

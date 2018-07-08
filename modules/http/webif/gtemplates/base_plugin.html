@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ p.get_shortname() }} Plugin
+{% endblock title %}
+
+{% block content %}
+
+{% if scroll_heading is not defined %}
+<div style="position: fixed; top: 0; width: 100%; height: 180px; background: RGB(255, 255, 255); z-index: 2;">
+{% endif %}
+
+<div class="container-fluid m-3">
+	<div style="margin-right: 2px;" class="row">
+
+		<div class="{% if logo_frame %}card {% endif %} col-sm-2" style="height:150px;">
+		    {% if isfile("static/img/plugin_logo.png") %}
+				<img src="static/img/plugin_logo.png" style="object-fit:contain; width:100%; height:100%; margin-left: auto; margin-right: auto; display: block;">
+		    {% elif isfile("static/img/plugin_logo.jpg") %}
+				<img src="static/img/plugin_logo.jpg" style="object-fit:contain; width:100%; height:100%; margin-left: auto; margin-right: auto; display: block;">
+		    {% elif isfile("static/img/plugin_logo.svg") %}
+				<img src="static/img/plugin_logo.svg" style="object-fit:contain; width:100%; height:100%; margin-left: auto; margin-right: auto; display: block;">
+		    {% else %}
+			    {% set plgtype_logo = "/gstatic/img/plugin_"+p._plgtype+".svg" %}
+				{% if isfile(plgtype_logo) %}
+					<img src="{{ plgtype_logo }}" style="object-fit:contain; width:100%; height:100%; margin-left: auto; margin-right: auto; display: block;">
+				{% else %}
+					<img src="/gstatic/img/plugin_unknown.svg" style="object-fit:contain; width:100%; height:100%; margin-left: auto; margin-right: auto; display: block;">
+				{% endif %}
+			{% endif %}
+		</div>
+		<div class="col-sm-3">
+			<h3><img src="/gstatic/img/logo_long.png" height="40" valign="top" align="left" style="align: left; display: block;"></h3>
+			<div class="m-3">
+			<br>
+			</div>
+			<h5>{{ _('Plugin') }} : <strong>{{ p.get_shortname() }}</strong> v{{ p.get_version() }}</h5>
+			{% if p.get_instance_name() != '' %}
+				<h5>{{ _('Instanz') }}: {{ p.get_instance_name() }}</h5>
+			{% else %}
+				<br>
+			{% endif %}
+			<h6>{{ _('Plugin') }} &nbsp; &nbsp; : {% if p.alive %}{{_('Aktiv')}}{% else %}{{_('Gestoppt')}}{% endif %}</h6>
+		</div>
+
+		<div class="col-sm-7">
+	
+			{% block headtable %}
+			{% endblock %}
+
+			<table width="100%">
+				<tr>
+					<td colspan="3">
+						{% block buttons %}
+						{% endblock %}
+					</td>
+					<td colspan="2" align="right">
+						<form action="" method="post">
+						<button id="reload" class="btn btn-shng btn-sm" name="reload" type="submit" value="on"><i class="fas fa-redo"></i>&nbsp;&nbsp;&nbsp;{{_('Aktualisieren')}}&nbsp;</button>
+						<button id="close" class="btn btn-shng btn-sm" title="{{ 'Schließen' }}" onclick="window.close();" ><i class="fas fa-times"></i>&nbsp;&nbsp;&nbsp;{{_('Schließen')}}&nbsp;</button>
+						</form>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+
+{% if scroll_heading is not defined %}
+</div>
+
+<div style="margin: 180px auto 0; z-index: 1;">
+{% endif %}
+
+{% if tabcount is not defined %}
+	{% set tabcount = 4 %}
+{% endif %}
+
+{% if start_tab is not defined %}
+	{% set start_tab = 1 %}
+{% endif %}
+{% if start_tab > tabcount %}
+	{% set start_tab = tabcount %}
+{% endif %}
+	
+{% if tabcount > 4 %}
+	{% set tabcount = 4 %}
+{% endif %}
+{% if tabcount < 1 %}
+	{% set tabcount = 1 %}
+{% endif %}
+
+
+{% if tab1title is not defined %}
+	{% set tab1title = "<strong>" ~ p.get_shortname() ~ "</strong> tab1" %}
+{% endif %}
+{% if tab2title is not defined %}
+	{% set tab2title = "<strong>" ~ p.get_shortname() ~ "</strong> tab2" %}
+{% endif %}
+{% if tab3title is not defined %}
+	{% set tab3title = "<strong>" ~ p.get_shortname() ~ "</strong> tab3" %}
+{% endif %}
+{% if tab4title is not defined %}
+	{% set tab4title = "<strong>" ~ p.get_shortname() ~ "</strong> tab4" %}
+{% endif %}
+
+
+<div class="container-fluid ">
+	<ul class="nav nav-tabs">
+		{% if tabcount > 1 %}
+			<li id="tab_1" class="nav-item"><a class="text-dark nav-link {% if start_tab==1 %}active{% endif %}" data-toggle="tab" href="#bodytab_1">{{ tab1title }}</a></li>
+			<li id="tab_2" class="nav-item"><a class="text-dark nav-link {% if start_tab==2 %}active{% endif %}" data-toggle="tab" href="#bodytab_2">{{ tab2title }}</a></li>
+		{% endif %}
+		{% if tabcount > 2 %}
+			<li id="tab_3" class="nav-item"><a class="text-dark nav-link {% if start_tab==3 %}active{% endif %}" data-toggle="tab" href="#bodytab_3">{{ tab3title }}</a></li>
+		{% endif %}
+		{% if tabcount > 3 %}
+			<li id="tab_4" class="nav-item"><a class="text-dark nav-link {% if start_tab==4 %}active{% endif %}" data-toggle="tab" href="#bodytab_4">{{ tab4title }}</a></li>
+		{% endif %}
+	</ul>
+	<br>
+</div>
+
+<div style="margin-left: 10px; margin-right: 10px;" class="tab-content">
+
+	<div id="bodytab_1" class="tab-pane {% if start_tab==1 %}active{% endif %}" role="tabpanel">
+		{% block bodytab1 %}
+		{% endblock bodytab1 %}
+	</div>
+
+	<div id="bodytab_2" class="tab-pane {% if start_tab==2 %}active{% endif %}" role="tabpanel">
+		{% block bodytab2 %}
+		{% endblock bodytab2 %}
+	</div>
+
+	<div id="bodytab_3" class="tab-pane {% if start_tab==3 %}active{% endif %}" role="tabpanel">
+		{% block bodytab3 %}
+		{% endblock bodytab3 %}
+	</div>
+
+	<div id="bodytab_4" class="tab-pane {% if start_tab==3 %}active{% endif %}" role="tabpanel">
+		{% block bodytab4 %}
+		{% endblock bodytab4 %}
+	</div>
+</div>
+
+
+{% endblock content %}
+
+{% if scroll_heading is not defined %}
+</div>
+{% endif %}

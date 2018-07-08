@@ -24,7 +24,11 @@ nosetests.xml
 ehthumbs.db
 Thumbs.db
 
+# Don't check in build documentation files
+/doc/user/build
+/doc/developer/build
+
 # Pycharm settings
 /.idea
 /custom_plugins
-plugins
+

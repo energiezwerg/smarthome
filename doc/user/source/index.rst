@@ -14,7 +14,7 @@ möglich dass die Klingel mit der Musikanlage und TV spricht, und dessen Wiederg
 oder bei Abwesenheit eine Nachricht per Email verschickt.
 
 Viele haben in die Konfiguration Ihres Smarthome.py Systems viel Arbeit gesteckt und wollen 
-das jetzt nicht aufgeben und wieder etwas komplett neues machen. So wurde ein Fork smarthomeNG 
+das jetzt nicht aufgeben und wieder etwas komplett neues machen. So wurde ein Fork SmartHomeNG
 erstellt um die Fortentwicklungen im System wieder zusammenzuführen und eine Basis für 
 Weiterentwicklungen zu stellen.
 
@@ -34,7 +34,7 @@ oder im `Chat auf gitter.im <https://gitter.im/smarthomeNG/smarthome>`_ .
 .. note::
 
    **Anmerkungen** und **Änderungswünsche** zu dieser Anwenderdokumentation bitte auf  
-   `dieser Wiki Seite <https://github.com/smarthomeNG/smarthome/wiki/Anwender-Dokumentation---Kommentare>`_ hinterlassen.
+   `dieser Feedback Seite <https://www.smarthomeng.de/feedback-zur-dokumentation>`_ hinterlassen.
 
 .. [#f1] SmartHomeNG © Copyright 2016-2018 SmartHomeNG Team, basiert auf smarthome.py © 2011-2014 Marcus Popp.
 
@@ -57,3 +57,5 @@ oder im `Chat auf gitter.im <https://gitter.im/smarthomeNG/smarthome>`_ .
    entwickler_doku
    release
    genindex
+   impressum
+

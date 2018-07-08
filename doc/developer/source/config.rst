@@ -7,7 +7,7 @@ Configuration
 Structure of SmartHomeNG
 ------------------------
 
-After the base system is installed a closer look at the SmartHomeNG directory 
+After the base system is installed a closer look at the SmartHomeNG directory
 (e.g. ``/usr/local/smarthome/``) is advised to learn something about its content:
 
 .. code-block:: bash
@@ -35,7 +35,7 @@ After the base system is installed a closer look at the SmartHomeNG directory
    var/db         may contain a SQLite3 database
    var/log        contains the logfiles
    var/rrd        may contain a Round Robin Databases if rrd plugin is used (deprecated)
-   
+
    # files
    CHANGELOG.md   changes of this project. (deprecated, should be documented in doc)
    LICENSE        GNU GENERAL PUBLIC LICENSE (Version 3, 29 June 2007)
@@ -52,13 +52,17 @@ The following discusses how these directories are populated.
 Config files in directory **etc**
 ---------------------------------
 
-The configuration is done by the widespread `yaml <https://en.wikipedia.org/wiki/YAML>`_ format. 
+The configuration is done by the widespread `yaml <https://en.wikipedia.org/wiki/YAML>`_ format.
 Older versions used `configobj <http://www.voidspace.org.uk/python/articles/configobj.shtml>`_ file format which is like a well-known `ini-file <https://en.wikipedia.org/wiki/INI_file>`_ but with the ability to create multilevel sub-sections.
-It is still supported in SmartHomeNG but it is deprecated now and only displayed here for informational purposes.
+It is still supported in SmartHomeNG but it is deprecated
+for a while and was removed from documentation.
 
-If ``ruamel.yaml`` is installed and the backend-plugin is configured then a service can be used to convert the old ``*.conf`` format into ``*.yaml`` format for code snippets.
+If the backend-plugin is configured then a service can be used to
+convert old ``*.conf`` configuration snippets into ``*.yaml`` format.
 
-There is however a service tool at ``tools/conf_to_yaml_converter.py`` that can be used to convert your whole configuration. Please have a look at :doc:`tools`.
+There is furthermore a service tool located at ``tools/conf_to_yaml_converter.py``
+that can be used to convert your whole configuration.
+Please have a look at :doc:`tools`.
 
 
 .. _`smarthome.yaml`:
@@ -69,20 +73,9 @@ smarthome.yaml
 To calculate sunrise, sunset, azimuth and elevation of the sun for a given time the coordinates of the physical location
 of the SmartHomeNG installation is needed.
 
-.. sidebar:: smarthome.conf
-   :class: deprecated
-   
-   .. code-block:: ini
-   
-      # /usr/local/smarthome/etc/smarthome.conf
-      lat = 51.1633        # latitude
-      lon = 10.4476        # longitude
-      elev = 500           # elevation
-      tz = 'Europe/Berlin' # timezone, the example will be fine for most parts of central Europe
-
-Create a new ``smarthome.yaml`` within ``etc/`` or copy the given ``smarthome.yaml.default`` 
+Create a new ``smarthome.yaml`` within ``etc/`` or copy the given ``smarthome.yaml.default``
 to ``smarthome.yaml`` and edit it to your needs. It should look like the following:
-      
+
 .. code-block:: yaml
    :caption: smarthome.yaml
 
@@ -95,13 +88,13 @@ to ``smarthome.yaml`` and edit it to your needs. It should look like the followi
 The coordinates can be found out by using GPS of a mobile or via an adequate website (e.g. http://www.mapcoordinates.net/)
 
 
-   
+
 .. _`plugin.yaml`:
 
 plugin.yaml
 ===========
 
-Plugins extend the core functionality of SmartHomeNG. 
+Plugins extend the core functionality of SmartHomeNG.
 The ``plugins`` directory contains a subdirectory for every available plugin.
 The file ``etc/plugin.yaml`` holds the configuration for every plugin to be used during runtime.
 
@@ -112,24 +105,9 @@ The example below configures a plugin for the KNX bus to send and receive telegr
 In this case the object name is ``knx``, the place to look for the module is within subdirectory ``plugins/knx/`` and the class of the plugin is ``KNX``.
 The object name can be any valid Python name, the class name and class path need to match those of the plugin.
 
-
-.. sidebar:: plugin.conf
-   :class: deprecated
-   
-   .. code-block:: ini
-   
-      [knx]
-         class_name = KNX
-         class_path = plugins.knx
-         host = 127.0.0.1
-         port = 6720
-      #   send_time = 600 # update date/time every 600 seconds, default none
-      #   time_ga = 1/1/1 # default none
-      #   date_ga = 1/1/2 # default none
-
 .. code-block:: yaml
    :caption: plugin.yaml
-   
+
    knx:
        plugin_name: knx
        # class_name: KNX           # old way of configuration
@@ -150,29 +128,29 @@ Referencing a plugin in the configuration
 Up to SmartHomeNG v1.3 a plugin had to be referenced by the parameters ``class_name`` and ``class_path``.
 Now it is possible to reference it alone by specifing the parameter ``plugin_name``, where
 the value would be the former class_path without the `plugins.` prefix. Since all plugins are
-located in the ``/plugins`` folder, the `plugins.` is redundant information. 
+located in the ``/plugins`` folder, the `plugins.` is redundant information.
 
 If the plugin comes with a metadata definition (what allmost all plugins do), there is no need so specify
 the ``class_name`` parameter. This information is retrieved from the metadata.
 
-.. Note:: 
+.. Note::
 
-    Should the need arise to configure a plugin that is located outside the ``/plugins`` folder, ``class_path`` can be used. 
+    Should the need arise to configure a plugin that is located outside the ``/plugins`` folder, ``class_path`` can be used.
 
 
 Using an older version of a plugin
 ----------------------------------
 
 If you are not using the newest version of the SmartHomeNG core, if may be necessary to use an
-older version of a plugin. Some plugins come with embedded older versions. To load an older 
-version of the plugin, you have to specify the parameter `plugin_version` in the configuration 
-section of the plugin. 
+older version of a plugin. Some plugins come with embedded older versions. To load an older
+version of the plugin, you have to specify the parameter `plugin_version` in the configuration
+section of the plugin.
 
 To find out, if a plugin comes with an older version (or versions), take a look at the plugin's
 directory. if you find a subdirectory with the name starting with ``_pv_`` the plugin comes with
 an older (previous) version. The rest of the folder name specifies the version number. If you
 find a subfolder ``_pv_1_3_0``, it contains the v1.3.0 of the plugin. To load that version, just
-add ``plugin_version: 1.3.0`` to the plugin configuration. 
+add ``plugin_version: 1.3.0`` to the plugin configuration.
 
 
 
@@ -185,18 +163,10 @@ Logics within SmartHomeNG are just Python scripts like the core, too. These scri
 placed in `/usr/local/smarthome/logics/`. To let SmartHomeNG know about when to start a script and which script to use then
 it is needed to configure every logic script in `logic.yaml`:
 
-.. sidebar:: logic.conf
-   :class: deprecated
-   
-   .. code-block:: ini
-   
-      [MyLogic]
-          filename = logic.py
-          crontab = init
 
 .. code-block:: yaml
    :caption: logic.yaml
-   
+
    MyLogic:
        filename: logic.py
        crontab: init
@@ -211,10 +181,10 @@ With the example above SmartHomeNG would look in ``/usr/local/smarthome/logics/`
 logging.yaml
 ============
 
-The core and also every module is able to output logging information. 
+The core and also every module is able to output logging information.
 The logging can be configured to be rich in detail for debugging purposes or rather smart with warning or general info.
 There is a seperate document to explain how to configure :doc:`logging <logging>`.
-To get started, simply copy the given ``logging.yaml.default`` 
+To get started, simply copy the given ``logging.yaml.default``
 to ``logging.yaml`` and edit it to your needs. It should look like the following:
 
 .. literalinclude:: ../../../etc/logging.yaml.default
@@ -248,7 +218,7 @@ This directory contains logics you write, which are used by SmartHomeNG. A logic
 of Python code. It has some additional conventions. When and how the logic is executed is configured
 in the file `etc/logics.yaml`.
 
-When using the Blockly Plugin to write a logic, the logic has two files. One is the Blockly code with the 
+When using the Blockly Plugin to write a logic, the logic has two files. One is the Blockly code with the
 extension `.blockly` and one file with the Python code. That file has the extension `.py`.
 
 To find out more details about logics continue reading the :doc:`logics <logics>` page.
@@ -279,6 +249,6 @@ SmartHomeNG can be executed with the following options:
 
 If you start SmartHomeNG without any option, then SmartHomeNG will return the PID if already running.
 
-Please be noted that due to the changed nature of logging the -v and -q options are deprecated and will be removed
+Please be noted that due to the changed nature of logging
+the -v and -q options are deprecated and will be removed
 in a later release.
-

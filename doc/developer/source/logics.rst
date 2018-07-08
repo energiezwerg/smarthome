@@ -6,41 +6,26 @@ Introduction
 ------------
 
 Logics itself are just scripts written in Python and they reside in subdirectory ``logics/``.
-All logics are configured within ``etc/logic.conf`` (deprecated) or starting with SmartHomeNG 1.3
-``etc/logic.yaml``. The configuration file tells SmartHomeNG when to execute a certain logic script.
+All logics will be defined in ``etc/logic.yaml``.
+The configuration file tells SmartHomeNG when to execute a certain logic script.
 
 The following sample configuration file defines four logic scripts for use by SmartHomeNG.
-The first logic script resides in ``logics/InitSmartHomeNG.py``. The attribute ``crontab = init`` tells SmartHomeNG
-to start the script just after SmartHomeNG has started.
-The second logic script resides in ``logics/time.py`` and the attribute ``cycle = 60`` tells SmartHomeNG to call the
-script every 60 minutes. The third logic script resides in ``logics/gate.py`` and the attribute
-``watch_item = gate.alarm`` tells SmartHomeNG to call the script when item value of gate.alarm changed. Now it's easy
-to guess where the forth script resides in and when it is called by SmartHomeNG.
 
-.. code-block:: text
-   :caption:  /usr/local/smarthome/etc/logic.conf (deprecated)
-
-   [InitSmarthomeNG]
-        filename = InitSmartHomeNG.py
-        crontab = init
-
-   [Hourly]
-       filename = time.py
-       cycle = 60
-
-   [Gate]
-       filename = gate.py
-       watch_item = gate.alarm # monitor for changes
-
-   [disks]
-        filename = disks.py
-        crontab = init | 0,5,10,15,20,25,30,35,40,45,50,55 * * * # run at start and every 5 minutes
-        usage_warning = 500
-
+* The first logic script is named ``InitSmartHomeNG`` and its sourcecode
+  is configured to be found in ``logics/InitSmartHomeNG.py``.
+  The attribute ``crontab: init`` tells SmartHomeNG to start the script just after
+  SmartHomeNG has started.
+* The second logic script named ``Hourly`` resides in ``logics/time.py``
+  and the attribute ``cycle: 60`` tells SmartHomeNG to call (execute) the script every 60 minutes.
+* The third logic script named ``Gate`` resides in ``logics/gate.py`` and the attribute
+  ``watch_item: gate.alarm`` tells SmartHomeNG to call the script when item
+  value of gate.alarm changed.
+* The fourth logic thus is named ``disks`` and it's sourcecode ``logics/disks.py``
+  will be executed every 5 minutes.
 
 .. code-block:: yaml
-   :caption:  /usr/local/smarthome/etc/logic.yaml
-   
+   :caption:  etc/logic.yaml
+
    InitSmarthomeNG:
        filename: InitSmartHomeNG.py
        crontab: init
@@ -61,9 +46,6 @@ to guess where the forth script resides in and when it is called by SmartHomeNG.
          - '0,5,10,15,20,25,30,35,40,45,50,55 * * *'
        usage_warning: 500
 
-
-Within the ``etc/logic.conf`` (deprecated) / ``etc/logic.conf`` the following attributes control the execution of a logic:
-
 Configuration parameters
 ------------------------
 
@@ -74,28 +56,17 @@ watch_item
 
 The list of items will be monitored for changes.
 
-.. code-block:: text
-   :caption:  Configuration in CONF syntax (deprecated)
-
-   watch_item = house.alarm | garage.alarm
-   
-
 .. code-block:: yaml
-   :caption:  Configuration in YAML syntax
+   :caption:  etc/logic.yaml
 
-   watch_item:
-    - house.alarm
-    - garage.alarm
+   logicnamehere:
+      watch_item:
+       - house.alarm
+       - garage.alarm
 
 
 Any change of the item **house.alarm** and **garage.alarm** triggers the execution of the given logic.
 It is possible to use an asterisk * for any path part (like a regular expression):
-
-.. code-block:: text
-   :caption:  Configuration in CONF syntax (deprecated)
-
-   watch_item = *.door
-
 
 .. code-block:: yaml
    :caption:  Configuration in YAML syntax
@@ -109,12 +80,6 @@ cycle
 
 This will trigger the given logic in a recurring way
 
-.. code-block:: text
-   :caption:  Configuration in CONF syntax (deprecated)
-
-   cycle = 60
-
-
 .. code-block:: yaml
    :caption:  Configuration in YAML syntax
 
@@ -123,53 +88,39 @@ This will trigger the given logic in a recurring way
 
 Optional use a parameter
 
-.. code-block:: text
-   :caption:  Configuration in CONF syntax (deprecated)
-
-   cycle = 60 = 100
-
-
 .. code-block:: yaml
    :caption:  Configuration in YAML syntax
 
    cycle: 60 = 100
-   
 
-This triggers the logic every 60 minutes and passes the values 100 to the logic.
-The object trigger['value'] can be queried and will here result in '100'
+
+This triggers the logic every 60 minutes and passes the value 100 to the logic.
+The object ``trigger['value']`` can be queried and will here result in '100'
 
 crontab
 ~~~~~~~
 
 Like Unix crontab with the following options:
 
-``crontab = init`` (conf) / ``crontab: init`` (yaml) Run the logic during the start of SmartHomeNG.
+* ``crontab: init``
+   Run the logic during the start of SmartHomeNG.
 
-``crontab = minute hour day wday`` (conf) / ``crontab: minute hour day wday`` (yaml)
-
--  minute: single value from 0 to 59, or comma separated list, or * (every minute)
--  hour: single value from 0 to 23, or comma separated list, or * (every hour)
--  day: single value from 0 to 28, or comma separated list, or * (every day)
+* ``crontab: minute hour day wday``
+   See description of Unix crontab and some online generators for details.
+   -  minute: single value from 0 to 59, or comma separated list, or * (every minute)
+   -  hour: single value from 0 to 23, or comma separated list, or * (every hour)
+   -  day: single value from 0 to 28, or comma separated list, or * (every day)
    Please note: dont use days greater than 28 in the moment.
--  wday: weekday, single value from 0 to 6 (0 = Monday), or comma separated list, or * (every day)
+   -  wday: weekday, single value from 0 to 6 (0 = Monday), or comma separated list, or * (every day)
 
-``crontab = sunrise`` (conf) / ``crontab: sunrise (yaml) Runs the logic at every sunrise. Use ``sunset`` to run
-at sunset. For sunset / sunrise you could provide:
+``crontab: sunrise``
+   Runs the logic at every sunrise. Use ``sunset`` to run
+   at sunset. For sunset / sunrise you could provide:
 
--  an horizon offset in degrees e.g. crontab = sunset-6 You have to
-   specify your latitude/longitude in smarthome.conf.
--  an offset in minutes specified by a 'm' e.g. crontab = sunset-10m
--  a boundary for the execution
-
-
-.. code-block:: text
-   :caption:  Configuration in CONF syntax (deprecated)
-
-    crontab = 17:00<sunset        # sunset, but not bevor 17:00 (locale time)
-    crontab = sunset<20:00        # sunset, but not after 20:00 (locale time)
-    crontab = 17:00<sunset<20:00  # sunset, beetween 17:00 and 20:00
-    crontab = 15 * * * = 50       # Calls the logic with trigger['value'] # == 50
-
+   -  an horizon offset in degrees e.g. crontab: sunset-6 You have to
+      specify your latitude/longitude in smarthome.conf.
+   -  an offset in minutes specified by a 'm' e.g. crontab = sunset-10m
+   -  a boundary for the execution
 
 .. code-block:: yaml
    :caption:  Configuration in YAML syntax
@@ -178,17 +129,8 @@ at sunset. For sunset / sunrise you could provide:
     crontab: sunset<20:00          # sunset, but not after 20:00 (locale time)
     crontab: '17:00<sunset<20:00'  # sunset, beetween 17:00 and 20:00
     crontab: '15 * * * = 50'       # Calls the logic with trigger['value'] # == 50
-	
-
 
 Combine several options with ``|``:
-
-
-.. code-block:: text
-   :caption:  Configuration in CONF syntax (deprecated)
-
-   crontab = init = 'start' | sunrise-2 | 0 5 * *
-
 
 .. code-block:: yaml
    :caption:  Configuration in YAML syntax
@@ -201,13 +143,13 @@ Combine several options with ``|``:
 enabled
 ~~~~~~~
 
-``enabled`` can be set to False to disable the execution of the logic after loading. The status 
-of the logic (enabled/disabled) can be controlled via the plugins ``backend`` or ``cli``   
+``enabled`` can be set to False to disable the execution of the logic after loading. The status
+of the logic (enabled/disabled) can be controlled via the plugins ``backend`` or ``cli``
 
 prio
 ~~~~
 
-Sets the priority of the logic script within the execution context of the scheduler. 
+Sets the priority of the logic script within the execution context of the scheduler.
 Any value between 1 to 10 is allowed where 1 has the highest priority and 10 the lowest.
 Usually you don't need to specify a priority. The default priority is 5.
 
@@ -221,7 +163,7 @@ Like in the first example script for the fourth logic the attribute ``usage_warn
 Basic Structure of a logic script
 ---------------------------------
 
-The most important object is the smarthome object ``sh``. 
+The most important object is the smarthome object ``sh``.
 Using this object all items, plugins and basic functions of SmartHomeNG can be accessed.
 To query an item's value call: ``sh.area.item()``
 To set a new value just specify it as argument sh.area.item(new\_value).
@@ -452,7 +394,7 @@ Returns all items matching a regular expression path and optional attribute.
    for item in sh.match_items('*.lights'):     # selects all items ending with 'lights'
        logger.info(item.id())
 
-   for item in sh.match_items('*.lights:special'):     # selects all items ending with 'lights' and attribute 'special'     
+   for item in sh.match_items('*.lights:special'):     # selects all items ending with 'lights' and attribute 'special'
        logger.info(item.id())
 
 sh.find_items(configattribute)
@@ -468,5 +410,3 @@ find\_children(parentitem, configattribute):
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Returns all children items with the specified config attribute.
-
-

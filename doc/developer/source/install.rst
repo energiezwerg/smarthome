@@ -29,21 +29,23 @@ Download SmartHomeNG from GitHub
 Everything is extracted to ``/usr/local/smarthome/``. It is possible however to use another path.
 ``sudo`` is needed to access ``/usr/local/`` as well as setting the ownership to user **smarthome**
 
+For development, the latest development version is about to installed. This is done with the option **-b develop** in the **git clone** command.
+
 .. code-block:: bash
 
    cd /usr/local
-   sudo git clone --recursive git://github.com/smarthomeNG/smarthome.git
+   sudo mkdir smarthome
    sudo chown -R smarthome:smarthome /usr/local/smarthome
-   cd /usr/local/smarthome/etc
-   touch logic.yaml
 
-If the latest development version is about to installed, just enter the base directory and checkout branch ``develop`` from git.
+   cd smarthome
+   git clone -b develop git://github.com/smarthomeNG/smarthome.git .
 
-.. code-block:: bash
+   mkdir plugins
+   cd plugins
+   git clone -b develop git://github.com/smarthomeNG/plugins.git .
 
-   cd /usr/local/smarthome
-   git checkout develop
-   
+Please notice the dot at the end of the **git** commands!
+
 
 Required Python modules
 =======================

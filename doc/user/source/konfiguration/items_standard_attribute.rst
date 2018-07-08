@@ -2,15 +2,17 @@
 .. index:: Items; Standardattribute
 .. index:: Standardattribute
 
-Standard Attribute
-==================
+.. role:: bluesup
+
+Standard Attribute :bluesup:`update`
+====================================
 
 
 In SmartHomeNG werden eine Reihe von Standard Attributen unterstützt. Diese sind in der folgenden 
 Liste aufgeführt. Die Bedeutung und Verwendung der Attribute wird auf den folgenden Seiten beschrieben.
 
-Zusätzlich können Plugins Attribute definieren. Die Bedeutung und Verwendung dieser zusätzlichen 
-Attribute ist in der Dokumentation des jeweiligen Plugins nachzulesen.
+Zusätzlich können Plugins eigene Attribute definieren. Die Bedeutung und Verwendung dieser zusätzlichen
+plugin-spezifischen Attribute ist in der Dokumentation des jeweiligen Plugins nachzulesen.
 
 +-----------------+------------------------------------------------------------------------------+
 | **Attribut**    | **Beschreibung**                                                             |
@@ -22,12 +24,12 @@ Attribute ist in der Dokumentation des jeweiligen Plugins nachzulesen.
 +-----------------+------------------------------------------------------------------------------+
 | remark          | ein optionaler Kommentar für das Item. Es ist sinnvoll Kommentare zu einem   |
 |                 | Item als **remark** Attribut zu erfassen und nicht als Kommentar ( **#** )   |
-|                 | in die Konfigurationsdatei zu schreiben. Dadurch können Kommentare bei einer |
-|                 | kommenden Umstellung des Formates der Konfigurationsdateien automatisch      |
-|                 | konvertiert werden.                                                          |
+|                 | in die Konfigurationsdatei zu schreiben. Dadurch können Kommentare in einer  |
+|                 | später kommenden graphischen Konfigurationsoberfläche angezeigt und gepflegt |
+|                 | werden.                                                                      |
 +-----------------+------------------------------------------------------------------------------+
-| initial_value,  | Ein optionaler Startwert für dieses Item                                     |
-| value           |                                                                              |
+| initial_value,  | Ein optionaler Startwert für dieses Item. Es wird empfohlen **initial_value**|
+| value           | anstelle des bisherigen Attributnamens **value** zu verwenden.               |
 +-----------------+------------------------------------------------------------------------------+
 | cache           | Wenn 'Yes', dann wird der Wert des Items zwischengespeichert und beim        |
 |                 | erneuten Start von SmartHomeNG wird der alte Wert aus dem Zwischenspeicher   |
@@ -66,6 +68,11 @@ Attribute ist in der Dokumentation des jeweiligen Plugins nachzulesen.
 | on_change       | Ermöglicht das setzen des Wertes anderer Items, wenn der Wert des aktuellen  |
 |                 | Items verändert wird. **Ab SmartHomeNG v1.4**                                |
 +-----------------+------------------------------------------------------------------------------+
+| log_change      | Ermöglicht das Loggen jeder Veränderung des Item-Wertes. **log_change** muss |
+|                 | dazu den Namen des zu verwendeten Loggers enthalten. In **logging.yaml**     |
+|                 | muss der Logger als **items.<name>** konfiguriert sein.                      |
+|                 | **Ab SmartHomeNG v1.5**                                                      |
++-----------------+------------------------------------------------------------------------------+
 
 
 .. toctree::
@@ -73,6 +80,7 @@ Attribute ist in der Dokumentation des jeweiligen Plugins nachzulesen.
    :hidden:
 
    items_standard_attribute_type
+   items_standard_attribute_enforce_updates
    items_standard_attribute_eval
    items_standard_attribute_crontab
    items_standard_attribute_cycle

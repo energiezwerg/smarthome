@@ -57,30 +57,34 @@ sollte auch so gewählt werden, dass es zu keiner Namensgleichheit mit Top-Level
 
 Es gibt folgende allgemeine Parameter im Abschnitt eines Plugins:
 
-+--------------+-------------------------------------------------------------------------------------+
-| Parameter    | Bedeutung                                                                           |
-+==============+=====================================================================================+
-| plugin_name  | Der Kurzname des Plugins, das eingebunden werden soll (Name des Verzeichnisses      |
-|              | im **../plugins** Verzeichnis). Statt des Parameters **plugin_name** können auch    |
-|              | die Parameter **class_name** und **class_path** angegeben werden. Dieses ist        |
-|              | jedoch nur in Ausnahmefällen notwendig.                                             |
-+--------------+-------------------------------------------------------------------------------------+
-| class_name   | Name der Klasse in der Plugin Datei. Was hier einzutragen ist, steht in der         |
-|              | Dokumentation zum jeweiligen Plugin. Im Normalfall ist die Konfiguration über den   |
-|              | Parameter **plugin_name** vorzuziehen.                                              |
-+--------------+-------------------------------------------------------------------------------------+
-| class_path   | Pfad zur Plugin Datei. Was hier einzutragen ist, steht in der                       |
-|              | Dokumentation zum jeweiligen Plugin. Im Normalfall ist die Konfiguration über den   |
-|              | Parameter **plugin_name** vorzuziehen.                                              |
-+--------------+-------------------------------------------------------------------------------------+
-| instance     | Optional: Dieser Parameter muss nur verwendet werden, wenn mehrere Instanzen des    |
-|              | selben Plugins geladen werden sollen. Das Plugin selbst muss dazu **Multiinstance** |
-|              | fähig sein. Damit die Items der richtigen Plugin-Instanz zugeordnet werden, muss    |
-|              | in der jeweiligen Item Definition der Name des Plugin-spezifische Attributes um     |
-|              | die Angabe der Instanz ergänzt werden. Also z.B.: Statt **avm_data_type: uptime**   |
-|              | muss es **avm_data_type@<instance>: uptime** heissen.                               |
-+--------------+-------------------------------------------------------------------------------------+
-
++----------------+-------------------------------------------------------------------------------------+
+| Parameter      | Bedeutung                                                                           |
++================+=====================================================================================+
+| plugin_name    | Der Kurzname des Plugins, das eingebunden werden soll (Name des Verzeichnisses      |
+|                | im **../plugins** Verzeichnis). Statt des Parameters **plugin_name** können auch    |
+|                | die Parameter **class_name** und **class_path** angegeben werden. Dieses ist        |
+|                | jedoch nur in Ausnahmefällen notwendig.                                             |
++----------------+-------------------------------------------------------------------------------------+
+| class_name     | Name der Klasse in der Plugin Datei. Was hier einzutragen ist, steht in der         |
+|                | Dokumentation zum jeweiligen Plugin. Im Normalfall ist die Konfiguration über den   |
+|                | Parameter **plugin_name** vorzuziehen.                                              |
++----------------+-------------------------------------------------------------------------------------+
+| class_path     | Pfad zur Plugin Datei. Was hier einzutragen ist, steht in der                       |
+|                | Dokumentation zum jeweiligen Plugin. Im Normalfall ist die Konfiguration über den   |
+|                | Parameter **plugin_name** vorzuziehen.                                              |
++----------------+-------------------------------------------------------------------------------------+
+| instance       | Optional: Dieser Parameter muss nur verwendet werden, wenn mehrere Instanzen des    |
+|                | selben Plugins geladen werden sollen. Das Plugin selbst muss dazu **Multiinstance** |
+|                | fähig sein. Damit die Items der richtigen Plugin-Instanz zugeordnet werden, muss    |
+|                | in der jeweiligen Item Definition der Name des Plugin-spezifische Attributes um     |
+|                | die Angabe der Instanz ergänzt werden. Also z.B.: Statt **avm_data_type: uptime**   |
+|                | muss es **avm_data_type@<instance>: uptime** heissen.                               |
++----------------+-------------------------------------------------------------------------------------+
+| plugin_version | Wenn im Plugin Repository mehrere Versionen eines Plugins zur Verfügung stehen,     |
+|                | kann über diesen Parameter eine andere als die neueste Version des Plugins geladen  |
+|                | werden. Dazu muss die Versionsnummer des Plugins angegeben werden.                  |
+|                | (z.B.  **plugin_version: 1.4.9**)                                                   |
++----------------+-------------------------------------------------------------------------------------+
 
 Die weiteren Einträge sind Plugin spezifisch. Welche Parameter ein Plugin kennt ist auch der 
 README.md des Plugins zu entnehmen. Je nach Plugin können sie verpflichtend oder optional sein. 

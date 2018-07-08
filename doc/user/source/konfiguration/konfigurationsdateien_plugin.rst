@@ -32,19 +32,6 @@ Verzeichnis **../plugins** gesucht.
        # time_ga: 1/1/1 # default none
        # date_ga: 1/1/2 # default none
 
-.. code-block:: text
-   :caption: plugin.conf (deprecated)
-   
-   # /usr/local/smarthome/etc/plugin.conf (deprecated)
-   [knx]
-       class_name = KNX
-       class_path = plugins.knx
-       host = 127.0.0.1
-       port = 6720
-   #    send_time = 600 # update date/time every 600 seconds, default none
-   #    time_ga = 1/1/1 # default none
-   #    date_ga = 1/1/2 # default none
-
 Es exisitert eine `README.md` Datei zu jedem Plugin. Diese Datei gibt ausführliche Informationen,
 wie das Plugin zu konfigurieren ist. Die `README`s sind unter :doc:`Plugins <../plugins>` in der
 Übersicht der Plugins zu finden. Wie die Konfiguration von Plugins grundsätzlich funktioniert ist

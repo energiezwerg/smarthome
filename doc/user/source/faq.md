@@ -1,7 +1,6 @@
 # FAQ - Häufig gestellte Fragen
 
-## Welche RRD Typen sind derzeit in sh.py unterstützt?   
-Antwort: ?
+
 
 ## Das Schalten von KNX Aktoren aus der smartVISU funktioniert nicht
 **Antwort**: Da sind drei unterschiedliche Tools involviert, die miteinander reden müssen:
@@ -18,10 +17,13 @@ Antwort: ?
 
     Auf der Konfigurationsseite muss unter I/O-Connection folgendes eingetragen sein:
     - Driver: Smarthome.py
-    - Address: <IP Adresse oder DNS Name der SmartHomeNG Installation>
+    - Address: `<IP Adresse oder DNS Name der SmartHomeNG Installation>`
     - Port: 2424
     - Realtime: on
 
     Wichtig: Der Eintrag **localhost** als Adresse funktioniert **nicht**!
 
+## FAQ auf der Website von SmartHomeNG
 
+Eine aktuellere (weil zeitnah pflegbare) Sammlung der FAQ ist auf der 
+Website von SmartHomeNG unter https://www.smarthomeng.de/faq-page zu finden

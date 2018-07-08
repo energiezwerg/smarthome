@@ -1,3 +1,4 @@
+
 scenes/\*.yaml
 ##############
 
@@ -9,14 +10,14 @@ Szenen Definitionen im Verzeichnis **../scenes**
 ================================================
 
 Im Verzeichnis **../scenes** kann eine beliebige Anzahl von Konfigurationsdateien für Szenen
-erzeugt werden. Jede Konfigurationsdatei kann dabei nur die Konfiguration einer Szene enthalten. 
-Das Verzeichnis enthält yaml Dateien (oder Dateien im alten .conf Format) mit den Definitionen 
-der Szenen, die durch SmartHomeNG genutzt werden sollen. Der Name der yaml Datei kann beliebig sein, 
+erzeugt werden. Jede Konfigurationsdatei kann dabei nur die Konfiguration einer Szene enthalten.
+Das Verzeichnis enthält yaml Dateien (oder Dateien im alten .conf Format) mit den Definitionen
+der Szenen, die durch SmartHomeNG genutzt werden sollen. Der Name der yaml Datei kann beliebig sein,
 solange die Extension `.yaml` ist.
 
-.. note:: 
+.. note::
 
-   Das alte Format der Konfigurationsdateien für Szenen trägt zwar die Extension .conf. Das 
+   Das alte Format der Konfigurationsdateien für Szenen trägt zwar die Extension .conf. Das
    Dateiformat weicht jedoch vom Dateiformat der anderen .conf Dateien ab.
 
 
@@ -27,8 +28,8 @@ Weitere Details zur Konfiguration von Items als Szenen sind :doc:`hier <items>` 
 Szenen
 ------
 
-Für die Verwendung von Szenen ist eine Konfigurationsdatei für jedes 'Szenenobjekt' im Szenenverzeichnis 
-erforderlich. Diese Dateien können im alten Szenen-Conf Format (Endung '.conf') oder im 
+Für die Verwendung von Szenen ist eine Konfigurationsdatei für jedes 'Szenenobjekt' im Szenenverzeichnis
+erforderlich. Diese Dateien können im alten Szenen-Conf Format (Endung '.conf') oder im
 yaml Format (Endung '.yaml') erstellt werden und müssen als Dateinamen den Item-Path des Items
 tragen in dem die Szene definiert ist und über das der Status der Szene gesteuert wird.
 
@@ -36,17 +37,17 @@ tragen in dem die Szene definiert ist und über das der Status der Szene gesteue
 altes Konfigurationsformat
 --------------------------
 
-Die Szenenkonfigurationsdatei besteht aus Zeilen mit jeweils drei durch Leerzeichen getrennten 
+Die Szenenkonfigurationsdatei besteht aus Zeilen mit jeweils drei durch Leerzeichen getrennten
 Werten. Jede Zeile bestimmt ein Zielitem(Logik), das verändert werden soll, wenn die Szene einen
 bestimmten Status annimmt. Jede Zeile enthält folgende Informationen:
 
 +-----------------+----------------------------------------------------------------------------------------------------------+
-| Szenen-Status   | Wert, den das Szenen Item annehmen muss, damit die definierte Zuweisung durchgeführt wird (Wert 0 - 63)  | 
+| Szenen-Status   | Wert, den das Szenen Item annehmen muss, damit die definierte Zuweisung durchgeführt wird (Wert 0 - 63)  |
 +-----------------+----------------------------------------------------------------------------------------------------------+
 | Ziel-Item/Logic | Item-Pfad des Items, dass den definierten Wert zugewiesen bekommen soll (oder Logik, die gestartet /     |
 |                 | gestoppt werden soll).                                                                                   |
 +-----------------+----------------------------------------------------------------------------------------------------------+
-| Wert            | Wert der dem Item zugewiesen werden soll (oder run/stop, falls eine Logik angegeben wurde).              | 
+| Wert            | Wert der dem Item zugewiesen werden soll (oder run/stop, falls eine Logik angegeben wurde).              |
 +-----------------+----------------------------------------------------------------------------------------------------------+
 
 
@@ -84,8 +85,8 @@ Konfiguration im YAML Format
 ----------------------------
 
 Im YAML Format erfolgt die Definition wie bisher in einer eigenen Datei für jede Szene. Im
-Gegensatz zu zur Konfiguration von Szenen im alten Dateiformat (wo die Definition der Stati 
-der Szene ungeordnet in Zeilen erfolgte), ist der Definition einer Szene im YAML Format 
+Gegensatz zur Konfiguration von Szenen im alten Dateiformat (wo die Definition der Stati
+der Szene ungeordnet in Zeilen erfolgte), ist die Definition einer Szene im YAML Format
 hierarchisch geordnet.
 
 Die Keys auf oberster Ebene sind die Stati (Integer Werte zwischen 0 und 63). Jeder dieser Stati
@@ -93,16 +94,18 @@ enthält eine Unterstruktur, die den jeweiligen Status definiert. Dazu sind die 
 Keys ``name:`` und ``actions:`` vorhanden.
 
 Mit dem Key **name** wird der Name des Status festgelegt. Ein Name muss nicht zwingend vergeben
-werden, er erhöht jedoch die Verständlichkeit der Szenendefinition und dient der Übersichtlichkeit 
+werden, er erhöht jedoch die Verständlichkeit der Szenendefinition und dient der Übersichtlichkeit
 z.B. bei der Anzeige von Szenen im Backend Plugin.
 
-Mit dem Key **actions** der aus einer Liste von einzelnen Action-Definitionen besteht, wird 
+Mit dem Key **actions** der aus einer Liste von einzelnen Action-Definitionen besteht, wird
 festgelegt, welche Aktionen ausgelöst werden sollen, wenn der entsprechende Status eintritt.
 
 Jede einzelne Aktion ist durch die Keys ``item:`` , ``value:`` und ``learn:`` definiert.
 
-Der Key **item** enthält den Pfad des Items, das verändert verden soll. Der Key **value** enthält 
-den Wert auf den das Item gesetzt werden soll. Anstelle eines festen Wertes, kann hier auch ein 
+Die Verwendung von Wildcards (*) in den ``item:`` Definitionen ist nicht möglich.
+
+Der Key **item** enthält den Pfad des Items, das verändert verden soll. Der Key **value** enthält
+den Wert auf den das Item gesetzt werden soll. Anstelle eines festen Wertes, kann hier auch ein
 **eval** Ausdruck angegeben werden. Der Key **learn** ist optional. Wird er nicht angegeben,
 wird der Wert False für **learn** angenommen. Außerdem wird der Wert für **learn** immer auf False
 gesetzt, wenn **value** einen Ausdruck und keinen absoluten  Wert enthält.
@@ -114,7 +117,7 @@ Die Konfiguration der Szene in den Items erfolgt wie bisher.
 
 .. code-block:: yaml
    :caption: Struktur einer Status Definition
-   
+
    <Status>:
        name: <Status Name>
        actions:
@@ -125,13 +128,13 @@ Die Konfiguration der Szene in den Items erfolgt wie bisher.
 
 .. note::
 
-   Für die einzelnen Aktionen innerhalb einer YAML Definition ist eine alternative Schreibweise 
-   möglich. Hierbei ist auf die genaue Einrückung der einzelnen Teile der **actions** Liste zu 
+   Für die einzelnen Aktionen innerhalb einer YAML Definition ist eine alternative Schreibweise
+   möglich. Hierbei ist auf die genaue Einrückung der einzelnen Teile der **actions** Liste zu
    achten:
 
    .. code-block:: yaml
       :caption: Struktur einer Status Definition
-   
+
       <Status>:
           name: <Status Name>
           actions:
@@ -149,8 +152,23 @@ Die Konfiguration der Szene in den Items erfolgt wie bisher.
 Im folgenden ist eine Beispiel Szene beschrieben, die als Ergänzung zu einer KNX-Szene eine
 Philips Hue Leuchte ansteuert.
 
+Dafür muss ein Szenen-Item angelegt werden:
+
 .. code-block:: yaml
-   :caption: Beispiel einer Szenen-Definition
+   :caption: Ausschnitt aus einer Item Datei
+
+   wohnung:
+       buero:
+           szenen:
+               type: scene
+
+Um festzulegen wie die Szenen aussehen sollen, muss im Verzeichnis **../scenes** eine
+Konfigurationsdatei für die Szene-Definition angelegt werden. Für das obige
+Beispiel muss die Datei den Namen **wohnung.buero.szenen.yaml** tragen.
+
+
+.. code-block:: yaml
+   :caption: wohnung.buero.szenen.yaml: Beispiel einer Szenen-Definition (Datei scenes/szenen.wohnung.buero.yaml)
 
    0:
        name: Aus
@@ -188,4 +206,11 @@ Philips Hue Leuchte ansteuert.
         - {item: wohnung.buero.dreieckschrank.hue, value: 59635, learn: false}
         - {item: wohnung.buero.dreieckschrank.sat, value: 230, learn: false}
         - {item: wohnung.buero.dreieckschrank.onoff, value: True, learn: false}
-
+        
+.. code-block:: yaml
+   :caption: Beispiel der Szenen Item-Definition in der items.yaml
+   
+   szenen:
+       wohnung:
+           buero:
+               type: scene

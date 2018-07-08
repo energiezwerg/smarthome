@@ -10,6 +10,7 @@ Items
 
    initiale_itemkonfiguration
    items_standard_attribute.rst
+   items_plugin_attribute.rst
    items_attributes_relative_referenzen.rst
    items_attributes_eval_ausdruecke.rst
    items_funktionen.rst
@@ -27,11 +28,6 @@ Das einfachste Item ist eines nur mit dem Itemnamen:
 
     # myitem.yaml
     One:
-
-.. code-block:: ini
-
-    # myitem.conf (altes Dateiformat)
-    [One]
 
 
 
@@ -57,13 +53,6 @@ aber immer mit ihrem vollen Pfad angesprochen. Beispiel:
     Opa:
        Papa:
           Kind:
-
-.. code-block:: ini
-
-    # myitem.conf (altes Dateiformat)
-    [Opa]
-       [[Papa]]
-          [[[Kind]]]
 
 
 Die richtige Referenzierung der Items wäre hier ``Opa``, ``Opa.Papa`` und ``Opa.Papa.Kind``
@@ -96,12 +85,6 @@ Attribute eines Items werden in der Konfigurationsdatei in der Form
     # myitem.yaml
     <Attribut-Name>: <Attribut-Wert>
     
-bzw. 
-
-.. code-block:: ini
-
-    # myitem.conf  (altes Dateiformat)
-    <Attribut-Name> = <Attribut-Wert>
 
 angegeben. Normalerweise sind Attribut-Werte einzeilig. Es wird alles bis zum Zeilenende oder bis 
 zum Beginn eines Kommentars (`#`) angenommen. (Seit dem Release 1.3 werden auch mehrzeilige Attribute 
@@ -112,6 +95,6 @@ unterstützt.)
    **Ab SmartHomeNG v1.3** wird ein neues Dateiformat für Konfigurationsdateien 
    unterstützt. Das bisherige Format der Konfigurationsdateien wird vorerst weiter unterstützt. 
 
-   Informationen zum :doc:`neuen Dateiformat <./konfigurationsdateien_aufbau>` 
+   Informationen zum :doc:`alten und neuen Dateiformat <./konfigurationsdateien_aufbau>`
    finden Sie :doc:`hier <./konfigurationsdateien_aufbau>`.
 

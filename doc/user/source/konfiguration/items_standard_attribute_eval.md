@@ -7,14 +7,6 @@ Sollten alter und neuer Wert des Items unterschiedlich sein oder ist das Attribu
 
 Im folgenden Beispiel liefert ein Sensor die Temperatur in Fahrenheit. Das Item soll aber die Temperatur in °Celsius speichern. 
 
-```
-# items/sensor.conf
-[Temperatur]
-    # Formel (°F  -  32)  x  5/9 = °C
-    type = num
-    eval = (value - 32 ) * 5 / 9  # Aus 68°F werden somit 20°C
-```
-
 ```yaml
 # items/sensor.yaml
 Temperatur:
@@ -24,16 +16,6 @@ Temperatur:
 ```
 
 Das Eval Attribut kann auch bis zu einem gewissen Grad Logiken beinhalten. Wichtig ist, dass bei der Angabe eines if auch ein else implementiert sein muss. Außerdem ist dem Item ein ***sh.*** voran zu setzen. Die () Klammern hinter dem Item sind nötig, um den Item-Wert abzufragen.
-
-```
-# items/sensor.conf
-[Temperatur]
-    [[Trigger]]
-        # Wird wahr, wenn die Temperatur über 20 Grad wird und falsch, wenn nicht.
-        type = bool
-        eval = 1 if sh.Temperatur() > 20 else 0
-        eval_trigger = Temperatur
-```
 
 ```yaml
 # items/sensor.yaml
@@ -49,29 +31,19 @@ Temperatur:
 Weiter ist es möglich, direkt die Werte der eval_trigger im eval entsprechend auszuwerten:
 
 ```
-| keyword | Beschreibung                                             |
-| ------- | -------------------------------------------------------- |
-| **sum** | Errechnet die Summe aller eval_trigger Items.
-| **avg** | Errechnet den Mittelwert aller Items auf die sich eval_trigger bezieht.
-| **and** | Setzt den Wert des Items auf True, wenn alle Items auf die sich eval_triggers bezieht den Wert True haben.
-| **or**  | Setzt den Wert des Items auf True, wenn eines der Items auf die sich eval_triggers bezieht den Wert True haben.
+| keyword | Beschreibung                                                            |
+| ------- | ----------------------------------------------------------------------- |
+|   sum   | Errechnet die Summe aller eval_trigger Items.                           |
+|   avg   | Errechnet den Mittelwert aller Items auf die sich eval_trigger bezieht. |
+|   min   | Errechnet den Minimalwert aller Items auf die sich eval_trigger bezieht.|
+|   max   | Errechnet den Maximalwert aller Items auf die sich eval_trigger bezieht.|
+|   and   | Setzt den Wert des Items auf True, wenn alle Items auf die sich         |
+|         | eval_triggers bezieht den Wert True haben.                              |
+|   or    | Setzt den Wert des Items auf True, wenn eines der Items auf die sich    |
+|         | eval_triggers bezieht den Wert True haben.                              |
 ```
 
 Beispiel:
-```
-# items/sensor.conf
-[Raum]
-    [[Temperatur]]
-        type = num
-        name = average temperature
-        eval = avg
-        eval_trigger = room_a.temp | room_b.temp
-    [[Praesenz]]
-        type = bool
-        name = movement in on the rooms
-        eval = or
-        eval_trigger = room_a.presence | room_b.presence
-```
 
 ```yaml
 # items/sensor.yaml
@@ -99,12 +71,6 @@ Ab SmartHomeNG v1.3 wird das Python Modul [math](https://docs.python.org/3.4/lib
 
 Beispiel:
 
-```ini
-[oneitem]
-  type = num
-  eval = ceil(sh.otheritem() / 60.0)
-```
-
 ```yaml
 oneitem:
   type: num
@@ -117,17 +83,6 @@ Ab SmartHomeNG v1.3 können für  **eval** auch relative [Relative Item Referenz
 ## Attribut *eval_trigger*
 
 Das Attribut eval_trigger legt eine Abhängigkeit von anderen Items fest. Sobald sich diese im Wert ändern, wird eine Neuberechnung gestartet. Das obige Beispiel könnte so erweitert werden:
-
-```ini
-# items/sensor.conf
-[TemperaturFahrenheit]
-    type = num
-[TemperaturCelsius]
-    # Formel (°F  -  32)  x  5/9 = °C
-    type = num
-    eval = (sh.TemperaturFahrenheit() - 32 ) * 5 / 9  # Aus 68°F werden somit 20°C
-    eval_trigger = TemperaturFahrenheit
-```
 
 ```yaml
 # items/sensor.yaml

@@ -1,0 +1,69 @@
+global_translations:
+    # Translations for the plugin specially for the web interface
+    'Ja':              {'de': '=', 'en': 'Yes', 'fr': 'Qui'}
+    'Nein':            {'de': '=', 'en': 'No', 'fr': 'Non'}
+    'Aktualisieren':   {'de': '=', 'en': 'Update', 'fr': 'Recharger'}
+    'Schließen':       {'de': '=', 'en': 'Close', 'fr': 'Fermer'}
+    'Aktiv':           {'de': '=', 'en': 'Active', 'fr': 'Actif'}
+    'Gestoppt':        {'de': '=', 'en': 'Stopped', 'fr': 'Arrêté'}
+    'aktiviert':       {'de': '=', 'en': 'enabled'}
+    'deaktiviert':     {'de': '=', 'en': 'disabled'}
+    'Benutzer':        {'de': '=', 'en': 'User', 'fr': 'Utilisateur'}
+    'Passwort':        {'de': '=', 'en': 'Password'}
+    'Verbunden':       {'de': '=', 'en': 'Connected'}
+    'Laufzeit':        {'de': '=', 'en': 'Uptime'}
+    'Firmware':        {'de': '=', 'en': '=', 'fr': 'Micrologiciel'}
+    'Name':            {'de': '=', 'en': '=', 'fr': 'Nom'}
+    'Version':         {'de': '=', 'en': '=', 'fr': '='}
+
+    'Tag':             {'de': '=', 'en': 'day', 'fr': 'jour'}
+    'Stunde':          {'de': '=', 'en': 'hour', 'fr': 'heure'}
+    'Minute':          {'de': '=', 'en': 'minute', 'fr': 'minute'}
+    'Sekunde':         {'de': '=', 'en': 'second', 'fr': 'seconde'}
+    'Tage':            {'de': '=', 'en': 'days', 'fr': 'jours'}
+    'Stunden':         {'de': '=', 'en': 'hours', 'fr': 'heures'}
+    'Minuten':         {'de': '=', 'en': 'minutes', 'fr': 'minutes'}
+    'Sekunden':        {'de': '=', 'en': 'seconds', 'fr': 'secondes'}
+    
+    'Host':            {'de': '=', 'en': '=', 'fr': 'Hôte'}
+    'Port':            {'de': '=', 'en': '=', 'fr': '='}
+    'IP':              {'de': '=', 'en': '=', 'fr': '='}
+    'Instanz':         {'de': '=', 'en': 'Instance', 'fr': '='}
+    'Protokoll':       {'de': '=', 'en': 'Protocol', 'fr': 'Protocole'}
+    'Kanal':           {'de': '=', 'en': 'Channel', 'fr': 'Canal'}
+    'Knoten':          {'de': '=', 'en': 'Node', 'fr': 'noeud'}
+    'Funktion':        {'de': '=', 'en': 'Function', 'fr': 'Fonction'}
+    'Browser':         {'de': '=', 'en': '=', 'fr': 'Navigateur'}
+    'Adresse':         {'de': '=', 'en': 'Address', 'fr': 'Adresse'}
+    'Gerät':           {'de': '=', 'en': 'Device', 'fr': 'Appareil'}
+    'Geräte':          {'de': '=', 'en': 'Devices', 'fr': 'Appareils'}
+
+    'Client':                {'de': '=', 'en': '=', 'fr': ''}
+    'Clients':               {'de': '=', 'en': '=', 'fr': ''}
+    'Status':                {'de': '=', 'en': '=', 'fr': ''}
+
+    'Typ':                   {'de': '=', 'en': 'Type', 'fr': 'Type'}
+    'Wert':                  {'de': '=', 'en': 'Value', 'fr': 'Valeur'}
+
+    'Pfad':                  {'de': '=', 'en': 'Path', 'fr': ''}
+
+    'Dienst':                {'de': '=', 'en': 'Service', 'fr': ''}
+    'Dienste':               {'de': '=', 'en': 'Services', 'fr': ''}
+    'Item':                  {'de': '=', 'en': '=', 'fr': 'Objet'}
+    'Items':                 {'de': '=', 'en': '=', 'fr': 'Objets'}
+    'Logik':                 {'de': '=', 'en': 'Logic', 'fr': ''}
+    'Logiken':               {'de': '=', 'en': 'Logics', 'fr': ''}
+    'Scheduler':             {'de': '=', 'en': 'Scheduler', 'fr': ''}
+    'Scheduler (plural)':    {'de': 'Scheduler', 'en': 'Schedulers', 'fr': ''}
+    'Plugin':                {'de': '=', 'en': '=', 'fr': ''}
+    'Plugins':               {'de': '=', 'en': '=', 'fr': ''}
+    'Szene':                 {'de': '=', 'en': 'Scene', 'fr': ''}
+    'Szenen':                {'de': '=', 'en': 'Scenes', 'fr': ''}
+    'Thread':                {'de': '=', 'en': '=', 'fr': ''}
+    'Threads':               {'de': '=', 'en': '=', 'fr': ''}
+    'Logging':               {'de': '=', 'en': '=', 'fr': ''}
+    'Urheberrechtshinweise': {'de': '=', 'en': 'Disclosure', 'fr': ''}
+
+    'Letztes Update':        {'de': '=', 'en': 'Last Update', 'fr': ''}
+    'Letzter Change':        {'de': '=', 'en': 'Last Change', 'fr': ''}
+    

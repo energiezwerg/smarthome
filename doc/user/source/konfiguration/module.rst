@@ -1,4 +1,4 @@
-..index:: Module
+.. index:: Module
 
 ######
 Module

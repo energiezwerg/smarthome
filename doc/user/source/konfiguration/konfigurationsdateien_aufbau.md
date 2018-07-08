@@ -4,11 +4,13 @@ Die Konfiguration von SmartHomeNG erfolgt über Dateien. Die Funktionalität wir
 
 Diese Seite beschäftigt sich mit dem grundlegenden Format der Konfigurationsdateien. Für die vollständigen Konfigurationsmöglichkeiten, bitte auf den jeweiligen Wiki Seiten nachsehen.
 
-Bisher erfolgt die Konfiguration in **.conf** Dateien in einem smarthome-spezifischen Format. Ab der Release 1.3 von SmartHomeNG können zur Konfiguration von **Items**, **Logiken** und **Plugins** auch Dateien im YAML Format eingesetzt werden. Sowohl das Format der **.conf** Dateien, als auch das Format der YAML Dateien (Endung **.yaml**) werden im folgenden beschrieben.
+Seit dem Release 1.3 von SmartHomeNG können zur Konfiguration von **Items**, **Logiken** und **Plugins** auch Dateien im YAML Format eingesetzt werden. Dieses ist das ab Release 1.5 das Standardformat. Das Format der YAML Dateien (Endung **.yaml**) wird im folgenden beschrieben.
 
-Ganz neu ist die Nutzung des YAML Formats für SmartHomeNG nicht. Seit dem Übergang von smarthome.py zu SmartHomeNG wird bereits dass Logging in einer YAML Datei konfiguriert.
+Bisher erfolgt die Konfiguration in **.conf** Dateien in einem smarthome-spezifischen Format. Das **.conf** Format wird noch weiterhin unterstützt. Dokumentiert wird jedoch nur noch das **yaml** Format. Das **.conf** Format wird ab einem späteren Release (voraussichtlich v2.0) nicht mehr unterstützt werden.
 
-SmartHomeNG wird erstmal beide Dateiformate parallel unterstützen. Aufgrund der besseren Les- und Editierbarkeit wird jedoch die Verwendung des YAML Formats empfohlen. Zur Konvertierung von **.conf** in **.yaml** Dateien, ist ab Release 1.3 von SmartHomeNG ein Tool beigefügt, welches diese Konvertierung für die Item Dateien durchführt.
+Ganz neu war die Nutzung des YAML Formats für SmartHomeNG im Release 1.3 nicht. Seit dem Übergang von smarthome.py zu SmartHomeNG wird bereits dass Logging in einer YAML Datei konfiguriert.
+
+Zur Konvertierung von **.conf** in **.yaml** Dateien, ist ab Release 1.3 von SmartHomeNG ein Tool beigefügt, welches diese Konvertierung für die Item Dateien durchführt.
 
 **.conf** und **.yaml** Dateien können gemischt eingesetzt werden. Es ist dabei unbedingt darauf zu achten, dass keine Konfiguration doppelt (1 mal in .conf und 1 mal in .yaml) vorgenommen wird bzw. von SmartHomeNG eingelesen werden kann. Es darf für Plugins und Logiken also nur entweder eine .conf oder .yaml Datei geben. Sollte doch eine .conf und eine .yaml Datei für Plugins oder Logiken im /etc Verzeichnis liegen, so wird die .conf Datei ignoriert und die Konfiguration aus der .yaml Datei gelesen. Im Items-Verzeichnis können beide Dateitypen gleichzeitig vorkommen. Hier ist bei der Umstellung nur darauf zu achten, dass nicht aus Versehen ein Item sowohl in einer .conf **und** einer .yaml Datei definiert ist.
 

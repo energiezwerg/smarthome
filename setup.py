@@ -7,12 +7,12 @@ DOWNLOAD_URL = ('https://github.com/{}.zip'.format("1.1"))
 
 PACKAGES = find_packages(exclude=['tests', 'tests.*'])
 
-REQUIRES = [
-    'requests>=2,<3',
-    'pyyaml>=3.11,<4',
-    'psutil',
-
-]
+#REQUIRES = [
+#    'requests>=2,<3',
+#    'pyyaml>=3.11,<4',
+#    'psutil',
+#
+#]
 
 setup(
     name='SmartHomeNG',

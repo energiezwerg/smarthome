@@ -1,0 +1,16 @@
+%YAML 1.1
+---
+# module.yaml
+#http:
+#    class_name: http
+#    port: '1234'
+
+dummy:
+#    module_name: dummy
+    class_name: dummy
+    class_path: tests.resources.module_dummy
+
+#test_metadata:
+##    module_name: 
+#    class_name: test_metadata
+#    class_path: tests.resources.test_metadata

@@ -40,6 +40,10 @@ Wenn ein Plugin Autor die Informationen auf diesen Seiten aktualisieren möchte,
 die Metadaten Datei **plugin.yaml** in seinem Plugin aktualisieren. Beim nächsten Bau dieser
 Dokumentation werden dann diese aktualisierten Informationen automatisch mit aufgenommen.
 
+Wenn ein Plugin Autor eine Seite für sein Plugin links in die Navigation einklinken möchte, muss
+er nur eine Datei **user_doc.rst** in seinem Plugin Verzeichnis anlegen. Das Vorgehen ist in 
+der Entwickler Dokumentation beschrieben.
+
 Informationen zur Erstellung eigener Plugins sind in der Entwickler Dokumentation zu finden.
 Die Entwickler Dokumentation ist nur in englischer Sprache verfügbar.
 
