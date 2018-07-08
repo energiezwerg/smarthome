@@ -1,6 +1,6 @@
 # Module http
 
-This module allows plugins to implement a web interface. The API is described below. The first plugin to utilize this API is teh backend plugin.
+This module allows plugins to implement a web interface. The API is described below. The first plugin to utilize this API is the backend plugin.
 
 > Note: To write a plugin that utilizes this module, you have to be familiar with CherryPy. 
 
@@ -38,7 +38,7 @@ http:
 
 ```
 
-#### user (optional
+#### user (optional)
 
 username for the web access. By default username `admin` is used.
 
