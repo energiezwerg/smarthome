@@ -108,7 +108,7 @@ Neue Plugins und Plugin-Erweiterungen
      * Ist ein Item mit enforce_updates = True gesetzt, so kann man den identischen Wert dadurch senden, dass man in das Eingabfeld klickt und danach wieder neben das Eingabefeld. Die Animation, die beim Senden der Werte kommt, erscheint und die Zeit seit Update wire aktualisiert.
   * Seite Plugins:
 
-    * Beim Aufklappen der Listeinträge werden die Attribut-Definition der Items zu dem Plugin angezeigt. (Aus den Metadaten)
+    * Beim Aufklappen der Listeneinträge werden die Attribut-Definition der Items zu dem Plugin angezeigt. (Aus den Metadaten)
   * Seite 'visu' entfernt. Funktionalität i die Web GUI des Plugins überführt
 * DarkSky:
 
