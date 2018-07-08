@@ -16,6 +16,7 @@ if [ "$1" == "-h" ]; then
   echo   -f  -  Github Repos erneut auschecken \(auch wenn bereits lokale Clones vorhanden sind\)
   echo   -u  -  Nur die Anwender Dokumentation erzeugen
   echo   -d  -  Nur die Entwickler Dokumentation erzeugen
+  echo   -m  -  Die Dokumentation aus dem master Branch bauen (statt aus dem develop Branch)
   echo
   exit
 fi
