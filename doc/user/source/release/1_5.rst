@@ -46,7 +46,7 @@ Neue Funktionen im CORE
 
   * Bugfix für das Laden von vorangegangenen Versionen eines Plugins, falls'plugin_name' und nicht 'class_path' genutzt wurde.
   * SmartPlugin: get_version() liefert als erweitertes Format die Version Nummer gefolgt von'(pv)' zurück, falls die geladene Version nicht die aktuellste Version ist.
-  * Einführung eines Standards für Web GUIs von Plugins, siehe auch https://www.smarthomeng.de/jetzt-wird-es-bunt-wie-man-ein-plugin-webinterface-schreibt
+  * Einführung eines Standards für Web GUIs von Plugins (siehe auch https://www.smarthomeng.de/jetzt-wird-es-bunt)
   * Metadaten:
 
     * Datentypen ipv6 und knx_ga hinzugefügt
@@ -69,7 +69,7 @@ Neue Funktionen im CORE
     * Font Awesome aktualisiert auf v5.1.0
     * Bootstrap aktualisiert auf v4.1.1
     * CodeMirror aktualisiert auf v5.39.0
-* Neue Default Konfiguration für das Logging
+* Neue Default Konfiguration für das Logging (als Vorbereitung auf die Logging Konfiguration durch das backend Plugin)
 * Submodule Konfiguration auf github entfernt. Das plugins Repository ist nun unabhängig und kann/muss separat von github installiert werden (siehe Komplettanleitung)
 * Überprüfung ob SmartHomeNG läuft verbessert, indem zusätzlich ein File-Locking verwendet wird
 * Neue Option -r (--restart) für smarthome.py
@@ -108,6 +108,9 @@ Neue Plugins und Plugin-Erweiterungen
 
     * Beim Aufklappen der Listeinträge werden die Attribut-Definition der Items zu dem Plugin angezeigt. (Aus den Metadaten)
   * Seite 'visu' entfernt. Funktionalität i die Web GUI des Plugins überführt
+* DarkSky:
+
+  * Neues Wetter Plugin mit Web GUI
 * Database:
 
   * Web GUI incl. Multi-Language Unterstützung, CSV Export, Werte-Anzeige und der Möglichkeit, einzelne historische Wert oder die gesamte Wertehistorie eines Items zu löschen
