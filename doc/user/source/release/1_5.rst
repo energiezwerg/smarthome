@@ -200,7 +200,7 @@ Entfernte Plugins
 
 * DWD:
 
-  * Der deutsche Wetterdienst hat die Publikation der Weeterinfomationen im bisherigen Format eingestellt.
+  * Der deutsche Wetterdienst hat die Publikation der Wetterinfomationen im bisherigen Format eingestellt.
 
 
 Dokumentation
