@@ -104,6 +104,8 @@ Neue Plugins und Plugin-Erweiterungen
 
     * Querverlinkung "watch items" -> Item-Details und Item-Details -> Logik
     * Nutzung des gesamten Browserfensters für Item-Tree, Logfile-Viewer, etc.
+  * Seite Items:
+     * Ist ein Item mit enforce_updates = True gesetzt, so kann man den identischen Wert dadurch senden, dass man in das Eingabfeld klickt und danach wieder neben das Eingabefeld. Die Animation, die beim Senden der Werte kommt, erscheint und die Zeit seit Update wire aktualisiert.
   * Seite Plugins:
 
     * Beim Aufklappen der Listeinträge werden die Attribut-Definition der Items zu dem Plugin angezeigt. (Aus den Metadaten)
