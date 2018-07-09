@@ -137,6 +137,9 @@ oder aber alternativ kann man auch sämtliche von allen Plugins benötigten Modu
 
 .. code-block:: bash
 
+   cd /usr/local/smarthome
+   python3 tools/build_requirements.py
+
    sudo pip3 install -r requirements/all.txt
 
 

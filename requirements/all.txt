@@ -18,11 +18,9 @@ cherrypy>=8.1.2
 # SmartHomeNG Core
 ephem>=3.7
 
+# SmartHomeNG Core
 # _pv_1_3_5
 # _pv_1_4_9
-jinja2>=2.8
-
-# SmartHomeNG Core
 # backend
 # blockly
 jinja2>=2.9
@@ -34,7 +32,7 @@ miflora >=  0.4
 minimalmodbus>=0.7
 
 # nokia_health
-nokia=='0.4.0'
+nokia==0.4.0
 
 # mqtt
 paho-mqtt>=1.2.2
