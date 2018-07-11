@@ -390,7 +390,7 @@ class Metadata():
             if (typ == 'list') and (not isinstance(value, list)):
                 result = Utils.string_to_list(value)
 #            if (typ == 'list'):
-#                logger.warning("_expand_listvalues: value = >{}<, type(value) = >{}<, result = >{}<, type(result) = >{}<".format(value, type(value), result, type(result)))
+#                logger.warning(self._log_premsg+"_expand_listvalues: value = >{}<, type(value) = >{}<, result = >{}<, type(result) = >{}<".format(value, type(value), result, type(result)))
         return result
 
 
