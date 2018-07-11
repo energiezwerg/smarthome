@@ -39,6 +39,7 @@ import sys
 if sys.hexversion < 0x03040000:
     print("Sorry your python interpreter ({0}.{1}) is too old. Please update to 3.4 or newer.".format(sys.version_info[0], sys.version_info[1]))
     exit()
+PYTHON_VERSION = str(sys.version_info[0])+'.'+str(sys.version_info[1])+'.'+str(sys.version_info[2])+' '+str(sys.version_info[3])
 
 #####################################################################
 # prevent user root
@@ -235,9 +236,11 @@ class SmartHome():
 
         # setup logging
         self.init_logging(self._log_conf_basename, MODE)
-        self._logger.warning("--------------------   Init SmartHomeNG {0}   --------------------".format(VERSION))
+        self._logger.warning("--------------------   Init SmartHomeNG {}   --------------------".format(VERSION))
+        self._logger.warning("Running in Python interpreter v{}".format(PYTHON_VERSION))
 
-        self._logger.info("Using config dir: {}".format(self._extern_conf_dir))
+        if self._extern_conf_dir != BASE:
+            self._logger.warning("Using config dir {}".format(self._extern_conf_dir))
 
         
         #############################################################
