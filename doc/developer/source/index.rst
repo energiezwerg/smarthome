@@ -62,6 +62,6 @@ any way you want and can.
    logging
    tools
    development
-   release
+   release/release
    genindex
    impressum
