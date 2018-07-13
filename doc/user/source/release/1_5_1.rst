@@ -35,6 +35,9 @@ Bugfixes im CORE
 Neue Plugin Versionen
 ---------------------
 
+Für Details zu den inhaltlichen Änderungen der einzelnen Plugins, bitte die Dokumentation des jeweiligen Plugins konsultieren.
+
+
 * avdevice:
 
   * Neue Version 1.3.6 des Plugins

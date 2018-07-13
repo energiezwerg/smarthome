@@ -37,7 +37,8 @@ any way you want and can.
    :maxdepth: 6
    :hidden:
    :titlesonly:
-   
+
+   User Documentation <https://www.smarthomeng.de/user>
    user_doc.rst
    requirements.rst
    install
