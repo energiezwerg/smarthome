@@ -39,6 +39,7 @@ any way you want and can.
    :titlesonly:
 
    User Documentation <https://www.smarthomeng.de/user>
+   User Documentation (German) <../user>
    user_doc.rst
    requirements.rst
    install
