@@ -38,9 +38,7 @@ any way you want and can.
    :hidden:
    :titlesonly:
 
-   User Documentation <https://www.smarthomeng.de/user>
-   User Documentation (Ger) <../user>
-   user_doc.rst
+   User Documentation (German) <https://www.smarthomeng.de/user>
    requirements.rst
    install
    build_doc
