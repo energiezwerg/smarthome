@@ -17,7 +17,7 @@ Das bedeutet nicht unbedingt, dass SmartHomeNG ab Release 1.5 nicht mehr unter �
 Versionen l채uft. Es bedeutet, dass SmartHomeNG nicht mehr mit 채lteren Python Versionen getestet
 wird und das gemeldete Fehler mit 채lteren Python Versionen nicht mehr zu Buxfixen f체hren.
 
-Bitte auch die Release Notes f체r Version 1.5 unter `https://www.smarthomeNG.de/user/release <../../user/release/1_5/>`_ beachten.
+Bitte auch die Release Notes f체r Version 1.5 unter `https://www.smarthomeNG.de/user/release <../../user/release/1_5.html>`_ beachten.
 
 
 
