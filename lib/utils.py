@@ -431,7 +431,14 @@ class Utils(object):
         Convert a string to a list
         
         If the parameter is not of type str, the parameter gest returned unchanged
-        
+
+        If parameter string is
+        - a list, it gets returned unchanged
+        - a simple datatype other than string, it gets returned unchanged
+        - an empty string, it gets returned unchanged
+        - a non-empty string, it gets converted to a list of len=1
+        - format [<str>,<str>], it gets converted to a list
+
         :param string: string to convert
         :type string: str
         
@@ -444,7 +451,7 @@ class Utils(object):
         if len(string) == 0:
             return string
         if string[0] != '[':
-            return
+            return [string]
         hl = Utils.strip_square_brackets(string).split(',')
         rl = []
         for e in hl:

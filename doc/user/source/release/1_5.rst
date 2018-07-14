@@ -1,6 +1,6 @@
-===========================
-Release 1.5 - xx. Juli 2018
-===========================
+==========================
+Release 1.5 - 8. Juli 2018
+==========================
 
 Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
 

@@ -10,9 +10,28 @@ Der Syntax eines **eval** Ausdrucks ist der Syntax einer `Python conditional exp
 
 Dieser Syntax wird bei den Item Attributen **eval**, **on_change** und **on_update** verwendet.
 
+Zu beachten ist, dass der Syntax einer if-Bedingung in einer Python conditional Expression folgender ist:
+
+``eval: <expression-if-true> if <condition> else <expression-if-false>``
+
+
 Beispiel:
 
-``eval=value if value>0 else 0``
+``eval: value if value>0 else 0``
+
+Die Expression setzt den Item-Wert auf den bisherigen Wert, falls er >0 ist, sonst wird der Wert auf 0 gesetzt.
+Damit findet eine Zuweisung statt und on_change bzw. on_update Trigger werden ausgelöst.
+
+Wenn das Beispiel folgendermaßen formuliert wird:
+
+``eval: 0 if value <0 else None``
+
+Hätte es auf den Item-Wert letztlich die selben Auswirkungen: Hier wird der Item-Wert auf 0 gesetzt, falls der Wert <0 ist,
+sonst (None) wird keine Aktion ausgeführt (damit bleibt der Wert unverändert erhalten).
+Damit werden on_change bzw. on_update Trigger nur ausgelöst, wenn der Wert vorher <0 war. Bei Erhalt des Wertes (None),
+werden keine Trigger ausgelöst.
+
+
 
 Gemeinsame Verwendung von eval und on\_\.\.\. Item Attributen
 -------------------------------------------------------------

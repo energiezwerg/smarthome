@@ -51,10 +51,13 @@ Die folgenden Kommandos am besten mit dem User Account (smarthome) durchführen 
    mkdir plugins
    cd plugins
    git clone git://github.com/smarthomeNG/plugins.git .
+   cd ..
+   python3 tools/build_requirements.py
 
 
 Bitte auf den Punkt am Ende der **git clone** Kommandos achten!
 
+Das letzte Kommando sorgt dafür, dass die Python Requirements (../requirements/all.txt) aktuell generiert werden.
 
 Erstmalige Konfiguration erstellen
 ----------------------------------
@@ -133,6 +136,9 @@ Jedes Plugin kann weitere Abhängigkeiten mit sich bringen. Diese sind einzeln z
 oder aber alternativ kann man auch sämtliche von allen Plugins benötigten Module nachladen über
 
 .. code-block:: bash
+
+   cd /usr/local/smarthome
+   python3 tools/build_requirements.py
 
    sudo pip3 install -r requirements/all.txt
 

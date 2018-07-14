@@ -22,11 +22,14 @@ git pull
 eingeben. Daraufhin sollte der Update-Vorgang starten. 
 
 Nachdem SmartHomeNG aktualisiert wurde, müssen noch die **Plugins aktualisiert** werden. 
-Dazu in das **plugins** Verzeichnis wechseln und einen Pull durchführen:
+Dazu in das **plugins** Verzeichnis wechseln und einen Pull durchführen. Anschließend die Requirements (../requirements/all.txt) für Python updaten:
 
 ```
 cd plugins
 git pull
+cd ..
+python3 tools/build_requirements.py
+
 ```
 
 

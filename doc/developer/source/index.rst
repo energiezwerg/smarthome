@@ -37,8 +37,8 @@ any way you want and can.
    :maxdepth: 6
    :hidden:
    :titlesonly:
-   
-   user_doc.rst
+
+   User Documentation (German) <https://www.smarthomeng.de/user>
    requirements.rst
    install
    build_doc
@@ -62,6 +62,6 @@ any way you want and can.
    logging
    tools
    development
-   release
+   release/release
    genindex
    impressum

@@ -1,20 +1,11 @@
-# Module http
+# Module mqtt
 
-This module allows plugins to implement a web interface. The API is described below. The first plugin to utilize this API is the backend plugin.
-
-> Note: To write a plugin that utilizes this module, you have to be familiar with CherryPy. 
+This module allows plugins to utilize the MQTT protocol. The API is described below.
 
 
 ## Requirements
 
-This module is running under SmmartHomeNG versions beyond v1.3. It requires Python >= 3.4 as well as the lib **cherrypy**. You can install the libraries (python modules) with:
-
-```
-(sudo apt-get install python-cherrypy)
-sudo pip3 install cherrypy
-```
-
-And please pay attention that the lib(s) are installed for Python3 and not an older Python 2.7 that is probably installed on your system. Be carefull to use `pip3` and nor `pip`.
+This module is running under SmmartHomeNG versions beyond v1.3. It requires Python >= 3.4.
 
 > Note: This module needs the module handling in SmartHomeNG to be activated. Make sure, that `use_modules`in `etc/smarthome.yaml` is **not** set to False!
 
@@ -27,18 +18,18 @@ And please pay attention that the lib(s) are installed for Python3 and not an ol
 ```yaml
 # etc/module.yaml
 http:
-    module_name: http
+    module_name: mqtt
 #    port: 8383
 #    servicesport: 8384
 #    showpluginlist: False
-    showservicelist: True
+#    showservicelist: True
 #    starturl: backend
 #    threads: 8
 #    showtraceback: True
 
 ```
 
-#### user (optional)
+#### user (optional
 
 username for the web access. By default username `admin` is used.
 
@@ -88,81 +79,27 @@ Number of worker threads to start by cherrypy (default 8, which may be too much 
 If set to **True, error-pages (except for error 404) will show the Python traceback for that error.
 
 
-## API of module http
+## API of module mqtt
 
-### Test if module http is loaded
+### Test if module mqtt is loaded
 
-`http` is a loadlable module. Therefore there is no guarantiee that it is present in every system. Before you can use this module, you have to make sure ist is loaded. You can do it by calling a method of the main smarthome object. Do it like this:
+`mqtt` is a loadlable module. Therefore there is no guarantiee that it is present in every system. Before you can use this module, you have to make sure ist is loaded. You can do it by calling a method of the main smarthome object. Do it like this:
 
 ```
 self.classname = self.__class__.__name__
 
 try:
-    self.mod_http = self._sh.get_module('http')
+    self.mod_mqtt = self._sh.get_module('mqtt')
 except:
-    self.mod_http = None
+    self.mod_mqtt = None
     
-if self.mod_http == None:
-    # Do what is necessary if you can't start a web interface
+if self.mod_mqtt == None:
+    # Do what is necessary if you can't use the mqtt protocol
     # for your plugin. For example:
-    self.logger.error('{}: Module ''http'' not loaded - Abort loading of plugin {0}'.format(self.classname))
+    self.logger.error('{}: Module ''mqtt'' not loaded - Abort loading of plugin {0}'.format(self.classname))
     return
 ```
 
-### Registering a web application/interface
-
-For registering a web interface (or a web application in CherryPy terminology) you first have to define an application configuration for cherrypy.
-
-> Note: Be careful not to include a CherryPy ``global`` configuration.
-
-An application configuration for CherryPy can look like this;
-
-```
-app_config = {
-    '/': {
-        'tools.staticdir.root': current_dir,
-        'tools.auth_basic.on': self._basic_auth,
-        'tools.auth_basic.realm': 'earth',
-        'tools.auth_basic.checkpassword': self.validate_password,
-    },
-    '/static': {
-        'tools.staticdir.on': True,
-        'tools.staticdir.dir': os.path.join(current_dir, 'static')
-    }
-}
-```
-
-> Note: The `tools.auth_basic`entries in this example are for implementing a basic logon security. If you don`t want/need login security, delete those enties.
-
-For registering a web application/interface you have to call the `register_app` of module `http`:
-
-```
-register_app(app_object, 
-             appname, 
-             app_config, 
-             pluginclass, instance,
-             description)
-```
-
-For example:
-
-```
-appname = 'backend'    # Name of the plugin
-pluginclass = self.__class__.__name__
-instance = self.get_instance_name()
-
-self.mod_http.register_app(Backend(self, self.updates_allowed, language, self.developer_mode, self.pypi_timeout), 
-                          appname, 
-                          app_config, 
-                          pluginclass, instance,
-                          description='Administration interface for SmartHomeNG')
-```
-
-## Implementing a web interface for you plugin
-
-For details about implementing a web interface (CherryPy application) for your plugin, refer to the CherryPy documentation.
-
-The documentation will tell you how to expose parts of your python code to be availabe through CheryPy`s http-server.
 
 ### Methods for implementing a web interface
 
