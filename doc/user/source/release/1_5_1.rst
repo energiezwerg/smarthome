@@ -1,6 +1,6 @@
-============================
-Release 1.5.1 - X. Juli 2018
-============================
+=============================
+Release 1.5.1 - 15. Juli 2018
+=============================
 
 Es gibt eine Menge neuer Features im Core von SmartHomeNG und den Plugins.
 
@@ -32,6 +32,14 @@ Bugfixes im CORE
 
 
 
+Updates im CORE
+---------------
+
+* Module http:
+  * Updated Bootstrap to v4.1.2
+
+
+
 Neue Plugin Versionen
 ---------------------
 
@@ -46,7 +54,7 @@ Für Details zu den inhaltlichen Änderungen der einzelnen Plugins, bitte die Do
   * Neue Version 1.5.0 des Plugins
 * webservices:
 
-  * Neue Version 1.5.0.2 des Plugins (Versionsnummer wurde nicht angepasst)
+  * Neue Version 1.5.0.3 des Plugins
 
 
 

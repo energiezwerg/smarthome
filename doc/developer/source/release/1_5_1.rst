@@ -1,6 +1,6 @@
-==============================
-Release 1.5.1 - July Xth, 2018
-==============================
+===============================
+Release 1.5.1 - July 15th, 2018
+===============================
 
 There are some bugfixes and new features for the core of SmartHomeNG and the plugins.
 
